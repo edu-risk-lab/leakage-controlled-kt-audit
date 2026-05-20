@@ -53,12 +53,7 @@ for cfg in "${CONFIGS[@]}"; do
   step_i=$((step_i + 1))
   pct=$((100 * (step_i - 1) / step_total))
   echo "========== [$step_i/$step_total ~${pct}%] baseline_runner: $cfg =========="
-  if [[ "$cfg" == *"junyi"* ]]; then
-    echo "[junyi] baseline with --skip-cold-start"
-    run -m src.baseline_runner --config "$cfg" --skip-cold-start
-  else
-    run -m src.baseline_runner --config "$cfg"
-  fi
+  run -m src.baseline_runner --config "$cfg"
 done
 
 step_i=$((step_i + 1))

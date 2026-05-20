@@ -102,7 +102,7 @@ graph_ablation:
     l2: 1.0e-4
 
 evaluation:
-  baseline_backend: diagnostic   # use ``pykt`` with extras torch + pykt-toolkit (see pyproject optional-dependencies)
+  baseline_backend: pykt   # use ``pykt`` with extras torch + pykt-toolkit (see pyproject optional-dependencies)
 
 pykt:
   max_seq_len: 200

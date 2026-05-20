@@ -32,7 +32,7 @@ def _build_rows(df: pd.DataFrame, fold_val: int, q_map: dict[int, int], c_map: d
         pad_n = max_seq_len - L
         questions = [str(x[0]) for x in seq] + ["-1"] * pad_n
         concepts = [str(x[1]) for x in seq] + ["-1"] * pad_n
-        responses = [str(float(x[2])) for x in seq] + ["0"] * pad_n
+        responses = [str(int(x[2])) for x in seq] + ["0"] * pad_n
         smasks = ["1"] * L + ["0"] * pad_n
         timestamps = [str(t) for t in range(L)] + ["-1"] * pad_n
         rows.append(
