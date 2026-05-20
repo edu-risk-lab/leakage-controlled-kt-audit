@@ -51,6 +51,9 @@ baselines:
     enabled: true
   - name: gkt
     enabled: true
+    hyperparams:
+      batch_size: 32
+      epochs: 10
   - name: gikt
     enabled: true
   - name: skt

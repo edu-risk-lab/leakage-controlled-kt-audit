@@ -61,9 +61,9 @@ function Invoke-Step {
 }
 
 $Datasets = @(
-    @{ Config = "configs/junyi.yaml"; Key = "junyi" }
     @{ Config = "configs/assist2012.yaml"; Key = "assist2012" }
     @{ Config = "configs/xes3g5m.yaml"; Key = "xes3g5m" }
+    @{ Config = "configs/junyi.yaml"; Key = "junyi" }
 )
 
 # Hàng đợi các bước [i/N] và % (baseline_runner là bước lâu, không có % chi tiết bên trong model).

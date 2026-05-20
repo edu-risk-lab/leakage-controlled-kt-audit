@@ -1,0 +1,14 @@
+{
+    "dataset": "synthetic_c2",
+    "fold": 0,
+    "split_seed": 42,
+    "model": "gkt",
+    "graph_construction": "full_log",
+    "eval_split": "valid+test",
+    "auc": 0.8683935679647501,
+    "acc": 0.7992857142857143,
+    "nll": 0.4204850698521426,
+    "n_eval": 60000,
+    "status": "pykt_checkpoint",
+    "note": "pyKT `gkt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs."
+}

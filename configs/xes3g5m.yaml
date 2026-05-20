@@ -53,14 +53,29 @@ baselines:
     enabled: true
   - name: gkt
     enabled: true
+    hyperparams:
+      batch_size: 4
+      epochs: 10
   - name: gikt
     enabled: true
+    hyperparams:
+      batch_size: 8
+      epochs: 10
   - name: skt
     enabled: true
+    hyperparams:
+      batch_size: 8
+      epochs: 10
   - name: dygkt
     enabled: true
+    hyperparams:
+      batch_size: 8
+      epochs: 10
   - name: dgekt
     enabled: true
+    hyperparams:
+      batch_size: 8
+      epochs: 10
 logging:
   level: INFO
   experiment_log: logs/experiment_log.csv

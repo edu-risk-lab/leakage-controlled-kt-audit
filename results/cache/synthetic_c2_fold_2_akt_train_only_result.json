@@ -1,0 +1,14 @@
+{
+    "dataset": "synthetic_c2",
+    "fold": 2,
+    "split_seed": 44,
+    "model": "akt",
+    "graph_construction": "train_only",
+    "eval_split": "valid+test",
+    "auc": 0.8727050675089444,
+    "acc": 0.8098214285714286,
+    "nll": 0.40096627806105406,
+    "n_eval": 60000,
+    "status": "pykt_checkpoint",
+    "note": "pyKT `akt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs."
+}

@@ -1,0 +1,14 @@
+{
+    "dataset": "synthetic_c2",
+    "fold": 1,
+    "split_seed": 43,
+    "model": "skt",
+    "graph_construction": "full_log",
+    "eval_split": "valid+test",
+    "auc": 0.6343910414198122,
+    "acc": 0.6855166666666667,
+    "nll": 0.6131096417596809,
+    "n_eval": 60000,
+    "status": "trained_leakage_head",
+    "note": "Logistic regression on diagnostic channels fit on train fold only; graph signal differs by construction (train-only vs full-log pooling)."
+}

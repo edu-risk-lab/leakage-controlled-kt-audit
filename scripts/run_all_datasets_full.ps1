@@ -76,10 +76,6 @@ function Invoke-P0Step {
 
 $Datasets = @(
     @{
-        Config = "configs/junyi.yaml"
-        Processed = "data/processed/junyi.parquet"
-    },
-    @{
         Config = "configs/assist2012.yaml"
         Processed = "data/processed/assist2012.parquet"
     },
@@ -94,6 +90,10 @@ $Datasets = @(
     @{
         Config = "configs/synthetic_c5.yaml"
         Processed = "data/processed/synthetic_c5.parquet"
+    },
+    @{
+        Config = "configs/junyi.yaml"
+        Processed = "data/processed/junyi.parquet"
     }
 )
 

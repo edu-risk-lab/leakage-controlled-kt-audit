@@ -58,6 +58,22 @@ def _model_forward_loss(model, batch: dict, model_name: str) -> torch.Tensor:
         pred = torch.masked_select(y, sm)
         target = torch.masked_select(rshft, sm)
         return binary_cross_entropy(pred.double(), target.double())
+    if model_name == "gikt":
+        y = model(cq.long(), cc.long(), cr.long())
+        y = y[:, 1:]
+        pred = torch.masked_select(y, sm)
+        target = torch.masked_select(rshft, sm)
+        return binary_cross_entropy(pred.double(), target.double())
+    if model_name == "sakt":
+        y = model(c.long(), r.long(), cshft.long())
+        pred = torch.masked_select(y, sm)
+        target = torch.masked_select(rshft, sm)
+        return binary_cross_entropy(pred.double(), target.double())
+    if model_name in ("skt", "dygkt", "dgekt"):
+        y = model(c.long(), r.long(), cshft.long())
+        pred = torch.masked_select(y, sm)
+        target = torch.masked_select(rshft, sm)
+        return binary_cross_entropy(pred.double(), target.double())
     raise ValueError(f"Unsupported model_name={model_name}")
 
 
@@ -92,6 +108,13 @@ def _evaluate_detailed(model, loader, model_name: str) -> tuple[float, float, np
                 y = preds[:, 1:]
             elif model_name == "gkt":
                 y = model(cc.long(), cr.long())
+            elif model_name == "gikt":
+                y = model(cq.long(), cc.long(), cr.long())
+                y = y[:, 1:]
+            elif model_name == "sakt":
+                y = model(c.long(), r.long(), cshft.long())
+            elif model_name in ("skt", "dygkt", "dgekt"):
+                y = model(c.long(), r.long(), cshft.long())
             else:
                 raise ValueError(f"Unsupported pyKT model_name={model_name}")
 
@@ -233,12 +256,89 @@ def run_pykt_fold(
             "final_fc_dim2": int(hyperparams.get("final_fc_dim2", 256)),
             "separate_qa": bool(hyperparams.get("separate_qa", False)),
         }
+    elif pykt_name == "gikt":
+        # Load bipartite edges from gikt_bipartite.csv
+        bipartite_edges = []
+        bip_path = work_dir / "gikt_bipartite.csv"
+        if bip_path.exists():
+            import csv
+            with open(bip_path, "r") as f:
+                reader = csv.reader(f)
+                next(reader)  # skip header
+                for row in reader:
+                    if len(row) >= 2:
+                        bipartite_edges.append((int(row[0]), int(row[1])))
+        emb_size = int(hyperparams.get("emb_size", 64))
+        hidden_dim = int(hyperparams.get("hidden_dim", 128))
+        from src.models.gikt import GIKTPyTorch
+        model = GIKTPyTorch(
+            num_q=int(num_q),
+            num_c=int(num_c),
+            emb_size=emb_size,
+            hidden_dim=hidden_dim,
+            bipartite_edges=bipartite_edges,
+        )
+        if torch.cuda.is_available():
+            model = model.cuda()
+    elif pykt_name in ("skt", "dygkt", "dgekt"):
+        import os
+        if graph_npz is not None and os.path.exists(graph_npz):
+            adj_matrix = torch.tensor(np.load(graph_npz, allow_pickle=True)['matrix']).float()
+        else:
+            adj_matrix = torch.eye(int(num_c)).float()
+        if torch.cuda.is_available():
+            adj_matrix = adj_matrix.cuda()
+
+        emb_size = int(hyperparams.get("emb_size", 64))
+        hidden_dim = int(hyperparams.get("hidden_dim", 128))
+
+        if pykt_name == "skt":
+            from src.models.skt import SKTPyTorch
+            beta = float(hyperparams.get("beta", 0.1))
+            model = SKTPyTorch(
+                num_c=int(num_c),
+                emb_size=emb_size,
+                hidden_dim=hidden_dim,
+                adj_matrix=adj_matrix,
+                beta=beta,
+            )
+        elif pykt_name == "dygkt":
+            from src.models.dygkt import DyGKTPyTorch
+            gamma = float(hyperparams.get("gamma", 0.1))
+            model = DyGKTPyTorch(
+                num_c=int(num_c),
+                emb_size=emb_size,
+                hidden_dim=hidden_dim,
+                adj_matrix=adj_matrix,
+                gamma=gamma,
+            )
+        elif pykt_name == "dgekt":
+            from src.models.dgekt import DGEKTPyTorch
+            beta = float(hyperparams.get("beta", 0.1))
+            model = DGEKTPyTorch(
+                num_c=int(num_c),
+                emb_size=emb_size,
+                hidden_dim=hidden_dim,
+                adj_matrix=adj_matrix,
+                beta=beta,
+            )
+        if torch.cuda.is_available():
+            model = model.cuda()
+    elif pykt_name == "sakt":
+        model_cfg = {
+            "seq_len": int(max_seq_len),
+            "emb_size": int(hyperparams.get("emb_size", 100)),
+            "num_attn_heads": int(hyperparams.get("num_attn_heads", 5)),
+            "dropout": float(hyperparams.get("dropout", 0.2)),
+            "num_en": int(hyperparams.get("num_en", 2)),
+        }
     else:
         raise ValueError(f"Unknown pyKT name={pykt_name}")
 
-    model = init_model(pykt_name, model_cfg, data_cfg, emb_type)
-    if model is None:
-        raise RuntimeError(f"pyKT init_model returned None for {pykt_name}")
+    if pykt_name not in ("gikt", "skt", "dygkt", "dgekt"):
+        model = init_model(pykt_name, model_cfg, data_cfg, emb_type)
+        if model is None:
+            raise RuntimeError(f"pyKT init_model returned None for {pykt_name}")
 
     note = (
         f"pyKT `{pykt_name}` trained on learner-split train users; metrics on valid+test sequence positions. "
@@ -251,4 +351,16 @@ def run_pykt_fold(
     _train_loop(model, train_loader, valid_loader, epochs=max(1, int(epochs)), lr=float(lr), patience=patience)
     auc, acc, ts, ps = _evaluate_detailed(model, eval_loader, model.model_name)
     nll = _mean_nll(ts, ps)
+
+    # Explicitly release GPU memory to prevent Out of Memory in sequential baseline runs
+    import gc
+    try:
+        model.cpu()
+    except Exception:
+        pass
+    del model
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+
     return auc, acc, nll, note
