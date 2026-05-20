@@ -65,3 +65,14 @@ logging:
   level: INFO
   experiment_log: logs/experiment_log.csv
   leakage_audit_log: logs/leakage_audit_log.csv
+
+evaluation:
+  baseline_backend: pykt
+
+pykt:
+  max_seq_len: 200
+  gkt_graph_tag: p0_protocol
+  epochs: 30
+  batch_size: 64
+  lr: 0.001
+

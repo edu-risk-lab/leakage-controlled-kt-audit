@@ -89,9 +89,6 @@ foreach ($ds in $Datasets) {
     }
     if (-not $SkipBaseline) {
         $baselineArgs = @("-m", "src.baseline_runner", "--config", $cfg)
-        if ($key -eq "junyi") {
-            $baselineArgs = $baselineArgs + "--skip-cold-start"
-        }
         $Steps.Add(@{
                 Dataset = $key
                 Label   = "baseline_runner"
@@ -130,9 +127,7 @@ for ($idx = 0; $idx -lt $total; $idx++) {
 
     Write-Host "---------- $statusLine ----------"
 
-    if ($step.Dataset -eq "junyi" -and $step.Label -eq "baseline_runner") {
-        Write-Host "[junyi] baseline với --skip-cold-start (tránh OOM cold-start)"
-    }
+
 
     $sw = [System.Diagnostics.Stopwatch]::StartNew()
     Invoke-Step -Arguments $step.Args
