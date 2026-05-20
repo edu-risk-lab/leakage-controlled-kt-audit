@@ -17,13 +17,13 @@
 - junyi / simplekt: mean AUC=0.643, ACC=0.744, NLL=0.531, n=23,438,642
 - synthetic_c2 / akt: mean AUC=0.619, ACC=0.687, NLL=0.608, n=180,000
 - synthetic_c2 / bkt: mean AUC=0.554, ACC=0.687, NLL=0.616, n=180,000
-- synthetic_c2 / dgekt: mean AUC=0.635, ACC=0.687, NLL=0.611, n=180,000
+- synthetic_c2 / dgekt: mean AUC=0.634, ACC=0.687, NLL=0.612, n=180,000
 - synthetic_c2 / dkt: mean AUC=0.619, ACC=0.687, NLL=0.610, n=180,000
-- synthetic_c2 / dygkt: mean AUC=0.632, ACC=0.687, NLL=0.619, n=180,000
-- synthetic_c2 / gikt: mean AUC=0.635, ACC=0.687, NLL=0.609, n=180,000
+- synthetic_c2 / dygkt: mean AUC=0.631, ACC=0.687, NLL=0.616, n=180,000
+- synthetic_c2 / gikt: mean AUC=0.634, ACC=0.687, NLL=0.612, n=180,000
 - synthetic_c2 / gkt: mean AUC=0.554, ACC=0.687, NLL=0.621, n=180,000
 - synthetic_c2 / simplekt: mean AUC=0.626, ACC=0.687, NLL=0.604, n=180,000
-- synthetic_c2 / skt: mean AUC=0.633, ACC=0.687, NLL=0.618, n=180,000
+- synthetic_c2 / skt: mean AUC=0.634, ACC=0.687, NLL=0.612, n=180,000
 - synthetic_c5 / akt: mean AUC=0.622, ACC=0.611, NLL=0.656, n=180,000
 - synthetic_c5 / bkt: mean AUC=0.525, ACC=0.611, NLL=0.667, n=180,000
 - synthetic_c5 / dgekt: mean AUC=0.633, ACC=0.611, NLL=0.656, n=180,000

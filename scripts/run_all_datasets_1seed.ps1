@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Full P0 pipeline: preprocess (optional skip), split, graphs, DAG probes, baselines, cold-start merge, paper artefacts.
+    1-seed P0 pipeline: preprocess (optional skip), split, graphs, DAG probes, baselines (1 fold), cold-start merge, paper artefacts.
 
 .PARAMETER ForceFull
     Sets FORCE_PREPROCESS=1 so every dataset rebuilds parquet from raw CSV (use after schema/raw updates).
@@ -10,16 +10,11 @@
     Does not configure CUDA; set CUDA_VISIBLE_DEVICES yourself if a stage uses GPU.
 
 .EXAMPLE
-    .\scripts\run_all_datasets_full.ps1 -ForceFull -ServerProfile
+    .\scripts\run_all_datasets_1seed.ps1 -ForceFull -ServerProfile
 
 .EXAMPLE
     $env:CUDA_VISIBLE_DEVICES = "0"
-    .\scripts\run_all_datasets_full.ps1 -ServerProfile
-
-.NOTES
-    Junyi full preprocess + graph + baseline is RAM-heavy; 32GB + `--ServerProfile` is appropriate.
-    GPU (e.g. RTX 3090) helps only where PyTorch/deep baselines are actually used; current diagnostic
-    runners are mostly CPU (numpy/sklearn). Keep CUDA env for future or optional torch workloads.
+    .\scripts\run_all_datasets_1seed.ps1 -ServerProfile
 #>
 
 param(
@@ -31,7 +26,7 @@ $ErrorActionPreference = "Stop"
 
 if ($ForceFull) {
     $env:FORCE_PREPROCESS = "1"
-    Write-Host "[run_all_datasets_full] ForceFull: FORCE_PREPROCESS=1 (rebuild parquet from raw)."
+    Write-Host "[run_all_datasets_1seed] ForceFull: FORCE_PREPROCESS=1 (rebuild parquet from raw)."
 }
 
 if ($ServerProfile) {
@@ -49,7 +44,7 @@ if ($ServerProfile) {
     if ([string]::IsNullOrEmpty($env:PYTHONHASHSEED)) {
         $env:PYTHONHASHSEED = "0"
     }
-    Write-Host "[run_all_datasets_full] ServerProfile: BLAS/thread caps (override by setting env vars before launch)."
+    Write-Host "[run_all_datasets_1seed] ServerProfile: BLAS/thread caps (override by setting env vars before launch)."
     Write-Host "    OMP_NUM_THREADS=$($env:OMP_NUM_THREADS) MKL_NUM_THREADS=$($env:MKL_NUM_THREADS) OPENBLAS_NUM_THREADS=$($env:OPENBLAS_NUM_THREADS)"
 }
 
@@ -60,8 +55,8 @@ else {
     $Python = "python"
 }
 
-Write-Host "[run_all_datasets_full] Using interpreter: $Python"
-Write-Host "[run_all_datasets_full] FORCE_PREPROCESS=$($env:FORCE_PREPROCESS) CUDA_VISIBLE_DEVICES=$($env:CUDA_VISIBLE_DEVICES)"
+Write-Host "[run_all_datasets_1seed] Using interpreter: $Python"
+Write-Host "[run_all_datasets_1seed] FORCE_PREPROCESS=$($env:FORCE_PREPROCESS) CUDA_VISIBLE_DEVICES=$($env:CUDA_VISIBLE_DEVICES)"
 
 function Invoke-P0Step {
     param(
@@ -100,7 +95,7 @@ $Datasets = @(
 foreach ($Dataset in $Datasets) {
     $Cfg = $Dataset.Config
     $Processed = $Dataset.Processed
-    Write-Host "==> Running full P0 pipeline for $Cfg"
+    Write-Host "==> Running 1-seed P0 pipeline for $Cfg"
     if ((Test-Path $Processed) -and ($env:FORCE_PREPROCESS -ne "1")) {
         Write-Host "    Skipping preprocess; found $Processed"
     }
@@ -112,8 +107,11 @@ foreach ($Dataset in $Datasets) {
     Invoke-P0Step @("-m", "src.export_full_log_graph", "--config", $Cfg)
     Invoke-P0Step @("-m", "src.dag_audit", "--config", $Cfg)
     Invoke-P0Step @("-m", "src.dag_disruption", "--config", $Cfg)
-    $baselineArgs = @("-m", "src.baseline_runner", "--config", $Cfg)
+    
+    # Run baseline runner with only 1 fold/seed
+    $baselineArgs = @("-m", "src.baseline_runner", "--config", $Cfg, "--folds", "1")
     Invoke-P0Step -Arguments $baselineArgs
+    
     Invoke-P0Step @("-m", "src.cold_start_report", "--config", $Cfg)
 }
 

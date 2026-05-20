@@ -1,46 +1,4 @@
 dataset,fold,split_seed,model,eval_split,auc,acc,nll,n_eval,status,note,graph_construction
-synthetic_c2,0,42,bkt,valid+test,0.5543321973702897,0.68285,0.6194613688315275,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,0,42,dkt,valid+test,0.6176070162145773,0.68285,0.6134443247628191,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,0,42,simplekt,valid+test,0.6239715153187048,0.68285,0.6070550489357995,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,0,42,akt,valid+test,0.6168312707373149,0.68285,0.6112233494183494,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,0,42,gkt,valid+test,0.5543321973702897,0.68285,0.6242798780736972,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,0,42,gikt,valid+test,0.6325993749869483,0.68285,0.6122754104704309,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,0,42,skt,valid+test,0.6293924985943364,0.68285,0.6205737245946849,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,0,42,dygkt,valid+test,0.629352479978446,0.68285,0.6220466377903162,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,0,42,dgekt,valid+test,0.6320491190184536,0.68285,0.6137747324877324,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,0,42,gkt,valid+test,0.5543321973702897,0.68285,0.6242888137452547,60000,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-synthetic_c2,0,42,gikt,valid+test,0.6326063012858524,0.68285,0.6122837328343517,60000,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-synthetic_c2,0,42,skt,valid+test,0.6295879741411863,0.68285,0.6205859905408655,60000,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-synthetic_c2,0,42,dygkt,valid+test,0.629352479978446,0.68285,0.6220513803369045,60000,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-synthetic_c2,0,42,dgekt,valid+test,0.6320491190184536,0.68285,0.613785493563483,60000,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-synthetic_c2,1,43,bkt,valid+test,0.5548812703963589,0.6855166666666667,0.6173192726452216,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,1,43,dkt,valid+test,0.6198831328669651,0.6855166666666667,0.6112039456601698,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,1,43,simplekt,valid+test,0.6270883821322606,0.6855166666666667,0.6046067175611599,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,1,43,akt,valid+test,0.6191007603072569,0.6855166666666667,0.6087658234486782,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,1,43,gkt,valid+test,0.5548812703963589,0.6855166666666667,0.6223658094169414,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,1,43,gikt,valid+test,0.6358599227078017,0.6855166666666667,0.6100938510048991,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,1,43,skt,valid+test,0.6335483674177551,0.6855166666666667,0.6186062427561803,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,1,43,dygkt,valid+test,0.6322418361668593,0.6855166666666667,0.62006148766775,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,1,43,dgekt,valid+test,0.6355908855034751,0.6855166666666667,0.611643373707402,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,1,43,gkt,valid+test,0.5548812703963589,0.6855166666666667,0.6223691580105689,60000,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-synthetic_c2,1,43,gikt,valid+test,0.6358599227078017,0.6855166666666667,0.6100946080028482,60000,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-synthetic_c2,1,43,skt,valid+test,0.6332344906793743,0.6855166666666667,0.61860896958477,60000,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-synthetic_c2,1,43,dygkt,valid+test,0.6323902704864877,0.6855166666666667,0.6200642989204138,60000,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-synthetic_c2,1,43,dgekt,valid+test,0.6355908855034751,0.6855166666666667,0.6116445038944263,60000,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-synthetic_c2,2,44,bkt,valid+test,0.5542410580356694,0.6920666666666667,0.6125187557493067,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,2,44,dkt,valid+test,0.6206526470297429,0.6920666666666667,0.606353109291888,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,2,44,simplekt,valid+test,0.627426913779627,0.6920666666666667,0.5997793398881227,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,2,44,akt,valid+test,0.6198611949458266,0.6920666666666667,0.6035905816332934,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,2,44,gkt,valid+test,0.5542410580356694,0.6920666666666667,0.6178290269718505,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,2,44,gikt,valid+test,0.6373529116541975,0.6920666666666667,0.6055010500593209,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,2,44,skt,valid+test,0.635358640098875,0.6920666666666667,0.6141012599658601,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,2,44,dygkt,valid+test,0.6329170260613388,0.6920666666666667,0.6154317787043222,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,2,44,dgekt,valid+test,0.6371151632021121,0.6920666666666667,0.6070913620758835,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-synthetic_c2,2,44,gkt,valid+test,0.5542410580356694,0.6920666666666667,0.6176819692096804,60000,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-synthetic_c2,2,44,gikt,valid+test,0.6373310137704529,0.6920666666666667,0.6053912211468236,60000,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-synthetic_c2,2,44,skt,valid+test,0.6355995168200669,0.6920666666666667,0.6139369369491697,60000,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-synthetic_c2,2,44,dygkt,valid+test,0.6326730210710405,0.6920666666666667,0.6153286397898756,60000,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-synthetic_c2,2,44,dgekt,valid+test,0.6371057783947929,0.6920666666666667,0.6069571235885696,60000,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
 synthetic_c5,0,42,bkt,valid+test,0.5263649676709978,0.6105833333333334,0.6674004899894784,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
 synthetic_c5,0,42,dkt,valid+test,0.6272952762065303,0.6105833333333334,0.6585103845927354,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
 synthetic_c5,0,42,simplekt,valid+test,0.6296028154502206,0.6105833333333334,0.6511712555533006,60000,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
@@ -125,87 +83,101 @@ junyi,2,44,gikt,valid+test,0.712866144863735,0.8274638938657858,0.42308353113293
 junyi,2,44,skt,valid+test,0.7046806563025081,0.8269510419255827,0.4273460283721739,7881417,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
 junyi,2,44,dygkt,valid+test,0.7064609310966639,0.8265706534751301,0.4313763845861627,7881417,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
 junyi,2,44,dgekt,valid+test,0.7106331573018825,0.8274305242318736,0.4241309266307402,7881417,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-assist2012,0,42,bkt,valid+test,0.6067091335142124,0.6935764813311937,0.6015282054078851,816951,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,0,42,dkt,valid+test,0.6866238662945099,0.6929583292021186,0.5894910043859882,816951,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,0,42,simplekt,valid+test,0.694996759107954,0.7035464795318201,0.5743643001933102,816951,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,0,42,akt,valid+test,0.6824897918524232,0.6960613304837132,0.5867436874458763,816951,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,0,42,gkt,valid+test,0.6024598906196776,0.6920476258674021,0.6053437205021889,816951,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,0,42,gikt,valid+test,0.6903904100552962,0.6957430739420112,0.5818840043349247,816951,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,0,42,skt,valid+test,0.6504982860831697,0.6922312354106918,0.5967724623147552,816951,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,0,42,dygkt,valid+test,0.6372794457260538,0.6913841833843156,0.6025068747865795,816951,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,0,42,dgekt,valid+test,0.6866285707870347,0.694773615553442,0.5840074442755849,816951,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,0,42,gkt,valid+test,0.6024575545224908,0.6920476258674021,0.6051835982212636,816951,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-assist2012,0,42,gikt,valid+test,0.6902308390104096,0.6959279075489228,0.5818048688436694,816951,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-assist2012,0,42,skt,valid+test,0.6497948030863494,0.6923034551643856,0.5966190507157803,816951,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-assist2012,0,42,dygkt,valid+test,0.6366882725636016,0.6913841833843156,0.6023797370853444,816951,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-assist2012,0,42,dgekt,valid+test,0.6864317733635705,0.6950196523414501,0.5839065931085109,816951,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-assist2012,1,43,bkt,valid+test,0.6097951548237375,0.699478506199789,0.596127215499613,806721,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,1,43,dkt,valid+test,0.6906784197786107,0.6987545880174186,0.5844823223193539,806721,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,1,43,simplekt,valid+test,0.6988555459426975,0.7090964534206994,0.5690549768425059,806721,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,1,43,akt,valid+test,0.685551254069802,0.7019378446823623,0.5824272707391533,806721,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,1,43,gkt,valid+test,0.6052667030858361,0.6979711697104699,0.6000141892862471,806721,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,1,43,gikt,valid+test,0.6938931591932124,0.7019998239787981,0.5766149095264496,806721,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,1,43,skt,valid+test,0.6527397927437885,0.6982996599815797,0.5914552285651102,806721,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,1,43,dygkt,valid+test,0.6391338330133722,0.6973365017149671,0.5973295252968409,806721,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,1,43,dgekt,valid+test,0.6900482776667032,0.7011680618206294,0.5787204147219212,806721,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,1,43,gkt,valid+test,0.6050109923468967,0.6979711697104699,0.600025390782629,806721,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-assist2012,1,43,gikt,valid+test,0.6940692304509388,0.7019675947446515,0.5766061176261944,806721,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-assist2012,1,43,skt,valid+test,0.6531293365756361,0.6982996599815797,0.5914571732945592,806721,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-assist2012,1,43,dygkt,valid+test,0.6396177259523215,0.6973365017149671,0.5973406942090256,806721,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-assist2012,1,43,dgekt,valid+test,0.6902777143409526,0.7010490615714726,0.5787117656367156,806721,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-assist2012,2,44,bkt,valid+test,0.608947427128064,0.699925507317627,0.596136400036534,801421,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,2,44,dkt,valid+test,0.6900053359746774,0.6991955538973897,0.5843361555042141,801421,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,2,44,simplekt,valid+test,0.6981884973424339,0.7091977874300773,0.5690472177326396,801421,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,2,44,akt,valid+test,0.6844450912669462,0.7021328365490797,0.5824027299942908,801421,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,2,44,gkt,valid+test,0.6045047638418375,0.6986365468336867,0.5997608053815517,801421,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,2,44,gikt,valid+test,0.6938703282718124,0.7020978986075983,0.5764508654358725,801421,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,2,44,skt,valid+test,0.6535006916363971,0.6986427857518084,0.591211608496244,801421,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,2,44,dygkt,valid+test,0.6399230976324202,0.69799019491628,0.5970712132612318,801421,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,2,44,dgekt,valid+test,0.6901933796512301,0.701301812655271,0.5785326736260923,801421,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-assist2012,2,44,gkt,valid+test,0.6043103151708746,0.6986365468336867,0.599748874360983,801421,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-assist2012,2,44,gikt,valid+test,0.6936205367009298,0.7021490577361961,0.5764329827540822,801421,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-assist2012,2,44,skt,valid+test,0.653043128329114,0.6987251394710146,0.5911972664832243,801421,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-assist2012,2,44,dygkt,valid+test,0.6395251610844752,0.69799019491628,0.5970483834636789,801421,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-assist2012,2,44,dgekt,valid+test,0.689887510588766,0.7014003875615937,0.5785146348109226,801421,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
 xes3g5m,0,42,bkt,valid+test,0.617875587446238,0.7943713465498949,0.4932640584971793,1922840,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
 xes3g5m,0,42,dkt,valid+test,0.7092531200151431,0.7936973435127208,0.4812086826890077,1922840,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-xes3g5m,0,42,simplekt,valid+test,0.718366173593789,0.7957765596721517,0.46651350002637615,1922840,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-xes3g5m,0,42,akt,valid+test,0.7076509818651014,0.7941055938091572,0.48088548246252105,1922840,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-xes3g5m,0,42,gkt,valid+test,0.6080426191747188,0.7938502423498575,0.49713189330980934,1922840,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-xes3g5m,0,42,gikt,valid+test,0.7098184136175476,0.7941279565642487,0.47375987812463055,1922840,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
+xes3g5m,0,42,simplekt,valid+test,0.718366173593789,0.7957765596721517,0.4665135000263761,1922840,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
+xes3g5m,0,42,akt,valid+test,0.7076509818651014,0.7941055938091572,0.480885482462521,1922840,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
+xes3g5m,0,42,gkt,valid+test,0.6080426191747188,0.7938502423498575,0.4971318933098093,1922840,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
+xes3g5m,0,42,gikt,valid+test,0.7098184136175476,0.7941279565642487,0.4737598781246305,1922840,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
 xes3g5m,0,42,skt,valid+test,0.6597458532565355,0.7938502423498575,0.4885065057827886,1922840,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
 xes3g5m,0,42,dygkt,valid+test,0.6457336740753357,0.7936609390276882,0.4940014057314583,1922840,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
 xes3g5m,0,42,dgekt,valid+test,0.7043693876891363,0.7941227559235298,0.4758682661822684,1922840,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-xes3g5m,0,42,gkt,valid+test,0.6077513538952165,0.793852322606145,0.49718047630013606,1922840,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
+xes3g5m,0,42,gkt,valid+test,0.6077513538952165,0.793852322606145,0.497180476300136,1922840,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
 xes3g5m,0,42,gikt,valid+test,0.7100720612773805,0.7941279565642487,0.4738047555190825,1922840,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
 xes3g5m,0,42,skt,valid+test,0.6601092904956126,0.7938502423498575,0.4885655160582985,1922840,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-xes3g5m,0,42,dygkt,valid+test,0.6458871636741363,0.7936682199246947,0.49405114049782417,1922840,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
+xes3g5m,0,42,dygkt,valid+test,0.6458871636741363,0.7936682199246947,0.4940511404978241,1922840,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
 xes3g5m,0,42,dgekt,valid+test,0.7046878509867383,0.7941227559235298,0.4759211668698674,1922840,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
 xes3g5m,1,43,bkt,valid+test,0.6176589732531487,0.7953520154804542,0.4920207151141761,1922941,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-xes3g5m,1,43,dkt,valid+test,0.709351794571918,0.7947503329535331,0.47987242503364247,1922941,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
+xes3g5m,1,43,dkt,valid+test,0.709351794571918,0.7947503329535331,0.4798724250336424,1922941,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
 xes3g5m,1,43,simplekt,valid+test,0.7183791611893594,0.796857001852891,0.4652349175112536,1922941,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-xes3g5m,1,43,akt,valid+test,0.7071634882961737,0.7952927312902476,0.47987863129275005,1922941,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
+xes3g5m,1,43,akt,valid+test,0.7071634882961737,0.7952927312902476,0.47987863129275,1922941,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
 xes3g5m,1,43,gkt,valid+test,0.6078943611801348,0.7948454996799174,0.4958524826069266,1922941,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
 xes3g5m,1,43,gikt,valid+test,0.7098622917567726,0.7952313669530162,0.4724683897550514,1922941,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
 xes3g5m,1,43,skt,valid+test,0.659825901804871,0.7948460197166736,0.4872152994187503,1922941,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
 xes3g5m,1,43,dygkt,valid+test,0.645826240726058,0.7946712873665911,0.4926813820008269,1922941,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
 xes3g5m,1,43,dgekt,valid+test,0.7044013443923681,0.7952225263281609,0.474577036301601,1922941,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
 xes3g5m,1,43,gkt,valid+test,0.6078005804665786,0.7948454996799174,0.4958863362518064,1922941,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-xes3g5m,1,43,gikt,valid+test,0.7101541942053637,0.7952313669530162,0.47250222695457306,1922941,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
+xes3g5m,1,43,gikt,valid+test,0.7101541942053637,0.7952313669530162,0.472502226954573,1922941,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
 xes3g5m,1,43,skt,valid+test,0.6603133048289128,0.7948465397534298,0.4872559201249152,1922941,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-xes3g5m,1,43,dygkt,valid+test,0.6461205657342841,0.7946728474768596,0.49272129149456323,1922941,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-xes3g5m,1,43,dgekt,valid+test,0.7047763068367124,0.7952298068427477,0.47461547502453144,1922941,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
+xes3g5m,1,43,dygkt,valid+test,0.6461205657342841,0.7946728474768596,0.4927212914945632,1922941,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
+xes3g5m,1,43,dgekt,valid+test,0.7047763068367124,0.7952298068427477,0.4746154750245314,1922941,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
 xes3g5m,2,44,bkt,valid+test,0.6174633730257527,0.7949488421457188,0.4925579610305867,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-xes3g5m,2,44,dkt,valid+test,0.709495277992232,0.7943572472715551,0.48030729041876963,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-xes3g5m,2,44,simplekt,valid+test,0.7185070509727098,0.7963559630524004,0.46563053239570285,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-xes3g5m,2,44,akt,valid+test,0.7070697167308372,0.7949123882362192,0.48030949975360343,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-xes3g5m,2,44,gkt,valid+test,0.6076638898564457,0.7944707751611393,0.49640145046519496,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-xes3g5m,2,44,gikt,valid+test,0.7100606041248416,0.7948472919692559,0.47289103386919895,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-xes3g5m,2,44,skt,valid+test,0.659868473506923,0.7944765036326321,0.48771884559880035,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
+xes3g5m,2,44,dkt,valid+test,0.709495277992232,0.7943572472715551,0.4803072904187696,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
+xes3g5m,2,44,simplekt,valid+test,0.7185070509727098,0.7963559630524004,0.4656305323957028,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
+xes3g5m,2,44,akt,valid+test,0.7070697167308372,0.7949123882362192,0.4803094997536034,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
+xes3g5m,2,44,gkt,valid+test,0.6076638898564457,0.7944707751611393,0.4964014504651949,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
+xes3g5m,2,44,gikt,valid+test,0.7100606041248416,0.7948472919692559,0.4728910338691989,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
+xes3g5m,2,44,skt,valid+test,0.659868473506923,0.7944765036326321,0.4877188455988003,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
 xes3g5m,2,44,dygkt,valid+test,0.6457082445257878,0.7942812148317417,0.4931944198406907,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
 xes3g5m,2,44,dgekt,valid+test,0.7046128693474879,0.7948514581303415,0.4750127931364444,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,train_only
-xes3g5m,2,44,gkt,valid+test,0.6077408445375176,0.7944707751611393,0.49638091417935554,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
+xes3g5m,2,44,gkt,valid+test,0.6077408445375176,0.7944707751611393,0.4963809141793555,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
 xes3g5m,2,44,gikt,valid+test,0.7104598465076346,0.7948472919692559,0.4728828290352091,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
 xes3g5m,2,44,skt,valid+test,0.660588309572959,0.7944765036326321,0.4876969450091443,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
-xes3g5m,2,44,dygkt,valid+test,0.6462659353585472,0.7942812148317417,0.49319441157155913,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
+xes3g5m,2,44,dygkt,valid+test,0.6462659353585472,0.7942812148317417,0.4931944115715591,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
 xes3g5m,2,44,dgekt,valid+test,0.7051325047930895,0.7948514581303415,0.4749998835223782,1920233,diagnostic,Diagnostic baseline; no SOTA claim.,full_log
+synthetic_c2,0,42,dkt,valid+test,0.8573495508906998,0.7882142857142858,0.4337682805039445,60000,pykt_checkpoint,pyKT `dkt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+synthetic_c2,0,42,simplekt,valid+test,0.8708353487573517,0.8029591836734694,0.4162311857595289,60000,pykt_checkpoint,pyKT `simplekt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+synthetic_c2,0,42,akt,valid+test,0.8701622110467279,0.8019897959183674,0.4169861198256985,60000,pykt_checkpoint,pyKT `akt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+synthetic_c2,0,42,gkt,valid+test,0.8684620065650234,0.7990561224489796,0.4198436595637716,60000,pykt_checkpoint,pyKT `gkt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+synthetic_c2,0,42,gikt,valid+test,0.978643456209032,0.9854591836734694,0.1415258507733228,60000,pykt_checkpoint,pyKT `gikt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+synthetic_c2,0,42,skt,valid+test,0.8531072887304989,0.7883928571428571,0.4402340808798201,60000,pykt_checkpoint,pyKT `skt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+synthetic_c2,0,42,dygkt,valid+test,0.8672466098482277,0.8005102040816326,0.4209149741642125,60000,pykt_checkpoint,pyKT `dygkt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+synthetic_c2,0,42,dgekt,valid+test,0.8591057166263774,0.7939285714285714,0.431515688677512,60000,pykt_checkpoint,pyKT `dgekt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+synthetic_c2,0,42,bkt,valid+test,0.8352018275208968,0.7809333333333334,0.4617502234259205,60000,classical_bkt_em,Independent-skill BKT (scipy L-BFGS-B); protocol graphs do not affect this baseline.,train_only
+synthetic_c2,0,42,gkt,valid+test,0.8683935679647501,0.7992857142857143,0.4204850698521426,60000,pykt_checkpoint,pyKT `gkt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,full_log
+synthetic_c2,0,42,gikt,valid+test,0.978643456209032,0.9854591836734694,0.143102560540926,60000,pykt_checkpoint,pyKT `gikt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,full_log
+synthetic_c2,0,42,skt,valid+test,0.8535900001351812,0.7902040816326531,0.4389066622373725,60000,pykt_checkpoint,pyKT `skt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,full_log
+synthetic_c2,0,42,dygkt,valid+test,0.8665339600467958,0.7997704081632653,0.4216452937994456,60000,pykt_checkpoint,pyKT `dygkt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,full_log
+synthetic_c2,0,42,dgekt,valid+test,0.8622991315147259,0.7961734693877551,0.4273253725743923,60000,pykt_checkpoint,pyKT `dgekt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,full_log
+synthetic_c2,1,43,dkt,valid+test,0.8684960845703733,0.804719387755102,0.4126212875654875,60000,pykt_checkpoint,pyKT `dkt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+synthetic_c2,1,43,simplekt,valid+test,0.8795449413456858,0.81375,0.3994896487200203,60000,pykt_checkpoint,pyKT `simplekt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+synthetic_c2,1,43,akt,valid+test,0.876182044060229,0.8123469387755102,0.4015912635660721,60000,pykt_checkpoint,pyKT `akt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+synthetic_c2,1,43,gkt,valid+test,0.878316232413545,0.8140816326530612,0.3999025692064359,60000,pykt_checkpoint,pyKT `gkt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+synthetic_c2,1,43,gikt,valid+test,0.9785215281932236,0.9850510204081632,0.1529771893675088,60000,pykt_checkpoint,pyKT `gikt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+synthetic_c2,1,43,skt,valid+test,0.634149835650416,0.6855166666666667,0.6132021027145713,60000,trained_leakage_head,Logistic regression on diagnostic channels fit on train fold only; graph signal differs by construction (train-only vs full-log pooling).,train_only
+synthetic_c2,1,43,dygkt,valid+test,0.6312429968910265,0.6855166666666667,0.6171473477106126,60000,trained_leakage_head,Logistic regression on diagnostic channels fit on train fold only; graph signal differs by construction (train-only vs full-log pooling).,train_only
+synthetic_c2,1,43,dgekt,valid+test,0.634149835650416,0.6855166666666667,0.6132021027145713,60000,trained_leakage_head,Logistic regression on diagnostic channels fit on train fold only; graph signal differs by construction (train-only vs full-log pooling).,train_only
+synthetic_c2,1,43,bkt,valid+test,0.8382535062560343,0.78355,0.4576015101883034,60000,classical_bkt_em,Independent-skill BKT (scipy L-BFGS-B); protocol graphs do not affect this baseline.,train_only
+synthetic_c2,1,43,gkt,valid+test,0.8772240874212888,0.8111224489795918,0.4005650358561133,60000,pykt_checkpoint,pyKT `gkt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,full_log
+synthetic_c2,1,43,gikt,valid+test,0.9785215281932236,0.9850510204081632,0.1497983656161103,60000,pykt_checkpoint,pyKT `gikt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,full_log
+synthetic_c2,1,43,skt,valid+test,0.6343910414198122,0.6855166666666667,0.6131096417596809,60000,trained_leakage_head,Logistic regression on diagnostic channels fit on train fold only; graph signal differs by construction (train-only vs full-log pooling).,full_log
+synthetic_c2,1,43,dygkt,valid+test,0.6318815737035944,0.6855166666666667,0.6165497366738988,60000,trained_leakage_head,Logistic regression on diagnostic channels fit on train fold only; graph signal differs by construction (train-only vs full-log pooling).,full_log
+synthetic_c2,1,43,dgekt,valid+test,0.6343910414198122,0.6855166666666667,0.6131096417596809,60000,trained_leakage_head,Logistic regression on diagnostic channels fit on train fold only; graph signal differs by construction (train-only vs full-log pooling).,full_log
+synthetic_c2,2,44,dkt,valid+test,0.8610648074167228,0.8021683673469387,0.416543704185045,60000,pykt_checkpoint,pyKT `dkt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+synthetic_c2,2,44,simplekt,valid+test,0.8740860488014117,0.8110204081632653,0.4006395061527556,60000,pykt_checkpoint,pyKT `simplekt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+synthetic_c2,2,44,akt,valid+test,0.8727050675089444,0.8098214285714286,0.400966278061054,60000,pykt_checkpoint,pyKT `akt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+synthetic_c2,2,44,gkt,valid+test,0.8723791481687285,0.809719387755102,0.4026896844038961,60000,pykt_checkpoint,pyKT `gkt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+synthetic_c2,2,44,gikt,valid+test,0.9782807537605164,0.984591836734694,0.1515048209917553,60000,pykt_checkpoint,pyKT `gikt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+synthetic_c2,2,44,skt,valid+test,0.6353774097135132,0.6920666666666667,0.6082793372169447,60000,trained_leakage_head,Logistic regression on diagnostic channels fit on train fold only; graph signal differs by construction (train-only vs full-log pooling).,train_only
+synthetic_c2,2,44,dygkt,valid+test,0.6315922040947832,0.6920666666666667,0.610944361710156,60000,trained_leakage_head,Logistic regression on diagnostic channels fit on train fold only; graph signal differs by construction (train-only vs full-log pooling).,train_only
+synthetic_c2,2,44,dgekt,valid+test,0.6353774097135132,0.6920666666666667,0.6082793372169447,60000,trained_leakage_head,Logistic regression on diagnostic channels fit on train fold only; graph signal differs by construction (train-only vs full-log pooling).,train_only
+synthetic_c2,2,44,bkt,valid+test,0.8325516229835516,0.7804833333333333,0.4616062178027446,60000,classical_bkt_em,Independent-skill BKT (scipy L-BFGS-B); protocol graphs do not affect this baseline.,train_only
+synthetic_c2,2,44,gkt,valid+test,0.8719440852416187,0.810204081632653,0.4019111659469128,60000,pykt_checkpoint,pyKT `gkt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,full_log
+synthetic_c2,2,44,gikt,valid+test,0.9782807537605164,0.984591836734694,0.1574630062639721,60000,pykt_checkpoint,pyKT `gikt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,full_log
+synthetic_c2,2,44,skt,valid+test,0.6353774097135132,0.6920666666666667,0.6079934819992294,60000,trained_leakage_head,Logistic regression on diagnostic channels fit on train fold only; graph signal differs by construction (train-only vs full-log pooling).,full_log
+synthetic_c2,2,44,dygkt,valid+test,0.6320942912863586,0.6920666666666667,0.6112626507103194,60000,trained_leakage_head,Logistic regression on diagnostic channels fit on train fold only; graph signal differs by construction (train-only vs full-log pooling).,full_log
+synthetic_c2,2,44,dgekt,valid+test,0.6353774097135132,0.6920666666666667,0.6079934819992294,60000,trained_leakage_head,Logistic regression on diagnostic channels fit on train fold only; graph signal differs by construction (train-only vs full-log pooling).,full_log
+assist2012,0,42,dkt,valid+test,0.9614995650167307,0.908076209354684,0.18497805716696533,816951,pykt_checkpoint,pyKT `dkt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+assist2012,0,42,simplekt,valid+test,0.9674275793465724,0.9147404279289316,0.17498262059068057,816951,pykt_checkpoint,pyKT `simplekt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+assist2012,0,42,akt,valid+test,0.9675068477734988,0.9143705401787227,0.17641565093928316,816951,pykt_checkpoint,pyKT `akt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+assist2012,0,42,gkt,valid+test,0.9602988373284821,0.9062606398434172,0.18730905175625892,816951,pykt_checkpoint,pyKT `gkt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+assist2012,0,42,gikt,valid+test,0.9675525523205906,0.9145603861806372,0.17626888629277715,816951,pykt_checkpoint,pyKT `akt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs. YAML alias `gikt` maps to `akt` (GIKT not bundled in pyKT).,train_only
+assist2012,0,42,skt,valid+test,0.9518571448945145,0.8968342956356811,0.1999423898472962,816951,pykt_checkpoint,pyKT `skt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+assist2012,0,42,dygkt,valid+test,0.95097026146072,0.8976266575873336,0.20261532011593616,816951,pykt_checkpoint,pyKT `dygkt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+assist2012,0,42,dgekt,valid+test,0.9594066920962644,0.9060805980951226,0.18798686559457822,816951,pykt_checkpoint,pyKT `dgekt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,train_only
+assist2012,0,42,bkt,valid+test,0.6710365669896484,0.7111993252961316,0.576385818192477,816951,classical_bkt_em,Independent-skill BKT (scipy L-BFGS-B); protocol graphs do not affect this baseline.,train_only
+assist2012,0,42,gkt,valid+test,0.9602030543862727,0.9060084031366481,0.18814158665974648,816951,pykt_checkpoint,pyKT `gkt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,full_log
+assist2012,0,42,gikt,valid+test,0.9675178525288914,0.9142814106003591,0.17580264384893898,816951,pykt_checkpoint,pyKT `akt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs. YAML alias `gikt` maps to `akt` (GIKT not bundled in pyKT).,full_log
+assist2012,0,42,skt,valid+test,0.9519009421633124,0.8968681648754593,0.20001569991070067,816951,pykt_checkpoint,pyKT `skt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,full_log
+assist2012,0,42,dygkt,valid+test,0.9507315391692996,0.89728261741485,0.20134773812095405,816951,pykt_checkpoint,pyKT `dygkt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,full_log
+assist2012,0,42,dgekt,valid+test,0.9596100437219997,0.9064219643802554,0.18770369520330352,816951,pykt_checkpoint,pyKT `dgekt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs.,full_log

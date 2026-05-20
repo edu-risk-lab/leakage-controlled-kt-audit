@@ -25,8 +25,10 @@ logistic head), not to pyKT checkpoints.
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import random
+import shutil
 from pathlib import Path
 
 import numpy as np
@@ -54,9 +56,10 @@ MODEL_WEIGHTS = {
 # Stable channel order for stacking trainable leakage-head features (subset per model).
 _DIAGNOSTIC_FEATURE_ORDER = ("global", "kc", "item", "user", "graph", "freq")
 
-# pyKT neural runners (GIKT maps to AKT — pyKT does not ship GIKT). BKT uses classical EM separately.
-_PYKT_NEURAL_ALIASES = {"gikt": "akt"}
-_PYKT_NEURAL_NAMES = frozenset({"dkt", "akt", "gkt", "simplekt"} | set(_PYKT_NEURAL_ALIASES))
+_PYKT_NEURAL_ALIASES = {
+    "gikt": "akt",
+}
+_PYKT_NEURAL_NAMES = frozenset({"dkt", "akt", "gkt", "simplekt", "gikt", "skt", "dygkt", "dgekt"})
 
 
 def _evaluation_backend(cfg: dict, args: argparse.Namespace) -> str:
@@ -564,12 +567,16 @@ def _cold_start_rows(
 def _enabled_models(cfg: dict) -> list[str]:
     configured = cfg.get("baselines")
     if not configured:
-        return list(MODEL_WEIGHTS)
-    models = []
-    for item in configured:
-        name = item.get("name")
-        if item.get("enabled", True) and name in MODEL_WEIGHTS:
-            models.append(name)
+        models = list(MODEL_WEIGHTS)
+    else:
+        models = []
+        for item in configured:
+            name = item.get("name")
+            if item.get("enabled", True) and name in MODEL_WEIGHTS:
+                models.append(name)
+    if "bkt" in models:
+        models.remove("bkt")
+        models.append("bkt")
     return models
 
 
@@ -820,14 +827,33 @@ def main() -> None:
         default=None,
         help="diagnostic: linear ensembles (default). pykt: torch/pyKT for DKT/AKT/GKT/simpleKT + classical BKT EM.",
     )
+    parser.add_argument(
+        "--clear-cache",
+        action="store_true",
+        help="Clear granular cache directory before running.",
+    )
+    parser.add_argument(
+        "--folds",
+        type=int,
+        default=None,
+        help="Number of folds to run. Overrides configuration.",
+    )
     args = parser.parse_args()
     logging.basicConfig(level=getattr(logging, args.log_level.upper()))
+
+    if args.clear_cache:
+        cache_dir = Path("results/cache")
+        if cache_dir.exists():
+            shutil.rmtree(cache_dir)
+            logger.info("Cleared baseline runner cache directory.")
     random.seed(args.seed)
     np.random.seed(args.seed)
     cfg = load_yaml(args.config) if args.config else {"dataset": "default", "processed_path": "data/processed/junyi.parquet"}
     dataset = cfg["dataset"]
     df = load_interactions(Path(cfg.get("processed_path", f"data/processed/{dataset}.parquet")))
     split_cfg = cfg.get("split", {})
+    if args.folds is not None:
+        split_cfg["n_folds"] = args.folds
     ratios = tuple(split_cfg.get("ratios", [0.7, 0.1, 0.2]))
     n_bootstrap = int(cfg.get("evaluation", {}).get("n_bootstrap", cfg.get("baselines_n_bootstrap", 1000)))
     models = _enabled_models(cfg)
@@ -855,6 +881,9 @@ def main() -> None:
     rows = []
     cold_frames = []
     prediction_samples = []
+    cache_dir = Path("results/cache")
+    cache_dir.mkdir(parents=True, exist_ok=True)
+
     for fold, split_seed, splits in learner_based_folds(df, ratios, split_cfg, default_seed=args.seed):
         strata_once = bin_kcs_by_frequency(splits["train"])
         for model in models:
@@ -868,21 +897,34 @@ def main() -> None:
                 fold,
                 model,
             )
-            result, predictions = _run_backend_fold(
-                cfg,
-                args,
-                model=model,
-                splits=splits,
-                dataset=dataset,
-                fold=fold,
-                split_seed=split_seed,
-                graph_construction="train_only",
-                prediction_cap=pred_cap,
-                trained_head_cfg=trained_head_cfg,
-                experiment_seed=args.seed,
-                backend=backend,
-                full_df=df,
-            )
+            cache_res_path = cache_dir / f"{dataset}_fold_{fold}_{model}_train_only_result.json"
+            cache_pred_path = cache_dir / f"{dataset}_fold_{fold}_{model}_train_only_preds.csv"
+
+            if cache_res_path.exists() and cache_pred_path.exists():
+                logger.info("Loading cached result for fold=%s model=%s graph_construction=train_only", fold, model)
+                with open(cache_res_path, "r") as f:
+                    result = json.load(f)
+                predictions = pd.read_csv(cache_pred_path)
+            else:
+                result, predictions = _run_backend_fold(
+                    cfg,
+                    args,
+                    model=model,
+                    splits=splits,
+                    dataset=dataset,
+                    fold=fold,
+                    split_seed=split_seed,
+                    graph_construction="train_only",
+                    prediction_cap=pred_cap,
+                    trained_head_cfg=trained_head_cfg,
+                    experiment_seed=args.seed,
+                    backend=backend,
+                    full_df=df,
+                )
+                with open(cache_res_path, "w") as f:
+                    json.dump(result, f, indent=4)
+                predictions.to_csv(cache_pred_path, index=False)
+
             rows.append(result)
             if not effective_skip_cold:
                 cold = _cold_start_rows(dataset, fold, split_seed, splits["train"], predictions, strata=strata_once)
@@ -903,21 +945,32 @@ def main() -> None:
                     fold,
                     model,
                 )
-                result, _predictions = _run_backend_fold(
-                    cfg,
-                    args,
-                    model=model,
-                    splits=splits,
-                    dataset=dataset,
-                    fold=fold,
-                    split_seed=split_seed,
-                    graph_construction="full_log",
-                    prediction_cap=pred_cap,
-                    trained_head_cfg=trained_head_cfg,
-                    experiment_seed=args.seed,
-                    backend=backend,
-                    full_df=df,
-                )
+                cache_res_path = cache_dir / f"{dataset}_fold_{fold}_{model}_full_log_result.json"
+                cache_pred_path = cache_dir / f"{dataset}_fold_{fold}_{model}_full_log_preds.csv"
+
+                if cache_res_path.exists() and cache_pred_path.exists():
+                    logger.info("Loading cached result for fold=%s model=%s graph_construction=full_log", fold, model)
+                    with open(cache_res_path, "r") as f:
+                        result = json.load(f)
+                else:
+                    result, predictions = _run_backend_fold(
+                        cfg,
+                        args,
+                        model=model,
+                        splits=splits,
+                        dataset=dataset,
+                        fold=fold,
+                        split_seed=split_seed,
+                        graph_construction="full_log",
+                        prediction_cap=pred_cap,
+                        trained_head_cfg=trained_head_cfg,
+                        experiment_seed=args.seed,
+                        backend=backend,
+                        full_df=df,
+                    )
+                    with open(cache_res_path, "w") as f:
+                        json.dump(result, f, indent=4)
+                    predictions.to_csv(cache_pred_path, index=False)
                 rows.append(result)
         elif ablation_enabled and not full_log_ready and fold == 0:
             logger.warning(

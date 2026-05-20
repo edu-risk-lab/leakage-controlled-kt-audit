@@ -68,6 +68,17 @@ def dataframe_to_pykt_csvs(
     te = _build_rows(test_df, -1, q_map, c_map, max_seq_len)
     tv.to_csv(out_dir / "train_valid_sequences.csv", index=False)
     te.to_csv(out_dir / "test_sequences.csv", index=False)
+    
+    # Export question-skill bipartite graph for GIKT PyTorch GCN
+    bipartite_rows = []
+    for _, r in train_df.iterrows():
+        qi = q_map.get(int(r["item_id"]), -1)
+        ci = c_map.get(int(r["kc_id"]), -1)
+        if qi >= 0 and ci >= 0:
+            bipartite_rows.append((qi, ci))
+    bipartite_df = pd.DataFrame(bipartite_rows, columns=["question", "concept"]).drop_duplicates()
+    bipartite_df.to_csv(out_dir / "gikt_bipartite.csv", index=False)
+
     num_q = max(q_map.values(), default=-1) + 1
     num_c = max(c_map.values(), default=-1) + 1
     return int(num_q), int(num_c)
