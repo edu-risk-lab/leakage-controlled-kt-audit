@@ -11,6 +11,19 @@ from sklearn import metrics
 from torch.utils.data import DataLoader
 
 logger = logging.getLogger(__name__)
+_PYKT_CPU_PATCHED = False
+
+
+def _patch_pykt_cpu_tensors() -> None:
+    """pyKT KTDataset imports LongTensor from torch.cuda; patch for CPU-only PyTorch."""
+    global _PYKT_CPU_PATCHED
+    if _PYKT_CPU_PATCHED:
+        return
+    import pykt.datasets.data_loader as dl
+
+    dl.LongTensor = torch.LongTensor
+    dl.FloatTensor = torch.FloatTensor
+    _PYKT_CPU_PATCHED = True
 
 
 def _mean_nll(y_true: np.ndarray, y_prob: np.ndarray, eps: float = 1e-4) -> float:
@@ -45,6 +58,7 @@ def _model_forward_loss(model, batch: dict, model_name: str) -> torch.Tensor:
         y, reg = model(cc.long(), cr.long(), cq.long())
         y = y[:, 1:]
         pred = torch.masked_select(y, sm)
+        pred = torch.clamp(pred, 1e-6, 1.0 - 1e-6)
         target = torch.masked_select(rshft, sm)
         return binary_cross_entropy(pred.double(), target.double()) + reg
     if model_name == "gkt":
@@ -102,7 +116,7 @@ def _evaluate_detailed(model, loader, model_name: str) -> tuple[float, float, np
                 y = (y * one_hot(cshft.long(), model.num_c)).sum(-1)
             elif model_name == "akt":
                 y, _reg = model(cc.long(), cr.long(), cq.long())
-                y = y[:, 1:]
+                y = torch.clamp(y[:, 1:], 0.0, 1.0)
             elif model_name == "simplekt":
                 preds = model(dcur, train=False)
                 y = preds[:, 1:]
@@ -181,6 +195,7 @@ def run_pykt_fold(
     """Train on fold 0 / validate on fold 1 rows inside ``train_valid_sequences.csv``; eval fold -1 test file."""
     import shutil
 
+    _patch_pykt_cpu_tensors()
     from pykt.datasets.data_loader import KTDataset
     from pykt.models.init_model import init_model
 
