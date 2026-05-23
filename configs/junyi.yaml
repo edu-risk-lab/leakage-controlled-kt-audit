@@ -81,18 +81,31 @@ baselines:
   - name: akt
     enabled: true
   - name: gkt
-    enabled: true
+    enabled: false
     hyperparams:
-      batch_size: 32
+      batch_size: 8
       epochs: 10
   - name: gikt
-    enabled: true
+    enabled: false
+    hyperparams:
+      batch_size: 16
+      epochs: 10
   - name: skt
-    enabled: true
+    enabled: false
+    hyperparams:
+      batch_size: 16
+      epochs: 10
   - name: dygkt
-    enabled: true
+    enabled: false
+    hyperparams:
+      batch_size: 16
+      epochs: 10
   - name: dgekt
-    enabled: true
+    enabled: false
+    hyperparams:
+      batch_size: 16
+      epochs: 10
+
 
 graph_ablation:
   enabled: true

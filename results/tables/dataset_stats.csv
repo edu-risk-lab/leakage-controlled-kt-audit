@@ -1,10 +1,6 @@
-dataset,fold,split_seed,split,n_learners,n_interactions
-xes3g5m,0,42,train,12646,4490513
-xes3g5m,0,42,valid,1806,640917
-xes3g5m,0,42,test,3614,1281923
-xes3g5m,1,43,train,12646,4490412
-xes3g5m,1,43,valid,1806,641760
-xes3g5m,1,43,test,3614,1281181
-xes3g5m,2,44,train,12646,4493120
-xes3g5m,2,44,valid,1806,640606
-xes3g5m,2,44,test,3614,1279627
+dataset,n_learners,n_items,n_kcs,n_interactions,missing_total
+junyi,247606,722,722,25925992,0
+assist2012,29018,53086,265,2711602,0
+xes3g5m,18066,7652,865,6413353,0
+synthetic_c2,4000,50,2,200000,0
+synthetic_c5,4000,50,5,200000,0
