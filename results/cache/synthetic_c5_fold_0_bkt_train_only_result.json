@@ -1,0 +1,14 @@
+{
+    "dataset": "synthetic_c5",
+    "fold": 0,
+    "split_seed": 42,
+    "model": "bkt",
+    "graph_construction": "train_only",
+    "eval_split": "valid+test",
+    "auc": 0.7936912599059713,
+    "acc": 0.7246666666666667,
+    "nll": 0.5317693985301497,
+    "n_eval": 60000,
+    "status": "classical_bkt_em",
+    "note": "Independent-skill BKT (scipy L-BFGS-B); protocol graphs do not affect this baseline."
+}

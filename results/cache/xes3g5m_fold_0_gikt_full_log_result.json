@@ -1,0 +1,14 @@
+{
+    "dataset": "xes3g5m",
+    "fold": 0,
+    "split_seed": 42,
+    "model": "gikt",
+    "graph_construction": "full_log",
+    "eval_split": "valid+test",
+    "auc": 0.8744178839487724,
+    "acc": 0.857013345643547,
+    "nll": 0.3249674171356313,
+    "n_eval": 1922840,
+    "status": "pykt_checkpoint",
+    "note": "pyKT `akt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs. YAML alias `gikt` maps to `akt` (GIKT not bundled in pyKT)."
+}

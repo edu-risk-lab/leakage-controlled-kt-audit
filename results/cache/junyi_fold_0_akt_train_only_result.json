@@ -1,0 +1,14 @@
+{
+    "dataset": "junyi",
+    "fold": 0,
+    "split_seed": 42,
+    "model": "akt",
+    "graph_construction": "train_only",
+    "eval_split": "valid+test",
+    "auc": 0.9890242608485564,
+    "acc": 0.9621661651482416,
+    "nll": 0.09317115579956031,
+    "n_eval": 7737234,
+    "status": "pykt_checkpoint",
+    "note": "pyKT `akt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs."
+}

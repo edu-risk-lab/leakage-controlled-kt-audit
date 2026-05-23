@@ -66,7 +66,9 @@ Source: `results\tables\xes3g5m_dag_disruption_summary.csv`
 ## Fold 0
 - source_edges: `data\processed\assist2012\fold_0\e_pre_train_only.csv`
 - nodes: 108
-- edges: 239
+- edges_raw: 386
+- edges_final: 239
+- edges_pruned: 147
 - cycles_before: 100
 - cycles_after: 0
 - topo_sort_passed: True
@@ -74,7 +76,9 @@ Source: `results\tables\xes3g5m_dag_disruption_summary.csv`
 ## Fold 1
 - source_edges: `data\processed\assist2012\fold_1\e_pre_train_only.csv`
 - nodes: 109
-- edges: 241
+- edges_raw: 388
+- edges_final: 241
+- edges_pruned: 147
 - cycles_before: 100
 - cycles_after: 0
 - topo_sort_passed: True
@@ -82,7 +86,9 @@ Source: `results\tables\xes3g5m_dag_disruption_summary.csv`
 ## Fold 2
 - source_edges: `data\processed\assist2012\fold_2\e_pre_train_only.csv`
 - nodes: 106
-- edges: 236
+- edges_raw: 382
+- edges_final: 236
+- edges_pruned: 146
 - cycles_before: 100
 - cycles_after: 0
 - topo_sort_passed: True
@@ -108,13 +114,13 @@ Source: `results\tables\xes3g5m_dag_disruption_summary.csv`
 - junyi / simplekt: mean AUC=0.643, ACC=0.744, NLL=0.531, n=23,438,642
 - synthetic_c2 / akt: mean AUC=0.619, ACC=0.687, NLL=0.608, n=180,000
 - synthetic_c2 / bkt: mean AUC=0.554, ACC=0.687, NLL=0.616, n=180,000
-- synthetic_c2 / dgekt: mean AUC=0.635, ACC=0.687, NLL=0.611, n=180,000
+- synthetic_c2 / dgekt: mean AUC=0.634, ACC=0.687, NLL=0.612, n=180,000
 - synthetic_c2 / dkt: mean AUC=0.619, ACC=0.687, NLL=0.610, n=180,000
-- synthetic_c2 / dygkt: mean AUC=0.632, ACC=0.687, NLL=0.619, n=180,000
-- synthetic_c2 / gikt: mean AUC=0.635, ACC=0.687, NLL=0.609, n=180,000
+- synthetic_c2 / dygkt: mean AUC=0.631, ACC=0.687, NLL=0.616, n=180,000
+- synthetic_c2 / gikt: mean AUC=0.634, ACC=0.687, NLL=0.612, n=180,000
 - synthetic_c2 / gkt: mean AUC=0.554, ACC=0.687, NLL=0.621, n=180,000
 - synthetic_c2 / simplekt: mean AUC=0.626, ACC=0.687, NLL=0.604, n=180,000
-- synthetic_c2 / skt: mean AUC=0.633, ACC=0.687, NLL=0.618, n=180,000
+- synthetic_c2 / skt: mean AUC=0.634, ACC=0.687, NLL=0.612, n=180,000
 - synthetic_c5 / akt: mean AUC=0.622, ACC=0.611, NLL=0.656, n=180,000
 - synthetic_c5 / bkt: mean AUC=0.525, ACC=0.611, NLL=0.667, n=180,000
 - synthetic_c5 / dgekt: mean AUC=0.633, ACC=0.611, NLL=0.656, n=180,000
@@ -141,7 +147,9 @@ Source: `results\tables\xes3g5m_dag_disruption_summary.csv`
 ## Fold 0
 - source_edges: `data\processed\junyi\fold_0\e_pre_train_only.csv`
 - nodes: 573
-- edges: 1139
+- edges_raw: 2152
+- edges_final: 1139
+- edges_pruned: 1013
 - cycles_before: 100
 - cycles_after: 0
 - topo_sort_passed: True
@@ -149,7 +157,9 @@ Source: `results\tables\xes3g5m_dag_disruption_summary.csv`
 ## Fold 1
 - source_edges: `data\processed\junyi\fold_1\e_pre_train_only.csv`
 - nodes: 578
-- edges: 1147
+- edges_raw: 2130
+- edges_final: 1147
+- edges_pruned: 983
 - cycles_before: 100
 - cycles_after: 0
 - topo_sort_passed: True
@@ -157,7 +167,9 @@ Source: `results\tables\xes3g5m_dag_disruption_summary.csv`
 ## Fold 2
 - source_edges: `data\processed\junyi\fold_2\e_pre_train_only.csv`
 - nodes: 576
-- edges: 1129
+- edges_raw: 2156
+- edges_final: 1129
+- edges_pruned: 1027
 - cycles_before: 100
 - cycles_after: 0
 - topo_sort_passed: True
@@ -224,7 +236,9 @@ Source: `results\tables\xes3g5m_dag_disruption_summary.csv`
 ## Fold 0
 - source_edges: `data\processed\synthetic_c2\fold_0\e_pre_train_only.csv`
 - nodes: 2
-- edges: 1
+- edges_raw: 2
+- edges_final: 1
+- edges_pruned: 1
 - cycles_before: 1
 - cycles_after: 0
 - topo_sort_passed: True
@@ -232,7 +246,9 @@ Source: `results\tables\xes3g5m_dag_disruption_summary.csv`
 ## Fold 1
 - source_edges: `data\processed\synthetic_c2\fold_1\e_pre_train_only.csv`
 - nodes: 2
-- edges: 1
+- edges_raw: 2
+- edges_final: 1
+- edges_pruned: 1
 - cycles_before: 1
 - cycles_after: 0
 - topo_sort_passed: True
@@ -240,7 +256,9 @@ Source: `results\tables\xes3g5m_dag_disruption_summary.csv`
 ## Fold 2
 - source_edges: `data\processed\synthetic_c2\fold_2\e_pre_train_only.csv`
 - nodes: 2
-- edges: 1
+- edges_raw: 2
+- edges_final: 1
+- edges_pruned: 1
 - cycles_before: 1
 - cycles_after: 0
 - topo_sort_passed: True
@@ -252,7 +270,9 @@ Source: `results\tables\xes3g5m_dag_disruption_summary.csv`
 ## Fold 0
 - source_edges: `data\processed\synthetic_c5\fold_0\e_pre_train_only.csv`
 - nodes: 3
-- edges: 2
+- edges_raw: 2
+- edges_final: 2
+- edges_pruned: 0
 - cycles_before: 0
 - cycles_after: 0
 - topo_sort_passed: True
@@ -260,7 +280,9 @@ Source: `results\tables\xes3g5m_dag_disruption_summary.csv`
 ## Fold 1
 - source_edges: `data\processed\synthetic_c5\fold_1\e_pre_train_only.csv`
 - nodes: 3
-- edges: 2
+- edges_raw: 2
+- edges_final: 2
+- edges_pruned: 0
 - cycles_before: 0
 - cycles_after: 0
 - topo_sort_passed: True
@@ -268,7 +290,9 @@ Source: `results\tables\xes3g5m_dag_disruption_summary.csv`
 ## Fold 2
 - source_edges: `data\processed\synthetic_c5\fold_2\e_pre_train_only.csv`
 - nodes: 3
-- edges: 2
+- edges_raw: 2
+- edges_final: 2
+- edges_pruned: 0
 - cycles_before: 0
 - cycles_after: 0
 - topo_sort_passed: True
@@ -280,7 +304,9 @@ Source: `results\tables\xes3g5m_dag_disruption_summary.csv`
 ## Fold 0
 - source_edges: `data\processed\xes3g5m\fold_0\e_pre_train_only.csv`
 - nodes: 455
-- edges: 701
+- edges_raw: 1162
+- edges_final: 701
+- edges_pruned: 461
 - cycles_before: 100
 - cycles_after: 0
 - topo_sort_passed: True
@@ -288,7 +314,9 @@ Source: `results\tables\xes3g5m_dag_disruption_summary.csv`
 ## Fold 1
 - source_edges: `data\processed\xes3g5m\fold_1\e_pre_train_only.csv`
 - nodes: 453
-- edges: 700
+- edges_raw: 1157
+- edges_final: 700
+- edges_pruned: 457
 - cycles_before: 100
 - cycles_after: 0
 - topo_sort_passed: True
@@ -296,7 +324,9 @@ Source: `results\tables\xes3g5m_dag_disruption_summary.csv`
 ## Fold 2
 - source_edges: `data\processed\xes3g5m\fold_2\e_pre_train_only.csv`
 - nodes: 455
-- edges: 707
+- edges_raw: 1168
+- edges_final: 707
+- edges_pruned: 461
 - cycles_before: 100
 - cycles_after: 0
 - topo_sort_passed: True
