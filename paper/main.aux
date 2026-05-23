@@ -1,0 +1,354 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{corbett1995bkt}
+\citation{piech2015dkt,zhang2017dkvmn,ghosh2020akt,liu2023simplekt,pandey2019rkt,shen2021saint}
+\citation{nakagawa2019gkt,tong2020skt,yang2021gikt,dygkt2024,dgekt2024,wang2022grapkt,chen2023hgkt}
+\citation{heffernan2006assist,junyi_dataset}
+\citation{choi2020ednet,xes3g5m2023}
+\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{section.1}\protected@file@percent }
+\newlabel{sec:intro}{{I}{1}{Introduction}{section.1}{}}
+\newlabel{sec:intro@cref}{{[section][1][]I}{[1][1][]1}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Illustrative comparison of graph construction workflows. \textbf  {(a)}~Pooling the full log before edge inference lets held-out transitions influence $G$ even when the KT optimiser sees only the train fold. \textbf  {(b)}~Our protocol builds $G_f$ from $\mathcal  {F}_{\text  {train}}^f$ only and audits provenance before evaluation.}}{1}{figure.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:intro-leakage}{{1}{1}{Illustrative comparison of graph construction workflows. \textbf {(a)}~Pooling the full log before edge inference lets held-out transitions influence $G$ even when the KT optimiser sees only the train fold. \textbf {(b)}~Our protocol builds $G_f$ from $\mathcal {F}_{\text {train}}^f$ only and audits provenance before evaluation}{figure.caption.1}{}}
+\newlabel{fig:intro-leakage@cref}{{[figure][1][]1}{[1][1][]1}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {I-}0a}Problem setting.}{1}{paragraph.1.0.0.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {I-}0b}Real-world significance.}{1}{paragraph.1.0.0.2}\protected@file@percent }
+\citation{liu2022pykt}
+\citation{you2020graphcl,zhu2021gca,xia2022simgrace,thakoor2021bgrl,velickovic2018dgi,hassani2020mvgrl}
+\citation{schein2002coldstart}
+\citation{junyi_dataset,chang2015junyi}
+\citation{xes3g5m2023}
+\citation{abdelrahman2023kt_survey,liu2022pykt}
+\citation{nakagawa2019gkt,tong2020skt,yang2021gikt,dygkt2024,dgekt2024}
+\citation{bai2025survey,lin2016moocprereq,pan2020concept}
+\citation{lee2022cl4kt,song2022biclkt,wan2021contrastive}
+\citation{junyi_dataset}
+\citation{corbett1995bkt}
+\citation{yudelson2013pfa,khajah2016das3h}
+\citation{piech2015dkt}
+\citation{zhang2017dkvmn}
+\citation{ghosh2020akt,liu2023simplekt,chen2022dimkt,wang2023corekt}
+\citation{pandey2019rkt,shen2021saint}
+\citation{abdelrahman2023kt_survey}
+\citation{liu2022pykt}
+\citation{choi2020ednet}
+\citation{xes3g5m2023}
+\citation{liu2022pykt,abdelrahman2023kt_survey}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {I-}0c}Novelty.}{2}{paragraph.1.0.0.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {I-}0d}Contributions.}{2}{paragraph.1.0.0.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {I-}0e}Scope.}{2}{paragraph.1.0.0.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {II}Related Work}{2}{section.2}\protected@file@percent }
+\newlabel{sec:related}{{II}{2}{Related Work}{section.2}{}}
+\newlabel{sec:related@cref}{{[section][2][]II}{[1][2][]2}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Knowledge Tracing and Benchmark Discipline}{2}{subsection.2.1}\protected@file@percent }
+\newlabel{sec:related-kt}{{\mbox  {II-A}}{2}{Knowledge Tracing and Benchmark Discipline}{subsection.2.1}{}}
+\newlabel{sec:related-kt@cref}{{[subsection][1][2]\mbox  {II-A}}{[1][2][]2}{}{}{}}
+\citation{nakagawa2019gkt}
+\citation{tong2020skt}
+\citation{yang2021gikt}
+\citation{chen2023hgkt,wang2022grapkt,liu2021iekt}
+\citation{dygkt2024}
+\citation{dgekt2024}
+\citation{xiong2023gracekt,huang2022hawkt}
+\citation{lin2016moocprereq,pan2020concept,chen2020dlprereq,laguna2018prereq,bai2025survey,chang2015junyi}
+\citation{chang2015junyi,junyi_dataset}
+\citation{you2020graphcl}
+\citation{zhu2021gca}
+\citation{xia2022simgrace}
+\citation{thakoor2021bgrl}
+\citation{velickovic2018dgi}
+\citation{hassani2020mvgrl,zhu2020graphtsa,feng2022graphmvp}
+\citation{kipf2017gcn,hamilton2017graphsage}
+\citation{lee2022cl4kt,song2022biclkt,deckt2025,wan2021contrastive}
+\citation{zhu2020graphtsa}
+\citation{liu2022pykt}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Graph-based Knowledge Tracing and Prerequisite Structure}{3}{subsection.2.2}\protected@file@percent }
+\newlabel{sec:related-graphkt}{{\mbox  {II-B}}{3}{Graph-based Knowledge Tracing and Prerequisite Structure}{subsection.2.2}{}}
+\newlabel{sec:related-graphkt@cref}{{[subsection][2][2]\mbox  {II-B}}{[1][3][]3}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Graph Augmentation, Contrastive KT, and Reproducible Resources}{3}{subsection.2.3}\protected@file@percent }
+\newlabel{sec:related-aug}{{\mbox  {II-C}}{3}{Graph Augmentation, Contrastive KT, and Reproducible Resources}{subsection.2.3}{}}
+\newlabel{sec:related-aug@cref}{{[subsection][3][2]\mbox  {II-C}}{[1][3][]3}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {III}Protocol}{3}{section.3}\protected@file@percent }
+\newlabel{sec:protocol}{{III}{3}{Protocol}{section.3}{}}
+\newlabel{sec:protocol@cref}{{[section][3][]III}{[1][3][]3}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Formal Problem Statement and Leakage Audit}{3}{subsection.3.1}\protected@file@percent }
+\newlabel{sec:formal-problem}{{\mbox  {III-A}}{3}{Formal Problem Statement and Leakage Audit}{subsection.3.1}{}}
+\newlabel{sec:formal-problem@cref}{{[subsection][1][3]\mbox  {III-A}}{[1][3][]3}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {III-A}0a}Decision variables.}{3}{paragraph.3.1.0.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {III-A}0b}Objective.}{3}{paragraph.3.1.0.2}\protected@file@percent }
+\newlabel{eq:graph-objective}{{1}{3}{Objective}{equation.1}{}}
+\newlabel{eq:graph-objective@cref}{{[equation][1][]1}{[1][3][]3}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {III-A}0c}Constraints.}{3}{paragraph.3.1.0.3}\protected@file@percent }
+\newlabel{eq:c1}{{2}{3}{Constraints}{equation.2}{}}
+\newlabel{eq:c1@cref}{{[equation][2][]2}{[1][3][]3}{}{}{}}
+\newlabel{eq:c2}{{3}{3}{Constraints}{equation.3}{}}
+\newlabel{eq:c2@cref}{{[equation][3][]3}{[1][3][]3}{}{}{}}
+\newlabel{eq:c3}{{4}{3}{Constraints}{equation.4}{}}
+\newlabel{eq:c3@cref}{{[equation][4][]4}{[1][3][]3}{}{}{}}
+\newlabel{eq:c4}{{5}{3}{Constraints}{equation.5}{}}
+\newlabel{eq:c4@cref}{{[equation][5][]5}{[1][3][]3}{}{}{}}
+\newlabel{eq:c5}{{6}{3}{Constraints}{equation.6}{}}
+\newlabel{eq:c5@cref}{{[equation][6][]6}{[1][3][]3}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Research framework connecting protocol modules (Section~\ref {sec:protocol}) and experiment tracks (Section~\ref {sec:exp}). \textbf  {Strengths:} fold-conditioned provenance, explicit DAG repair, structural diagnostics decoupled from AUC, optional expert cross-validation. \textbf  {Limitations:} fixed behavioural inference rule; similarity rule fails on single-skill Q-matrices; \textsc  {DDR}{} covers only four generic augmentations; GT CV available only where expert graphs exist.}}{4}{figure.caption.2}\protected@file@percent }
+\newlabel{fig:framework}{{2}{4}{Research framework connecting protocol modules (Section~\ref {sec:protocol}) and experiment tracks (Section~\ref {sec:exp}). \textbf {Strengths:} fold-conditioned provenance, explicit DAG repair, structural diagnostics decoupled from AUC, optional expert cross-validation. \textbf {Limitations:} fixed behavioural inference rule; similarity rule fails on single-skill Q-matrices; \DDR {} covers only four generic augmentations; GT CV available only where expert graphs exist}{figure.caption.2}{}}
+\newlabel{fig:framework@cref}{{[figure][2][]2}{[1][3][]4}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {III-A}0d}Audit functionals (diagnostics, not training losses).}{4}{paragraph.3.1.0.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Leakage Control}{4}{subsection.3.2}\protected@file@percent }
+\newlabel{sec:leakage}{{\mbox  {III-B}}{4}{Leakage Control}{subsection.3.2}{}}
+\newlabel{sec:leakage@cref}{{[subsection][2][3]\mbox  {III-B}}{[1][4][]4}{}{}{}}
+\newlabel{eq:ecr-flag}{{7}{4}{Leakage Control}{equation.7}{}}
+\newlabel{eq:ecr-flag@cref}{{[equation][7][]7}{[1][4][]4}{}{}{}}
+\newlabel{eq:ecr-overlap}{{8}{4}{Leakage Control}{equation.8}{}}
+\newlabel{eq:ecr-overlap@cref}{{[equation][8][]8}{[1][4][]4}{}{}{}}
+\newlabel{eq:eoc}{{9}{4}{Leakage Control}{equation.9}{}}
+\newlabel{eq:eoc@cref}{{[equation][9][]9}{[1][4][]4}{}{}{}}
+\citation{kipf2017gcn,hamilton2017graphsage}
+\citation{johnson1975finding}
+\citation{liu2022pykt}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Taxonomy of leakage classes audited by the protocol: typical source of contamination, a concrete KT example, and the primary direct diagnostic used in this paper (Section~\ref {sec:leakage}).}}{5}{table.caption.3}\protected@file@percent }
+\newlabel{tab:leakage-taxonomy}{{I}{5}{Taxonomy of leakage classes audited by the protocol: typical source of contamination, a concrete KT example, and the primary direct diagnostic used in this paper (Section~\ref {sec:leakage})}{table.caption.3}{}}
+\newlabel{tab:leakage-taxonomy@cref}{{[table][1][]I}{[1][4][]5}{}{}{}}
+\newlabel{eq:tbvr}{{10}{5}{Leakage Control}{equation.10}{}}
+\newlabel{eq:tbvr@cref}{{[equation][10][]10}{[1][4][]5}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {III-B}0a}Why AUC/ACC are insufficient.}{5}{paragraph.3.2.0.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Graph Representation for Knowledge Tracing}{5}{subsection.3.3}\protected@file@percent }
+\newlabel{sec:graph-repr}{{\mbox  {III-C}}{5}{Graph Representation for Knowledge Tracing}{subsection.3.3}{}}
+\newlabel{sec:graph-repr@cref}{{[subsection][3][3]\mbox  {III-C}}{[1][5][]5}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}Train-only Graph Construction}{5}{subsection.3.4}\protected@file@percent }
+\newlabel{sec:graph}{{\mbox  {III-D}}{5}{Train-only Graph Construction}{subsection.3.4}{}}
+\newlabel{sec:graph@cref}{{[subsection][4][3]\mbox  {III-D}}{[1][5][]5}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {III-D}0a}Prerequisite edges $\ensuremath  {E_{\text  {pre}}}$.}{5}{paragraph.3.4.0.1}\protected@file@percent }
+\citation{johnson1975finding}
+\citation{you2020graphcl}
+\citation{schein2002coldstart}
+\newlabel{sec:graph-sim-theory}{{\mbox  {III-D}0b}{6}{Similarity edges $\Esim $ and theoretical properties}{paragraph.3.4.0.2}{}}
+\newlabel{sec:graph-sim-theory@cref}{{[paragraph][2][3,4,0]\mbox  {III-D}0b}{[1][6][]6}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {III-D}0b}Similarity edges $\ensuremath  {E_{\text  {sim}}}$ and theoretical properties.}{6}{paragraph.3.4.0.2}\protected@file@percent }
+\newlabel{eq:sim-jaccard}{{11}{6}{Similarity edges $\Esim $ and theoretical properties}{equation.11}{}}
+\newlabel{eq:sim-jaccard@cref}{{[equation][11][]11}{[1][6][]6}{}{}{}}
+\newlabel{eq:sim-pmi}{{12}{6}{Similarity edges $\Esim $ and theoretical properties}{equation.12}{}}
+\newlabel{eq:sim-pmi@cref}{{[equation][12][]12}{[1][6][]6}{}{}{}}
+\newlabel{sec:subgraph}{{\mbox  {III-D}0c}{6}{Subgraph construction for KT consumption}{paragraph.3.4.0.3}{}}
+\newlabel{sec:subgraph@cref}{{[paragraph][3][3,4,0]\mbox  {III-D}0c}{[1][6][]6}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {III-D}0c}Subgraph construction for KT consumption.}{6}{paragraph.3.4.0.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-E}}DAG Audit}{6}{subsection.3.5}\protected@file@percent }
+\newlabel{sec:dag-audit}{{\mbox  {III-E}}{6}{DAG Audit}{subsection.3.5}{}}
+\newlabel{sec:dag-audit@cref}{{[subsection][5][3]\mbox  {III-E}}{[1][6][]6}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-F}}DAG Disruption Rate and Augmentation Operators}{6}{subsection.3.6}\protected@file@percent }
+\newlabel{sec:ddr}{{\mbox  {III-F}}{6}{DAG Disruption Rate and Augmentation Operators}{subsection.3.6}{}}
+\newlabel{sec:ddr@cref}{{[subsection][6][3]\mbox  {III-F}}{[1][6][]6}{}{}{}}
+\newlabel{eq:ddr}{{13}{6}{DAG Disruption Rate and Augmentation Operators}{equation.13}{}}
+\newlabel{eq:ddr@cref}{{[equation][13][]13}{[1][6][]6}{}{}{}}
+\citation{junyi_dataset}
+\citation{xes3g5m2023}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-G}}Cold-start KC Stratification}{7}{subsection.3.7}\protected@file@percent }
+\newlabel{sec:cold-start}{{\mbox  {III-G}}{7}{Cold-start KC Stratification}{subsection.3.7}{}}
+\newlabel{sec:cold-start@cref}{{[subsection][7][3]\mbox  {III-G}}{[1][6][]7}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {III-G}0a}Technical procedure.}{7}{paragraph.3.7.0.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-H}}Ground-Truth Cross-Validation}{7}{subsection.3.8}\protected@file@percent }
+\newlabel{sec:gtxv-protocol}{{\mbox  {III-H}}{7}{Ground-Truth Cross-Validation}{subsection.3.8}{}}
+\newlabel{sec:gtxv-protocol@cref}{{[subsection][8][3]\mbox  {III-H}}{[1][7][]7}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Experiments}{7}{section.4}\protected@file@percent }
+\newlabel{sec:exp}{{IV}{7}{Experiments}{section.4}{}}
+\newlabel{sec:exp@cref}{{[section][4][]IV}{[1][7][]7}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Datasets}{7}{subsection.4.1}\protected@file@percent }
+\newlabel{sec:datasets}{{\mbox  {IV-A}}{7}{Datasets}{subsection.4.1}{}}
+\newlabel{sec:datasets@cref}{{[subsection][1][4]\mbox  {IV-A}}{[1][7][]7}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Dataset statistics used in the P0 diagnostic protocol. Junyi Academy counts reflect the Chang et al.\ problem-level log (\texttt  {junyi\_ProblemLog\_original.csv}) after preprocessing; \#items and \#KCs coincide because both map to the exercise column. Synthetic C2/C5 are companion sanity logs shipped with the preprocessing scripts.}}{7}{table.caption.4}\protected@file@percent }
+\newlabel{tab:dataset-stats}{{II}{7}{Dataset statistics used in the P0 diagnostic protocol. Junyi Academy counts reflect the Chang et al.\ problem-level log (\texttt {junyi\_ProblemLog\_original.csv}) after preprocessing; \#items and \#KCs coincide because both map to the exercise column. Synthetic C2/C5 are companion sanity logs shipped with the preprocessing scripts}{table.caption.4}{}}
+\newlabel{tab:dataset-stats@cref}{{[table][2][]II}{[1][7][]7}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Leakage and DAG Audit}{7}{subsection.4.2}\protected@file@percent }
+\newlabel{sec:exp-audit}{{\mbox  {IV-B}}{7}{Leakage and DAG Audit}{subsection.4.2}{}}
+\newlabel{sec:exp-audit@cref}{{[subsection][2][4]\mbox  {IV-B}}{[1][7][]7}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Direct leakage diagnostics per dataset (fold mean where multiple folds are present). \textsc  {ECR}\textsubscript  {flag}: learner-overlap structural indicator (Eq.~\ref {eq:ecr-flag}; $0$ confirms disjoint learners across train/validation/test under each fold). \textsc  {ECR}\textsubscript  {overlap}: held-out pattern overlap rate over retained edges (Eq.~\ref {eq:ecr-overlap}). \textsc  {EOC}: Edge--Outcome Correlation Frobenius norm (Eq.~\ref {eq:eoc}); \textsc  {TBVR}: Temporal Boundary Violation Rate within train timelines (Eq.~\ref {eq:tbvr}, indexed boundary). Values are exported by \texttt  {p0-graph-build} into \texttt  {results/tables/leakage\_metrics.csv}. Under learner-disjoint folds, $\textsc  {ECR}\textsubscript  {flag}{=}0$ on every run---confirming structural leakage freedom at the split level; \textsc  {ECR}\textsubscript  {overlap} can remain near~$1$ on dense logs because recurrent transition patterns reappear across disjoint held-out learners (diagnostic overlap, not \texttt  {train\_only\_flag} violation).}}{8}{table.caption.5}\protected@file@percent }
+\newlabel{tab:leakage-metrics}{{III}{8}{Direct leakage diagnostics per dataset (fold mean where multiple folds are present). \textsc {ECR}\textsubscript {flag}: learner-overlap structural indicator (Eq.~\ref {eq:ecr-flag}; $0$ confirms disjoint learners across train/validation/test under each fold). \textsc {ECR}\textsubscript {overlap}: held-out pattern overlap rate over retained edges (Eq.~\ref {eq:ecr-overlap}). \textsc {EOC}: Edge--Outcome Correlation Frobenius norm (Eq.~\ref {eq:eoc}); \textsc {TBVR}: Temporal Boundary Violation Rate within train timelines (Eq.~\ref {eq:tbvr}, indexed boundary). Values are exported by \texttt {p0-graph-build} into \texttt {results/tables/leakage\_metrics.csv}. Under learner-disjoint folds, $\textsc {ECR}\textsubscript {flag}{=}0$ on every run---confirming structural leakage freedom at the split level; \textsc {ECR}\textsubscript {overlap} can remain near~$1$ on dense logs because recurrent transition patterns reappear across disjoint held-out learners (diagnostic overlap, not \texttt {train\_only\_flag} violation)}{table.caption.5}{}}
+\newlabel{tab:leakage-metrics@cref}{{[table][3][]III}{[1][7][]8}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces DAG audit summary (fold~0). \emph  {Raw} and \emph  {Final} are the prerequisite edge counts before and after lowest-confidence cycle pruning inside \texttt  {dag\_audit}; \emph  {Pruned} is the difference. The \emph  {Cycles} column reports representative cycles found before pruning (cap~$100$). All corpora pass topological sort with zero cycles after pruning on fold~0.}}{8}{table.caption.6}\protected@file@percent }
+\newlabel{tab:dag-audit}{{IV}{8}{DAG audit summary (fold~0). \emph {Raw} and \emph {Final} are the prerequisite edge counts before and after lowest-confidence cycle pruning inside \texttt {dag\_audit}; \emph {Pruned} is the difference. The \emph {Cycles} column reports representative cycles found before pruning (cap~$100$). All corpora pass topological sort with zero cycles after pruning on fold~0}{table.caption.6}{}}
+\newlabel{tab:dag-audit@cref}{{[table][4][]IV}{[1][7][]8}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}DAG Disruption Rate}{8}{subsection.4.3}\protected@file@percent }
+\newlabel{sec:exp-ddr}{{\mbox  {IV-C}}{8}{DAG Disruption Rate}{subsection.4.3}{}}
+\newlabel{sec:exp-ddr@cref}{{[subsection][3][4]\mbox  {IV-C}}{[1][8][]8}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Mean \textsc  {DDR}{} across three seeds and three train folds for the four augmentation families and four perturbation strengths. Subgraph sampling is random-walk based (Section~\ref {sec:ddr}). Lower is less disruptive; $0.000$ for attribute masking is by construction.}}{8}{table.caption.9}\protected@file@percent }
+\newlabel{tab:ddr-raw}{{V}{8}{Mean \DDR {} across three seeds and three train folds for the four augmentation families and four perturbation strengths. Subgraph sampling is random-walk based (Section~\ref {sec:ddr}). Lower is less disruptive; $0.000$ for attribute masking is by construction}{table.caption.9}{}}
+\newlabel{tab:ddr-raw@cref}{{[table][5][]V}{[1][8][]8}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Cold-start KC Diagnostic}{8}{subsection.4.4}\protected@file@percent }
+\newlabel{sec:exp-coldstart}{{\mbox  {IV-D}}{8}{Cold-start KC Diagnostic}{subsection.4.4}{}}
+\newlabel{sec:exp-coldstart@cref}{{[subsection][4][4]\mbox  {IV-D}}{[1][8][]8}{}{}{}}
+\newlabel{fig:ktgraph-junyi}{{3a}{9}{Junyi Academy}{figure.caption.7}{}}
+\newlabel{fig:ktgraph-junyi@cref}{{[subfigure][1][3]3a}{[1][8][]9}{}{}{}}
+\newlabel{sub@fig:ktgraph-junyi}{{a}{9}{Junyi Academy}{figure.caption.7}{}}
+\newlabel{sub@fig:ktgraph-junyi@cref}{{[subfigure][1][3]3a}{[1][8][]9}{}{}{}}
+\newlabel{fig:ktgraph-assist}{{3b}{9}{ASSISTments 2012}{figure.caption.7}{}}
+\newlabel{fig:ktgraph-assist@cref}{{[subfigure][2][3]3b}{[1][8][]9}{}{}{}}
+\newlabel{sub@fig:ktgraph-assist}{{b}{9}{ASSISTments 2012}{figure.caption.7}{}}
+\newlabel{sub@fig:ktgraph-assist@cref}{{[subfigure][2][3]3b}{[1][8][]9}{}{}{}}
+\newlabel{fig:ktgraph-xes}{{3c}{9}{XES3G5M}{figure.caption.7}{}}
+\newlabel{fig:ktgraph-xes@cref}{{[subfigure][3][3]3c}{[1][8][]9}{}{}{}}
+\newlabel{sub@fig:ktgraph-xes}{{c}{9}{XES3G5M}{figure.caption.7}{}}
+\newlabel{sub@fig:ktgraph-xes@cref}{{[subfigure][3][3]3c}{[1][8][]9}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Schematic visualisations of high-support prerequisite chains in train-only $\ensuremath  {E_{\text  {pre}}}$ after DAG audit (representative subgraphs for interpretation; full graphs contain hundreds to thousands of edges). Junyi retains dense arithmetic progressions; ASSISTments and XES3G5M exhibit sparser chains consistent with Table~\ref {tab:dag-audit}.}}{9}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:kt-graph-all}{{3}{9}{Schematic visualisations of high-support prerequisite chains in train-only $\Epre $ after DAG audit (representative subgraphs for interpretation; full graphs contain hundreds to thousands of edges). Junyi retains dense arithmetic progressions; ASSISTments and XES3G5M exhibit sparser chains consistent with Table~\ref {tab:dag-audit}}{figure.caption.7}{}}
+\newlabel{fig:kt-graph-all@cref}{{[figure][3][]3}{[1][8][]9}{}{}{}}
+\newlabel{fig:ddr-junyi}{{4a}{9}{Junyi Academy}{figure.caption.8}{}}
+\newlabel{fig:ddr-junyi@cref}{{[subfigure][1][4]4a}{[1][8][]9}{}{}{}}
+\newlabel{sub@fig:ddr-junyi}{{a}{9}{Junyi Academy}{figure.caption.8}{}}
+\newlabel{sub@fig:ddr-junyi@cref}{{[subfigure][1][4]4a}{[1][8][]9}{}{}{}}
+\newlabel{fig:ddr-assist2012}{{4b}{9}{ASSISTments 2012}{figure.caption.8}{}}
+\newlabel{fig:ddr-assist2012@cref}{{[subfigure][2][4]4b}{[1][8][]9}{}{}{}}
+\newlabel{sub@fig:ddr-assist2012}{{b}{9}{ASSISTments 2012}{figure.caption.8}{}}
+\newlabel{sub@fig:ddr-assist2012@cref}{{[subfigure][2][4]4b}{[1][8][]9}{}{}{}}
+\newlabel{fig:ddr-xes3g5m}{{4c}{9}{XES3G5M}{figure.caption.8}{}}
+\newlabel{fig:ddr-xes3g5m@cref}{{[subfigure][3][4]4c}{[1][8][]9}{}{}{}}
+\newlabel{sub@fig:ddr-xes3g5m}{{c}{9}{XES3G5M}{figure.caption.8}{}}
+\newlabel{sub@fig:ddr-xes3g5m@cref}{{[subfigure][3][4]4c}{[1][8][]9}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces \textsc  {DDR}{} as a function of perturbation strength $p$ for four label-agnostic graph augmentation families across three datasets. Each marker plots the mean \textsc  {DDR}{} averaged across nine stochastic runs (three random seeds on each of three train folds). Across all datasets the four families separate into four distinct regimes: $\textsc  {DDR}(\text  {attr\_mask})=0 < \textsc  {DDR}(\text  {subgraph}) < \textsc  {DDR}(\text  {edge\_drop}) \approx p < \textsc  {DDR}(\text  {node\_drop})$.}}{9}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:ddr-all}{{4}{9}{\DDR {} as a function of perturbation strength $p$ for four label-agnostic graph augmentation families across three datasets. Each marker plots the mean \DDR {} averaged across nine stochastic runs (three random seeds on each of three train folds). Across all datasets the four families separate into four distinct regimes: $\DDR (\text {attr\_mask})=0 < \DDR (\text {subgraph}) < \DDR (\text {edge\_drop}) \approx p < \DDR (\text {node\_drop})$}{figure.caption.8}{}}
+\newlabel{fig:ddr-all@cref}{{[figure][4][]4}{[1][8][]9}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-D}0a}Similarity edges and dataset properties.}{9}{paragraph.4.4.0.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-E}}Baseline Diagnostic}{9}{subsection.4.5}\protected@file@percent }
+\newlabel{sec:exp-baseline}{{\mbox  {IV-E}}{9}{Baseline Diagnostic}{subsection.4.5}{}}
+\newlabel{sec:exp-baseline@cref}{{[subsection][5][4]\mbox  {IV-E}}{[1][9][]9}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-F}}Graph Construction Ablation (Train-only vs.\ Full Log)}{9}{subsection.4.6}\protected@file@percent }
+\newlabel{sec:exp-graph-ablation}{{\mbox  {IV-F}}{9}{Graph Construction Ablation (Train-only vs.\ Full Log)}{subsection.4.6}{}}
+\newlabel{sec:exp-graph-ablation@cref}{{[subsection][6][4]\mbox  {IV-F}}{[1][9][]9}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-F}0a}Training KT with fold-specific versus pooled graphs.}{9}{paragraph.4.6.0.1}\protected@file@percent }
+\citation{junyi_dataset}
+\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Per-stratum cold-start KC diagnostic with \textit  {simpleKT} on fold~0 (Section~\ref {sec:cold-start}). The $n$ column counts test interactions whose KC falls in the stratum train-frequency bin; \emph  {out of range} marks test KCs outside the four canonical bins. Stratum mass varies by dataset split; under default bins Synthetic C2/C5 route all test interactions into the hot stratum ($>500$ train-fold hits per knowledge component{}).}}{10}{table.caption.10}\protected@file@percent }
+\newlabel{tab:cold-start-strata}{{VI}{10}{Per-stratum cold-start KC diagnostic with \textit {simpleKT} on fold~0 (Section~\ref {sec:cold-start}). The $n$ column counts test interactions whose KC falls in the stratum train-frequency bin; \emph {out of range} marks test KCs outside the four canonical bins. Stratum mass varies by dataset split; under default bins Synthetic C2/C5 route all test interactions into the hot stratum ($>500$ train-fold hits per \KC {})}{table.caption.10}{}}
+\newlabel{tab:cold-start-strata@cref}{{[table][6][]VI}{[1][8][]10}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Diagnostic baseline results (train-only graphs). Baselines are used for protocol comparison only; no SOTA claim is made. Values are fold means with 95\% bootstrap confidence intervals when available.}}{10}{table.caption.11}\protected@file@percent }
+\newlabel{tab:baseline-results}{{VII}{10}{Diagnostic baseline results (train-only graphs). Baselines are used for protocol comparison only; no SOTA claim is made. Values are fold means with 95\% bootstrap confidence intervals when available}{table.caption.11}{}}
+\newlabel{tab:baseline-results@cref}{{[table][7][]VII}{[1][9][]10}{}{}{}}
+\newlabel{tab:baseline-junyi}{{VII}{10}{Diagnostic baseline results (train-only graphs). Baselines are used for protocol comparison only; no SOTA claim is made. Values are fold means with 95\% bootstrap confidence intervals when available}{table.caption.11}{}}
+\newlabel{tab:baseline-junyi@cref}{{[table][7][]VII}{[1][9][]10}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VIII}{\ignorespaces Diagnostic baselines: ASSISTments 2012 (train-only graphs).}}{10}{table.caption.12}\protected@file@percent }
+\newlabel{tab:baseline-assist2012}{{VIII}{10}{Diagnostic baselines: ASSISTments 2012 (train-only graphs)}{table.caption.12}{}}
+\newlabel{tab:baseline-assist2012@cref}{{[table][8][]VIII}{[1][9][]10}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {IX}{\ignorespaces Diagnostic baselines: XES3G5M (train-only graphs).}}{10}{table.caption.13}\protected@file@percent }
+\newlabel{tab:baseline-xes3g5m}{{IX}{10}{Diagnostic baselines: XES3G5M (train-only graphs)}{table.caption.13}{}}
+\newlabel{tab:baseline-xes3g5m@cref}{{[table][9][]IX}{[1][9][]10}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {X}{\ignorespaces Diagnostic baselines: Synthetic C2 (train-only graphs).}}{11}{table.caption.14}\protected@file@percent }
+\newlabel{tab:baseline-synthetic-c2}{{X}{11}{Diagnostic baselines: Synthetic C2 (train-only graphs)}{table.caption.14}{}}
+\newlabel{tab:baseline-synthetic-c2@cref}{{[table][10][]X}{[1][9][]11}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {XI}{\ignorespaces Diagnostic baselines: Synthetic C5 (train-only graphs).}}{11}{table.caption.15}\protected@file@percent }
+\newlabel{tab:baseline-synthetic-c5}{{XI}{11}{Diagnostic baselines: Synthetic C5 (train-only graphs)}{table.caption.15}{}}
+\newlabel{tab:baseline-synthetic-c5@cref}{{[table][11][]XI}{[1][9][]11}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-G}}Ground-Truth Cross-Validation on Junyi}{11}{subsection.4.7}\protected@file@percent }
+\newlabel{sec:exp-gtxv}{{\mbox  {IV-G}}{11}{Ground-Truth Cross-Validation on Junyi}{subsection.4.7}{}}
+\newlabel{sec:exp-gtxv@cref}{{[subsection][7][4]\mbox  {IV-G}}{[1][10][]11}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {XII}{\ignorespaces Ablation contrasting \emph  {train-only} graph smoothing (protocol) with a \emph  {full-log} graph built from all learners before splitting (leaky construction). Diagnostic graph-augmented ensembles (GKT, GIKT, SKT, DyGKT, DGEKT-style linear blends; Section~\ref {sec:exp-baseline}); evaluation split unchanged. $\Delta $ is the paired mean across folds (full-log minus train-only); positive $\Delta $AUC indicates higher discrimination when the graph sees the entire log. \emph  {to}: train-only graph; \emph  {fl}: full-log graph.}}{11}{table.caption.16}\protected@file@percent }
+\newlabel{tab:graph-ablation}{{XII}{11}{Ablation contrasting \emph {train-only} graph smoothing (protocol) with a \emph {full-log} graph built from all learners before splitting (leaky construction). Diagnostic graph-augmented ensembles (GKT, GIKT, SKT, DyGKT, DGEKT-style linear blends; Section~\ref {sec:exp-baseline}); evaluation split unchanged. $\Delta $ is the paired mean across folds (full-log minus train-only); positive $\Delta $AUC indicates higher discrimination when the graph sees the entire log. \emph {to}: train-only graph; \emph {fl}: full-log graph}{table.caption.16}{}}
+\newlabel{tab:graph-ablation@cref}{{[table][12][]XII}{[1][10][]11}{}{}{}}
+\newlabel{tab:graph-ablation-junyi}{{XII}{11}{Ablation contrasting \emph {train-only} graph smoothing (protocol) with a \emph {full-log} graph built from all learners before splitting (leaky construction). Diagnostic graph-augmented ensembles (GKT, GIKT, SKT, DyGKT, DGEKT-style linear blends; Section~\ref {sec:exp-baseline}); evaluation split unchanged. $\Delta $ is the paired mean across folds (full-log minus train-only); positive $\Delta $AUC indicates higher discrimination when the graph sees the entire log. \emph {to}: train-only graph; \emph {fl}: full-log graph}{table.caption.16}{}}
+\newlabel{tab:graph-ablation-junyi@cref}{{[table][12][]XII}{[1][10][]11}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {XIII}{\ignorespaces Train-only vs.\ full-log graph ablation: ASSISTments 2012.}}{11}{table.caption.17}\protected@file@percent }
+\newlabel{tab:graph-ablation-assist2012}{{XIII}{11}{Train-only vs.\ full-log graph ablation: ASSISTments 2012}{table.caption.17}{}}
+\newlabel{tab:graph-ablation-assist2012@cref}{{[table][13][]XIII}{[1][10][]11}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Edge-level precision and recall of train-only inferred $\ensuremath  {E_{\text  {pre}}}$ versus the expert prerequisite annotation on Junyi, across top-$K$ cutoffs $K \in \{200, 500, 800, 1131, 1200, 1800, 2500, 3500, 5000\}$. The curve plateaus at $K \geq 2{,}500$ because the inferred edge pool tops out at $2{,}152$ after DAG audit.}}{11}{figure.caption.22}\protected@file@percent }
+\newlabel{fig:gt-pr-curve}{{5}{11}{Edge-level precision and recall of train-only inferred $\Epre $ versus the expert prerequisite annotation on Junyi, across top-$K$ cutoffs $K \in \{200, 500, 800, 1131, 1200, 1800, 2500, 3500, 5000\}$. The curve plateaus at $K \geq 2{,}500$ because the inferred edge pool tops out at $2{,}152$ after DAG audit}{figure.caption.22}{}}
+\newlabel{fig:gt-pr-curve@cref}{{[figure][5][]5}{[1][11][]11}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-G}0a}Edge-level overlap is low and roughly constant across $K$.}{11}{paragraph.4.7.0.1}\protected@file@percent }
+\citation{nakagawa2019gkt}
+\citation{yang2021gikt}
+\citation{liu2023simplekt}
+\citation{ghosh2020akt}
+\citation{piech2015dkt}
+\@writefile{lot}{\contentsline {table}{\numberline {XIV}{\ignorespaces Train-only vs.\ full-log graph ablation: XES3G5M.}}{12}{table.caption.18}\protected@file@percent }
+\newlabel{tab:graph-ablation-xes3g5m}{{XIV}{12}{Train-only vs.\ full-log graph ablation: XES3G5M}{table.caption.18}{}}
+\newlabel{tab:graph-ablation-xes3g5m@cref}{{[table][14][]XIV}{[1][10][]12}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {XV}{\ignorespaces Train-only vs.\ full-log graph ablation: Synthetic C2.}}{12}{table.caption.19}\protected@file@percent }
+\newlabel{tab:graph-ablation-synthetic-c2}{{XV}{12}{Train-only vs.\ full-log graph ablation: Synthetic C2}{table.caption.19}{}}
+\newlabel{tab:graph-ablation-synthetic-c2@cref}{{[table][15][]XV}{[1][10][]12}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-G}0b}Node-level overlap is comparatively high.}{12}{paragraph.4.7.0.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-G}0c}Reachability F1 grows with $K$.}{12}{paragraph.4.7.0.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-G}0d}Qualitative disagreement patterns.}{12}{paragraph.4.7.0.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-G}0e}Interpretation.}{12}{paragraph.4.7.0.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {XVI}{\ignorespaces Train-only vs.\ full-log graph ablation: Synthetic C5.}}{12}{table.caption.20}\protected@file@percent }
+\newlabel{tab:graph-ablation-synthetic-c5}{{XVI}{12}{Train-only vs.\ full-log graph ablation: Synthetic C5}{table.caption.20}{}}
+\newlabel{tab:graph-ablation-synthetic-c5@cref}{{[table][16][]XVI}{[1][10][]12}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {XVII}{\ignorespaces GT cross-validation: agreement between train-only inferred $E_{\text  {pre}}$ and expert prerequisite DAG on Junyi Academy ($|E|=1131$ directed edges).}}{12}{table.caption.21}\protected@file@percent }
+\newlabel{tab:gt-validation}{{XVII}{12}{GT cross-validation: agreement between train-only inferred $E_{\text {pre}}$ and expert prerequisite DAG on Junyi Academy ($|E|=1131$ directed edges)}{table.caption.21}{}}
+\newlabel{tab:gt-validation@cref}{{[table][17][]XVII}{[1][11][]12}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-G}0f}Caveats.}{12}{paragraph.4.7.0.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-H}}Empirical Observation: Graph-Augmented KT Models Do Not Consistently Outperform Sequence-Only Baselines under Leakage-Controlled Evaluation}{12}{subsection.4.8}\protected@file@percent }
+\newlabel{sec:exp-fextra}{{\mbox  {IV-H}}{12}{Empirical Observation: Graph-Augmented KT Models Do Not Consistently Outperform Sequence-Only Baselines under Leakage-Controlled Evaluation}{subsection.4.8}{}}
+\newlabel{sec:exp-fextra@cref}{{[subsection][8][4]\mbox  {IV-H}}{[1][12][]12}{}{}{}}
+\citation{liu2022pykt}
+\citation{tong2020skt,dygkt2024,dgekt2024}
+\citation{choi2020ednet}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-H}0a}H1 -- Leakage in prior evaluations.}{13}{paragraph.4.8.0.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-H}0b}H2 -- Aggregate-metric masking.}{13}{paragraph.4.8.0.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-H}0c}H3 -- Strong-backbone substitution.}{13}{paragraph.4.8.0.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-H}0d}Why this strengthens the protocol.}{13}{paragraph.4.8.0.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {IV-H}0e}Caveats.}{13}{paragraph.4.8.0.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {V}Discussion}{13}{section.5}\protected@file@percent }
+\newlabel{sec:disc}{{V}{13}{Discussion}{section.5}{}}
+\newlabel{sec:disc@cref}{{[section][5][]V}{[1][13][]13}{}{}{}}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {V-}0a}Scalability and broader domains.}{13}{paragraph.5.0.0.1}\protected@file@percent }
+\citation{you2020graphcl}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {V-}0b}Implications for graph-enhanced KT.}{14}{paragraph.5.0.0.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {V-}0c}Cold-start reporting.}{14}{paragraph.5.0.0.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {V-}0d}Behavioural versus expert prerequisite curation.}{14}{paragraph.5.0.0.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {V-}0e}Implications for graph-KT benchmarking.}{14}{paragraph.5.0.0.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {V-}0f}Limitations.}{14}{paragraph.5.0.0.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Conclusion}{14}{section.6}\protected@file@percent }
+\newlabel{sec:concl}{{VI}{14}{Conclusion}{section.6}{}}
+\newlabel{sec:concl@cref}{{[section][6][]VI}{[1][14][]14}{}{}{}}
+\bibstyle{IEEEtran}
+\bibdata{refs}
+\bibcite{corbett1995bkt}{1}
+\bibcite{piech2015dkt}{2}
+\bibcite{zhang2017dkvmn}{3}
+\bibcite{ghosh2020akt}{4}
+\bibcite{liu2023simplekt}{5}
+\bibcite{pandey2019rkt}{6}
+\bibcite{shen2021saint}{7}
+\bibcite{nakagawa2019gkt}{8}
+\bibcite{tong2020skt}{9}
+\bibcite{yang2021gikt}{10}
+\bibcite{dygkt2024}{11}
+\bibcite{dgekt2024}{12}
+\bibcite{wang2022grapkt}{13}
+\bibcite{chen2023hgkt}{14}
+\bibcite{heffernan2006assist}{15}
+\bibcite{junyi_dataset}{16}
+\bibcite{choi2020ednet}{17}
+\bibcite{xes3g5m2023}{18}
+\bibcite{liu2022pykt}{19}
+\bibcite{you2020graphcl}{20}
+\bibcite{zhu2021gca}{21}
+\@writefile{toc}{\contentsline {paragraph}{\numberline {\mbox  {VI-}0a}Ethics and data use.}{15}{paragraph.6.0.0.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{15}{section*.23}\protected@file@percent }
+\bibcite{xia2022simgrace}{22}
+\bibcite{thakoor2021bgrl}{23}
+\bibcite{velickovic2018dgi}{24}
+\bibcite{hassani2020mvgrl}{25}
+\bibcite{schein2002coldstart}{26}
+\bibcite{chang2015junyi}{27}
+\bibcite{abdelrahman2023kt_survey}{28}
+\bibcite{bai2025survey}{29}
+\bibcite{lin2016moocprereq}{30}
+\bibcite{pan2020concept}{31}
+\bibcite{lee2022cl4kt}{32}
+\bibcite{song2022biclkt}{33}
+\bibcite{wan2021contrastive}{34}
+\bibcite{yudelson2013pfa}{35}
+\bibcite{khajah2016das3h}{36}
+\bibcite{chen2022dimkt}{37}
+\bibcite{wang2023corekt}{38}
+\bibcite{liu2021iekt}{39}
+\bibcite{xiong2023gracekt}{40}
+\bibcite{huang2022hawkt}{41}
+\bibcite{chen2020dlprereq}{42}
+\bibcite{laguna2018prereq}{43}
+\bibcite{zhu2020graphtsa}{44}
+\bibcite{feng2022graphmvp}{45}
+\bibcite{kipf2017gcn}{46}
+\bibcite{hamilton2017graphsage}{47}
+\bibcite{deckt2025}{48}
+\bibcite{johnson1975finding}{49}
+\gdef \@abspage@last{16}

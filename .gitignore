@@ -8,3 +8,5 @@ __pycache__/
 *.ipynb_checkpoints
 .pytest_cache/
 results/pykt_work/
+tools/basic-miktex-25.12-x64.exe
+tools/miktex/
