@@ -133,7 +133,7 @@ def _evaluate_detailed(model, loader, model_name: str) -> tuple[float, float, np
     return auc, acc, ts, ps
 
 
-def _train_loop(model, train_loader, valid_loader, epochs: int, lr: float, patience: int = 8) -> None:
+def _train_loop(model, train_loader, valid_loader, epochs: int, lr: float, patience: int = 3) -> None:
     opt = torch.optim.Adam(model.parameters(), lr=lr)
     best_auc = -1.0
     stale = 0
@@ -347,7 +347,7 @@ def run_pykt_fold(
     if display_model != pykt_name:
         note += f" YAML alias `{display_model}` maps to `{pykt_name}` (GIKT not bundled in pyKT)."
 
-    patience = int(hyperparams.get("patience", 8))
+    patience = int(hyperparams.get("patience", 3))
     _train_loop(model, train_loader, valid_loader, epochs=max(1, int(epochs)), lr=float(lr), patience=patience)
     auc, acc, ts, ps = _evaluate_detailed(model, eval_loader, model.model_name)
     nll = _mean_nll(ts, ps)
