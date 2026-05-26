@@ -1,0 +1,14 @@
+{
+    "dataset": "assist2012",
+    "fold": 1,
+    "split_seed": 43,
+    "model": "bkt",
+    "graph_construction": "train_only",
+    "eval_split": "valid+test",
+    "auc": 0.6667226942583029,
+    "acc": 0.7132081599462515,
+    "nll": 0.5742401211356033,
+    "n_eval": 806721,
+    "status": "classical_bkt_em",
+    "note": "Independent-skill BKT (scipy L-BFGS-B); protocol graphs do not affect this baseline."
+}

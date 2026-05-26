@@ -5,10 +5,10 @@
     "model": "gikt",
     "graph_construction": "full_log",
     "eval_split": "valid+test",
-    "auc": 0.9675178525288914,
-    "acc": 0.9142814106003591,
-    "nll": 0.17580264384893898,
+    "auc": 0.99805399178774,
+    "acc": 0.9995507869250474,
+    "nll": 0.004238721533433842,
     "n_eval": 816951,
     "status": "pykt_checkpoint",
-    "note": "pyKT `akt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs. YAML alias `gikt` maps to `akt` (GIKT not bundled in pyKT)."
+    "note": "pyKT `gikt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs."
 }

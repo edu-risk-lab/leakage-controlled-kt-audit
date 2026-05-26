@@ -1,0 +1,14 @@
+{
+    "dataset": "assist2012",
+    "fold": 2,
+    "split_seed": 44,
+    "model": "skt",
+    "graph_construction": "full_log",
+    "eval_split": "valid+test",
+    "auc": 0.9532393531906803,
+    "acc": 0.8992014182697038,
+    "nll": 0.19641404580069866,
+    "n_eval": 801421,
+    "status": "pykt_checkpoint",
+    "note": "pyKT `skt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs."
+}

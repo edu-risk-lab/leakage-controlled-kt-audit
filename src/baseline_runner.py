@@ -15,8 +15,7 @@ statistics from the full log, not topology alone.
 Optional ``evaluation.baseline_backend: pykt`` (plus extras ``pip install -e ".[pykt]"``) switches **BKT**
 to a classical multi-skill EM fit (SciPy) and **DKT / AKT / GKT / simpleKT** to real ``pykt-toolkit``
 training with **GKT** adjacency matrices built from this repo's exported prerequisite/similarity CSVs
-(train-only vs full-log when running graph ablation). **GIKT** is not implemented in pyKT; we map it to **AKT**
-and record that in result metadata.
+(train-only vs full-log when running graph ablation). **GIKT** is implemented via a native PyTorch module in `src/models/gikt.py` (Graph-Interactive Knowledge Tracing).
 
 Optional ``graph_ablation.trained_leakage_head`` still applies only to **diagnostic** graph baselines (linear /
 logistic head), not to pyKT checkpoints.
@@ -56,9 +55,7 @@ MODEL_WEIGHTS = {
 # Stable channel order for stacking trainable leakage-head features (subset per model).
 _DIAGNOSTIC_FEATURE_ORDER = ("global", "kc", "item", "user", "graph", "freq")
 
-_PYKT_NEURAL_ALIASES = {
-    "gikt": "akt",
-}
+_PYKT_NEURAL_ALIASES = {}
 _PYKT_NEURAL_NAMES = frozenset({"dkt", "akt", "gkt", "simplekt", "gikt", "skt", "dygkt", "dgekt"})
 
 

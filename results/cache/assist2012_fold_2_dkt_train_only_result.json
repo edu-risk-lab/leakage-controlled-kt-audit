@@ -1,0 +1,14 @@
+{
+    "dataset": "assist2012",
+    "fold": 2,
+    "split_seed": 44,
+    "model": "dkt",
+    "graph_construction": "train_only",
+    "eval_split": "valid+test",
+    "auc": 0.9625051498254609,
+    "acc": 0.9098321797667583,
+    "nll": 0.1819202638320787,
+    "n_eval": 801421,
+    "status": "pykt_checkpoint",
+    "note": "pyKT `dkt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs."
+}
