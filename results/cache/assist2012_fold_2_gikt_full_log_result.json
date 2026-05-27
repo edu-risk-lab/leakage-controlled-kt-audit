@@ -5,10 +5,10 @@
     "model": "gikt",
     "graph_construction": "full_log",
     "eval_split": "valid+test",
-    "auc": 0.9981894690209261,
-    "acc": 0.9995840720154707,
-    "nll": 0.003935177660601279,
+    "auc": null,
+    "acc": null,
+    "nll": null,
     "n_eval": 801421,
-    "status": "pykt_checkpoint",
-    "note": "pyKT `gikt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs."
+    "status": "invalid_alignment_leakage",
+    "note": "pyKT `gikt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs. INVALIDATED: native GIKT predictions were previously aligned one step late, leaking the current response; rerun after src/models/gikt.py fix."
 }

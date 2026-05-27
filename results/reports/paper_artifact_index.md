@@ -3,6 +3,7 @@
 ## Tables
 - `results/tables/assist2012_dag_disruption.csv`
 - `results/tables/assist2012_dag_disruption_summary.csv`
+- `results/tables/baseline_cv_template.tex`
 - `results/tables/baseline_fold_results.csv`
 - `results/tables/baseline_results.csv`
 - `results/tables/baseline_results.tex`
@@ -19,11 +20,13 @@
 - `results/tables/graph_ablation.tex`
 - `results/tables/graph_ablation_summary.csv`
 - `results/tables/graph_stats.csv`
+- `results/tables/gt_validation_table.tex`
 - `results/tables/junyi_dag_disruption.csv`
 - `results/tables/junyi_dag_disruption_summary.csv`
 - `results/tables/leakage_audit.tex`
 - `results/tables/leakage_metrics.csv`
 - `results/tables/leakage_metrics.tex`
+- `results/tables/significance_tests.csv`
 - `results/tables/synthetic_c2_dag_disruption.csv`
 - `results/tables/synthetic_c2_dag_disruption_summary.csv`
 - `results/tables/synthetic_c5_dag_disruption.csv`
@@ -37,6 +40,10 @@
 - `results/figures/fig_ddr_synthetic_c2.pdf`
 - `results/figures/fig_ddr_synthetic_c5.pdf`
 - `results/figures/fig_ddr_xes3g5m.pdf`
+- `results/figures/fig_kt_graph_assist2012.pdf`
+- `results/figures/fig_kt_graph_junyi.pdf`
+- `results/figures/fig_kt_graph_xes3g5m.pdf`
+- `results/figures/fig_pr_curve.pdf`
 
 ## Reports
 - `results/reports/assist2012_dag_pruning_log.csv`

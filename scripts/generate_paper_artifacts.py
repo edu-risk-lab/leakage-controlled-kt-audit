@@ -382,7 +382,8 @@ def _write_baseline_tex(path: Path) -> None:
     blocks: list[str] = []
     base_cap = (
         r"Diagnostic baseline results (train-only graphs). Baselines are used for protocol comparison only; "
-        r"no SOTA claim is made. Values are fold means with 95\% bootstrap confidence intervals when available."
+        r"no SOTA claim is made. Values are fold means with 95\% bootstrap confidence intervals "
+        r"over valid+test sequence positions (\texttt{n\_folds} as exported per dataset)."
     )
     first_block = True
     for slug in ordered_slugs:
@@ -391,7 +392,13 @@ def _write_baseline_tex(path: Path) -> None:
             continue
         label = BASELINE_TEX_LABEL.get(slug, f"tab:baseline-{slug}")
         human = DATASET_LABELS.get(slug, slug)
-        cap = base_cap if first_block else rf"Diagnostic baselines: {human} (train-only graphs)."
+        n_folds = int(sub["n_folds"].max()) if "n_folds" in sub.columns and sub["n_folds"].notna().any() else 1
+        fold_note = (
+            r"three-fold learner CV (\texttt{n\_folds}=3)"
+            if n_folds >= 3
+            else r"released fold~0 diagnostic run (\texttt{n\_folds}=1; bootstrap CI collapses to the point estimate)"
+        )
+        cap = base_cap if first_block else rf"Diagnostic baselines: {human} ({fold_note}; train-only graphs)."
 
         lines = [
             r"\begin{table}[t]",
@@ -523,11 +530,10 @@ def _write_graph_ablation_tex(path: Path) -> None:
     ordered_slugs = [_dataset_slug(p) for p in CONFIGS]
     base_cap = (
         r"Ablation contrasting \emph{train-only} graph smoothing (protocol) with a \emph{full-log} graph "
-        r"built from all learners before splitting (leaky construction). Graph-augmented baselines use the "
-        r"same diagnostic feature channels as Section~\ref{sec:exp-baseline}; by default a \emph{trained} logistic "
-        r"head is fit on the train fold only (coefficients can emphasize the leaked graph channel). "
-        r"$\Delta$ is the paired mean across folds (full-log minus train-only); "
-        r"positive $\Delta$AUC indicates higher discrimination when the graph sees the entire log. "
+        r"built from all learners before splitting (leaky construction). Graph-augmented rows are pyKT "
+        r"checkpoints (Section~\ref{sec:exp-baseline}) consuming exported adjacency from P0. "
+        r"$\Delta$ is fold~0 full-log minus train-only. "
+        r"Positive $\Delta$AUC indicates higher discrimination when the graph sees the entire log. "
         r"\emph{to}: train-only graph; \emph{fl}: full-log graph."
     )
     blocks: list[str] = []

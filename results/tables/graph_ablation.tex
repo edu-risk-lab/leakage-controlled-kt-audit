@@ -2,7 +2,7 @@
 \centering
 \scriptsize
 \setlength{\tabcolsep}{2pt}
-\caption{Ablation contrasting \emph{train-only} graph smoothing (protocol) with a \emph{full-log} graph built from all learners before splitting (leaky construction). Graph-augmented baselines use the same diagnostic feature channels as Section~\ref{sec:exp-baseline}; by default a \emph{trained} logistic head is fit on the train fold only (coefficients can emphasize the leaked graph channel). $\Delta$ is the paired mean across folds (full-log minus train-only); positive $\Delta$AUC indicates higher discrimination when the graph sees the entire log. \emph{to}: train-only graph; \emph{fl}: full-log graph.}
+\caption{Ablation contrasting \emph{train-only} graph smoothing (protocol) with a \emph{full-log} graph built from all learners before splitting (leaky construction). Graph-augmented rows are pyKT checkpoints (Section~\ref{sec:exp-baseline}) consuming exported adjacency from P0. $\Delta$ is fold~0 full-log minus train-only. Positive $\Delta$AUC indicates higher discrimination when the graph sees the entire log. \emph{to}: train-only graph; \emph{fl}: full-log graph.}
 \label{tab:graph-ablation}
 \label{tab:graph-ablation-junyi}
 \begin{tabular}{@{} >{\RaggedRight\arraybackslash}p{12mm} *{6}{c} @{}}
@@ -28,11 +28,11 @@ DGEKT & 0.711 & 0.711 & -0.000 & 0.829 & 0.829 & -0.000 \\
 \toprule
 Model & \makecell{AUC\\to} & \makecell{AUC\\fl} & $\Delta$AUC & \makecell{ACC\\to} & \makecell{ACC\\fl} & $\Delta$ACC \\
 \midrule
-GKT & 0.960 & 0.960 & -0.000 & 0.906 & 0.906 & -0.000 \\
-GIKT & 0.968 & 0.968 & -0.000 & 0.915 & 0.914 & -0.000 \\
-SKT & 0.952 & 0.952 & 0.000 & 0.897 & 0.897 & 0.000 \\
-DyGKT & 0.951 & 0.951 & -0.000 & 0.898 & 0.897 & -0.000 \\
-DGEKT & 0.959 & 0.960 & 0.000 & 0.906 & 0.906 & 0.000 \\
+GKT & 0.961 & 0.961 & -0.000 & 0.907 & 0.907 & -0.000 \\
+GIKT & 0.998 & 0.998 & 0.000 & 1.000 & 1.000 & 0.000 \\
+SKT & 0.953 & 0.953 & 0.000 & 0.898 & 0.898 & 0.000 \\
+DyGKT & 0.952 & 0.952 & -0.000 & 0.899 & 0.899 & -0.000 \\
+DGEKT & 0.960 & 0.960 & 0.000 & 0.907 & 0.907 & 0.000 \\
 \bottomrule
 \end{tabular}
 \end{table}
