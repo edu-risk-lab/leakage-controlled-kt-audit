@@ -2,7 +2,7 @@
 \centering
 \footnotesize
 \setlength{\tabcolsep}{2pt}
-\caption{Diagnostic baseline results (train-only graphs). Baselines are used for protocol comparison only; no SOTA claim is made. Values are fold means with 95\% bootstrap confidence intervals when available.}
+\caption{Diagnostic baseline results (train-only graphs). Baselines are used for protocol comparison only; no SOTA claim is made. Values are fold means with 95\% bootstrap confidence intervals over valid+test sequence positions (\texttt{n\_folds} as exported per dataset).}
 \label{tab:baseline-results}
 \label{tab:baseline-junyi}
 \begin{tabular}{@{} >{\RaggedRight\arraybackslash}p{14mm} *{3}{>{\centering\arraybackslash}p{17mm}} @{}}
@@ -13,6 +13,7 @@ AKT & \makecell{0.989\\[-1pt]{\scriptsize[0.989, 0.989]}} & \makecell{0.962\\[-1
 BKT & \makecell{0.779\\[-1pt]{\scriptsize[0.779, 0.779]}} & \makecell{0.847\\[-1pt]{\scriptsize[0.847, 0.847]}} & \makecell{0.377\\[-1pt]{\scriptsize[0.377, 0.377]}} \\
 DKT & \makecell{0.989\\[-1pt]{\scriptsize[0.989, 0.989]}} & \makecell{0.962\\[-1pt]{\scriptsize[0.962, 0.962]}} & \makecell{0.093\\[-1pt]{\scriptsize[0.093, 0.093]}} \\
 \textit{simpleKT} & \makecell{0.989\\[-1pt]{\scriptsize[0.989, 0.989]}} & \makecell{0.962\\[-1pt]{\scriptsize[0.962, 0.962]}} & \makecell{0.093\\[-1pt]{\scriptsize[0.093, 0.093]}} \\
+SKT & \makecell{0.986\\[-1pt]{\scriptsize[0.986, 0.986]}} & \makecell{0.954\\[-1pt]{\scriptsize[0.954, 0.954]}} & \makecell{0.107\\[-1pt]{\scriptsize[0.107, 0.107]}} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -21,21 +22,21 @@ DKT & \makecell{0.989\\[-1pt]{\scriptsize[0.989, 0.989]}} & \makecell{0.962\\[-1
 \centering
 \footnotesize
 \setlength{\tabcolsep}{2pt}
-\caption{Diagnostic baselines: ASSISTments 2012 (train-only graphs).}
+\caption{Diagnostic baselines: ASSISTments 2012 (three-fold learner CV (\texttt{n\_folds}=3); train-only graphs).}
 \label{tab:baseline-assist2012}
 \begin{tabular}{@{} >{\RaggedRight\arraybackslash}p{14mm} *{3}{>{\centering\arraybackslash}p{17mm}} @{}}
 \toprule
 Model & AUC & ACC & NLL \\
 \midrule
-AKT & \makecell{0.968\\[-1pt]{\scriptsize[0.968, 0.968]}} & \makecell{0.914\\[-1pt]{\scriptsize[0.914, 0.914]}} & \makecell{0.176\\[-1pt]{\scriptsize[0.176, 0.176]}} \\
-BKT & \makecell{0.671\\[-1pt]{\scriptsize[0.671, 0.671]}} & \makecell{0.711\\[-1pt]{\scriptsize[0.711, 0.711]}} & \makecell{0.576\\[-1pt]{\scriptsize[0.576, 0.576]}} \\
-DGEKT & \makecell{0.959\\[-1pt]{\scriptsize[0.959, 0.959]}} & \makecell{0.906\\[-1pt]{\scriptsize[0.906, 0.906]}} & \makecell{0.188\\[-1pt]{\scriptsize[0.188, 0.188]}} \\
-DKT & \makecell{0.961\\[-1pt]{\scriptsize[0.961, 0.961]}} & \makecell{0.908\\[-1pt]{\scriptsize[0.908, 0.908]}} & \makecell{0.185\\[-1pt]{\scriptsize[0.185, 0.185]}} \\
-DyGKT & \makecell{0.951\\[-1pt]{\scriptsize[0.951, 0.951]}} & \makecell{0.898\\[-1pt]{\scriptsize[0.898, 0.898]}} & \makecell{0.203\\[-1pt]{\scriptsize[0.203, 0.203]}} \\
-GIKT & \makecell{0.968\\[-1pt]{\scriptsize[0.968, 0.968]}} & \makecell{0.915\\[-1pt]{\scriptsize[0.915, 0.915]}} & \makecell{0.176\\[-1pt]{\scriptsize[0.176, 0.176]}} \\
-GKT & \makecell{0.960\\[-1pt]{\scriptsize[0.960, 0.960]}} & \makecell{0.906\\[-1pt]{\scriptsize[0.906, 0.906]}} & \makecell{0.187\\[-1pt]{\scriptsize[0.187, 0.187]}} \\
-\textit{simpleKT} & \makecell{0.967\\[-1pt]{\scriptsize[0.967, 0.967]}} & \makecell{0.915\\[-1pt]{\scriptsize[0.915, 0.915]}} & \makecell{0.175\\[-1pt]{\scriptsize[0.175, 0.175]}} \\
-SKT & \makecell{0.952\\[-1pt]{\scriptsize[0.952, 0.952]}} & \makecell{0.897\\[-1pt]{\scriptsize[0.897, 0.897]}} & \makecell{0.200\\[-1pt]{\scriptsize[0.200, 0.200]}} \\
+AKT & \makecell{0.968\\[-1pt]{\scriptsize[0.968, 0.969]}} & \makecell{0.916\\[-1pt]{\scriptsize[0.914, 0.917]}} & \makecell{0.175\\[-1pt]{\scriptsize[0.173, 0.176]}} \\
+BKT & \makecell{0.669\\[-1pt]{\scriptsize[0.667, 0.671]}} & \makecell{0.713\\[-1pt]{\scriptsize[0.711, 0.715]}} & \makecell{0.574\\[-1pt]{\scriptsize[0.573, 0.576]}} \\
+DGEKT & \makecell{0.960\\[-1pt]{\scriptsize[0.959, 0.961]}} & \makecell{0.907\\[-1pt]{\scriptsize[0.906, 0.908]}} & \makecell{0.186\\[-1pt]{\scriptsize[0.185, 0.188]}} \\
+DKT & \makecell{0.963\\[-1pt]{\scriptsize[0.961, 0.964]}} & \makecell{0.910\\[-1pt]{\scriptsize[0.908, 0.911]}} & \makecell{0.182\\[-1pt]{\scriptsize[0.180, 0.185]}} \\
+DyGKT & \makecell{0.952\\[-1pt]{\scriptsize[0.951, 0.952]}} & \makecell{0.899\\[-1pt]{\scriptsize[0.898, 0.900]}} & \makecell{0.200\\[-1pt]{\scriptsize[0.198, 0.203]}} \\
+GIKT & -- & -- & -- \\
+GKT & \makecell{0.961\\[-1pt]{\scriptsize[0.960, 0.962]}} & \makecell{0.907\\[-1pt]{\scriptsize[0.906, 0.908]}} & \makecell{0.185\\[-1pt]{\scriptsize[0.184, 0.187]}} \\
+\textit{simpleKT} & \makecell{0.968\\[-1pt]{\scriptsize[0.967, 0.968]}} & \makecell{0.916\\[-1pt]{\scriptsize[0.915, 0.916]}} & \makecell{0.173\\[-1pt]{\scriptsize[0.172, 0.175]}} \\
+SKT & \makecell{0.953\\[-1pt]{\scriptsize[0.952, 0.953]}} & \makecell{0.898\\[-1pt]{\scriptsize[0.897, 0.899]}} & \makecell{0.198\\[-1pt]{\scriptsize[0.196, 0.200]}} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -44,20 +45,20 @@ SKT & \makecell{0.952\\[-1pt]{\scriptsize[0.952, 0.952]}} & \makecell{0.897\\[-1
 \centering
 \footnotesize
 \setlength{\tabcolsep}{2pt}
-\caption{Diagnostic baselines: XES3G5M (train-only graphs).}
+\caption{Diagnostic baselines: XES3G5M (released fold~0 diagnostic run (\texttt{n\_folds}=1; bootstrap CI collapses to the point estimate); train-only graphs).}
 \label{tab:baseline-xes3g5m}
 \begin{tabular}{@{} >{\RaggedRight\arraybackslash}p{14mm} *{3}{>{\centering\arraybackslash}p{17mm}} @{}}
 \toprule
 Model & AUC & ACC & NLL \\
 \midrule
-AKT & \makecell{0.874\\[-1pt]{\scriptsize[0.874, 0.874]}} & \makecell{0.857\\[-1pt]{\scriptsize[0.857, 0.857]}} & \makecell{0.326\\[-1pt]{\scriptsize[0.326, 0.326]}} \\
+AKT & \makecell{0.875\\[-1pt]{\scriptsize[0.874, 0.875]}} & \makecell{0.858\\[-1pt]{\scriptsize[0.857, 0.858]}} & \makecell{0.325\\[-1pt]{\scriptsize[0.323, 0.326]}} \\
 BKT & \makecell{0.634\\[-1pt]{\scriptsize[0.634, 0.634]}} & \makecell{0.793\\[-1pt]{\scriptsize[0.793, 0.793]}} & \makecell{0.492\\[-1pt]{\scriptsize[0.492, 0.492]}} \\
 DGEKT & \makecell{0.841\\[-1pt]{\scriptsize[0.841, 0.841]}} & \makecell{0.844\\[-1pt]{\scriptsize[0.844, 0.844]}} & \makecell{0.358\\[-1pt]{\scriptsize[0.358, 0.358]}} \\
-DKT & \makecell{0.858\\[-1pt]{\scriptsize[0.858, 0.858]}} & \makecell{0.851\\[-1pt]{\scriptsize[0.851, 0.851]}} & \makecell{0.342\\[-1pt]{\scriptsize[0.342, 0.342]}} \\
+DKT & \makecell{0.858\\[-1pt]{\scriptsize[0.857, 0.858]}} & \makecell{0.851\\[-1pt]{\scriptsize[0.851, 0.852]}} & \makecell{0.342\\[-1pt]{\scriptsize[0.341, 0.342]}} \\
 DyGKT & \makecell{0.752\\[-1pt]{\scriptsize[0.752, 0.752]}} & \makecell{0.813\\[-1pt]{\scriptsize[0.813, 0.813]}} & \makecell{0.431\\[-1pt]{\scriptsize[0.431, 0.431]}} \\
-GIKT & \makecell{0.874\\[-1pt]{\scriptsize[0.874, 0.874]}} & \makecell{0.857\\[-1pt]{\scriptsize[0.857, 0.857]}} & \makecell{0.326\\[-1pt]{\scriptsize[0.326, 0.326]}} \\
-GKT & \makecell{0.835\\[-1pt]{\scriptsize[0.835, 0.835]}} & \makecell{0.842\\[-1pt]{\scriptsize[0.842, 0.842]}} & \makecell{0.365\\[-1pt]{\scriptsize[0.365, 0.365]}} \\
-\textit{simpleKT} & \makecell{0.874\\[-1pt]{\scriptsize[0.874, 0.874]}} & \makecell{0.857\\[-1pt]{\scriptsize[0.857, 0.857]}} & \makecell{0.325\\[-1pt]{\scriptsize[0.325, 0.325]}} \\
+GIKT & -- & -- & -- \\
+GKT & \makecell{0.834\\[-1pt]{\scriptsize[0.834, 0.835]}} & \makecell{0.842\\[-1pt]{\scriptsize[0.842, 0.842]}} & \makecell{0.364\\[-1pt]{\scriptsize[0.363, 0.365]}} \\
+\textit{simpleKT} & \makecell{0.875\\[-1pt]{\scriptsize[0.874, 0.875]}} & \makecell{0.858\\[-1pt]{\scriptsize[0.857, 0.859]}} & \makecell{0.324\\[-1pt]{\scriptsize[0.323, 0.325]}} \\
 SKT & \makecell{0.623\\[-1pt]{\scriptsize[0.623, 0.623]}} & \makecell{0.799\\[-1pt]{\scriptsize[0.799, 0.799]}} & \makecell{0.483\\[-1pt]{\scriptsize[0.483, 0.483]}} \\
 \bottomrule
 \end{tabular}
@@ -67,21 +68,20 @@ SKT & \makecell{0.623\\[-1pt]{\scriptsize[0.623, 0.623]}} & \makecell{0.799\\[-1
 \centering
 \footnotesize
 \setlength{\tabcolsep}{2pt}
-\caption{Diagnostic baselines: Synthetic C2 (train-only graphs).}
+\caption{Diagnostic baselines: Synthetic C2 (three-fold learner CV (\texttt{n\_folds}=3); train-only graphs).}
 \label{tab:baseline-synthetic-c2}
 \begin{tabular}{@{} >{\RaggedRight\arraybackslash}p{14mm} *{3}{>{\centering\arraybackslash}p{17mm}} @{}}
 \toprule
 Model & AUC & ACC & NLL \\
 \midrule
-AKT & \makecell{0.870\\[-1pt]{\scriptsize[0.870, 0.870]}} & \makecell{0.802\\[-1pt]{\scriptsize[0.802, 0.802]}} & \makecell{0.417\\[-1pt]{\scriptsize[0.417, 0.417]}} \\
-BKT & \makecell{0.835\\[-1pt]{\scriptsize[0.835, 0.835]}} & \makecell{0.781\\[-1pt]{\scriptsize[0.781, 0.781]}} & \makecell{0.462\\[-1pt]{\scriptsize[0.462, 0.462]}} \\
-DGEKT & \makecell{0.859\\[-1pt]{\scriptsize[0.859, 0.859]}} & \makecell{0.794\\[-1pt]{\scriptsize[0.794, 0.794]}} & \makecell{0.432\\[-1pt]{\scriptsize[0.432, 0.432]}} \\
-DKT & \makecell{0.857\\[-1pt]{\scriptsize[0.857, 0.857]}} & \makecell{0.788\\[-1pt]{\scriptsize[0.788, 0.788]}} & \makecell{0.434\\[-1pt]{\scriptsize[0.434, 0.434]}} \\
-DyGKT & \makecell{0.867\\[-1pt]{\scriptsize[0.867, 0.867]}} & \makecell{0.801\\[-1pt]{\scriptsize[0.801, 0.801]}} & \makecell{0.421\\[-1pt]{\scriptsize[0.421, 0.421]}} \\
-GIKT & \makecell{0.979\\[-1pt]{\scriptsize[0.979, 0.979]}} & \makecell{0.985\\[-1pt]{\scriptsize[0.985, 0.985]}} & \makecell{0.142\\[-1pt]{\scriptsize[0.142, 0.142]}} \\
-GKT & \makecell{0.868\\[-1pt]{\scriptsize[0.868, 0.868]}} & \makecell{0.799\\[-1pt]{\scriptsize[0.799, 0.799]}} & \makecell{0.420\\[-1pt]{\scriptsize[0.420, 0.420]}} \\
-\textit{simpleKT} & \makecell{0.871\\[-1pt]{\scriptsize[0.871, 0.871]}} & \makecell{0.803\\[-1pt]{\scriptsize[0.803, 0.803]}} & \makecell{0.416\\[-1pt]{\scriptsize[0.416, 0.416]}} \\
-SKT & \makecell{0.853\\[-1pt]{\scriptsize[0.853, 0.853]}} & \makecell{0.788\\[-1pt]{\scriptsize[0.788, 0.788]}} & \makecell{0.440\\[-1pt]{\scriptsize[0.440, 0.440]}} \\
+AKT & \makecell{0.873\\[-1pt]{\scriptsize[0.870, 0.876]}} & \makecell{0.808\\[-1pt]{\scriptsize[0.802, 0.812]}} & \makecell{0.407\\[-1pt]{\scriptsize[0.401, 0.417]}} \\
+BKT & \makecell{0.835\\[-1pt]{\scriptsize[0.833, 0.838]}} & \makecell{0.782\\[-1pt]{\scriptsize[0.780, 0.784]}} & \makecell{0.460\\[-1pt]{\scriptsize[0.458, 0.462]}} \\
+DGEKT & \makecell{0.710\\[-1pt]{\scriptsize[0.634, 0.859]}} & \makecell{0.724\\[-1pt]{\scriptsize[0.686, 0.794]}} & \makecell{0.551\\[-1pt]{\scriptsize[0.432, 0.613]}} \\
+DKT & \makecell{0.862\\[-1pt]{\scriptsize[0.857, 0.868]}} & \makecell{0.798\\[-1pt]{\scriptsize[0.788, 0.805]}} & \makecell{0.421\\[-1pt]{\scriptsize[0.413, 0.434]}} \\
+DyGKT & \makecell{0.710\\[-1pt]{\scriptsize[0.631, 0.867]}} & \makecell{0.726\\[-1pt]{\scriptsize[0.686, 0.801]}} & \makecell{0.550\\[-1pt]{\scriptsize[0.421, 0.617]}} \\
+GKT & \makecell{0.873\\[-1pt]{\scriptsize[0.868, 0.878]}} & \makecell{0.808\\[-1pt]{\scriptsize[0.799, 0.814]}} & \makecell{0.407\\[-1pt]{\scriptsize[0.400, 0.420]}} \\
+\textit{simpleKT} & \makecell{0.875\\[-1pt]{\scriptsize[0.871, 0.880]}} & \makecell{0.809\\[-1pt]{\scriptsize[0.803, 0.814]}} & \makecell{0.405\\[-1pt]{\scriptsize[0.399, 0.416]}} \\
+SKT & \makecell{0.708\\[-1pt]{\scriptsize[0.634, 0.853]}} & \makecell{0.722\\[-1pt]{\scriptsize[0.686, 0.788]}} & \makecell{0.554\\[-1pt]{\scriptsize[0.440, 0.613]}} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -90,7 +90,7 @@ SKT & \makecell{0.853\\[-1pt]{\scriptsize[0.853, 0.853]}} & \makecell{0.788\\[-1
 \centering
 \footnotesize
 \setlength{\tabcolsep}{2pt}
-\caption{Diagnostic baselines: Synthetic C5 (train-only graphs).}
+\caption{Diagnostic baselines: Synthetic C5 (released fold~0 diagnostic run (\texttt{n\_folds}=1; bootstrap CI collapses to the point estimate); train-only graphs).}
 \label{tab:baseline-synthetic-c5}
 \begin{tabular}{@{} >{\RaggedRight\arraybackslash}p{14mm} *{3}{>{\centering\arraybackslash}p{17mm}} @{}}
 \toprule
@@ -101,7 +101,6 @@ BKT & \makecell{0.794\\[-1pt]{\scriptsize[0.794, 0.794]}} & \makecell{0.725\\[-1
 DGEKT & \makecell{0.827\\[-1pt]{\scriptsize[0.827, 0.827]}} & \makecell{0.755\\[-1pt]{\scriptsize[0.755, 0.755]}} & \makecell{0.492\\[-1pt]{\scriptsize[0.492, 0.492]}} \\
 DKT & \makecell{0.825\\[-1pt]{\scriptsize[0.825, 0.825]}} & \makecell{0.752\\[-1pt]{\scriptsize[0.752, 0.752]}} & \makecell{0.496\\[-1pt]{\scriptsize[0.496, 0.496]}} \\
 DyGKT & \makecell{0.824\\[-1pt]{\scriptsize[0.824, 0.824]}} & \makecell{0.748\\[-1pt]{\scriptsize[0.748, 0.748]}} & \makecell{0.496\\[-1pt]{\scriptsize[0.496, 0.496]}} \\
-GIKT & \makecell{0.820\\[-1pt]{\scriptsize[0.820, 0.820]}} & \makecell{0.745\\[-1pt]{\scriptsize[0.745, 0.745]}} & \makecell{0.506\\[-1pt]{\scriptsize[0.506, 0.506]}} \\
 GKT & \makecell{0.810\\[-1pt]{\scriptsize[0.810, 0.810]}} & \makecell{0.740\\[-1pt]{\scriptsize[0.740, 0.740]}} & \makecell{0.527\\[-1pt]{\scriptsize[0.527, 0.527]}} \\
 \textit{simpleKT} & \makecell{0.828\\[-1pt]{\scriptsize[0.828, 0.828]}} & \makecell{0.754\\[-1pt]{\scriptsize[0.754, 0.754]}} & \makecell{0.491\\[-1pt]{\scriptsize[0.491, 0.491]}} \\
 SKT & \makecell{0.808\\[-1pt]{\scriptsize[0.808, 0.808]}} & \makecell{0.737\\[-1pt]{\scriptsize[0.737, 0.737]}} & \makecell{0.513\\[-1pt]{\scriptsize[0.513, 0.513]}} \\

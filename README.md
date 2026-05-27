@@ -476,7 +476,7 @@ Regeneration recipe aligned with the README scripts:
 1. `./scripts/run_all_datasets_full.sh --server` (or the `.ps1` equivalent).  
 2. Optional H1 graph ablation: `SERVER_PROFILE=1 ./scripts/run_graph_ablation_experiment.sh` or `.\scripts\run_graph_ablation_experiment.ps1 -ServerProfile`, then `python scripts/generate_paper_artifacts.py`.  
 3. `python scripts/run_gt_cross_validation_junyi.py` (optional).  
-4. `latexmk` / `pdflatex` from repo root on `paper/main.tex`.
+4. Springer LNNS build: `.\scripts\build_paper_lnns.ps1` (or `pdflatex` + `bibtex` from repo root on `paper/main.tex`; uses `llncs` + `splncs04`). Legacy IEEE source: `paper/main_ieee.tex`.
 
 ---
 

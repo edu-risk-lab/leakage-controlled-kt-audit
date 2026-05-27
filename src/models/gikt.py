@@ -123,8 +123,10 @@ class GIKTPyTorch(nn.Module):
         # - attention over historical hidden states H[:, :t] using the GCN embedding of next question q[:, t+1]
         probs = torch.zeros(batch_size, seq_len, device=qseqs.device)
 
-        # Loop through each step (seq_len - 1 predictions)
-        # Prediction at index t (predicting shift_rseqs at t, which corresponds to qseqs at t+1)
+        # Loop through each step (seq_len - 1 predictions).
+        # Store the prediction at t+1 so callers can compare probs[:, 1:]
+        # with shifted responses. Writing to probs[:, t] would leak the
+        # response at t+1 through H[:, t+1] when the caller slices y[:, 1:].
         for t in range(seq_len - 1):
             h_t = H[:, t, :]  # [batch_size, hidden_dim]
             next_q_emb = q_gcn[torch.clamp(qseqs[:, t + 1], min=0).long()]  # [batch_size, emb_size]
@@ -146,7 +148,7 @@ class GIKTPyTorch(nn.Module):
             out_input = torch.cat([h_t, recap_context, next_q_emb], dim=-1)  # [batch_size, hidden_dim * 2 + emb_size]
             logits = self.fc_out(out_input).squeeze(-1)  # [batch_size]
 
-            probs[:, t] = torch.sigmoid(logits)
+            probs[:, t + 1] = torch.sigmoid(logits)
 
         # The prediction for the first element is standard prior correctness probability of the first question
         # We can set it to a learnable prior or simple prediction from the GCN embedding alone
