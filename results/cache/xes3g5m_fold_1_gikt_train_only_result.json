@@ -5,9 +5,9 @@
     "model": "gikt",
     "graph_construction": "train_only",
     "eval_split": "valid+test",
-    "auc": 0.9949956583909279,
-    "acc": 0.9959913012767212,
-    "nll": 0.03702112527245037,
+    "auc": 0.8777828426318252,
+    "acc": 0.8602711954904573,
+    "nll": 0.319571180535475,
     "n_eval": 1922941,
     "status": "pykt_checkpoint",
     "note": "pyKT `gikt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs."

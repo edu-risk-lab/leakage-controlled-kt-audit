@@ -68,7 +68,7 @@ cold_start:
 # --- Baseline diagnostic ---
 baselines:
   - name: bkt
-    enabled: true
+    enabled: false
   - name: dkt
     enabled: true
     hyperparams:
@@ -81,9 +81,9 @@ baselines:
   - name: akt
     enabled: true
   - name: gkt
-    enabled: true
+    enabled: false
     hyperparams:
-      batch_size: 8
+      batch_size: 32
       epochs: 10
   - name: gikt
     enabled: true
@@ -109,7 +109,7 @@ baselines:
 
 graph_ablation:
   enabled: true
-  models: [gkt, gikt, skt, dygkt, dgekt]
+  models: [gikt, skt, dygkt, dgekt]
   trained_leakage_head:
     enabled: true
     epochs: 15
@@ -121,7 +121,7 @@ evaluation:
   baseline_backend: pykt   # use ``pykt`` with extras torch + pykt-toolkit (see pyproject optional-dependencies)
 
 pykt:
-  max_seq_len: 200
+  max_seq_len: 100
   gkt_graph_tag: p0_protocol
   epochs: 30
   batch_size: 64
