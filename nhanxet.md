@@ -29,3 +29,18 @@ Nguyên nhân thực sự dẫn đến mức AUC 0.98 không phải do lỗi rò
 
 ## 5. Kết luận
 Mức AUC ~0.98 không phải là kết quả của một lỗi lập trình, mà nó phản ánh một điểm yếu phổ biến trong các bộ dữ liệu KT hiện nay (Sequence Autocorrelation). Đây là một minh chứng xuất sắc để đưa vào bài báo nghiên cứu (paper) nhằm thảo luận về tác động của các tương tác lặp lại (Repetitive Interactions) đối với hiệu suất của các mô hình Deep Learning trong lĩnh vực Knowledge Tracing.
+
+## 6. Giải thích sự cố GIKT trên XES3G5M (AUC 0.995 ở Fold 1-2 full_log)
+Trong bảng kết quả, mô hình GIKT trên tập XES3G5M ghi nhận AUC ~0.995 ở nhánh `full_log` (Folds 1 và 2), nhưng lại trả về AUC bình thường (~0.878) ở Fold 0 và ở thiết lập `train_only`. 
+
+Quá trình điều tra cho thấy đây **hoàn toàn là do tệp cache cũ (outdated cache file) bị lưu lại trong hệ thống (results/cache)**. Cụ thể:
+1. Trước đây, mã nguồn PyTorch của GIKT (trong `gikt.py`) có một lỗi "data leakage" nhỏ ở vòng lặp LSTM do lệch một nhịp chỉ số khi đẩy logit vào mảng `probs`. Lỗi này cho phép mạng nơ-ron nhìn trước được một bước đáp án.
+2. Lỗi này **đã được sửa** (bằng cách cập nhật đúng thành `probs[:, t+1] = torch.sigmoid(logits)`) và commit (lần 14).
+3. Tuy nhiên, trước khi mã nguồn được sửa, hệ thống đã kịp lưu lại tệp cache chạy thử cho Fold 1 và Fold 2 của `full_log`. Các file `.json` kết quả (như `xes3g5m_fold_1_gikt_full_log_result.json`) vẫn còn tồn tại trong thư mục cục bộ của máy tính.
+4. Khi kịch bản tự động (`baseline_runner.py`) chạy lại, cơ chế lưu đệm phát hiện các file cache này và trực tiếp load lại kết quả (báo cáo là 0.995) thay vì chạy lại mô hình GIKT đã được vá lỗi.
+
+**Kiểm chứng:** Khi ép script bỏ qua cache và trực tiếp huẩn luyện lại mạng GIKT bằng mã nguồn hiện tại, AUC sau 10 epoch trên XES3G5M đã hội tụ chính xác ở mức **~0.8778**.
+
+**Cách xử lý:** 
+- Xóa bỏ các file cache bị lỗi của GIKT trong thư mục `results/cache/`.
+- Kết quả chính thức của GIKT trên `full_log` không hề bị data leakage và sẵn sàng để báo cáo an toàn trong paper. Không cần loại bỏ mô hình này khỏi kết quả nghiên cứu.
