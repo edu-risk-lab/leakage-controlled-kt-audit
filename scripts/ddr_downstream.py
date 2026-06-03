@@ -3,16 +3,26 @@
 
 For each fold of a dataset we perturb the train-only prerequisite graph
 ``E_pre`` with one augmentation operator at a given strength ``p``, rebuild the
-GKT adjacency (perturbed ``E_pre`` unioned with the unchanged ``E_sim``),
-retrain GKT, and record the test AUC alongside the DDR of that perturbation.
-This links the structural DDR diagnostic (Section: DAG Disruption Rate) to
-downstream KT accuracy: if DDR is meaningful, higher DDR should track larger
-AUC degradation, and the prerequisite-preserving operator should degrade
-accuracy less than label-agnostic dropping at a matched budget.
+KC--KC adjacency (perturbed ``E_pre`` unioned with the unchanged ``E_sim``),
+retrain a graph-consuming KT model, and record the test AUC alongside the DDR of
+that perturbation. This links the structural DDR diagnostic (Section: DAG
+Disruption Rate) to downstream KT accuracy: if DDR is meaningful, higher DDR
+should track larger AUC degradation, and the prerequisite-preserving operator
+should degrade accuracy less than label-agnostic dropping at a matched budget.
+
+Model choice (``--model``). Only models that ingest the KC--KC prerequisite
+adjacency are valid here, because DDR perturbs ``E_pre``:
+  - ``gkt`` (default): the canonical graph-KT model; most graph-dependent but
+    the slowest to train (small batch, per-step graph propagation).
+  - ``skt`` / ``dygkt`` / ``dgekt``: native lightweight models that consume the
+    same adjacency (``graph_npz`` -> ``adj_matrix``) and train substantially
+    faster; good for a cheaper sweep or cross-architecture robustness.
+``gikt`` is intentionally rejected: it consumes the question--concept bipartite
+graph and ignores ``E_pre``, so perturbing ``E_pre`` would have no effect.
 
 Within a fold the pyKT sequence files are written once and reused across all
-(operator, p) variants; only the GKT graph ``.npz`` changes, so the marginal
-cost per variant is one GKT training run.
+(operator, p) variants; only the graph ``.npz`` changes, so the marginal cost
+per variant is one model training run.
 
 Outputs (appended row-by-row, resumable): results/tables/ddr_downstream.csv
 
@@ -58,7 +68,8 @@ OPERATORS = {
     "attr_mask": apply_attribute_mask,
 }
 
-_KEY_COLS = ["dataset", "fold", "operator", "p"]
+GRAPH_MODELS = ("gkt", "skt", "dygkt", "dgekt")
+_KEY_COLS = ["dataset", "model", "fold", "operator", "p"]
 
 
 def _load_done(out_csv: Path) -> set:
@@ -67,7 +78,10 @@ def _load_done(out_csv: Path) -> set:
     df = pd.read_csv(out_csv)
     if not set(_KEY_COLS).issubset(df.columns):
         return set()
-    return {(str(r.dataset), int(r.fold), str(r.operator), round(float(r.p), 4)) for r in df.itertuples()}
+    return {
+        (str(r.dataset), str(r.model), int(r.fold), str(r.operator), round(float(r.p), 4))
+        for r in df.itertuples()
+    }
 
 
 def _append_row(out_csv: Path, row: dict) -> None:
@@ -78,6 +92,12 @@ def _append_row(out_csv: Path, row: dict) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--config", type=Path, required=True)
+    parser.add_argument(
+        "--model",
+        default="gkt",
+        choices=GRAPH_MODELS,
+        help="Graph-KT model that ingests the KC--KC E_pre adjacency. GIKT is not allowed (it ignores E_pre).",
+    )
     parser.add_argument("--operators", nargs="+", default=["edge_drop", "node_drop", "prereq_preserve"])
     parser.add_argument("--ps", nargs="+", type=float, default=[0.10, 0.20, 0.30])
     parser.add_argument("--perturb-seed", type=int, default=42, help="Seed for the augmentation operator.")
@@ -107,7 +127,7 @@ def main() -> int:
     graph_tag = str(py_all.get("gkt_graph_tag", "p0_protocol"))
     hp: dict = {}
     for item in cfg.get("baselines") or []:
-        if item.get("name") == "gkt" and isinstance(item.get("hyperparams"), dict):
+        if item.get("name") == args.model and isinstance(item.get("hyperparams"), dict):
             hp = dict(item["hyperparams"])
             break
     epochs = int(hp.get("epochs", py_all.get("epochs", 30)))
@@ -124,7 +144,7 @@ def main() -> int:
             break
         train = splits["train"]
         q_map, c_map = build_dense_maps(train)
-        work_dir = ROOT / "results/pykt_work" / dataset / f"fold_{fold}_seed_{split_seed}" / "ddr_downstream" / "gkt"
+        work_dir = ROOT / "results/pykt_work" / dataset / f"fold_{fold}_seed_{split_seed}" / "ddr_downstream" / args.model
         num_q, num_c = dataframe_to_pykt_csvs(
             train_df=train,
             valid_df=splits["valid"],
@@ -140,7 +160,7 @@ def main() -> int:
         original = pd.read_csv(epre_path) if epre_path.exists() else pd.DataFrame(columns=["src_kc", "dst_kc", "weight"])
 
         for operator, pp in variants:
-            key = (dataset, int(fold), operator, round(float(pp), 4))
+            key = (dataset, args.model, int(fold), operator, round(float(pp), 4))
             if key in done:
                 logger.info("skip (already done): %s", key)
                 continue
@@ -160,6 +180,7 @@ def main() -> int:
 
             row: dict = {
                 "dataset": dataset,
+                "model": args.model,
                 "fold": int(fold),
                 "split_seed": int(split_seed),
                 "operator": operator,
@@ -176,8 +197,8 @@ def main() -> int:
             else:
                 fit_seed = int(args.experiment_seed) + int(fold) * 97
                 auc, acc, nll, note = run_pykt_fold(
-                    display_model="gkt",
-                    pykt_name="gkt",
+                    display_model=args.model,
+                    pykt_name=args.model,
                     work_dir=work_dir,
                     num_q=num_q,
                     num_c=num_c,

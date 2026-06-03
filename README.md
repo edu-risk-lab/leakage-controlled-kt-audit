@@ -281,10 +281,11 @@ Follow **A → B** once per machine; then choose **one track** under **C**. Comm
 19. Paper `\input{...}` tables from existing CSVs: `python scripts/generate_paper_artifacts.py`.
 
 **Track 6 — DDR→downstream (`small_downstream`, GPU)**  
-20. Requires parquet + fold graphs (`e_pre_train_only.csv`) for the chosen dataset, plus the pyKT backend ([§2.2](#22-dependencies)). Perturbs `E_pre` per operator/strength, retrains GKT, and links DDR to test AUC ([§4.6](#46-ddrdownstream-small_downstream)):
+20. Requires parquet + fold graphs (`e_pre_train_only.csv`) for the chosen dataset, plus the pyKT backend ([§2.2](#22-dependencies)). Perturbs `E_pre` per operator/strength, retrains a graph-consuming KT model (`--model`, default `gkt`; `gikt` is rejected as it ignores `E_pre`), and links DDR to test AUC ([§4.6](#46-ddrdownstream-small_downstream)):
     ```bash
     python -m scripts.ddr_downstream --config configs/assist2012.yaml
     python -m scripts.ddr_downstream --config configs/xes3g5m.yaml
+    # faster alternative: --model dgekt (native, lighter than GKT)
     python -m scripts.plot_ddr_downstream
     ```
 
@@ -311,7 +312,7 @@ For **manual stage-by-stage** control on a single config (debugging), use the or
 | **Smoke / one dataset** | `scripts/run_*_minimal.sh` | Same layout under `data/processed/<dataset>/` and `results/` for that config |
 | **Graph ablation** (train-only vs full-log graphs, graph-augmented diagnostics) | `scripts/run_graph_ablation_experiment.sh` or `scripts/run_graph_ablation_experiment.ps1` | `results/tables/graph_ablation_summary.csv`, `graph_ablation.tex`; see `scripts/GRAPH_ABLATION_EXPERIMENT.md` |
 | **Junyi GT vs expert DAG** | `python scripts/run_gt_cross_validation_junyi.py` | `results/gt_validation/junyi/*` |
-| **DDR→downstream** (GPU; perturb `E_pre`, retrain GKT) | `python -m scripts.ddr_downstream --config configs/<ds>.yaml` then `python -m scripts.plot_ddr_downstream` | `results/tables/ddr_downstream*.csv`/`.tex`, `results/figures/fig_ddr_downstream.pdf` |
+| **DDR→downstream** (GPU; perturb `E_pre`, retrain a graph-KT model via `--model`) | `python -m scripts.ddr_downstream --config configs/<ds>.yaml` then `python -m scripts.plot_ddr_downstream` | `results/tables/ddr_downstream*.csv`/`.tex`, `results/figures/fig_ddr_downstream.pdf` |
 | **Sequence autocorrelation** | `python -m scripts.compute_autocorrelation` then `python -m scripts.plot_autocorrelation` | `results/tables/autocorrelation_stats.*`, `results/figures/fig_autocorr_vs_auc.pdf` |
 | **Significance testing** | `python -m scripts.run_significance_testing` | `results/tables/significance_tests.csv`, `baseline_cv_template.tex` |
 | **Paper tables only** (CSVs already produced) | `python scripts/generate_paper_artifacts.py` | Regenerates `\input{results/tables/...}` snippets |
@@ -428,22 +429,39 @@ Outputs: `results/gt_validation/junyi/` (`overlap_metrics_at_K.csv`,
 
 Links the structural **DDR** diagnostic to **downstream KT accuracy**: for each
 fold, the train-only prerequisite graph `E_pre` is perturbed by each operator at
-strength `p`, the GKT adjacency is rebuilt (perturbed `E_pre` ∪ unchanged
-`E_sim`), **GKT is retrained**, and the test AUC is recorded alongside the DDR of
-that perturbation. A positive DDR↔(AUC drop) correlation shows DDR is predictive;
-`prereq_preserve` (low DDR at matched budget) should degrade accuracy least.
+strength `p`, the KC–KC adjacency is rebuilt (perturbed `E_pre` ∪ unchanged
+`E_sim`), a **graph-consuming KT model is retrained**, and the test AUC is
+recorded alongside the DDR of that perturbation. A positive DDR↔(AUC drop)
+correlation shows DDR is predictive; `prereq_preserve` (low DDR at matched
+budget) should degrade accuracy least.
+
+**Model choice (`--model`).** Only models that ingest the KC–KC prerequisite
+adjacency are valid here, because DDR perturbs `E_pre`:
+> - `gkt` (default): canonical graph-KT model; most graph-dependent (strongest
+>   expected signal) but the **slowest** to train (small batch, per-step graph
+>   propagation).
+> - `skt` / `dygkt` / `dgekt`: native lightweight models that consume the **same**
+>   adjacency (`graph_npz` → `adj_matrix`) and train **much faster** — use these
+>   for a cheaper sweep or to show the DDR↔accuracy link is robust across
+>   architectures.
+> - `gikt` is **rejected** by design: it consumes the question–concept bipartite
+>   graph and ignores `E_pre`, so perturbing `E_pre` would have no effect.
 
 > **Requires** the pyKT backend ([§2.2](#22-dependencies)) and a GPU for
-> realistic runtime. GKT is the slowest model; an RTX 3090 handles ASSISTments
-> and XES3G5M (GKT on Junyi is impractical and is omitted, matching the paper).
+> realistic runtime. GKT is the slowest; an RTX 3090 handles ASSISTments and
+> XES3G5M (GKT on Junyi is impractical and is omitted, matching the paper). For a
+> faster turnaround, run `--model dgekt` (or `skt`/`dygkt`) instead.
 
 ```bash
 # Calibrate one fold first to measure per-run time, then scale up:
 python -m scripts.ddr_downstream --config configs/assist2012.yaml --max-folds 1
 
-# Full runs (resumable: re-running skips rows already in the output CSV):
+# Full GKT runs (resumable: re-running skips rows already in the output CSV):
 python -m scripts.ddr_downstream --config configs/assist2012.yaml
 python -m scripts.ddr_downstream --config configs/xes3g5m.yaml
+
+# Faster alternative / cross-architecture check (native lightweight graph model):
+python -m scripts.ddr_downstream --config configs/assist2012.yaml --model dgekt
 
 # CPU smoke test of the data path only (no torch / no training):
 python -m scripts.ddr_downstream --config configs/assist2012.yaml --dry-run --max-folds 1
@@ -452,11 +470,13 @@ python -m scripts.ddr_downstream --config configs/assist2012.yaml --dry-run --ma
 python -m scripts.plot_ddr_downstream
 ```
 
-Useful flags: `--operators edge_drop node_drop prereq_preserve` (default),
+Useful flags: `--model {gkt,skt,dygkt,dgekt}` (default `gkt`),
+`--operators edge_drop node_drop prereq_preserve` (default),
 `--ps 0.10 0.20 0.30` (default), `--max-folds N`, `--perturb-seed`,
 `--experiment-seed`, `--out`. Within a fold the pyKT sequence files are written
-once and reused; only the GKT graph `.npz` changes, so each variant costs one
-GKT training run.
+once and reused; only the graph `.npz` changes, so each variant costs one model
+training run. The output CSV carries a `model` column, so multiple models can
+share one file and the plot script summarises each `(dataset, model)` separately.
 
 Outputs: `results/tables/ddr_downstream.csv` (raw, appended/resumable),
 `results/tables/ddr_downstream_summary.csv`, `results/tables/ddr_downstream.tex`
@@ -566,8 +586,8 @@ See `tests/test_graph_builder_train_only.py` for examples.
 | `results/tables/dag_disruption.csv` | `dag_disruption` | Raw DDR rows (fold × aug × p × seed; five operators incl. `prereq_preserve`) |
 | `results/tables/dag_disruption_summary.csv` | `dag_disruption` | Means/CIs used in paper DDR table |
 | `results/figures/fig_ddr_<dataset>.pdf` | `dag_disruption` | DDR vs `p` line chart per dataset |
-| `results/tables/ddr_downstream.csv` | `scripts/ddr_downstream.py` | Raw DDR→downstream rows (operator × p × fold, GKT test AUC) |
-| `results/tables/ddr_downstream_summary.csv` (+ `.tex`) | `scripts/plot_ddr_downstream.py` | Per (operator, p) mean DDR / AUC / AUC drop; table `tab:ddr-downstream` |
+| `results/tables/ddr_downstream.csv` | `scripts/ddr_downstream.py` | Raw DDR→downstream rows (model × operator × p × fold, test AUC) |
+| `results/tables/ddr_downstream_summary.csv` (+ `.tex`) | `scripts/plot_ddr_downstream.py` | Per (dataset, model, operator, p) mean DDR / AUC / AUC drop; table `tab:ddr-downstream` |
 | `results/figures/fig_ddr_downstream.pdf` (+ `.png`) | `scripts/plot_ddr_downstream.py` | DDR vs downstream AUC drop scatter + correlation |
 | `results/tables/autocorrelation_stats.csv` (+ `.tex`) | `scripts/compute_autocorrelation.py` | Sequence-autocorrelation diagnostics; table `tab:autocorrelation` |
 | `results/figures/fig_autocorr_vs_auc.pdf` (+ `.png`) | `scripts/plot_autocorrelation.py` | KC-repeat rate vs deep-KT / BKT AUC |
@@ -634,8 +654,11 @@ heavy models in `configs/*.yaml` under `baselines:` while debugging structure-on
 **DDR→downstream (`ddr_downstream.py`)** — Needs `data/processed/<ds>/fold_*/e_pre_train_only.csv`
 (run `graph_builder` first) and the pyKT backend ([§2.2](#22-dependencies)). It is GPU-bound;
 calibrate with `--max-folds 1` to estimate per-run time before scaling up. Use `--dry-run`
-(no torch) to validate the data path on CPU. Junyi GKT is impractical and intentionally omitted.
-Runs are **resumable**: re-running skips `(dataset, fold, operator, p)` rows already in the output CSV.
+(no torch) to validate the data path on CPU. Default `--model gkt` is the slowest; switch to
+`--model dgekt`/`skt`/`dygkt` (native, lighter, same `E_pre` adjacency) for a faster sweep.
+`--model gikt` is rejected because GIKT uses the question–concept graph, not `E_pre`.
+Junyi GKT is impractical and intentionally omitted. Runs are **resumable**: re-running skips
+`(dataset, model, fold, operator, p)` rows already in the output CSV.
 
 **`baseline_backend=pykt` import errors** — Run `git submodule update --init --recursive`
 and `pip install -e ".[pykt]"` from the repo root (see [§2.2](#22-dependencies)).
@@ -693,7 +716,7 @@ p0_project/
 │   ├── make_all_figures.sh
 │   ├── generate_paper_artifacts.py
 │   ├── run_gt_cross_validation_junyi.py
-│   ├── ddr_downstream.py             # DDR→downstream GKT study (§4.6)
+│   ├── ddr_downstream.py             # DDR→downstream study, --model gkt/skt/dygkt/dgekt (§4.6)
 │   ├── plot_ddr_downstream.py        # DDR vs AUC-drop summary + figure
 │   ├── compute_autocorrelation.py    # sequence-autocorrelation stats (§4.7)
 │   ├── plot_autocorrelation.py       # repeat-rate vs AUC bar chart

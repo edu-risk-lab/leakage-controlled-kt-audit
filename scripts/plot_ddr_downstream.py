@@ -39,10 +39,14 @@ _OP_COLOR = {
 }
 
 
-def _baseline_auc(df: pd.DataFrame) -> dict[tuple[str, int], float]:
-    """Per (dataset, fold) AUC of the DDR=0 baseline graph (operator == none)."""
+def _baseline_auc(df: pd.DataFrame) -> dict[tuple[str, str, int], float]:
+    """Per (dataset, model, fold) AUC of the DDR=0 baseline graph (operator == none)."""
     base = df[df["operator"] == "none"]
-    return {(str(r.dataset), int(r.fold)): float(r.auc) for r in base.itertuples() if pd.notna(r.auc)}
+    return {
+        (str(r.dataset), str(r.model), int(r.fold)): float(r.auc)
+        for r in base.itertuples()
+        if pd.notna(r.auc)
+    }
 
 
 def main() -> int:
@@ -57,16 +61,18 @@ def main() -> int:
     df = df[pd.notna(df["auc"])].copy()
     if df.empty:
         raise SystemExit(f"No AUC rows in {args.in_csv}; run scripts/ddr_downstream.py on the GPU server first.")
+    if "model" not in df.columns:
+        df["model"] = "gkt"  # backward-compat with pre-multi-model CSVs
 
     base = _baseline_auc(df)
-    df["baseline_auc"] = [base.get((str(d), int(f)), np.nan) for d, f in zip(df["dataset"], df["fold"])]
+    df["baseline_auc"] = [base.get((str(d), str(m), int(f)), np.nan) for d, m, f in zip(df["dataset"], df["model"], df["fold"])]
     df["auc_drop"] = df["baseline_auc"] - df["auc"]  # positive = degradation
 
     pert = df[df["operator"] != "none"].copy()
 
-    # ---- per (dataset, operator, p) summary across folds ----
+    # ---- per (dataset, model, operator, p) summary across folds ----
     summary = (
-        pert.groupby(["dataset", "operator", "p"])
+        pert.groupby(["dataset", "model", "operator", "p"])
         .agg(
             ddr_mean=("ddr", "mean"),
             auc_mean=("auc", "mean"),
@@ -75,21 +81,21 @@ def main() -> int:
             n=("auc", "size"),
         )
         .reset_index()
-        .sort_values(["dataset", "operator", "p"])
+        .sort_values(["dataset", "model", "operator", "p"])
     )
     args.out_summary.parent.mkdir(parents=True, exist_ok=True)
     summary.to_csv(args.out_summary, index=False)
 
-    # ---- correlations per dataset (pooled over operators/p/folds) ----
+    # ---- correlations per (dataset, model) (pooled over operators/p/folds) ----
     corr_lines = []
-    for ds, part in pert.groupby("dataset"):
+    for (ds, mdl), part in pert.groupby(["dataset", "model"]):
         x = part["ddr"].to_numpy(dtype=float)
         y = part["auc_drop"].to_numpy(dtype=float)
         ok = np.isfinite(x) & np.isfinite(y)
         if ok.sum() >= 3 and np.ptp(x[ok]) > 0:
             r, pr = stats.pearsonr(x[ok], y[ok])
             rho, prho = stats.spearmanr(x[ok], y[ok])
-            corr_lines.append((str(ds), r, pr, rho, prho, int(ok.sum())))
+            corr_lines.append((f"{ds}/{mdl}", r, pr, rho, prho, int(ok.sum())))
 
     # ---- figure: DDR vs AUC drop ----
     fig, ax = plt.subplots(figsize=(6.4, 4.2))
@@ -120,7 +126,8 @@ def main() -> int:
     rows = []
     for _, r in summary.iterrows():
         rows.append(
-            f"{r['dataset']} & \\texttt{{{r['operator'].replace('_', chr(92)+'_')}}} & {r['p']:.2f} & "
+            f"{r['dataset']} & \\texttt{{{str(r['model']).replace('_', chr(92)+'_')}}} & "
+            f"\\texttt{{{r['operator'].replace('_', chr(92)+'_')}}} & {r['p']:.2f} & "
             f"{r['ddr_mean']:.3f} & {r['auc_mean']:.4f} & {r['auc_drop_mean']:.4f} \\\\"
         )
     body = "\n".join(rows)
@@ -133,8 +140,8 @@ def main() -> int:
         "decrease in test AUC relative to the unperturbed (DDR$=0$) baseline graph across folds. "
         "Pooled correlations (DDR vs.\\ AUC drop): " + (corr_str if corr_str else "n/a") + ".}\n"
         "\\label{tab:ddr-downstream}\n"
-        "\\begin{tabular}{@{}llccccc@{}}\n\\toprule\n"
-        "Dataset & Operator & $p$ & Mean DDR & Mean AUC & AUC drop \\\\\n\\midrule\n"
+        "\\begin{tabular}{@{}lllcccc@{}}\n\\toprule\n"
+        "Dataset & Model & Operator & $p$ & Mean DDR & Mean AUC & AUC drop \\\\\n\\midrule\n"
         f"{body}\n\\bottomrule\n\\end{{tabular}}\n\\end{{table}}\n"
     )
     args.out_tex.write_text(tex, encoding="utf-8")
