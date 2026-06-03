@@ -1,10 +1,10 @@
 dataset,n_nodes,n_edges,n_roots,n_leaves,n_cycles_before,n_cycles_after,topo_sort_passed,fold,n_edges_raw,n_edges_pruned
-assist2012,108,239,37,16,100,0,True,0.0,386,147
-assist2012,109,241,39,15,100,0,True,1.0,388,147
-assist2012,106,236,38,15,100,0,True,2.0,382,146
+assist2012,139,261,34,23,100,0,True,0.0,413,152
+assist2012,141,264,33,25,100,0,True,1.0,416,152
+assist2012,140,258,33,24,100,0,True,2.0,416,158
 junyi,573,1139,90,92,100,0,True,0.0,2152,1013
 junyi,578,1147,89,95,100,0,True,1.0,2130,983
-junyi,576,1129,88,93,100,0,True,2.0,2156,1027
+junyi,576,1130,88,93,100,0,True,2.0,2156,1026
 synthetic_c2,2,1,1,1,1,0,True,0.0,2,1
 synthetic_c2,2,1,1,1,1,0,True,1.0,2,1
 synthetic_c2,2,1,1,1,1,0,True,2.0,2,1

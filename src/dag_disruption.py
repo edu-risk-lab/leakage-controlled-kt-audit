@@ -106,6 +106,79 @@ def apply_subgraph_sampling(edges: pd.DataFrame, p: float, seed: int) -> pd.Data
     return result
 
 
+def _reachable_sets(adj: dict[object, set]) -> dict[object, set]:
+    """Transitive closure (descendants) per node, assuming the edge set is a DAG
+    (the retained acyclic E_pre). Iterative DFS with memoisation."""
+    desc: dict[object, set] = {}
+    for root in adj:
+        if root in desc:
+            continue
+        stack = [(root, iter(adj.get(root, ())))]
+        seen_on_stack = {root}
+        while stack:
+            node, it = stack[-1]
+            advanced = False
+            for child in it:
+                if child in desc:
+                    continue
+                if child in seen_on_stack:
+                    continue  # cycle guard (defensive; E_pre is pruned acyclic)
+                stack.append((child, iter(adj.get(child, ()))))
+                seen_on_stack.add(child)
+                advanced = True
+                break
+            if not advanced:
+                node, _ = stack.pop()
+                seen_on_stack.discard(node)
+                acc: set = set()
+                for child in adj.get(node, ()):
+                    acc.add(child)
+                    acc |= desc.get(child, set())
+                desc[node] = acc
+    return desc
+
+
+def apply_prereq_preserve(edges: pd.DataFrame, p: float, seed: int) -> pd.DataFrame:
+    """Prerequisite-preserving edge perturbation.
+
+    A structure-aware augmentation: with the same per-edge budget ``p`` as
+    ``edge_drop``, edges are selected for removal, but only those that are
+    *transitively redundant* (an alternate directed path src->...->dst exists)
+    are actually dropped. Edges in the transitive-reduction backbone are
+    protected, so every reachability/precedence relation in E_pre is preserved.
+    DDR is therefore bounded by ``p`` times the redundant-edge fraction and is
+    data-dependent rather than fixed by construction."""
+    logger.info("Applying prereq_preserve edges_shape=%s p=%s seed=%s", edges.shape, p, seed)
+    if edges.empty or p <= 0:
+        return edges.copy()
+    rng = _rng(seed)
+
+    adj: dict[object, set] = {}
+    for src, dst in edges[["src_kc", "dst_kc"]].itertuples(index=False, name=None):
+        adj.setdefault(src, set()).add(dst)
+        adj.setdefault(dst, set())
+    desc = _reachable_sets(adj)
+
+    def _is_redundant(u: object, v: object) -> bool:
+        for w in adj.get(u, ()):
+            if w == v:
+                continue
+            if v in desc.get(w, set()):
+                return True
+        return False
+
+    selected = rng.random(len(edges)) < p
+    src_arr = edges["src_kc"].to_numpy()
+    dst_arr = edges["dst_kc"].to_numpy()
+    drop_mask = np.zeros(len(edges), dtype=bool)
+    for i in range(len(edges)):
+        if selected[i] and _is_redundant(src_arr[i], dst_arr[i]):
+            drop_mask[i] = True
+    result = edges.loc[~drop_mask].reset_index(drop=True)
+    logger.info("prereq_preserve result_shape=%s dropped=%s", result.shape, int(drop_mask.sum()))
+    return result
+
+
 def compute_dag_disruption_rate(original: pd.DataFrame, augmented: pd.DataFrame) -> float:
     """Compute DDR = |E_pre lost or reversed| / |E_pre|."""
     logger.info("Computing DDR original_shape=%s augmented_shape=%s", original.shape, augmented.shape)
@@ -122,7 +195,7 @@ def compute_dag_disruption_rate(original: pd.DataFrame, augmented: pd.DataFrame)
 
 def sweep_ddr(
     edges: pd.DataFrame,
-    augmentations: Sequence[str] = ("node_drop", "edge_drop", "attr_mask", "subgraph"),
+    augmentations: Sequence[str] = ("node_drop", "edge_drop", "attr_mask", "subgraph", "prereq_preserve"),
     ps: Sequence[float] = (0.05, 0.10, 0.20, 0.30),
     seeds: Sequence[int] = (42,),
 ) -> pd.DataFrame:
@@ -133,6 +206,7 @@ def sweep_ddr(
         "edge_drop": apply_edge_drop,
         "attr_mask": apply_attribute_mask,
         "subgraph": apply_subgraph_sampling,
+        "prereq_preserve": apply_prereq_preserve,
     }
     rows = []
     for aug in augmentations:
