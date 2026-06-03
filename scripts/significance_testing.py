@@ -29,10 +29,11 @@ MODEL_DISPLAY = {
 }
 
 CV_DATASETS = ["assist2012", "xes3g5m", "junyi"]
+# Junyi has no native GKT export; other graph models are present on all folds.
 CV_MODELS = {
-    "assist2012": ["simplekt", "gkt", "gikt", "skt", "dygkt"],
-    "xes3g5m": ["simplekt", "gkt", "gikt", "skt", "dygkt"],
-    "junyi": ["simplekt", "skt"],
+    "assist2012": ["simplekt", "gkt", "gikt", "skt", "dygkt", "dgekt"],
+    "xes3g5m": ["simplekt", "gkt", "gikt", "skt", "dygkt", "dgekt"],
+    "junyi": ["simplekt", "gikt", "skt", "dygkt", "dgekt"],
 }
 
 

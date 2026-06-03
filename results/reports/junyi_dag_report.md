@@ -24,8 +24,8 @@
 - source_edges: `data\processed\junyi\fold_2\e_pre_train_only.csv`
 - nodes: 576
 - edges_raw: 2156
-- edges_final: 1129
-- edges_pruned: 1027
+- edges_final: 1130
+- edges_pruned: 1026
 - cycles_before: 100
 - cycles_after: 0
 - topo_sort_passed: True
