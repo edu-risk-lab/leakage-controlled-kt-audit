@@ -7,9 +7,12 @@ Graph Construction and Cold-Start Diagnostic Protocol for Knowledge Tracing*
 > **What this repo is.** A protocol and audit pipeline for building and
 > checking multi-relational concept graphs from KT logs under train-only,
 > fold-aware discipline; cold-start KC stratification; a DAG Disruption Rate
-> (**DDR**) probe over generic graph augmentations; and optional **ground-truth
-> cross-validation** on Junyi (expert prerequisite DAG vs train-only inferred
-> edges).
+> (**DDR**) probe over five graph augmentation operators (four label-agnostic
+> plus one prerequisite-preserving `prereq_preserve`); an optional
+> **DDR→downstream** study that links DDR to GKT accuracy; a sequence
+> **autocorrelation** diagnostic; paired **significance testing**; and optional
+> **ground-truth cross-validation** on Junyi (expert prerequisite DAG vs
+> train-only inferred edges).
 >
 > **What this repo is NOT.** A new KT baseline aimed at SOTA. No claim about
 > real-world learning outcomes or joint self-supervised graph pretraining.
@@ -22,6 +25,9 @@ Graph Construction and Cold-Start Diagnostic Protocol for Knowledge Tracing*
 2. [Environment setup](#2-environment-setup)
 3. [Data download and preparation](#3-data-download-and-preparation)
 4. [Running experiments](#4-running-experiments) ([step-by-step](#40-step-by-step-experiment-guide))
+   - [4.6 DDR→downstream (`small_downstream`)](#46-ddrdownstream-small_downstream)
+   - [4.7 Sequence autocorrelation](#47-sequence-autocorrelation-diagnostic)
+   - [4.8 Significance testing](#48-significance-testing)
 5. [Per-stage commands](#5-per-stage-commands) ([graph_builder API](#51-graph_builder-python-api))
 6. [Outputs and where they live](#6-outputs-and-where-they-live)
 7. [Paper artefacts and LaTeX paths](#7-paper-artefacts-and-latex-paths)
@@ -274,6 +280,27 @@ Follow **A → B** once per machine; then choose **one track** under **C**. Comm
 18. DDR line figures (after `dag_disruption` CSVs exist): `bash scripts/make_all_figures.sh`.  
 19. Paper `\input{...}` tables from existing CSVs: `python scripts/generate_paper_artifacts.py`.
 
+**Track 6 — DDR→downstream (`small_downstream`, GPU)**  
+20. Requires parquet + fold graphs (`e_pre_train_only.csv`) for the chosen dataset, plus the pyKT backend ([§2.2](#22-dependencies)). Perturbs `E_pre` per operator/strength, retrains GKT, and links DDR to test AUC ([§4.6](#46-ddrdownstream-small_downstream)):
+    ```bash
+    python -m scripts.ddr_downstream --config configs/assist2012.yaml
+    python -m scripts.ddr_downstream --config configs/xes3g5m.yaml
+    python -m scripts.plot_ddr_downstream
+    ```
+
+**Track 7 — Sequence autocorrelation**  
+21. Quantifies the "copy-the-previous-answer" shortcut on each benchmark ([§4.7](#47-sequence-autocorrelation-diagnostic)):
+    ```bash
+    python -m scripts.compute_autocorrelation
+    python -m scripts.plot_autocorrelation
+    ```
+
+**Track 8 — Significance testing**  
+22. Paired \(t\)-test / Wilcoxon over fold-level baseline AUCs ([§4.8](#48-significance-testing)):
+    ```bash
+    python -m scripts.run_significance_testing
+    ```
+
 For **manual stage-by-stage** control on a single config (debugging), use the ordered CLI list in [§5](#5-per-stage-commands).
 
 ### 4.1 Experiment map
@@ -284,6 +311,9 @@ For **manual stage-by-stage** control on a single config (debugging), use the or
 | **Smoke / one dataset** | `scripts/run_*_minimal.sh` | Same layout under `data/processed/<dataset>/` and `results/` for that config |
 | **Graph ablation** (train-only vs full-log graphs, graph-augmented diagnostics) | `scripts/run_graph_ablation_experiment.sh` or `scripts/run_graph_ablation_experiment.ps1` | `results/tables/graph_ablation_summary.csv`, `graph_ablation.tex`; see `scripts/GRAPH_ABLATION_EXPERIMENT.md` |
 | **Junyi GT vs expert DAG** | `python scripts/run_gt_cross_validation_junyi.py` | `results/gt_validation/junyi/*` |
+| **DDR→downstream** (GPU; perturb `E_pre`, retrain GKT) | `python -m scripts.ddr_downstream --config configs/<ds>.yaml` then `python -m scripts.plot_ddr_downstream` | `results/tables/ddr_downstream*.csv`/`.tex`, `results/figures/fig_ddr_downstream.pdf` |
+| **Sequence autocorrelation** | `python -m scripts.compute_autocorrelation` then `python -m scripts.plot_autocorrelation` | `results/tables/autocorrelation_stats.*`, `results/figures/fig_autocorr_vs_auc.pdf` |
+| **Significance testing** | `python -m scripts.run_significance_testing` | `results/tables/significance_tests.csv`, `baseline_cv_template.tex` |
 | **Paper tables only** (CSVs already produced) | `python scripts/generate_paper_artifacts.py` | Regenerates `\input{results/tables/...}` snippets |
 
 **Leakage diagnostics** (`ECR_flag`, `ECR_overlap`, `EOC`, `TBVR`) are written to
@@ -306,6 +336,13 @@ End-to-end on **Junyi, ASSISTments 2012, and XES3G5M**, **per dataset**, in orde
 
 Then globally: **`scripts/generate_paper_artifacts.py`** and
 **`python -m src.report_generator --out results/reports/`**.
+
+**Optional analyses** (run after the per-dataset stages above; see
+[§4.6](#46-ddrdownstream-small_downstream)–[§4.8](#48-significance-testing)):
+sequence autocorrelation (`scripts/compute_autocorrelation.py`), paired
+significance (`scripts/run_significance_testing.py`), and the GPU-only
+DDR→downstream study (`scripts/ddr_downstream.py`). These are not part of the
+default CPU orchestrator.
 
 **Linux / macOS (Git Bash):**
 
@@ -347,9 +384,24 @@ Requires `graph_ablation.enabled: true` and a `models` list (e.g.\ GKT, GIKT, SK
 `configs/*.yaml`. Full prerequisites, flags (`-SkipGraphBuild`, Junyi RAM notes),
 and output filenames are documented in **`scripts/GRAPH_ABLATION_EXPERIMENT.md`**.
 
-### 4.4 DDR figures only
+### 4.4 DDR sweep and figures
 
-Regenerate the three DDR line PDFs under `results/figures/`:
+`dag_disruption` sweeps **five augmentation operators** declared in each config
+under `augmentation.methods`: four label-agnostic families
+(`attr_mask`, `subgraph`, `edge_drop`, `node_drop`) plus the
+prerequisite-preserving operator `prereq_preserve`, which removes only
+transitively redundant edges (protecting the transitive-reduction backbone) at
+the same per-edge budget as `edge_drop`. Each operator is swept over
+`augmentation.ps` (`0.05/0.10/0.20/0.30`) with `augmentation.seeds`
+(three seeds) on each of three train folds.
+
+```bash
+python -m src.dag_disruption --config configs/junyi.yaml
+python -m src.dag_disruption --config configs/assist2012.yaml
+python -m src.dag_disruption --config configs/xes3g5m.yaml
+```
+
+Regenerate the three DDR line PDFs under `results/figures/` (after the CSVs exist):
 
 ```bash
 bash scripts/make_all_figures.sh
@@ -371,6 +423,73 @@ For lightweight **directed / undirected overlap at @K** on your own edge
 
 Outputs: `results/gt_validation/junyi/` (`overlap_metrics_at_K.csv`,
 `fig_pr_curve.pdf`, `gt_validation_table.tex`, etc.).
+
+### 4.6 DDR→downstream (`small_downstream`)
+
+Links the structural **DDR** diagnostic to **downstream KT accuracy**: for each
+fold, the train-only prerequisite graph `E_pre` is perturbed by each operator at
+strength `p`, the GKT adjacency is rebuilt (perturbed `E_pre` ∪ unchanged
+`E_sim`), **GKT is retrained**, and the test AUC is recorded alongside the DDR of
+that perturbation. A positive DDR↔(AUC drop) correlation shows DDR is predictive;
+`prereq_preserve` (low DDR at matched budget) should degrade accuracy least.
+
+> **Requires** the pyKT backend ([§2.2](#22-dependencies)) and a GPU for
+> realistic runtime. GKT is the slowest model; an RTX 3090 handles ASSISTments
+> and XES3G5M (GKT on Junyi is impractical and is omitted, matching the paper).
+
+```bash
+# Calibrate one fold first to measure per-run time, then scale up:
+python -m scripts.ddr_downstream --config configs/assist2012.yaml --max-folds 1
+
+# Full runs (resumable: re-running skips rows already in the output CSV):
+python -m scripts.ddr_downstream --config configs/assist2012.yaml
+python -m scripts.ddr_downstream --config configs/xes3g5m.yaml
+
+# CPU smoke test of the data path only (no torch / no training):
+python -m scripts.ddr_downstream --config configs/assist2012.yaml --dry-run --max-folds 1
+
+# Summary table + correlation + scatter figure:
+python -m scripts.plot_ddr_downstream
+```
+
+Useful flags: `--operators edge_drop node_drop prereq_preserve` (default),
+`--ps 0.10 0.20 0.30` (default), `--max-folds N`, `--perturb-seed`,
+`--experiment-seed`, `--out`. Within a fold the pyKT sequence files are written
+once and reused; only the GKT graph `.npz` changes, so each variant costs one
+GKT training run.
+
+Outputs: `results/tables/ddr_downstream.csv` (raw, appended/resumable),
+`results/tables/ddr_downstream_summary.csv`, `results/tables/ddr_downstream.tex`
+(table `tab:ddr-downstream`), and `results/figures/fig_ddr_downstream.pdf`/`.png`.
+
+### 4.7 Sequence autocorrelation diagnostic
+
+Measures how predictable each interaction is from the immediately preceding one
+(the "copy-the-previous-answer" shortcut that inflates deep-KT AUC on
+repetition-heavy logs). Reads `data/processed/<ds>.parquet`:
+
+```bash
+python -m scripts.compute_autocorrelation        # KC/item repeat, persistence, lag-1 ρ, prev-answer AUC
+python -m scripts.plot_autocorrelation           # KC-repeat rate vs deep-KT / BKT AUC bar chart
+```
+
+Outputs: `results/tables/autocorrelation_stats.csv` (+ `.tex`,
+table `tab:autocorrelation`) and `results/figures/fig_autocorr_vs_auc.pdf`/`.png`.
+
+### 4.8 Significance testing
+
+Paired \(t\)-test and Wilcoxon signed-rank over fold-level baseline AUCs
+(`results/tables/baseline_fold_results.csv`), comparing graph-augmented models
+against sequence baselines:
+
+```bash
+python -m scripts.run_significance_testing
+```
+
+Outputs: `results/tables/significance_tests.csv` and
+`results/tables/baseline_cv_template.tex` (table `tab:baseline-cv`). With three
+folds the Wilcoxon two-sided \(p\) cannot fall below `0.25`, so significance
+claims rest on the paired \(t\)-test (see `paper/main.tex`).
 
 ---
 
@@ -444,9 +563,16 @@ See `tests/test_graph_builder_train_only.py` for examples.
 | `results/tables/dag_audit_summary.csv` (+ `.tex`) | `dag_audit` + `generate_paper_artifacts.py` | Fold-wise DAG audit (`dag_audit` writes CSV; artefacts backfill `n_edges_raw` / `n_edges_pruned` from pruning logs and emit IEEE TeX) |
 | `results/reports/<dataset>_dag_report.md` | `dag_audit` | Human-readable audit |
 | `results/reports/<dataset>_dag_pruning_log.csv` | `dag_audit` | Pruned edges trail |
-| `results/tables/dag_disruption.csv` | `dag_disruption` | Raw DDR rows (fold × aug × p × seed) |
+| `results/tables/dag_disruption.csv` | `dag_disruption` | Raw DDR rows (fold × aug × p × seed; five operators incl. `prereq_preserve`) |
 | `results/tables/dag_disruption_summary.csv` | `dag_disruption` | Means/CIs used in paper DDR table |
 | `results/figures/fig_ddr_<dataset>.pdf` | `dag_disruption` | DDR vs `p` line chart per dataset |
+| `results/tables/ddr_downstream.csv` | `scripts/ddr_downstream.py` | Raw DDR→downstream rows (operator × p × fold, GKT test AUC) |
+| `results/tables/ddr_downstream_summary.csv` (+ `.tex`) | `scripts/plot_ddr_downstream.py` | Per (operator, p) mean DDR / AUC / AUC drop; table `tab:ddr-downstream` |
+| `results/figures/fig_ddr_downstream.pdf` (+ `.png`) | `scripts/plot_ddr_downstream.py` | DDR vs downstream AUC drop scatter + correlation |
+| `results/tables/autocorrelation_stats.csv` (+ `.tex`) | `scripts/compute_autocorrelation.py` | Sequence-autocorrelation diagnostics; table `tab:autocorrelation` |
+| `results/figures/fig_autocorr_vs_auc.pdf` (+ `.png`) | `scripts/plot_autocorrelation.py` | KC-repeat rate vs deep-KT / BKT AUC |
+| `results/tables/significance_tests.csv` | `scripts/run_significance_testing.py` | Paired \(t\)-test / Wilcoxon over fold AUCs |
+| `results/tables/baseline_cv_template.tex` | `scripts/run_significance_testing.py` | Paired-significance table `tab:baseline-cv` |
 | `results/tables/baseline_results.csv` (+ `.tex`) | `baseline_runner` + `generate_paper_artifacts` | Multi-fold means + bootstrap CIs when enabled |
 | `results/tables/cold_start_metrics.csv` (+ `.tex`) | `cold_start_report` + artefacts script | Stratum summaries |
 | `results/tables/cold_start_by_stratum.tex` | `generate_paper_artifacts.py` | Paper table from `cold_start_metrics.csv` (default: fold~0 \textit{simpleKT}) |
@@ -463,8 +589,11 @@ See `tests/test_graph_builder_train_only.py` for examples.
 
 - **Manuscript:** `paper/main.tex`, bibliography `paper/refs.bib`.
 - **Inputs pulled from `results/`:** `\input{results/tables/dataset_stats.tex}`,
-  `leakage_metrics.tex`, `dag_audit_summary.tex`, `cold_start_by_stratum.tex`,
-  `baseline_results.tex`, `graph_ablation.tex` (when generated), and GT material under `results/gt_validation/junyi/` (see `main.tex`).
+  `leakage_metrics.tex`, `dag_audit_summary.tex`, `autocorrelation_stats.tex`,
+  `cold_start_by_stratum.tex`, `baseline_results.tex`, `baseline_cv_template.tex`,
+  `graph_ablation.tex` (when generated), `ddr_downstream.tex` (when the
+  `small_downstream` study is run), and GT material under
+  `results/gt_validation/junyi/` (see `main.tex`).
 - **Build tip:** compile LaTeX with the **repository root** as the working
   directory so paths such as `results/tables/...` and `results/figures/...`
   resolve. Figures `fig_ddr_*.pdf` appear after running `dag_disruption` (or
@@ -502,6 +631,12 @@ for each dataset, or `bash scripts/make_all_figures.sh`.
 **Baseline RAM / time** — Reduce folds in YAML (`split.n_folds`) or disable
 heavy models in `configs/*.yaml` under `baselines:` while debugging structure-only stages.
 
+**DDR→downstream (`ddr_downstream.py`)** — Needs `data/processed/<ds>/fold_*/e_pre_train_only.csv`
+(run `graph_builder` first) and the pyKT backend ([§2.2](#22-dependencies)). It is GPU-bound;
+calibrate with `--max-folds 1` to estimate per-run time before scaling up. Use `--dry-run`
+(no torch) to validate the data path on CPU. Junyi GKT is impractical and intentionally omitted.
+Runs are **resumable**: re-running skips `(dataset, fold, operator, p)` rows already in the output CSV.
+
 **`baseline_backend=pykt` import errors** — Run `git submodule update --init --recursive`
 and `pip install -e ".[pykt]"` from the repo root (see [§2.2](#22-dependencies)).
 
@@ -537,6 +672,9 @@ p0_project/
 │   ├── cold_start_report.py
 │   ├── export_full_log_graph.py
 │   ├── baseline_runner.py
+│   ├── pykt_engine.py         # pyKT training loop (GKT/GIKT/… ; optional backend)
+│   ├── pykt_export.py         # parquet splits → pyKT sequence CSVs + dense id maps
+│   ├── pykt_graph_matrix.py   # edge CSVs → row-normalised GKT adjacency .npz
 │   ├── gt_cross_validation.py
 │   ├── report_generator.py
 │   └── io_utils.py
@@ -555,6 +693,11 @@ p0_project/
 │   ├── make_all_figures.sh
 │   ├── generate_paper_artifacts.py
 │   ├── run_gt_cross_validation_junyi.py
+│   ├── ddr_downstream.py             # DDR→downstream GKT study (§4.6)
+│   ├── plot_ddr_downstream.py        # DDR vs AUC-drop summary + figure
+│   ├── compute_autocorrelation.py    # sequence-autocorrelation stats (§4.7)
+│   ├── plot_autocorrelation.py       # repeat-rate vs AUC bar chart
+│   ├── run_significance_testing.py   # paired t-test / Wilcoxon (§4.8)
 │   └── …
 ├── tests/
 ├── results/
