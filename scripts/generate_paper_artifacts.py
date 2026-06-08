@@ -146,9 +146,9 @@ def _write_dag_audit_summary_tex(path: Path) -> None:
         r"(cap~$100$). All corpora pass topological sort with zero cycles after pruning on fold~0.}",
         r"\label{tab:dag-audit}",
         r"\footnotesize",
-        r"\setlength{\tabcolsep}{2pt}",
+        r"\setlength{\tabcolsep}{3pt}",
         r"\renewcommand{\arraystretch}{1.05}",
-        r"\begin{tabular}{@{} >{\RaggedRight\arraybackslash}p{17mm} r >{\centering\arraybackslash}p{14mm} r >{\centering\arraybackslash}p{14mm} r r r @{}}",
+        r"\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.16\linewidth} >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X *{3}{>{\centering\arraybackslash}X} @{}}",
         r"\toprule",
         r"\makecell[l]{Dataset}",
         r"  & $|V|$",
@@ -161,7 +161,7 @@ def _write_dag_audit_summary_tex(path: Path) -> None:
         r"\midrule",
         "\n".join(body_lines),
         r"\bottomrule",
-        r"\end{tabular}",
+        r"\end{tabularx}",
         r"\end{table}",
         "",
     ]
@@ -230,15 +230,15 @@ def _write_cold_start_by_stratum_tex(path: Path, *, model: str = "simplekt", fol
         r"Synthetic C2/C5 route all test interactions into the hot stratum ($>500$ train-fold hits per \KC{}).}",
         r"\label{tab:cold-start-strata}",
         r"\footnotesize",
-        r"\setlength{\tabcolsep}{2pt}",
+        r"\setlength{\tabcolsep}{3pt}",
         r"\renewcommand{\arraystretch}{1.05}",
-        r"\begin{tabular}{@{} >{\RaggedRight\arraybackslash}p{24mm} >{\ttfamily\footnotesize\raggedright\arraybackslash}p{30mm} rrrr @{}}",
+        r"\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.18\linewidth} >{\RaggedRight\arraybackslash}p{0.16\linewidth} *{4}{>{\centering\arraybackslash}X} @{}}",
         r"\toprule",
         r"Dataset & Stratum & $n$ & AUC & ACC & NLL \\",
         r"\midrule",
     ]
     lines.append("\n\\midrule\n".join(blocks))
-    lines.extend([r"\bottomrule", r"\end{tabular}", r"\end{table}", ""])
+    lines.extend([r"\bottomrule", r"\end{tabularx}", r"\end{table}", ""])
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
@@ -325,15 +325,15 @@ def _write_dataset_stats_tex(stats: pd.DataFrame, path: Path) -> None:
     lines = [
         r"\begin{table}[t]",
         r"\centering",
-        r"\footnotesize",
-        r"\setlength{\tabcolsep}{2pt}",
         r"\caption{Dataset statistics used in the P0 diagnostic protocol. "
         r"Junyi Academy counts reflect the Chang et al.\ problem-level log "
         r"(\texttt{junyi\_ProblemLog\_original.csv}) after preprocessing; "
         r"\#items and \#KCs coincide because both map to the exercise column. "
         r"Synthetic C2/C5 are companion sanity logs shipped with the preprocessing scripts.}",
         r"\label{tab:dataset-stats}",
-        r"\begin{tabularx}{\columnwidth}{@{} >{\RaggedRight\arraybackslash}X rrrrr >{\centering\arraybackslash}p{14mm} @{}}",
+        r"\footnotesize",
+        r"\setlength{\tabcolsep}{3pt}",
+        r"\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}X rrrrr >{\centering\arraybackslash}X @{}}",
         r"\toprule",
         r"Dataset & \makecell[r]{\#\\learners} & \makecell[r]{\#\\items} & \makecell[r]{\#\\KCs} "
         r"& \makecell[r]{\#\\interactions} & \makecell[r]{Avg.\\seq.\ len.} & \makecell{Has\\DAG} \\",
@@ -403,8 +403,6 @@ def _write_baseline_tex(path: Path) -> None:
         lines = [
             r"\begin{table}[t]",
             r"\centering",
-            r"\footnotesize",
-            r"\setlength{\tabcolsep}{2pt}",
             rf"\caption{{{cap}}}",
         ]
         if first_block:
@@ -412,7 +410,9 @@ def _write_baseline_tex(path: Path) -> None:
             first_block = False
         lines.append(rf"\label{{{label}}}")
         lines.extend([
-            r"\begin{tabular}{@{} >{\RaggedRight\arraybackslash}p{14mm} *{3}{>{\centering\arraybackslash}p{17mm}} @{}}",
+            r"\footnotesize",
+            r"\setlength{\tabcolsep}{3pt}",
+            r"\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.24\linewidth} *{3}{>{\centering\arraybackslash}X} @{}}",
             r"\toprule",
             r"Model & AUC & ACC & NLL \\",
             r"\midrule",
@@ -429,7 +429,7 @@ def _write_baseline_tex(path: Path) -> None:
                 nll = _fmt_float(row.nll)
             mname = _model_display_name(row.model)
             lines.append(rf"{mname} & {auc} & {acc} & {nll} " + r"\\")
-        lines.extend([r"\bottomrule", r"\end{tabular}", r"\end{table}", ""])
+        lines.extend([r"\bottomrule", r"\end{tabularx}", r"\end{table}", ""])
         blocks.append("\n".join(lines))
 
     if not blocks:
@@ -480,8 +480,8 @@ def _write_leakage_metrics_tex(path: Path) -> None:
         r"reappear across disjoint held-out learners (diagnostic overlap, not \texttt{train\_only\_flag} violation).}",
         r"\label{tab:leakage-metrics}",
         r"\footnotesize",
-        r"\setlength{\tabcolsep}{4pt}",
-        r"\begin{tabular}{@{}lcccc@{}}",
+        r"\setlength{\tabcolsep}{3pt}",
+        r"\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}X *{4}{>{\centering\arraybackslash}X} @{}}",
         r"\toprule",
         r"Dataset & \textsc{ECR}\textsubscript{flag} & \textsc{ECR}\textsubscript{overlap} & \textsc{EOC} & \textsc{TBVR} \\",
         r"\midrule",
@@ -499,7 +499,7 @@ def _write_leakage_metrics_tex(path: Path) -> None:
             f"{label_map.get(ds, ds)} & {_fmt_float(row.ecr_flag)} & {_fmt_float(row.ecr_overlap)} & {_fmt_float(row.eoc)} & {_fmt_float(row.tbvr)} "
             + r"\\"
         )
-    lines.extend([r"\bottomrule", r"\end{tabular}", r"\end{table}", ""])
+    lines.extend([r"\bottomrule", r"\end{tabularx}", r"\end{table}", ""])
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
@@ -549,8 +549,6 @@ def _write_graph_ablation_tex(path: Path) -> None:
         lines = [
             r"\begin{table}[t]",
             r"\centering",
-            r"\scriptsize",
-            r"\setlength{\tabcolsep}{2pt}",
             rf"\caption{{{cap}}}",
         ]
         if first_block:
@@ -558,7 +556,9 @@ def _write_graph_ablation_tex(path: Path) -> None:
             first_block = False
         lines.append(rf"\label{{{label}}}")
         lines.extend([
-            r"\begin{tabular}{@{} >{\RaggedRight\arraybackslash}p{12mm} *{6}{c} @{}}",
+            r"\footnotesize",
+            r"\setlength{\tabcolsep}{3pt}",
+            r"\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}X *{6}{>{\centering\arraybackslash}X} @{}}",
             r"\toprule",
             r"Model & \makecell{AUC\\to} & \makecell{AUC\\fl} & $\Delta$AUC"
             r" & \makecell{ACC\\to} & \makecell{ACC\\fl} & $\Delta$ACC \\",
@@ -571,7 +571,7 @@ def _write_graph_ablation_tex(path: Path) -> None:
                 rf" & {_fmt_float(row.acc_train_only)} & {_fmt_float(row.acc_full_log)} & {_fmt_float(row.delta_acc)} "
                 + r"\\"
             )
-        lines.extend([r"\bottomrule", r"\end{tabular}", r"\end{table}", ""])
+        lines.extend([r"\bottomrule", r"\end{tabularx}", r"\end{table}", ""])
         blocks.append("\n".join(lines))
 
     if not blocks:
@@ -592,14 +592,16 @@ def _write_cold_start_tex(path: Path) -> None:
         r"\centering",
         r"\caption{Cold-start KC diagnostic summary averaged across frequency strata.}",
         r"\label{tab:cold-start}",
-        r"\begin{tabular}{llrrr}",
+        r"\footnotesize",
+        r"\setlength{\tabcolsep}{3pt}",
+        r"\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.18\linewidth} >{\RaggedRight\arraybackslash}X *{3}{>{\centering\arraybackslash}X} @{}}",
         r"\toprule",
         r"Dataset & Model & AUC & ACC & NLL \\",
         r"\midrule",
     ]
     for row in summary.sort_values(["dataset", "model"]).itertuples(index=False):
         lines.append(f"{row.dataset} & {row.model} & {_fmt_float(row.auc)} & {_fmt_float(row.acc)} & {_fmt_float(row.nll)} " + r"\\")
-    lines.extend([r"\bottomrule", r"\end{tabular}", r"\end{table}", ""])
+    lines.extend([r"\bottomrule", r"\end{tabularx}", r"\end{table}", ""])
     path.write_text("\n".join(lines), encoding="utf-8")
 
 

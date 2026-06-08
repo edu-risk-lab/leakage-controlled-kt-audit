@@ -6,10 +6,10 @@ between train/valid/test splits is none on every dataset. ASSISTments
 2012 produces no $\Esim$ under the released similarity-edge inference
 rule; we report this as a known boundary case.}
 \label{tab:leakage-audit}
-\small
-\setlength{\tabcolsep}{6pt}
-\renewcommand{\arraystretch}{1.1}
-\begin{tabular}{@{}lrrl@{}}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}X r r >{\RaggedRight\arraybackslash}X @{}}
 \toprule
 Dataset & $|\Epre|$ & $|\Esim|$ & Train-only flag \\
 \midrule
@@ -17,5 +17,5 @@ Junyi      & 2{,}320 & 170 & 100\% True \\
 ASSIST'12  &    261 &   0 & 100\% True ($\Esim$ not generated) \\
 XES3G5M    &    701 & 354 & 100\% True \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""DDR -> downstream GKT accuracy study (``small_downstream``).
+"""DDR -> downstream graph-KT accuracy study (``small_downstream``).
 
 For each fold of a dataset we perturb the train-only prerequisite graph
 ``E_pre`` with one augmentation operator at a given strength ``p``, rebuild the

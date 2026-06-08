@@ -1,5 +1,17 @@
-import pandas as pd
 from pathlib import Path
+
+import pandas as pd
+
+
+def _fmt_auc(value: float) -> str:
+    return f"{value:.3f}" if not pd.isna(value) else "-"
+
+
+def _fmt_delta(value: float) -> str:
+    if pd.isna(value):
+        return "-"
+    return f"{value:+.3f}"
+
 
 def main():
     csv_path = Path("results/tables/cold_start_metrics.csv")
@@ -36,21 +48,30 @@ def main():
     pivot_df['stratum'] = pd.Categorical(pivot_df['stratum'], categories=strata_order, ordered=True)
     pivot_df.sort_values(['dataset', 'stratum'], inplace=True)
     
+    no_graph_cols = ['dkt', 'simplekt']
+    graph_cols = ['gkt', 'gikt', 'dgekt']
+    pivot_df['best_no_graph'] = pivot_df[no_graph_cols].max(axis=1)
+    pivot_df['best_graph'] = pivot_df[graph_cols].max(axis=1)
+    pivot_df['delta_best'] = pivot_df['best_graph'] - pivot_df['best_no_graph']
+
     # Generate TeX
     tex_out = Path("results/tables/cold_start_comparison.tex")
     
     lines = [
         "\\begin{table}[t]",
         "\\centering",
-        "\\caption{Comparison of Sequence-KT (No-Graph) vs Graph-KT (Graph) average AUC across frequency strata.}",
+        "\\caption{Cold-start comparison of sequence-only (No-Graph) and graph-aware (Graph) KT models. "
+        "Entries are three-fold mean AUC by KC train-frequency stratum; $\\Delta_{\\max}$ is the best Graph AUC "
+        "minus the best No-Graph AUC in the same dataset/stratum.}",
         "\\label{tab:cold-start-comparison}",
         "\\footnotesize",
-        "\\setlength{\\tabcolsep}{4pt}",
-        "\\begin{tabular}{@{}ll|cc|ccc@{}}",
+        "\\setlength{\\tabcolsep}{3pt}",
+        "\\begin{tabularx}{\\linewidth}{@{} >{\\RaggedRight\\arraybackslash}p{0.14\\linewidth} "
+        ">{\\RaggedRight\\arraybackslash}p{0.11\\linewidth} *{6}{>{\\centering\\arraybackslash}X} @{}}",
         "\\toprule",
-        "& & \\multicolumn{2}{c|}{\\textbf{No-Graph}} & \\multicolumn{3}{c}{\\textbf{Graph}} \\\\",
-        "\\cmidrule(lr){3-4} \\cmidrule(l){5-7}",
-        "Dataset & Stratum & DKT & SimpleKT & GKT & GIKT & DGEKT \\\\",
+        "& & \\multicolumn{2}{c|}{\\textbf{No-Graph}} & \\multicolumn{4}{c}{\\textbf{Graph}} \\\\",
+        "\\cmidrule(lr){3-4} \\cmidrule(l){5-8}",
+        "Dataset & Stratum & DKT & SimpleKT & GKT & GIKT & DGEKT & $\\Delta_{\\max}$ \\\\",
         "\\midrule"
     ]
     
@@ -70,21 +91,22 @@ def main():
         # format stratum safely
         stratum_str = str(stratum).replace('_', '\\_')
         
-        dkt = f"{row['dkt']:.3f}" if not pd.isna(row['dkt']) else "-"
-        simplekt = f"{row['simplekt']:.3f}" if not pd.isna(row['simplekt']) else "-"
-        gkt = f"{row['gkt']:.3f}" if not pd.isna(row['gkt']) else "-"
-        gikt = f"{row['gikt']:.3f}" if not pd.isna(row['gikt']) else "-"
-        dgekt = f"{row['dgekt']:.3f}" if not pd.isna(row['dgekt']) else "-"
+        dkt = _fmt_auc(row['dkt'])
+        simplekt = _fmt_auc(row['simplekt'])
+        gkt = _fmt_auc(row['gkt'])
+        gikt = _fmt_auc(row['gikt'])
+        dgekt = _fmt_auc(row['dgekt'])
+        delta = _fmt_delta(row['delta_best'])
         
-        lines.append(f"{ds_name} & {stratum_str} & {dkt} & {simplekt} & {gkt} & {gikt} & {dgekt} \\\\")
+        lines.append(f"{ds_name} & {stratum_str} & {dkt} & {simplekt} & {gkt} & {gikt} & {dgekt} & {delta} \\\\")
         
     lines.extend([
         "\\bottomrule",
-        "\\end{tabular}",
+        "\\end{tabularx}",
         "\\end{table}"
     ])
     
-    tex_out.write_text("\\n".join(lines), encoding="utf-8")
+    tex_out.write_text("\n".join(lines), encoding="utf-8")
     print(f"Generated {tex_out}")
 
 if __name__ == "__main__":

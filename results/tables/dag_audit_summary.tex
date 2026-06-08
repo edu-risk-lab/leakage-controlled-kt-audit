@@ -7,9 +7,9 @@ The \emph{Cycles} column reports representative cycles found before pruning
 (cap~$100$). All corpora pass topological sort with zero cycles after pruning on fold~0.}
 \label{tab:dag-audit}
 \footnotesize
-\setlength{\tabcolsep}{2pt}
+\setlength{\tabcolsep}{3pt}
 \renewcommand{\arraystretch}{1.05}
-\begin{tabular}{@{} >{\RaggedRight\arraybackslash}p{17mm} r >{\centering\arraybackslash}p{14mm} r >{\centering\arraybackslash}p{14mm} r r r @{}}
+\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.16\linewidth} >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X *{3}{>{\centering\arraybackslash}X} @{}}
 \toprule
 \makecell[l]{Dataset}
   & $|V|$
@@ -26,5 +26,5 @@ XES3G5M & 455 & 1{,}162 & 461 & 701 & 129 & 73 & $\geq\!100$ \\
 Synthetic C2 & 2 & 2 & 1 & 1 & 1 & 1 & 1 \\
 Synthetic C5 & 3 & 2 & 0 & 2 & 1 & 1 & 0 \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
