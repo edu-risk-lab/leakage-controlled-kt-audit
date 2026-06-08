@@ -354,11 +354,11 @@ def _fmt_float(value: float) -> str:
 
 
 def _fmt_metric_makecell(value: float, lo: float | None, hi: float | None) -> str:
-    """Point estimate on first line; 95\\% CI on second (scriptsize)."""
+    """Point estimate and 95\\% CI on the same line."""
     v = _fmt_float(value)
     if lo is None or hi is None or pd.isna(lo) or pd.isna(hi):
         return v
-    return rf"\makecell{{{v}\\[-1pt]{{\scriptsize[{_fmt_float(lo)}, {_fmt_float(hi)}]}}}}"
+    return rf"{v} {{\scriptsize[{_fmt_float(lo)}, {_fmt_float(hi)}]}}"
 
 
 def _write_baseline_tex(path: Path) -> None:
