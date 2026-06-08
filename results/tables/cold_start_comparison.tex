@@ -1,1 +1,33 @@
-\begin{table}[t]\n\centering\n\caption{Comparison of Sequence-KT (No-Graph) vs Graph-KT (Graph) average AUC across frequency strata.}\n\label{tab:cold-start-comparison}\n\footnotesize\n\setlength{\tabcolsep}{4pt}\n\begin{tabular}{@{}ll|cc|ccc@{}}\n\toprule\n& & \multicolumn{2}{c|}{\textbf{No-Graph}} & \multicolumn{3}{c}{\textbf{Graph}} \\\n\cmidrule(lr){3-4} \cmidrule(l){5-7}\nDataset & Stratum & DKT & SimpleKT & GKT & GIKT & DGEKT \\\n\midrule\nassist2012 & very\_cold & 0.723 & 0.724 & 0.695 & 0.726 & 0.724 \\\n & cold & 0.769 & 0.772 & 0.750 & 0.772 & 0.772 \\\n & warm & 0.751 & 0.756 & 0.724 & 0.757 & 0.756 \\\n & hot & 0.687 & 0.696 & 0.601 & 0.691 & 0.687 \\\n\midrule\njunyi & very\_cold & 0.813 & 0.813 & 0.813 & 0.813 & - \\\n & cold & 0.505 & 0.505 & 0.505 & 0.505 & - \\\n & warm & 0.631 & 0.631 & 0.626 & 0.627 & - \\\n & hot & 0.719 & 0.719 & 0.704 & 0.713 & - \\\n\midrule\nsynthetic\_c2 & hot & 0.619 & 0.626 & 0.554 & 0.634 & 0.634 \\\n\midrule\nsynthetic\_c5 & hot & 0.628 & 0.630 & 0.524 & 0.633 & 0.633 \\\n\midrule\nxes3g5m & very\_cold & 0.820 & 0.817 & 0.826 & 0.818 & 0.818 \\\n & cold & 0.802 & 0.804 & 0.793 & 0.804 & 0.803 \\\n & warm & 0.783 & 0.787 & 0.745 & 0.780 & 0.776 \\\n & hot & 0.708 & 0.717 & 0.606 & 0.709 & 0.703 \\\n\bottomrule\n\end{tabular}\n\end{table}
+\begin{table}[t]
+\centering
+\caption{Cold-start comparison of sequence-only (No-Graph) and graph-aware (Graph) KT models. Entries are three-fold mean AUC by KC train-frequency stratum; $\Delta_{\max}$ is the best Graph AUC minus the best No-Graph AUC in the same dataset/stratum.}
+\label{tab:cold-start-comparison}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.14\linewidth} >{\RaggedRight\arraybackslash}p{0.11\linewidth} *{6}{>{\centering\arraybackslash}X} @{}}
+\toprule
+& & \multicolumn{2}{c|}{\textbf{No-Graph}} & \multicolumn{4}{c}{\textbf{Graph}} \\
+\cmidrule(lr){3-4} \cmidrule(l){5-8}
+Dataset & Stratum & DKT & SimpleKT & GKT & GIKT & DGEKT & $\Delta_{\max}$ \\
+\midrule
+assist2012 & very\_cold & 0.723 & 0.724 & 0.695 & 0.726 & 0.724 & +0.002 \\
+ & cold & 0.769 & 0.772 & 0.750 & 0.772 & 0.772 & +0.000 \\
+ & warm & 0.751 & 0.756 & 0.724 & 0.757 & 0.756 & +0.001 \\
+ & hot & 0.687 & 0.696 & 0.601 & 0.691 & 0.687 & -0.005 \\
+\midrule
+junyi & very\_cold & 0.813 & 0.813 & 0.813 & 0.813 & - & +0.000 \\
+ & cold & 0.505 & 0.505 & 0.505 & 0.505 & - & +0.000 \\
+ & warm & 0.631 & 0.631 & 0.626 & 0.627 & - & -0.004 \\
+ & hot & 0.719 & 0.719 & 0.704 & 0.713 & - & -0.006 \\
+\midrule
+synthetic\_c2 & hot & 0.619 & 0.626 & 0.554 & 0.634 & 0.634 & +0.008 \\
+\midrule
+synthetic\_c5 & hot & 0.628 & 0.630 & 0.524 & 0.633 & 0.633 & +0.002 \\
+\midrule
+xes3g5m & very\_cold & 0.820 & 0.817 & 0.826 & 0.818 & 0.818 & +0.005 \\
+ & cold & 0.802 & 0.804 & 0.793 & 0.804 & 0.803 & -0.000 \\
+ & warm & 0.783 & 0.787 & 0.745 & 0.780 & 0.776 & -0.007 \\
+ & hot & 0.708 & 0.717 & 0.606 & 0.709 & 0.703 & -0.009 \\
+\bottomrule
+\end{tabularx}
+\end{table}

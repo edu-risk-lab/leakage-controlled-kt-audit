@@ -2,7 +2,9 @@
 \centering
 \caption{Cold-start KC diagnostic summary averaged across frequency strata.}
 \label{tab:cold-start}
-\begin{tabular}{llrrr}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.18\linewidth} >{\RaggedRight\arraybackslash}X *{3}{>{\centering\arraybackslash}X} @{}}
 \toprule
 Dataset & Model & AUC & ACC & NLL \\
 \midrule
@@ -49,5 +51,5 @@ xes3g5m & gkt & 0.708 & 0.762 & 0.496 \\
 xes3g5m & simplekt & 0.750 & 0.783 & 0.460 \\
 xes3g5m & skt & 0.731 & 0.762 & 0.490 \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}

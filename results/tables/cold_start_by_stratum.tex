@@ -7,9 +7,9 @@ outside the four canonical bins. Stratum mass varies by dataset split; under def
 Synthetic C2/C5 route all test interactions into the hot stratum ($>500$ train-fold hits per \KC{}).}
 \label{tab:cold-start-strata}
 \footnotesize
-\setlength{\tabcolsep}{2pt}
+\setlength{\tabcolsep}{3pt}
 \renewcommand{\arraystretch}{1.05}
-\begin{tabular}{@{} >{\RaggedRight\arraybackslash}p{24mm} >{\ttfamily\footnotesize\raggedright\arraybackslash}p{30mm} rrrr @{}}
+\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.18\linewidth} >{\RaggedRight\arraybackslash}p{0.16\linewidth} *{4}{>{\centering\arraybackslash}X} @{}}
 \toprule
 Dataset & Stratum & $n$ & AUC & ACC & NLL \\
 \midrule
@@ -34,5 +34,5 @@ Dataset & Stratum & $n$ & AUC & ACC & NLL \\
 \midrule
 \multirow{1}{*}{Synthetic C5} & hot & 60{,}000 & 0.630 & 0.611 & 0.651 \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}

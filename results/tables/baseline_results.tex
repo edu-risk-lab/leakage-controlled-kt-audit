@@ -1,11 +1,11 @@
 \begin{table}[t]
 \centering
-\footnotesize
-\setlength{\tabcolsep}{2pt}
 \caption{Diagnostic baseline results (train-only graphs). Baselines are used for protocol comparison only; no SOTA claim is made. Values are fold means with 95\% bootstrap confidence intervals over valid+test sequence positions (\texttt{n\_folds} as exported per dataset).}
 \label{tab:baseline-results}
 \label{tab:baseline-junyi}
-\begin{tabular}{@{} >{\RaggedRight\arraybackslash}p{14mm} *{3}{>{\centering\arraybackslash}p{17mm}} @{}}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.24\linewidth} *{3}{>{\centering\arraybackslash}X} @{}}
 \toprule
 Model & AUC & ACC & NLL \\
 \midrule
@@ -18,16 +18,16 @@ GIKT & \makecell{0.982\\[-1pt]{\scriptsize[0.982, 0.982]}} & \makecell{0.946\\[-
 \textit{simpleKT} & \makecell{0.984\\[-1pt]{\scriptsize[0.982, 0.989]}} & \makecell{0.951\\[-1pt]{\scriptsize[0.945, 0.962]}} & \makecell{0.121\\[-1pt]{\scriptsize[0.093, 0.135]}} \\
 SKT & \makecell{0.979\\[-1pt]{\scriptsize[0.976, 0.986]}} & \makecell{0.938\\[-1pt]{\scriptsize[0.931, 0.954]}} & \makecell{0.139\\[-1pt]{\scriptsize[0.107, 0.156]}} \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \begin{table}[t]
 \centering
-\footnotesize
-\setlength{\tabcolsep}{2pt}
 \caption{Diagnostic baselines: ASSISTments 2012 (three-fold learner CV (\texttt{n\_folds}=3); train-only graphs).}
 \label{tab:baseline-assist2012}
-\begin{tabular}{@{} >{\RaggedRight\arraybackslash}p{14mm} *{3}{>{\centering\arraybackslash}p{17mm}} @{}}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.24\linewidth} *{3}{>{\centering\arraybackslash}X} @{}}
 \toprule
 Model & AUC & ACC & NLL \\
 \midrule
@@ -41,16 +41,16 @@ GKT & \makecell{0.961\\[-1pt]{\scriptsize[0.960, 0.962]}} & \makecell{0.907\\[-1
 \textit{simpleKT} & \makecell{0.968\\[-1pt]{\scriptsize[0.967, 0.968]}} & \makecell{0.916\\[-1pt]{\scriptsize[0.915, 0.916]}} & \makecell{0.173\\[-1pt]{\scriptsize[0.172, 0.175]}} \\
 SKT & \makecell{0.953\\[-1pt]{\scriptsize[0.952, 0.953]}} & \makecell{0.898\\[-1pt]{\scriptsize[0.897, 0.899]}} & \makecell{0.198\\[-1pt]{\scriptsize[0.196, 0.200]}} \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \begin{table}[t]
 \centering
-\footnotesize
-\setlength{\tabcolsep}{2pt}
 \caption{Diagnostic baselines: XES3G5M (three-fold learner CV (\texttt{n\_folds}=3); train-only graphs).}
 \label{tab:baseline-xes3g5m}
-\begin{tabular}{@{} >{\RaggedRight\arraybackslash}p{14mm} *{3}{>{\centering\arraybackslash}p{17mm}} @{}}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.24\linewidth} *{3}{>{\centering\arraybackslash}X} @{}}
 \toprule
 Model & AUC & ACC & NLL \\
 \midrule
@@ -64,16 +64,16 @@ GKT & \makecell{0.834\\[-1pt]{\scriptsize[0.833, 0.835]}} & \makecell{0.842\\[-1
 \textit{simpleKT} & \makecell{0.875\\[-1pt]{\scriptsize[0.874, 0.875]}} & \makecell{0.858\\[-1pt]{\scriptsize[0.857, 0.859]}} & \makecell{0.324\\[-1pt]{\scriptsize[0.323, 0.325]}} \\
 SKT & \makecell{0.625\\[-1pt]{\scriptsize[0.623, 0.626]}} & \makecell{0.800\\[-1pt]{\scriptsize[0.799, 0.801]}} & \makecell{0.482\\[-1pt]{\scriptsize[0.480, 0.483]}} \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \begin{table}[t]
 \centering
-\footnotesize
-\setlength{\tabcolsep}{2pt}
 \caption{Diagnostic baselines: Synthetic C2 (three-fold learner CV (\texttt{n\_folds}=3); train-only graphs).}
 \label{tab:baseline-synthetic-c2}
-\begin{tabular}{@{} >{\RaggedRight\arraybackslash}p{14mm} *{3}{>{\centering\arraybackslash}p{17mm}} @{}}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.24\linewidth} *{3}{>{\centering\arraybackslash}X} @{}}
 \toprule
 Model & AUC & ACC & NLL \\
 \midrule
@@ -87,16 +87,16 @@ GKT & \makecell{0.873\\[-1pt]{\scriptsize[0.868, 0.878]}} & \makecell{0.808\\[-1
 \textit{simpleKT} & \makecell{0.875\\[-1pt]{\scriptsize[0.871, 0.880]}} & \makecell{0.809\\[-1pt]{\scriptsize[0.803, 0.814]}} & \makecell{0.405\\[-1pt]{\scriptsize[0.399, 0.416]}} \\
 SKT & \makecell{0.708\\[-1pt]{\scriptsize[0.634, 0.853]}} & \makecell{0.722\\[-1pt]{\scriptsize[0.686, 0.788]}} & \makecell{0.554\\[-1pt]{\scriptsize[0.440, 0.613]}} \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \begin{table}[t]
 \centering
-\footnotesize
-\setlength{\tabcolsep}{2pt}
 \caption{Diagnostic baselines: Synthetic C5 (three-fold learner CV (\texttt{n\_folds}=3); train-only graphs).}
 \label{tab:baseline-synthetic-c5}
-\begin{tabular}{@{} >{\RaggedRight\arraybackslash}p{14mm} *{3}{>{\centering\arraybackslash}p{17mm}} @{}}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.24\linewidth} *{3}{>{\centering\arraybackslash}X} @{}}
 \toprule
 Model & AUC & ACC & NLL \\
 \midrule
@@ -110,5 +110,5 @@ GKT & \makecell{0.810\\[-1pt]{\scriptsize[0.806, 0.814]}} & \makecell{0.738\\[-1
 \textit{simpleKT} & \makecell{0.829\\[-1pt]{\scriptsize[0.828, 0.831]}} & \makecell{0.755\\[-1pt]{\scriptsize[0.754, 0.757]}} & \makecell{0.491\\[-1pt]{\scriptsize[0.489, 0.492]}} \\
 SKT & \makecell{0.810\\[-1pt]{\scriptsize[0.808, 0.813]}} & \makecell{0.740\\[-1pt]{\scriptsize[0.737, 0.744]}} & \makecell{0.511\\[-1pt]{\scriptsize[0.507, 0.513]}} \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}

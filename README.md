@@ -9,7 +9,7 @@ Graph Construction and Cold-Start Diagnostic Protocol for Knowledge Tracing*
 > fold-aware discipline; cold-start KC stratification; a DAG Disruption Rate
 > (**DDR**) probe over five graph augmentation operators (four label-agnostic
 > plus one prerequisite-preserving `prereq_preserve`); an optional
-> **DDR→downstream** study that links DDR to GKT accuracy; a sequence
+> **DDR→downstream** study that links DDR to downstream graph-KT accuracy; a sequence
 > **autocorrelation** diagnostic; paired **significance testing**; and optional
 > **ground-truth cross-validation** on Junyi (expert prerequisite DAG vs
 > train-only inferred edges).
