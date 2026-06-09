@@ -269,3 +269,16 @@
 #   [ ] No regression to Package A benchmark-role framing (XES primary)
 #
 # End of prompt.
+B2 extension:
+Run leakage-injection metrics also on xes3g5m fold 0, even if downstream AUC is not retrained.
+Report injected_edges_before_pruning, injected_edges_after_pruning, pruned_injected_edges, retained_injected_ratio.
+
+B3 extension:
+Add columns to training_parity.csv:
+n_parameters, early_stopping_patience, selection_metric, checkpoint_rule, mean_runtime_minutes, gpu_type.
+
+B5 optional but recommended — Graph-construction sensitivity:
+Create results/tables/graph_sensitivity_xes_f0.csv and .tex.
+Sweep q ∈ {0.90, 0.95, 0.98}, top_k ∈ {3,5,10}.
+Report raw_edges, pruned_edges, final_edges, roots, leaves, DAG_pass, ECR_flag, ECR_overlap, TBMR.
+If GPU permits, report GKT fold-0 AUC for each setting.
