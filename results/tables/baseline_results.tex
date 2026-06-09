@@ -5,6 +5,7 @@
 \begin{table}[t]
 \centering
 \caption{Diagnostic baseline AUC summary (train-only graphs; three-fold learner CV means).
+XES3G5M is the primary model-comparison column; Junyi is a saturated sanity corpus.
 Baselines sanity-check preprocessing, splits, and pyKT wiring; they are not SOTA claims.
 Per-dataset ACC/NLL and 95\% bootstrap confidence intervals are in
 Supplementary Tables~S1--S5.}
@@ -13,17 +14,17 @@ Supplementary Tables~S1--S5.}
 \setlength{\tabcolsep}{3pt}
 \begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.20\linewidth} *{5}{>{\centering\arraybackslash}X} @{}}
 \toprule
-Model & \makecell{Junyi} & \makecell{ASSIST\\2012} & \makecell{XES\\3G5M} & \makecell{Synth\\C2} & \makecell{Synth\\C5} \\
+Model & \makecell{XES\\3G5M} & \makecell{ASSIST\\2012} & \makecell{Junyi} & \makecell{Synth\\C2} & \makecell{Synth\\C5} \\
 \midrule
-BKT & 0.780 & 0.669 & 0.636 & 0.835 & 0.791 \\
-AKT & 0.984 & 0.968 & 0.875 & 0.873 & 0.822 \\
-DKT & 0.984 & 0.963 & 0.858 & 0.862 & 0.826 \\
-\textit{simpleKT} & 0.984 & 0.968 & 0.875 & 0.875 & 0.829 \\
-GKT & --- & 0.961 & 0.834 & 0.873 & 0.810 \\
-GIKT & 0.982 & 0.967 & 0.878 & 0.875 & 0.820 \\
-SKT & 0.979 & 0.953 & 0.625 & 0.708 & 0.810 \\
-DyGKT & 0.978 & 0.952 & 0.752 & 0.710 & 0.826 \\
-DGEKT & 0.981 & 0.960 & 0.841 & 0.710 & 0.830 \\
+BKT & 0.636 & 0.669 & 0.780 & 0.835 & 0.791 \\
+AKT & 0.875 & 0.968 & 0.984 & 0.873 & 0.822 \\
+DKT & 0.858 & 0.963 & 0.984 & 0.862 & 0.826 \\
+\textit{simpleKT} & 0.875 & 0.968 & 0.984 & 0.875 & 0.829 \\
+GKT & 0.834 & 0.961 & --- & 0.873 & 0.810 \\
+GIKT & 0.878 & 0.967 & 0.982 & 0.875 & 0.820 \\
+SKT & 0.625 & 0.953 & 0.979 & 0.708 & 0.810 \\
+DyGKT & 0.752 & 0.952 & 0.978 & 0.710 & 0.826 \\
+DGEKT & 0.841 & 0.960 & 0.981 & 0.710 & 0.830 \\
 \bottomrule
 \end{tabularx}
 \end{table}
