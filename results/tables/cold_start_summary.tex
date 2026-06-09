@@ -1,0 +1,40 @@
+% Merged cold-start summary for main manuscript (P2).
+% Full per-stratum simpleKT and per-model comparison tables are in
+% cold_start_by_stratum.tex and cold_start_comparison.tex (supplement).
+
+\begin{table}[t]
+\centering
+\caption{Cold-start KC diagnostic summary. Column $n$ counts fold~0 test
+interactions per stratum for \textit{simpleKT}; $\Delta_{\max}$ is the best
+graph-family AUC minus the best sequence-only AUC (three-fold means). Per-model
+strata appear in Supplementary Tables~S11--S12.}
+\label{tab:cold-start-summary}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.15\linewidth} >{\RaggedRight\arraybackslash}p{0.12\linewidth} >{\centering\arraybackslash}X >{\centering\arraybackslash}X >{\centering\arraybackslash}X @{}}
+\toprule
+Dataset & Stratum & $n$ & \textit{simpleKT} AUC & $\Delta_{\max}$ \\
+\midrule
+\multirow{4}{*}{\makecell[l]{Junyi\\Academy}}
+ & very\_cold & 19 & 1.000 & 0.000 \\
+ & cold & 256 & 0.447 & 0.000 \\
+ & warm & 11{,}257 & 0.615 & -0.004 \\
+ & hot & ${\approx}7.7{\times}10^{6}$ & 0.718 & -0.006 \\
+\midrule
+\multirow{4}{*}{ASSIST'12}
+ & very\_cold & 49 & 0.608 & +0.002 \\
+ & cold & 707 & 0.769 & 0.000 \\
+ & warm & 9{,}017 & 0.765 & +0.001 \\
+ & hot & ${\approx}8.1{\times}10^{5}$ & 0.693 & -0.005 \\
+\midrule
+\multirow{4}{*}{XES3G5M}
+ & very\_cold & 161 & 0.810 & +0.005 \\
+ & cold & 2{,}592 & 0.798 & 0.000 \\
+ & warm & 17{,}655 & 0.790 & -0.007 \\
+ & hot & ${\approx}1.9{\times}10^{6}$ & 0.717 & -0.009 \\
+\midrule
+Synthetic C2 & hot & 60{,}000 & 0.624 & +0.008 \\
+Synthetic C5 & hot & 60{,}000 & 0.630 & +0.002 \\
+\bottomrule
+\end{tabularx}
+\end{table}
