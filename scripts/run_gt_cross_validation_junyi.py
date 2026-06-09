@@ -60,7 +60,7 @@ def _write_tex_table(sweep: pd.DataFrame, n_expert_edges: int, path: Path, datas
         )
     body = "\n".join(rows_tex)
     content = (
-        r"\begin{table}[t]" + "\n"
+        r"\begin{table}[!ht]" + "\n"
         r"\centering" + "\n"
         rf"\caption{{GT cross-validation: agreement between train-only inferred "
         rf"$E_{{\text{{pre}}}}$ and expert prerequisite DAG on {dataset_label} "
