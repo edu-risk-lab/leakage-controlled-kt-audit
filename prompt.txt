@@ -1,284 +1,154 @@
-# Antigravity Server Task: Package B (APIN Revision Experiments)
+# Antigravity Server Task: Package B2 (APIN reviewer-response experiments)
 # Repository: https://github.com/tuanymc/p0_project.git
-# Branch: main (create `package-b-server` if you need a long-running branch)
-# Paper target: paper/main_APIN.tex + paper/supplementary.tex (Package A text revision already merged)
+# Branch: main
+# Paper target: paper/main_APIN.tex + paper/supplementary.tex
 #
 # =============================================================================
-# MISSION
+# STATUS — WHAT IS ALREADY DONE (do NOT redo)
 # =============================================================================
-# Execute the FULL "Package B" experimental revision on a GPU Linux server.
-# Package A (text-only reframing) is DONE. Package B adds three deliverables:
+# Package A (text reframing): merged.
+# Package B first pass: merged (commit 2162b01d + local fixes):
+#   S15 training_parity        -> results/tables/training_parity.tex   DONE
+#   S16 fold-level paired-t CI -> results/tables/bootstrap_auc_ci.tex  DONE (descriptive)
+#   S17 leak injection metrics -> results/tables/leak_injection.tex    DONE (XES f0)
 #
-#   B1. Learner-cluster bootstrap 95% CI for ΔAUC (primary: XES3G5M)
-#   B2. Controlled test-fold edge injection + leakage metrics (+ optional AUC)
-#   B3. Training parity table (Supplementary Table S15)
+# IMPORTANT — REVIEW FINDINGS YOU MUST RESPECT:
+#   * The first-pass "bootstrap" script was NOT a bootstrap (it computed a
+#     paired t CI over 3 folds). The paper now honestly labels S16 as a
+#     descriptive fold-level paired-t interval. DO NOT relabel anything as
+#     "bootstrap" until a TRUE learner-cluster bootstrap exists (Task R1).
+#   * The injection experiment (S17) only shows metric response (|E_pre|,
+#     TBMR); it does NOT yet show downstream AUC impact. Task R2 closes this.
+#   * TBMR_f = 0 was REMOVED from the formal constraint set (it was
+#     contradicted by released TBMR=0.75 on XES). Do not re-add it.
+#   * Training parity: paper now states epoch caps DIFFER (30 seq vs 10 graph).
+#     Do not claim "same epoch budget" anywhere.
+#   * |E_pre|=1162 in S17 is CANDIDATE edges before DAG pruning (701 after
+#     pruning on clean fold). Keep this distinction in any new table.
+#   * When pandas.to_latex output goes into the paper: escape % and _ or
+#     write LaTeX manually (first pass produced a broken table).
 #
-# After experiments: regenerate TeX tables, update paper prose minimally, commit
-# CSV/TeX artefacts + scripts, push to origin/main (or open PR).
+# =============================================================================
+# REMAINING MISSION — TWO EXPERIMENTS
+# =============================================================================
 #
-# DO NOT re-run the entire 5-dataset pipeline unless artefacts are missing.
-# DO NOT claim SOTA. DO NOT use 3-fold t-test p<0.001 as primary evidence.
+# R1. TRUE learner-cluster bootstrap 95% CI for ΔAUC on XES3G5M (GPU export,
+#     CPU bootstrap). Replaces the descriptive paired-t table in S16.
+# R2. Downstream AUC on injected graphs (XES3G5M fold 0): does graph-mediated
+#     contamination move model AUC? Extends S17.
 #
 # =============================================================================
 # ENVIRONMENT CHECK (run first)
 # =============================================================================
-# Working directory: repository root (contains configs/, src/, scripts/, results/)
-#
-#   cd /path/to/p0_project
-#   git pull origin main
-#   python3 --version          # >= 3.10
+#   cd /path/to/p0_project && git pull origin main
 #   python3 -c "import torch; print(torch.__version__, torch.cuda.is_available())"
-#   nvidia-smi                 # GPU required for XES pyKT re-export if cache missing
-#
-# Install deps if needed:
-#   pip install -e ".[pykt]"   # or project-documented venv setup from README.md
-#
-# Verify data exists (gitignored; must already be on server):
+#   nvidia-smi
 #   ls data/processed/xes3g5m.parquet
-#   ls data/processed/synthetic_c5.parquet
-#   ls data/processed/assist2012.parquet
 #   ls data/graphs/xes3g5m/fold_0/e_pre_train_only.csv
-#   ls data/graphs/synthetic_c5/fold_0/e_pre_train_only.csv
-#
-# If processed parquet missing: preprocess per README before continuing.
-#   python -m src.preprocess --config configs/xes3g5m.yaml
-#   python -m src.graph_builder --config configs/xes3g5m.yaml
-#   (same for synthetic_c5, assist2012 as needed)
 #
 # =============================================================================
-# KNOWN CODEBASE FACTS (read before coding)
-# =============================================================================
-# 1. baseline_fold_results.csv already has 3-fold pyKT AUC for xes3g5m, assist2012.
-#    XES3G5M primary; Junyi is saturated — do NOT anchor bootstrap claims on Junyi.
-#
-# 2. baseline_runner.py caches per-fold predictions at:
-#      results/cache/{dataset}_fold_{fold}_{model}_train_only_preds.csv
-#    BUT pyKT backend currently caps predictions to 5000 rows (pred_cap=5000 when
-#    backend=pykt). This is INSUFFICIENT for learner bootstrap on XES (~1.9M eval).
-#    YOU MUST implement one of:
-#      (a) --export-full-predictions flag → prediction_cap=None for listed models, OR
-#      (b) scripts/export_predictions.py that scores full valid+test without cap
-#    Export columns required: user_id, y_true, y_prob, fold, model, kc_id (optional)
-#
-# 3. Leakage metrics: src/leakage_metrics.py compute_leakage_row()
-#    Graph builder: src/graph_builder.py
-#    Full-log contrast already exists: data/processed/<ds>/full_log/
-#
-# 4. Paper benchmark roles (Package A):
-#    Primary: XES3G5M | Secondary: ASSISTments 2012 | Saturated: Junyi
-#
-# 5. Supplement numbering target:
-#    S15 = training_parity
-#    S16 = bootstrap_auc_ci
-#    S17 = leakage_injection
-#    Update paper/supplementary.tex index + paper/main_APIN.tex cross-refs
-#
-# =============================================================================
-# TASK B3 — Training parity table (CPU, ~30 min, do FIRST)
-# =============================================================================
-# Create: scripts/generate_training_parity.py
-# Output: results/tables/training_parity.csv
-#         results/tables/training_parity.tex  (label: tab:training-parity)
-#
-# Columns (one row per model):
-#   model, codebase (pykt_stock | native_src_models), graph_input,
-#   epochs, batch_size, lr, hp_search_budget, split_seed, graph_construction,
-#   data_loader_notes
-#
-# Sources:
-#   configs/xes3g5m.yaml, configs/assist2012.yaml
-#   src/baseline_runner.py docstring (GKT via pyKT; GIKT/SKT/DyGKT/DGEKT native)
-#   evaluation.baseline_backend, pykt.* global settings
-#
-# Hook generate_paper_artifacts.py to emit training_parity.tex OR keep standalone.
-# Add one sentence in paper/main_APIN.tex §4 baseline Training parity:
-#   "Full hyperparameter parity is in Supplementary Table~S15."
-#
-# =============================================================================
-# TASK B1 — Learner bootstrap CI for ΔAUC (GPU for export, CPU for bootstrap)
+# TASK R1 — Learner-cluster bootstrap (replaces S16 content)
 # =============================================================================
 #
-# --- B1.1 Export full predictions (XES3G5M, 3 folds) ---
-# Models (minimum): simplekt, gkt
-# Models (recommended): + gikt
-# graph_construction: train_only only
+# R1.1 Export FULL per-position predictions, XES3G5M, folds 0-2,
+#      models: simplekt, gkt, gikt; graph_construction=train_only.
+#   - src/baseline_runner.py caches predictions at
+#       results/cache/{ds}_fold_{f}_{model}_train_only_preds.csv
+#     but pyKT backend caps at 5000 rows (prediction_cap). You must export
+#     UNCAPPED (~1.9M rows/fold). Add --export-full-predictions flag or a
+#     dedicated scripts/export_predictions.py.
+#   - Required columns: user_id, y_true, y_prob, fold, model.
+#   - Store: results/predictions/xes3g5m/fold_{f}/{model}.parquet (gitignored;
+#     do NOT commit raw predictions).
+#   - REUSE existing trained checkpoints if available (results/pykt_work/);
+#     retrain only if checkpoints are missing.
 #
-# If implementing baseline_runner flag:
-#   python -m src.baseline_runner --config configs/xes3g5m.yaml \
-#     --baseline-backend pykt --export-full-predictions simplekt,gkt,gikt
-# OR dedicated script after code change.
+# R1.2 Rewrite scripts/bootstrap_auc_ci.py as a true bootstrap:
+#   For each pair (gkt vs simplekt, gikt vs simplekt), per fold then pooled:
+#     - align the two models' predictions on identical eval rows
+#     - cluster rows by user_id
+#     - B = 10000 resamples of learners with replacement
+#     - delta_b = AUC_a(resample) - AUC_b(resample)
+#     - report delta_mean, percentile CI [2.5%, 97.5%], n_learners, n_rows
+#   Output: results/tables/bootstrap_auc_ci.csv + .tex
+#   The .tex must keep label tab:bootstrap-auc-ci and a 4-5 column layout
+#   (Model Pair, ΔAUC, 95% CI, n_learners[, fold]). Hand-write the LaTeX
+#   header; escape everything.
 #
-# Store full predictions at:
-#   results/predictions/xes3g5m/fold_{f}/{model}.parquet
-#   (or .csv if parquet unavailable; prefer parquet for size)
-#
-# Reuse existing cache when full-length; re-run only if capped at 5000 rows.
-#
-# --- B1.2 Bootstrap script ---
-# Create: scripts/bootstrap_auc_ci.py
-#
-# Method:
-#   For each (dataset, model_a, model_b, fold):
-#     Merge predictions on same eval rows (user_id + item_id + timestamp if available)
-#     Cluster by user_id
-#     For b = 1..10000:
-#       Resample learners with replacement
-#       Compute AUC_a, AUC_b on resampled interactions (Mann-Whitney or sklearn)
-#       delta_b = AUC_a - AUC_b
-#     Report: delta_mean, ci_low, ci_high (2.5%, 97.5%), n_learners, n_pairs
-#
-# Primary pairs:
-#   xes3g5m: gkt vs simplekt, gikt vs simplekt
-# Optional:
-#   assist2012: gkt vs simplekt
-#
-# Output:
-#   results/tables/bootstrap_auc_ci.csv
-#   results/tables/bootstrap_auc_ci.tex  (label: tab:bootstrap-auc-ci, Supplement S16)
-#
-# --- B1.3 Paper updates (minimal) ---
-# In paper/main_APIN.tex §5.1 (sec:disc-model-specific):
-#   Add 1–2 sentences with 95% learner-bootstrap CI for GKT−simpleKT on XES3G5M.
-#   Example pattern: "ΔAUC = −0.041 [CI_low, CI_high]; learner-bootstrap on valid+test."
-# Update C5 contribution bullet to mention CI not p-values.
-# Update Limitations: learner-bootstrap supersedes fragile 3-fold t-tests for XES.
-# Update Supplementary index for S16.
-#
-# Acceptance criteria B1:
-#   - XES GKT−simpleKT CI should NOT contain 0 (expected given Δ≈−0.041)
-#   - Script rerunnable from saved predictions without retraining
+# R1.3 Paper updates (minimal, honest):
+#   - paper/supplementary.tex section sec:supp-bootstrap: retitle to
+#     "Learner-level bootstrap ΔAUC intervals"; replace the paired-t framing
+#     with the actual bootstrap description (B=10000, learner-cluster
+#     resampling on valid+test positions). Keep the sentence that fold-level
+#     magnitudes already dwarf fold variation.
+#   - paper/main_APIN.tex: in the C5 contribution bullet and the Limitations
+#     paragraph, replace "descriptive fold-level 95% intervals" /
+#     "descriptive paired-t intervals" with "learner-level bootstrap 95% CIs"
+#     ONLY after R1 numbers exist. Also delete the sentence "Learner-level
+#     bootstrap intervals require full per-position prediction exports and
+#     are left to the released harness." (it becomes false).
+#   Acceptance: GKT-simpleKT CI must exclude 0; numbers consistent with
+#   fold means (~ -0.041).
 #
 # =============================================================================
-# TASK B2 — Controlled leakage injection (CPU for metrics; GPU optional for AUC)
+# TASK R2 — Downstream AUC on injected graphs (extends S17)
 # =============================================================================
 #
-# --- B2.1 Injection rule (FREEZE before coding) ---
-# For fold f, starting from train-only e_pre_train_only.csv:
-#   1. Mine consecutive KC transitions from TEST split only (same rule as graph_builder)
-#   2. Keep edges NOT already in train-only e_pre
-#   3. Add top p% by test support (NOT random) for p in {0.05, 0.20}
-#   4. Tag source=injected_test_leak, train_only_flag=false in provenance
-#   5. Run existing DAG audit / cycle pruning on merged edge list
+# R2.1 Build injected graph artefacts (reuse scripts/run_leak_injection.py
+#   logic): for XES3G5M fold 0, arms clean / inject_05 / inject_20.
+#   - Injection rule (same as first pass): sample p% of test-fold rows
+#     (seed 42+100p), append to train interactions, re-run
+#     infer_prerequisites_from_train.
+#   - THEN run the production DAG audit / cycle pruning on each arm and
+#     export NPZ adjacency the same way the production pipeline does
+#     (src/pykt_engine.py / pykt_graph_matrix path).
+#   - Log per arm: candidate_edges, retained_edges_after_pruning,
+#     injected-edge count and retained_injected_ratio.
 #
-# Arms per dataset/fold:
-#   clean        → existing e_pre_train_only.csv
-#   inject_05    → +5% test-only edges
-#   inject_20    → +20% test-only edges
-#   full_log     → existing data/processed/<ds>/full_log/e_pre.csv (control)
+# R2.2 Retrain graph models on each arm (GPU):
+#   - Models: gkt (minimum), + gikt (recommended). simplekt as a no-graph
+#     control (its AUC must NOT change across arms - sanity check).
+#   - Identical configs to baseline runs (configs/xes3g5m.yaml), fold 0 only,
+#     seed 42; only the graph artefact differs.
+#   Output: results/tables/leak_injection_auc.csv + .tex
+#   Columns: arm, model, auc, acc, nll, delta_auc_vs_clean.
 #
-# --- B2.2 Implementation ---
-# Create: scripts/run_leak_injection.py
-#         (optional) src/inject_test_leakage.py
-#
-# Datasets (minimum):
-#   synthetic_c5 — all folds 0,1,2 (fast, sensitive ablation in paper)
-# Datasets (recommended):
-#   assist2012 fold 0 only (real benchmark sanity)
-#
-# For each arm compute via compute_leakage_row():
-#   ECR_flag, ECR_overlap, |rho|, TBMR
-# Also log: n_injected_edges, n_total_edges
-#
-# Output:
-#   results/tables/leakage_injection_metrics.csv
-#   results/tables/leakage_injection_metrics.tex (label: tab:leak-injection, S17)
-#
-# --- B2.3 Optional downstream AUC (GPU, if time permits) ---
-# On xes3g5m fold 0 ONLY:
-#   Retrain simplekt + gkt with injected graphs (inject_05, inject_20) vs clean
-#   Use pyKT + exported NPZ adjacency from injected e_pre
-# Output: results/tables/leakage_injection_auc.csv
-#
-# Acceptance criteria B2:
-#   - inject_20 shows HIGHER injected-edge count and/or ECR_overlap vs clean
-#   - Monotonic trend clean < inject_05 < inject_20 on at least one scalar
-#   - full_log arm included for contrast (may still show small ΔAUC on ASSIST)
-#
-# --- B2.4 Paper updates ---
-# paper/main_APIN.tex §4 (sec:exp-audit): new short subsection
-#   "Controlled test-fold edge injection"
-# paper/main_APIN.tex §5.3 Threats: REMOVE any "deferred to future work" on injection;
-#   cite Table S17 showing metrics respond to injected leak.
-# Supplementary: S17 + index update
+# R2.3 Paper updates:
+#   - paper/supplementary.tex sec:supp-leak-injection: add the AUC table as
+#     a second table in the SAME section (caption "Table S18"), update the
+#     supplementary index line for S17-S18.
+#   - paper/main_APIN.tex subsection "Controlled test-fold edge injection":
+#     add 2-3 sentences reporting whether injected graphs move GKT/GIKT AUC.
+#     Report the result WHATEVER it is (a null result is fine and must be
+#     framed as "metrics detect contamination that AUC alone would miss" if
+#     AUC stays flat; do NOT spin).
+#   - Declarations / supplementary-material paragraph in main_APIN.tex:
+#     extend the S-table list if S18 is added.
 #
 # =============================================================================
-# TASK B4 — Regenerate artefacts & verify (after B1–B3)
+# VERIFY + DELIVERABLES
 # =============================================================================
-#   python scripts/generate_paper_artifacts.py   # extend if needed for S15–S17
-#   python -m scripts.run_significance_testing    # refresh S11 (unchanged logic OK)
-#
-# Write: results/reports/package_b_summary.md
-#   - Commands run, timestamps, GPU used, row counts, key numbers for paper
-#   - XES bootstrap CI for GKT−simpleKT
-#   - C5 inject monotonicity check pass/fail
-#
-# Optional PDF build (if LaTeX on server):
-#   pdflatex -output-directory=paper paper/main_APIN.tex  (x2)
-#   pdflatex -output-directory=paper paper/supplementary.tex  (x2)
-#
-# =============================================================================
-# GIT / DELIVERABLES
-# =============================================================================
-# Commit and push:
-#   scripts/generate_training_parity.py
-#   scripts/bootstrap_auc_ci.py
-#   scripts/run_leak_injection.py
-#   (+ any src/ or baseline_runner.py changes)
-#   results/tables/training_parity.csv + .tex
-#   results/tables/bootstrap_auc_ci.csv + .tex
-#   results/tables/leakage_injection_metrics.csv + .tex
-#   results/tables/leakage_injection_auc.csv (if run)
-#   results/reports/package_b_summary.md
-#   paper/main_APIN.tex, paper/supplementary.tex (minimal prose/table refs)
-#
-# DO NOT commit:
-#   data/raw/, data/processed/, results/cache/, results/pykt_work/,
-#   results/predictions/ (large; optional commit only xes3g5m summary CSV)
-#
-# Suggested commit message:
-#   "Add Package B experiments: bootstrap CI, leak injection, training parity (APIN)"
+#   - Rebuild PDFs if LaTeX available:
+#       pdflatex -output-directory=paper paper/main_APIN.tex   (x2, + bibtex in paper/)
+#       pdflatex -output-directory=paper paper/supplementary.tex (x2)
+#     Grep logs for "undefined" and "^!" - zero tolerance.
+#   - Write results/reports/package_b2_summary.md: commands, GPU, runtimes,
+#     bootstrap CI numbers, injection AUC deltas, sanity checks passed.
+#   - Commit + push to origin main:
+#       scripts/ changes, results/tables/bootstrap_auc_ci.* ,
+#       results/tables/leak_injection_auc.* , paper/*.tex,
+#       results/reports/package_b2_summary.md
+#     DO NOT commit: data/, results/cache/, results/predictions/,
+#     results/pykt_work/.
+#   Suggested message:
+#     "Package B2: learner bootstrap CI + injected-graph downstream AUC (APIN)"
 #
 # =============================================================================
 # EXECUTION ORDER (strict)
 # =============================================================================
-#   1. Environment + data check
-#   2. B3 training parity (CPU)
-#   3. B1 code → export XES predictions (GPU) → bootstrap (CPU)
-#   4. B2 code → injection metrics C5+ASSIST (CPU) → optional XES AUC (GPU)
-#   5. Paper/supplement touch-up + package_b_summary.md
-#   6. git commit + push origin main
-#
-# =============================================================================
-# TROUBLESHOOTING
-# =============================================================================
-# - pyKT OOM on XES: reduce batch in configs/xes3g5m.yaml temporarily OR one model at a time
-# - Missing graphs: python -m src.graph_builder --config configs/<ds>.yaml
-# - Predictions still 5000 rows: verify prediction_cap=None path actually used
-# - Bootstrap too slow: subsample 5000 learners stratified, document in summary (last resort)
-# - Injection creates cycles: apply same dag_audit pruning as production pipeline
-#
-# =============================================================================
-# SUCCESS DEFINITION
-# =============================================================================
-# Package B is COMPLETE when ALL are true:
-#   [ ] S15 training_parity.tex exists and is referenced in main_APIN.tex
-#   [ ] S16 bootstrap shows XES gkt vs simplekt 95% CI with n_learners documented
-#   [ ] S17 injection shows metric response on synthetic_c5 (and assist f0 if run)
-#   [ ] main_APIN.tex §5.1 uses CI wording for XES primary claim
-#   [ ] package_b_summary.md pushed with reproducible commands
-#   [ ] No regression to Package A benchmark-role framing (XES primary)
+#   1. Environment + checkpoint check
+#   2. R1.1 export predictions (GPU)  ->  R1.2 bootstrap (CPU)  ->  R1.3 text
+#   3. R2.1 injected artefacts (CPU)  ->  R2.2 retrain (GPU)    ->  R2.3 text
+#   4. Rebuild PDFs, summary, commit, push
 #
 # End of prompt.
-B2 extension:
-Run leakage-injection metrics also on xes3g5m fold 0, even if downstream AUC is not retrained.
-Report injected_edges_before_pruning, injected_edges_after_pruning, pruned_injected_edges, retained_injected_ratio.
-
-B3 extension:
-Add columns to training_parity.csv:
-n_parameters, early_stopping_patience, selection_metric, checkpoint_rule, mean_runtime_minutes, gpu_type.
-
-B5 optional but recommended — Graph-construction sensitivity:
-Create results/tables/graph_sensitivity_xes_f0.csv and .tex.
-Sweep q ∈ {0.90, 0.95, 0.98}, top_k ∈ {3,5,10}.
-Report raw_edges, pruned_edges, final_edges, roots, leaves, DAG_pass, ECR_flag, ECR_overlap, TBMR.
-If GPU permits, report GKT fold-0 AUC for each setting.

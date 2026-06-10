@@ -65,8 +65,8 @@ S12--S13: cold-start diagnostics (Section~\ref{sec:supp-coldstart});
 S14: ground-truth metrics including node Jaccard
 (Section~\ref{sec:supp-gtxv-extended});
 S15: training parity (Section~\ref{sec:supp-training-parity});
-S16: bootstrap CI (Section~\ref{sec:supp-bootstrap});
-S17: leak injection (Section~\ref{sec:supp-leak-injection}).
+S16: fold-level $\Delta$AUC intervals (Section~\ref{sec:supp-bootstrap});
+S17: controlled leak injection (Section~\ref{sec:supp-leak-injection}).
 
 \medskip\noindent\textbf{Sections and figures.}
 Section~S3: sequence-autocorrelation analysis
@@ -237,30 +237,61 @@ manuscript summarises both in a single table.
 
 \section{Training parity}
 \label{sec:supp-training-parity}
-Table~S15 (Table~\ref{tab:training-parity}) outlines hyperparameter parity and model configuration across pyKT and native baselines.
+Table~S15 (Table~\ref{tab:training-parity}) outlines hyperparameter parity
+and model configuration across \texttt{pyKT} and native baselines. Settings
+shared by all models are kept out of the table: learning rate $0.001$
+(Adam), zero hyperparameter-search budget, split seed $42$, identical
+processed splits under both train-only and full-log graph constructions, and
+checkpoint selection by best validation AUC with early stopping (BKT is fit
+by L-BFGS on NLL without early stopping). Epoch caps and batch sizes differ
+across families (30 epochs for sequence checkpoints vs.\ 10 for graph
+backbones), reflecting per-epoch cost; the main text flags this residual
+budget difference as a caveat on model-comparison claims. ``Native'' denotes
+our re-implementations in \texttt{src/models}; graph models consume the
+exported $\Epre$ and, where available, $\Esim$ edges.
 \begin{table}[h!]
 \centering
 \caption{Training parity and hyperparameters (Table S15)}
 \label{tab:training-parity}
-\resizebox{\textwidth}{!}{\input{results/tables/training_parity.tex}}
+{\small
+\input{results/tables/training_parity.tex}}
 \end{table}
 
-\section{Bootstrap AUC Confidence Intervals}
+\section{Fold-level $\Delta$AUC intervals for primary pairs}
 \label{sec:supp-bootstrap}
-Table~S16 (Table~\ref{tab:bootstrap-auc-ci}) reports 95\% confidence intervals for the AUC difference ($\Delta$AUC) between selected pyKT and sequence baseline pairs on XES3G5M, computed via learner-level bootstrap ($B=10000$).
+Table~S16 (Table~\ref{tab:bootstrap-auc-ci}) reports the mean AUC difference
+($\Delta$AUC) between the primary model pairs on XES3G5M under train-only
+graph construction, with 95\% paired-$t$ intervals computed over the three
+learner-disjoint CV folds. With $n{=}3$ folds these intervals are
+\emph{descriptive} summaries of fold-to-fold variation, not substitutes for
+large-sample inference; we report them because the GKT deficit
+($-0.041$) is more than an order of magnitude larger than the interval
+half-width ($\pm 0.003$), so the model-specific conclusion does not hinge on
+the test. Learner-level bootstrap intervals require full per-position
+prediction exports and can be reproduced with the released harness.
 \begin{table}[h!]
 \centering
-\caption{Bootstrap AUC Confidence Intervals (Table S16)}
+\caption{Fold-level $\Delta$AUC with paired-$t$ 95\% intervals, XES3G5M, train-only graphs (Table S16)}
 \label{tab:bootstrap-auc-ci}
 \input{results/tables/bootstrap_auc_ci.tex}
 \end{table}
 
 \section{Controlled Leak Injection}
 \label{sec:supp-leak-injection}
-Table~S17 (Table~\ref{tab:leak-injection}) demonstrates the sensitivity of structural leakage metrics ($\mathrm{ECR}^{\mathrm{overlap}}_f$, $\mathrm{TBMR}_f$) to deliberate injection of test-fold temporal transitions into the train-only prerequisite graph construction on XES3G5M.
+Table~S17 (Table~\ref{tab:leak-injection}) probes the sensitivity of the
+audit metrics by deliberately injecting $5\%$ and $20\%$ of test-fold
+interactions into the train-only prerequisite builder on XES3G5M (fold~0).
+Edge counts $|\Epre|$ are \emph{candidate} edges before DAG pruning (the
+main-text DAG audit reports 701 retained edges after pruning on the clean
+fold). Candidate-edge count and $\mathrm{TBMR}_f$ increase monotonically with the
+injection rate, while $\mathrm{ECR}^{\mathrm{flag}}_f$ remains $0$ (learner-id
+sets stay disjoint) and $\mathrm{ECR}^{\mathrm{overlap}}_f$ is already
+saturated at $1.0$ on this transition-dense corpus. Flag-level checks alone
+therefore miss this contamination channel, supporting the tiered audit design
+in the main manuscript.
 \begin{table}[h!]
 \centering
-\caption{Controlled Leak Injection (Table S17)}
+\caption{Controlled Leak Injection, XES3G5M fold~0. $|\Epre|$ counts candidate edges before DAG pruning. (Table S17)}
 \label{tab:leak-injection}
 \input{results/tables/leak_injection.tex}
 \end{table}

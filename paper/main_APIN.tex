@@ -290,7 +290,9 @@ from downstream AUC, which graph-KT and contrastive-KT papers typically omit
   primary model-comparison benchmark, that backbone ranking under
   leakage-controlled graph construction is \emph{model-specific}: GKT trails
   \textit{simpleKT} by mean $\Delta$AUC ${\approx}{-}0.041$ on XES3G5M and
-  ${\approx}{-}0.007$ on ASSISTments (learner-cluster bootstrap 95\% CI supersedes fold-level magnitudes; Table~\ref{tab:baseline-cv} and Supplementary Table~S16), while GIKT remains competitive. We pair
+  ${\approx}{-}0.007$ on ASSISTments (three-fold means,
+  Table~\ref{tab:baseline-cv}; descriptive fold-level 95\% intervals for the
+  XES3G5M pairs in Supplementary Table~S16), while GIKT remains competitive. We pair
   this with a train-only versus full-log ablation and tiered leakage audits.
   We discuss three non-mutually-exclusive hypotheses and frame the result as
   a deployment and benchmarking precondition rather than as a refutation of
@@ -516,15 +518,19 @@ separate pipelines).
   \label{eq:c3}\\
 \text{(C4)} \;& |\Epre^f|\le K,\;
   |\mathrm{Out}_{\Epre^f}(i)|\le k;\notag\\
-&\; \mathrm{sim}(c_i,c_j)\ge\tau \ \forall (i,j)\in\Esim^f;
-  \label{eq:c4}\\
-\text{(C5)} \;& \mathrm{TBMR}_f = 0;\notag\\
-&\;\text{(no post-cutoff train transitions in edge evidence).}
-  \label{eq:c5}
+&\; \mathrm{sim}(c_i,c_j)\ge\tau \ \forall (i,j)\in\Esim^f.
+  \label{eq:c4}
 \end{align}
 C1--C2 block cross-fold and cross-learner contamination; C3--C4 encode
-the DAG audit and top-$K$/top-$k$ filters of Section~\ref{sec:graph};
-C5 is checked by Eq.~\eqref{eq:tbvr}.
+the DAG audit and top-$K$/top-$k$ filters of Section~\ref{sec:graph}.
+We deliberately do \emph{not} impose $\mathrm{TBMR}_f{=}0$
+(Eq.~\eqref{eq:tbvr}) as a feasibility constraint: temporal-transition
+inference necessarily draws evidence from each learner's full train
+timeline, so a zero rate would be attainable only by discarding
+late-train evidence. $\mathrm{TBMR}_f$ is instead reported as a
+within-train stress diagnostic in the sanity/stress tier below; the
+released runs accordingly show non-zero values on dense corpora
+(Table~\ref{tab:leakage-metrics}).
 
 \paragraph{Audit functionals (diagnostics, not training losses).}
 Because C1 cannot always be verified from AUC alone, the protocol
@@ -926,7 +932,19 @@ used for inference; they help reviewers compare graph density with \DDR{} and
 baseline behaviour in later sections.
 
 \subsection{Controlled test-fold edge injection}
-To verify that the audit metrics respond to graph-mediated leakage, we actively inject test-fold edges into the train-only prerequisite graphs (Supplementary Table~S17). At $5\%$ and $20\%$ injection rates, $\mathrm{ECR}^{\mathrm{overlap}}_f$ and edge counts rise monotonically, demonstrating that the structural audit detects contamination even when $\mathrm{ECR}^{\mathrm{flag}}$ indicates learner-disjoint splits.
+To verify that the audit metrics respond to graph-mediated leakage, we
+deliberately contaminate the XES3G5M fold-0 train-only prerequisite builder
+with $5\%$ and $20\%$ of test-fold interactions (Supplementary Table~S17).
+Candidate-edge count ($|\Epre|$: $1162{\to}1378{\to}1417$; counted
+\emph{before} DAG pruning, whereas Table~\ref{tab:dag-audit} reports the
+$701$ edges retained \emph{after} pruning on the clean fold) and
+$\mathrm{TBMR}_f$ ($0.754{\to}0.776{\to}0.779$) increase monotonically with
+the injection rate, while $\mathrm{ECR}^{\mathrm{flag}}_f$ remains $0$
+because learner-id sets stay disjoint: flag-level checks alone cannot detect
+this contamination channel, which motivates the tiered audit.
+$\mathrm{ECR}^{\mathrm{overlap}}_f$ is already saturated at $1.0$ on this
+transition-dense corpus (Section~\ref{sec:formal-problem}), so it carries no
+additional signal here.
 
 \subsection{Baseline Diagnostic}
 \label{sec:exp-baseline}
@@ -947,10 +965,18 @@ Per-dataset ACC/NLL and bootstrap intervals are in Supplementary Tables~S1--S5.
 Full hyperparameter parity is in Supplementary Table~S15.
 Sequence-only checkpoints (AKT, DKT, \textit{simpleKT}) use stock
 \texttt{pyKT} configurations. Native graph backbones (GIKT, SKT, DyGKT,
-DGEKT) share the same processed splits, data loader, epoch budget, and
-evaluation hook as the pyKT runs; we do not grant graph models a larger
-hyperparameter search than the sequence baselines. GKT is evaluated through
-the \texttt{pyKT} graph branch on corpora where that wrapper is supported.
+DGEKT) share the same processed splits, data loader, evaluation hook,
+learning rate, split seed, and early-stopping rule (patience~5, best
+validation AUC) as the pyKT runs, and no model family receives a
+hyperparameter search. Epoch caps and batch sizes are \emph{not}
+identical across families: sequence checkpoints train for up to 30
+epochs (batch 64) while graph backbones use 10-epoch budgets with
+smaller batches (Table~S15), reflecting their higher per-epoch cost.
+Checkpoint selection by best validation AUC mitigates, but does not
+eliminate, this residual budget difference; we flag it as a caveat on
+the GKT deficit in Section~\ref{sec:disc-model-specific}. GKT is
+evaluated through the \texttt{pyKT} graph branch on corpora where that
+wrapper is supported.
 
 \input{results/tables/baseline_cv_template.tex}
 Table~\ref{tab:baseline-cv} reports three-fold learner-CV means~$\pm$~std and
@@ -1275,7 +1301,13 @@ quality cannot be assumed---it must be audited.
 Baseline ordering uses three-fold means; DAG audit and GT cross-validation
 refer to fold~0 exports by default. GKT, AKT, DKT, and \textit{simpleKT} are
 stock pyKT~\cite{liu2022pykt} checkpoints; GIKT, SKT, DyGKT, and DGEKT are
-native implementations in our fork (\path{src/models/}). Stronger graph-KT
+native implementations in our fork (\path{src/models/}). Epoch caps differ
+across families (30 for sequence checkpoints vs.\ 10 for graph backbones;
+Table~S15): although all models select the best-validation-AUC checkpoint
+under the same patience, the smaller graph-model budget is a residual
+training-budget confound for the GKT deficit, and the severe SKT/DyGKT
+deficits in particular may partly reflect under-tuned native
+implementations rather than backbone limits. Stronger graph-KT
 architectures~\cite{tong2020skt,dygkt2024,dgekt2024} may behave differently;
 auditing them is an explicit follow-up.
 
@@ -1406,10 +1438,13 @@ before reporting Table~\ref{tab:baseline-cv}.
 \paragraph{Limitations.}
 Three-fold CV limits inferential power of standard fold-level tests ($p_{\min}{=}0.25$ for Wilcoxon;
 fragile paired $t$-tests on $n{=}3$ folds). Model-comparison claims in
-Section~\ref{sec:disc-model-specific} therefore rely on 95\% learner-level bootstrap confidence
-intervals for primary pairs on XES3G5M (Supplementary Table~S16), which supersede the fold-level
-magnitudes (Table~\ref{tab:baseline-cv}); Supplementary Table~S11 reports
-paired tests for transparency only. ASSISTments yields no $\Esim$ under item-overlap
+Section~\ref{sec:disc-model-specific} therefore rely on fold-level $\Delta$AUC
+magnitudes that are an order larger than fold-to-fold variation
+(Table~\ref{tab:baseline-cv}); Supplementary Table~S16 summarises the primary
+XES3G5M pairs with descriptive paired-$t$ intervals, and Supplementary
+Table~S11 reports paired tests for transparency only. Learner-level bootstrap
+intervals require full per-position prediction exports and are left to the
+released harness. ASSISTments yields no $\Esim$ under item-overlap
 Jaccard; GT cross-validation is Junyi-only at $\theta{=}0.5$; downstream
 \DDR{} retraining covers DGEKT only; calibration analysis is deferred. We do not
 claim other architectures would show the same null full-log shift.

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.6.8)  10 JUN 2026 07:23
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.6.8)  10 JUN 2026 10:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1135,39 +1135,7 @@ h' as default language. on input line 64.
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count377
 )
-(D:\0. NCS\CODE\p0_project\paper\main_APIN.aux
-! Undefined control sequence.
-l.143 \newl
-           {eq:ddr}{{13}{13}{DAG Disruption Rate and Augmentation Operators}...
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-
-! LaTeX Error: Missing \begin{document}.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.143 \newl{e
-             q:ddr}{{13}{13}{DAG Disruption Rate and Augmentation Operators}...
-
-You're in trouble here.  Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-LaTeX Warning: Label `eq:ddr@cref' multiply defined.
-
-
-LaTeX Warning: Label `sec:cold-start' multiply defined.
-
-
-LaTeX Warning: Label `sec:cold-start@cref' multiply defined.
-
-)
+(D:\0. NCS\CODE\p0_project\paper\main_APIN.aux)
 \openout1 = `main_APIN.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 64.
@@ -1225,21 +1193,6 @@ LaTeX Font Info:    ... okay on input line 64.
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 (d:\0.\tex/context/base/mkii\supp-pdf.mkii
-Underfull \hbox (badness 10000) in paragraph at lines 143--13
-[]\OT1/cmr/m/n/10 eq:ddr1313DAG Dis-rup-tion Rate and Aug-men-ta-tion Oper-a-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 143--13
-\OT1/cmr/m/n/10 torse-qua-tion.13         elsec:exp@cref[section][4][]4[1][14][
-]14
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 143--13
-
- []
-
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count378
 \scratchdimen=\dimen344
@@ -1268,135 +1221,8 @@ LaTeX Font Info:    Overwriting symbol font `AMSa' in version `bold'
 (Font)                  U/msa/m/n --> U/msa/m/n on input line 64.
 Package hyperref Info: Link coloring ON on input line 64.
 
-(D:\0. NCS\CODE\p0_project\paper\main_APIN.out
-! Undefined control sequence.
-l.28 00i\0
-          00c\000a\000t\000i\000o\000n}{section.3}% 27
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-l.28 00i\000c\0
-               00a\000t\000i\000o\000n}{section.3}% 27
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-l.28 00i\000c\000a\0
-                    00t\000i\000o\000n}{section.3}% 27
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-l.28 00i\000c\000a\000t\0
-                         00i\000o\000n}{section.3}% 27
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-l.28 00i\000c\000a\000t\000i\0
-                              00o\000n}{section.3}% 27
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-l.28 00i\000c\000a\000t\000i\000o\0
-                                   00n}{section.3}% 27
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Extra }, or forgotten \endgroup.
-l.28 00i\000c\000a\000t\000i\000o\000n}
-                                       {section.3}% 27
-I've deleted a group-closing symbol because it seems to be
-spurious, as in `$x}$'. But perhaps the } is legitimate and
-you forgot something else, as in `\hbox{$x}'. In such cases
-the way to recover is to insert both the forgotten and the
-deleted material, e.g., by typing `I$}'.
-
-) (D:\0. NCS\CODE\p0_project\paper\main_APIN.out
-! Undefined control sequence.
-l.28 00i\0
-          00c\000a\000t\000i\000o\000n}{section.3}% 27
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-l.28 00i\000c\0
-               00a\000t\000i\000o\000n}{section.3}% 27
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-l.28 00i\000c\000a\0
-                    00t\000i\000o\000n}{section.3}% 27
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-l.28 00i\000c\000a\000t\0
-                         00i\000o\000n}{section.3}% 27
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-l.28 00i\000c\000a\000t\000i\0
-                              00o\000n}{section.3}% 27
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-l.28 00i\000c\000a\000t\000i\000o\0
-                                   00n}{section.3}% 27
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Extra }, or forgotten \endgroup.
-l.28 00i\000c\000a\000t\000i\000o\000n}
-                                       {section.3}% 27
-I've deleted a group-closing symbol because it seems to be
-spurious, as in `$x}$'. But perhaps the } is legitimate and
-you forgot something else, as in `\hbox{$x}'. In such cases
-the way to recover is to insert both the forgotten and the
-deleted material, e.g., by typing `I$}'.
-
-)
+(D:\0. NCS\CODE\p0_project\paper\main_APIN.out)
+(D:\0. NCS\CODE\p0_project\paper\main_APIN.out)
 \@outlinefile=\write4
 \openout4 = `main_APIN.out'.
 
@@ -1410,17 +1236,10 @@ or `english'. on input line 64.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: End \AtBeginDocument code.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [1
-
-{C:/Users/tuanymc/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
 LaTeX Font Info:    Calculating math sizes for size <12.045> on input line 117.
 
 LaTeX Font Info:    Trying to load font information for U+msa on input line 117
 .
-
 (d:\0.\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
@@ -1439,7 +1258,9 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [2]
+ [1
+
+{C:/Users/tuanymc/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
 LaTeX Font Info:    Calculating math sizes for size <10.03749> on input line 11
 7.
 
@@ -1457,14 +1278,14 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
+ [2]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
  [3]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [4]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [5]
-Underfull \hbox (badness 1112) in paragraph at lines 322--351
+Underfull \hbox (badness 1112) in paragraph at lines 323--352
 \OT1/cmr/m/n/10 repeat, non-saturated AUC, clear-est graph-backbone sep-a-ra-ti
 on); \OT1/cmr/bx/n/10.03749 sec-ondary\OT1/cmr/m/n/10 ---
  []
@@ -1472,189 +1293,184 @@ on); \OT1/cmr/bx/n/10.03749 sec-ondary\OT1/cmr/m/n/10 ---
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
+ [5]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
  [6]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [7]
 
-LaTeX Warning: Reference `sec:exp' on page 8 undefined on input line 460.
-
-
-LaTeX Warning: Reference `sec:exp' on page 8 undefined on input line 460.
+Package hyperref Warning: Difference (2) between bookmark levels is greater 
+(hyperref)                than one, level fixed on input line 485.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [8]
-
-Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 484.
-
-
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [9]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
  [10]
+
+Package hyperref Warning: Difference (2) between bookmark levels is greater 
+(hyperref)                than one, level fixed on input line 711.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 711.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 711.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 711.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 737.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 737.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 737.
+
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [11]
-
-Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 706.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 706.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 706.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 706.
-
-
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [12]
 
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 732.
+Package hyperref Warning: Difference (2) between bookmark levels is greater 
+(hyperref)                than one, level fixed on input line 844.
 
 
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 732.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 732.
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [13]
+(results/tables/dataset_stats.tex)
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [14]
-
-Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 839.
-
-(results/tables/dataset_stats.tex)
-
-LaTeX Warning: Reference `tab:dataset-stats' on page 15 undefined on input line
- 862.
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [15]
 (results/tables/leakage_metrics.tex) (results/tables/dag_audit_summary.tex)
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [16]
-<results/figures/fig_kt_graph_junyi.pdf, id=611, 296.307pt x 223.67941pt>
+ [15]
+<results/figures/fig_kt_graph_junyi.pdf, id=614, 296.307pt x 223.67941pt>
 File: results/figures/fig_kt_graph_junyi.pdf Graphic file (type pdf)
 <use results/figures/fig_kt_graph_junyi.pdf>
 Package pdftex.def Info: results/figures/fig_kt_graph_junyi.pdf  used on input 
-line 916.
+line 921.
 (pdftex.def)             Requested size: 230.63818pt x 174.11086pt.
 
-(results/tables/baseline_results.tex)
+(results/tables/baseline_results.tex
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [17 <./results/figures/fig_kt_graph_junyi.pdf>]
+ [16 <./results/figures/fig_kt_graph_junyi.pdf>])
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 944.
+(hyperref)                than one, level fixed on input line 964.
 
-(results/tables/baseline_cv_template.tex) (results/tables/graph_ablation.tex)
+(results/tables/baseline_cv_template.tex)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [17]
+(results/tables/graph_ablation.tex)
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [18]
-<results/figures/fig_ddr_junyi.pdf, id=669, 542.025pt x 361.35pt>
+<results/figures/fig_ddr_junyi.pdf, id=681, 542.025pt x 361.35pt>
 File: results/figures/fig_ddr_junyi.pdf Graphic file (type pdf)
 <use results/figures/fig_ddr_junyi.pdf>
 Package pdftex.def Info: results/figures/fig_ddr_junyi.pdf  used on input line 
-987.
+1016.
 (pdftex.def)             Requested size: 267.84045pt x 178.56279pt.
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [19]
 
 LaTeX Font Warning: Font shape `OT1/cmr/bx/scit' undefined
-(Font)              using `OT1/cmr/bx/sc' instead on input line 1058.
+(Font)              using `OT1/cmr/bx/sc' instead on input line 1087.
 
 
 LaTeX Font Warning: Font shape `OT1/cmr/bx/sc' undefined
-(Font)              using `OT1/cmr/bx/n' instead on input line 1058.
+(Font)              using `OT1/cmr/bx/n' instead on input line 1087.
 
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1058.
+(hyperref)                than one, level fixed on input line 1087.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [20 <./results/figures/fig_ddr_junyi.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 1089--1102
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [19 <./results/figures/fig_ddr_junyi.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 1118--1131
 []\OT1/cmr/m/n/10 The rel-a-tive order-ing $[]([]) \OML/cmm/m/it/10.03749 < []\
 OT1/cmr/m/n/10 ([]) \U/msa/m/n/10.03749 .
  []
 
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [20]
 (results/tables/ddr_downstream.tex)
-Underfull \hbox (badness 1038) in paragraph at lines 1106--1116
+Underfull \hbox (badness 1038) in paragraph at lines 1135--1145
 \OT1/cmr/m/n/10 Table [][]9[][] con-nects \OT1/cmr/m/sc/10.03749 DDR \OT1/cmr/m
 /n/10 to an \OT1/cmr/m/it/10.03749 exploratory \OT1/cmr/m/n/10 DGEKT-only retra
 in-ing stress test
  []
 
 
-Underfull \hbox (badness 3635) in paragraph at lines 1106--1116
+Underfull \hbox (badness 3635) in paragraph at lines 1135--1145
 \OT1/cmr/m/n/10 on ASSIST-ments 2012 and XES3G5M (three folds; \OT1/cmtt/m/n/10
 .03749 edge[]drop\OT1/cmr/m/n/10 , \OT1/cmtt/m/n/10.03749 node[]drop\OT1/cmr/m/
 n/10 ,
  []
 
+(results/tables/cold_start_summary.tex)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [21]
-(results/tables/cold_start_summary.tex)
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1129.
+(hyperref)                than one, level fixed on input line 1158.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [22]
 (results/tables/gt_validation_table.tex)
-<results/figures/fig_pr_curve.pdf, id=757, 433.62pt x 289.08pt>
+<results/figures/fig_pr_curve.pdf, id=768, 433.62pt x 289.08pt>
 File: results/figures/fig_pr_curve.pdf Graphic file (type pdf)
 <use results/figures/fig_pr_curve.pdf>
 Package pdftex.def Info: results/figures/fig_pr_curve.pdf  used on input line 1
-167.
+196.
 (pdftex.def)             Requested size: 241.79773pt x 161.19998pt.
 
-Underfull \hbox (badness 3815) in paragraph at lines 1172--1172
+Underfull \hbox (badness 3815) in paragraph at lines 1201--1201
 []\OT1/cmr/bx/n/10.03749 Fig. 5\OT1/cmr/m/n/10 : |Edge-level pre-ci-sion and re
 call of train-only inferred $\OML/cmm/m/it/10.03749 E[]$ \OT1/cmr/m/n/10 ver-su
 s
  []
 
 
-Underfull \hbox (badness 4673) in paragraph at lines 1172--1172
+Underfull \hbox (badness 4673) in paragraph at lines 1201--1201
 \OT1/cmr/m/n/10 the expert pre-req-ui-site anno-ta-tion on Junyi, across top-$\
 OML/cmm/m/it/10.03749 K$ \OT1/cmr/m/n/10 cut-offs $\OML/cmm/m/it/10.03749 K \OM
 S/cmsy/m/n/10.03749 2
@@ -1663,21 +1479,21 @@ S/cmsy/m/n/10.03749 2
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [23]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [24 <./results/figures/fig_pr_curve.pdf>]
+ [23 <./results/figures/fig_pr_curve.pdf>]
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1219.
+(hyperref)                than one, level fixed on input line 1248.
 
 
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [24]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [25]
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1282.
+(hyperref)                than one, level fixed on input line 1317.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1688,7 +1504,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [27]
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1403.
+(hyperref)                than one, level fixed on input line 1438.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1696,19 +1512,39 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [28]
 
 Package hyperref Warning: Difference (4) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1444.
+(hyperref)                than one, level fixed on input line 1483.
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [29]
 (D:\0. NCS\CODE\p0_project\paper\main_APIN.bbl
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
+ [29]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
  [30]
-Underfull \hbox (badness 1117) in paragraph at lines 95--99
+Underfull \hbox (badness 1117) in paragraph at lines 78--82
 []\OT1/cmr/m/n/10 Junyi Academy (2015) Junyi academy online learn-ing activ-ity
  dataset. PSLC
+ []
+
+
+Underfull \hbox (badness 4779) in paragraph at lines 134--138
+[]\OT1/cmr/m/n/10 Pandey S, Karypis G (2019) A self-attentive model for knowl-e
+dge trac-
+ []
+
+
+Underfull \hbox (badness 2302) in paragraph at lines 134--138
+\OT1/cmr/m/n/10 ing. In: Pro-ceed-ings of the 12th Inter-na-tional Con-fer-ence
+ on Edu-ca-tional
+ []
+
+
+Underfull \hbox (badness 1584) in paragraph at lines 134--138
+\OT1/cmr/m/n/10 Data Min-ing (EDM), pp 384--389, URL [][]$https : / / drive . g
+oogle . com / ^^Lle / d / 18d[]
  []
 
 
@@ -1723,34 +1559,10 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [32]
-Underfull \hbox (badness 4779) in paragraph at lines 191--195
-[]\OT1/cmr/m/n/10 Pandey S, Karypis G (2019) A self-attentive model for knowl-e
-dge trac-
- []
-
-
-Underfull \hbox (badness 2302) in paragraph at lines 191--195
-\OT1/cmr/m/n/10 ing. In: Pro-ceed-ings of the 12th Inter-na-tional Con-fer-ence
- on Edu-ca-tional
- []
-
-
-Underfull \hbox (badness 1584) in paragraph at lines 191--195
-\OT1/cmr/m/n/10 Data Min-ing (EDM), pp 384--389, URL [][]$https : / / drive . g
-oogle . com / ^^Lle / d / 18d[]
- []
-
-
+ [32])
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [33])
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [34]
+ [33]
 (D:\0. NCS\CODE\p0_project\paper\main_APIN.aux)
  ***********
 LaTeX2e <2025-11-01>
@@ -1760,29 +1572,17 @@ L3 programming layer <2025-12-24>
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: There were multiply-defined labels.
-
-
-Package rerunfilecheck Warning: File `main_APIN.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `main_APIN.out':
-(rerunfilecheck)             Before: DB50098FDDD0A64E94A2E3FAB0ED20B9;11791
-(rerunfilecheck)             After:  918874BBB377BAD19C20BC905DCD8FD8;11791.
+Package rerunfilecheck Info: File `main_APIN.out' has not changed.
+(rerunfilecheck)             Checksum: 5481D48A50C02397B0A35A368D240855;12032.
  ) 
 Here is how much of TeX's memory you used:
- 31780 strings out of 467871
- 646636 string characters out of 5437130
- 1048846 words of memory out of 5000000
- 59973 multiletter control sequences out of 15000+600000
+ 31729 strings out of 467871
+ 645596 string characters out of 5437130
+ 1041847 words of memory out of 5000000
+ 59935 multiletter control sequences out of 15000+600000
  656237 words of font info for 146 fonts, out of 8000000 for 9000
  1151 hyphenation exceptions out of 8191
- 90i,24n,94p,902b,1246s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,24n,94p,902b,1234s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\tuanymc\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi602\tc
 rm1000.pk><d:/0./fonts/type1/public/amsfonts/cm/cmbsy10.pfb><d:/0./fonts/type1/
 public/amsfonts/cm/cmbx10.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmbx12.pfb>
@@ -1802,10 +1602,10 @@ fonts/cm/cmti7.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmti9.pfb><d:/0./fonts
 /type1/public/amsfonts/cm/cmtt10.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmtt
 8.pfb><d:/0./fonts/type1/public/amsfonts/symbols/msam10.pfb><d:/0./fonts/type1/
 public/amsfonts/symbols/msbm10.pfb>
-Output written on "D:\0. NCS\CODE\p0_project\paper\main_APIN.pdf" (34 pages, 65
-7607 bytes).
+Output written on "D:\0. NCS\CODE\p0_project\paper\main_APIN.pdf" (33 pages, 65
+2588 bytes).
 PDF statistics:
- 1123 PDF objects out of 1200 (max. 8388607)
- 185 named destinations out of 1000 (max. 500000)
- 500 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1095 PDF objects out of 1200 (max. 8388607)
+ 172 named destinations out of 1000 (max. 500000)
+ 508 words of extra memory for PDF output out of 10000 (max. 10000000)
 

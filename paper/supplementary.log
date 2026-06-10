@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.6.8)  9 JUN 2026 17:15
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.6.8)  10 JUN 2026 10:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -870,48 +870,45 @@ Package hyperref Info: Link coloring ON on input line 27.
 
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Calculating math sizes for size <12.045> on input line 52.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 52.
+LaTeX Font Info:    Calculating math sizes for size <12.045> on input line 56.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 56.
 
 
 (d:\0.\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 52.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 56.
 
  (d:\0.\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Calculating math sizes for size <11.04124> on input line 52
+LaTeX Font Info:    Calculating math sizes for size <11.04124> on input line 56
 .
-LaTeX Font Info:    Calculating math sizes for size <10.03749> on input line 52
+LaTeX Font Info:    Calculating math sizes for size <10.03749> on input line 56
 .
-
-(results/tables/baseline_results_full.tex
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [1
 
 {C:/Users/tuanymc/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
+(results/tables/baseline_results_full.tex
 Underfull \hbox (badness 4940) in paragraph at lines 32--32
 []\OT1/cmr/bx/n/10.03749 Table 2\OT1/cmr/m/n/10 : |Diag-nos-tic base-lines: ASS
 IST-ments 2012 (three-fold learner CV
  []
 
 ) (results/tables/graph_ablation_full.tex)
-(results/tables/significance_tests_public.tex)
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [2]
+(results/tables/significance_tests_public.tex)
 (results/tables/autocorrelation_stats.tex)
-<results/figures/fig_autocorr_vs_auc.pdf, id=96, 426.04985pt x 244.80785pt>
+<results/figures/fig_autocorr_vs_auc.pdf, id=108, 426.04985pt x 244.80785pt>
 File: results/figures/fig_autocorr_vs_auc.pdf Graphic file (type pdf)
 <use results/figures/fig_autocorr_vs_auc.pdf>
 Package pdftex.def Info: results/figures/fig_autocorr_vs_auc.pdf  used on input
- line 114.
+ line 121.
 (pdftex.def)             Requested size: 305.04272pt x 175.28282pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -919,123 +916,158 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [3]
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10.03749> not available
 
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 133.
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 140.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [4]
 (results/tables/gt_validation_extended.tex)
-(results/tables/cold_start_by_stratum.tex)
+(results/tables/cold_start_by_stratum.tex
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [5])
 (results/tables/cold_start_comparison.tex)
-<results/figures/fig_ddr_downstream.pdf, id=117, 455.232pt x 295.20601pt>
+<results/figures/fig_ddr_downstream.pdf, id=142, 455.232pt x 295.20601pt>
 File: results/figures/fig_ddr_downstream.pdf Graphic file (type pdf)
 <use results/figures/fig_ddr_downstream.pdf>
 Package pdftex.def Info: results/figures/fig_ddr_downstream.pdf  used on input 
-line 171.
+line 178.
 (pdftex.def)             Requested size: 275.28204pt x 178.51685pt.
 
-Underfull \hbox (badness 2080) in paragraph at lines 172--172
+Underfull \hbox (badness 2080) in paragraph at lines 179--179
 \OT1/cmr/m/n/10 graph dis-rup-tion on ASSIST-ments 2012 and XES3G5M. Each point
  is one
  []
 
-<results/figures/fig_kt_graph_junyi.pdf, id=118, 296.307pt x 223.67941pt>
+<results/figures/fig_kt_graph_junyi.pdf, id=143, 296.307pt x 223.67941pt>
 File: results/figures/fig_kt_graph_junyi.pdf Graphic file (type pdf)
 <use results/figures/fig_kt_graph_junyi.pdf>
 Package pdftex.def Info: results/figures/fig_kt_graph_junyi.pdf  used on input 
-line 183.
+line 190.
 (pdftex.def)             Requested size: 119.04272pt x 89.86267pt.
-<results/figures/fig_kt_graph_assist2012.pdf, id=119, 296.307pt x 223.67941pt>
+<results/figures/fig_kt_graph_assist2012.pdf, id=144, 296.307pt x 223.67941pt>
 File: results/figures/fig_kt_graph_assist2012.pdf Graphic file (type pdf)
 <use results/figures/fig_kt_graph_assist2012.pdf>
 Package pdftex.def Info: results/figures/fig_kt_graph_assist2012.pdf  used on i
-nput line 190.
+nput line 197.
 (pdftex.def)             Requested size: 119.04272pt x 89.86267pt.
-<results/figures/fig_kt_graph_xes3g5m.pdf, id=120, 296.307pt x 223.67941pt>
+<results/figures/fig_kt_graph_xes3g5m.pdf, id=145, 296.307pt x 223.67941pt>
 File: results/figures/fig_kt_graph_xes3g5m.pdf Graphic file (type pdf)
 <use results/figures/fig_kt_graph_xes3g5m.pdf>
 Package pdftex.def Info: results/figures/fig_kt_graph_xes3g5m.pdf  used on inpu
-t line 197.
+t line 204.
 (pdftex.def)             Requested size: 119.04272pt x 89.86267pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [5]
-<results/figures/fig_ddr_junyi.pdf, id=133, 542.025pt x 361.35pt>
+<results/figures/fig_ddr_junyi.pdf, id=146, 542.025pt x 361.35pt>
 File: results/figures/fig_ddr_junyi.pdf Graphic file (type pdf)
 <use results/figures/fig_ddr_junyi.pdf>
 Package pdftex.def Info: results/figures/fig_ddr_junyi.pdf  used on input line 
-209.
+216.
 (pdftex.def)             Requested size: 118.66809pt x 79.11128pt.
-<results/figures/fig_ddr_assist2012.pdf, id=134, 542.025pt x 361.35pt>
+<results/figures/fig_ddr_assist2012.pdf, id=147, 542.025pt x 361.35pt>
 File: results/figures/fig_ddr_assist2012.pdf Graphic file (type pdf)
 <use results/figures/fig_ddr_assist2012.pdf>
 Package pdftex.def Info: results/figures/fig_ddr_assist2012.pdf  used on input 
-line 216.
+line 223.
 (pdftex.def)             Requested size: 118.66809pt x 79.11128pt.
-<results/figures/fig_ddr_xes3g5m.pdf, id=135, 542.025pt x 361.35pt>
+<results/figures/fig_ddr_xes3g5m.pdf, id=148, 542.025pt x 361.35pt>
 File: results/figures/fig_ddr_xes3g5m.pdf Graphic file (type pdf)
 <use results/figures/fig_ddr_xes3g5m.pdf>
 Package pdftex.def Info: results/figures/fig_ddr_xes3g5m.pdf  used on input lin
-e 223.
+e 230.
 (pdftex.def)             Requested size: 118.66809pt x 79.11128pt.
+(results/tables/training_parity.tex)
+Overfull \hbox (89.51555pt too wide) in paragraph at lines 252--258
+ [] 
+ []
+
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [6]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+LaTeX Font Info:    Calculating math sizes for size <14.05249> on input line 26
+0.
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 260.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\Delta' on input line 260.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 260.
+
+(results/tables/bootstrap_auc_ci.tex
+LaTeX Font Info:    Calculating math sizes for size <8.03> on input line 1.
+)
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [7 <./results/figures/fig_autocorr_vs_auc.pdf>]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+(results/tables/leak_injection.tex)
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [8]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [9 <./results/figures/fig_ddr_downstream.pdf> <./results/figures/fig_kt_graph_
-junyi.pdf> <./results/figures/fig_kt_graph_assist2012.pdf> <./results/figures/f
-ig_kt_graph_xes3g5m.pdf>]
+ [9]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [10 <./results/figures/fig_ddr_junyi.pdf> <./results/figures/fig_ddr_assist201
+ [10 <./results/figures/fig_ddr_downstream.pdf> <./results/figures/fig_kt_graph
+_junyi.pdf> <./results/figures/fig_kt_graph_assist2012.pdf> <./results/figures/
+fig_kt_graph_xes3g5m.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [11 <./results/figures/fig_ddr_junyi.pdf> <./results/figures/fig_ddr_assist201
 2.pdf> <./results/figures/fig_ddr_xes3g5m.pdf>]
 (D:\0. NCS\CODE\p0_project\paper\supplementary.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
 Package rerunfilecheck Info: File `supplementary.out' has not changed.
-(rerunfilecheck)             Checksum: 75D950587EE5A05D6758CF64332B545A;2249.
+(rerunfilecheck)             Checksum: A91FE2DFC8182F2720F1A0BA3BA454C6;2815.
  ) 
 Here is how much of TeX's memory you used:
- 13803 strings out of 467871
- 216107 string characters out of 5437130
- 707247 words of memory out of 5000000
- 42397 multiletter control sequences out of 15000+600000
- 648433 words of font info for 118 fonts, out of 8000000 for 9000
+ 13897 strings out of 467871
+ 217995 string characters out of 5437130
+ 695300 words of memory out of 5000000
+ 42464 multiletter control sequences out of 15000+600000
+ 659836 words of font info for 162 fonts, out of 8000000 for 9000
  1151 hyphenation exceptions out of 8191
- 90i,23n,93p,602b,688s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,23n,93p,575b,688s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\tuanymc\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi602\tc
 rm1000.pk><d:/0./fonts/type1/public/amsfonts/cm/cmbx10.pfb><d:/0./fonts/type1/p
 ublic/amsfonts/cm/cmbx12.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmbx7.pfb><d
-:/0./fonts/type1/public/amsfonts/cm/cmbx9.pfb><d:/0./fonts/type1/public/amsfont
-s/cm/cmcsc10.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmmi10.pfb><d:/0./fonts/
-type1/public/amsfonts/cm/cmmi5.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmmi7.
-pfb><d:/0./fonts/type1/public/amsfonts/cm/cmr10.pfb><d:/0./fonts/type1/public/a
-msfonts/cm/cmr12.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmr17.pfb><d:/0./fon
-ts/type1/public/amsfonts/cm/cmr5.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmr7
-.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmr8.pfb><d:/0./fonts/type1/public/a
-msfonts/cm/cmr9.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmsy10.pfb><d:/0./fon
-ts/type1/public/amsfonts/cm/cmsy7.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmt
-i10.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmti7.pfb><d:/0./fonts/type1/publ
-ic/amsfonts/cm/cmtt10.pfb>
-Output written on "D:\0. NCS\CODE\p0_project\paper\supplementary.pdf" (10 pages
-, 430242 bytes).
+:/0./fonts/type1/public/amsfonts/cm/cmbx8.pfb><d:/0./fonts/type1/public/amsfont
+s/cm/cmbx9.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmcsc10.pfb><d:/0./fonts/t
+ype1/public/amsfonts/cm/cmmi10.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmmi5.
+pfb><d:/0./fonts/type1/public/amsfonts/cm/cmmi7.pfb><d:/0./fonts/type1/public/a
+msfonts/cm/cmmi8.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmmi9.pfb><d:/0./fon
+ts/type1/public/amsfonts/cm/cmr10.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmr
+12.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmr17.pfb><d:/0./fonts/type1/publi
+c/amsfonts/cm/cmr5.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmr7.pfb><d:/0./fo
+nts/type1/public/amsfonts/cm/cmr8.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmr
+9.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmsy10.pfb><d:/0./fonts/type1/publi
+c/amsfonts/cm/cmsy7.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmsy8.pfb><d:/0./
+fonts/type1/public/amsfonts/cm/cmti10.pfb><d:/0./fonts/type1/public/amsfonts/cm
+/cmti7.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmti8.pfb><d:/0./fonts/type1/p
+ublic/amsfonts/cm/cmti9.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmtt10.pfb><d
+:/0./fonts/type1/public/amsfonts/cm/cmtt9.pfb>
+Output written on "D:\0. NCS\CODE\p0_project\paper\supplementary.pdf" (11 pages
+, 526059 bytes).
 PDF statistics:
- 633 PDF objects out of 1000 (max. 8388607)
- 57 named destinations out of 1000 (max. 500000)
- 121 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 698 PDF objects out of 1000 (max. 8388607)
+ 67 named destinations out of 1000 (max. 500000)
+ 145 words of extra memory for PDF output out of 10000 (max. 10000000)
 
