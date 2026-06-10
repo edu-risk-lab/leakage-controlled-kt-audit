@@ -290,8 +290,7 @@ from downstream AUC, which graph-KT and contrastive-KT papers typically omit
   primary model-comparison benchmark, that backbone ranking under
   leakage-controlled graph construction is \emph{model-specific}: GKT trails
   \textit{simpleKT} by mean $\Delta$AUC ${\approx}{-}0.041$ on XES3G5M and
-  ${\approx}{-}0.007$ on ASSISTments (three-fold means; fold-level magnitudes
-  in Table~\ref{tab:baseline-cv}), while GIKT remains competitive. We pair
+  ${\approx}{-}0.007$ on ASSISTments (learner-cluster bootstrap 95\% CI supersedes fold-level magnitudes; Table~\ref{tab:baseline-cv} and Supplementary Table~S16), while GIKT remains competitive. We pair
   this with a train-only versus full-log ablation and tiered leakage audits.
   We discuss three non-mutually-exclusive hypotheses and frame the result as
   a deployment and benchmarking precondition rather than as a refutation of
@@ -926,6 +925,9 @@ prerequisite structure on the densest public benchmark. These plots are not
 used for inference; they help reviewers compare graph density with \DDR{} and
 baseline behaviour in later sections.
 
+\subsection{Controlled test-fold edge injection}
+To verify that the audit metrics respond to graph-mediated leakage, we actively inject test-fold edges into the train-only prerequisite graphs (Supplementary Table~S17). At $5\%$ and $20\%$ injection rates, $\mathrm{ECR}^{\mathrm{overlap}}_f$ and edge counts rise monotonically, demonstrating that the structural audit detects contamination even when $\mathrm{ECR}^{\mathrm{flag}}$ indicates learner-disjoint splits.
+
 \subsection{Baseline Diagnostic}
 \label{sec:exp-baseline}
 \input{results/tables/baseline_results.tex}
@@ -942,6 +944,7 @@ of graph benefit.
 Per-dataset ACC/NLL and bootstrap intervals are in Supplementary Tables~S1--S5.
 
 \paragraph{Training parity.}
+Full hyperparameter parity is in Supplementary Table~S15.
 Sequence-only checkpoints (AKT, DKT, \textit{simpleKT}) use stock
 \texttt{pyKT} configurations. Native graph backbones (GIKT, SKT, DyGKT,
 DGEKT) share the same processed splits, data loader, epoch budget, and
@@ -1401,9 +1404,10 @@ The audit also caught a one-step label misalignment in an early GIKT head
 before reporting Table~\ref{tab:baseline-cv}.
 
 \paragraph{Limitations.}
-Three-fold CV limits inferential power ($p_{\min}{=}0.25$ for Wilcoxon;
+Three-fold CV limits inferential power of standard fold-level tests ($p_{\min}{=}0.25$ for Wilcoxon;
 fragile paired $t$-tests on $n{=}3$ folds). Model-comparison claims in
-Section~\ref{sec:disc-model-specific} therefore rely on fold-level $\Delta$AUC
+Section~\ref{sec:disc-model-specific} therefore rely on 95\% learner-level bootstrap confidence
+intervals for primary pairs on XES3G5M (Supplementary Table~S16), which supersede the fold-level
 magnitudes (Table~\ref{tab:baseline-cv}); Supplementary Table~S11 reports
 paired tests for transparency only. ASSISTments yields no $\Esim$ under item-overlap
 Jaccard; GT cross-validation is Junyi-only at $\theta{=}0.5$; downstream

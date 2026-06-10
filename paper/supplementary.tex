@@ -63,7 +63,10 @@ S11: paired significance tests on public benchmarks
 (Section~\ref{sec:supp-significance});
 S12--S13: cold-start diagnostics (Section~\ref{sec:supp-coldstart});
 S14: ground-truth metrics including node Jaccard
-(Section~\ref{sec:supp-gtxv-extended}).
+(Section~\ref{sec:supp-gtxv-extended});
+S15: training parity (Section~\ref{sec:supp-training-parity});
+S16: bootstrap CI (Section~\ref{sec:supp-bootstrap});
+S17: leak injection (Section~\ref{sec:supp-leak-injection}).
 
 \medskip\noindent\textbf{Sections and figures.}
 Section~S3: sequence-autocorrelation analysis
@@ -231,5 +234,35 @@ manuscript summarises both in a single table.
 \caption{Supplementary Figure~S2. \DDR{} versus perturbation strength $p$ for five augmentation families across three benchmarks. The main manuscript shows the Junyi panel only.}
 \label{fig:supp-ddr-all}
 \end{figure}
+
+\section{Training parity}
+\label{sec:supp-training-parity}
+Table~S15 (Table~\ref{tab:training-parity}) outlines hyperparameter parity and model configuration across pyKT and native baselines.
+\begin{table}[h!]
+\centering
+\caption{Training parity and hyperparameters (Table S15)}
+\label{tab:training-parity}
+\resizebox{\textwidth}{!}{\input{results/tables/training_parity.tex}}
+\end{table}
+
+\section{Bootstrap AUC Confidence Intervals}
+\label{sec:supp-bootstrap}
+Table~S16 (Table~\ref{tab:bootstrap-auc-ci}) reports 95\% confidence intervals for the AUC difference ($\Delta$AUC) between selected pyKT and sequence baseline pairs on XES3G5M, computed via learner-level bootstrap ($B=10000$).
+\begin{table}[h!]
+\centering
+\caption{Bootstrap AUC Confidence Intervals (Table S16)}
+\label{tab:bootstrap-auc-ci}
+\input{results/tables/bootstrap_auc_ci.tex}
+\end{table}
+
+\section{Controlled Leak Injection}
+\label{sec:supp-leak-injection}
+Table~S17 (Table~\ref{tab:leak-injection}) demonstrates the sensitivity of structural leakage metrics ($\mathrm{ECR}^{\mathrm{overlap}}_f$, $\mathrm{TBMR}_f$) to deliberate injection of test-fold temporal transitions into the train-only prerequisite graph construction on XES3G5M.
+\begin{table}[h!]
+\centering
+\caption{Controlled Leak Injection (Table S17)}
+\label{tab:leak-injection}
+\input{results/tables/leak_injection.tex}
+\end{table}
 
 \end{document}

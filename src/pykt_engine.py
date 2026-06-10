@@ -191,7 +191,7 @@ def run_pykt_fold(
     lr: float,
     seed: int,
     max_seq_len: int,
-) -> tuple[float, float, float, str]:
+) -> tuple[float, float, float, str, np.ndarray, np.ndarray]:
     """Train on fold 0 / validate on fold 1 rows inside ``train_valid_sequences.csv``; eval fold -1 test file."""
     import shutil
 
@@ -378,4 +378,4 @@ def run_pykt_fold(
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
 
-    return auc, acc, nll, note
+    return auc, acc, nll, note, ts, ps
