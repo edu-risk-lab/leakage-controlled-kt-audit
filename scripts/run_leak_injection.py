@@ -81,9 +81,22 @@ def main():
     Path("results/tables").mkdir(parents=True, exist_ok=True)
     df_res.to_csv("results/tables/leak_injection.csv", index=False)
     
-    tex_str = df_res.to_latex(index=False, float_format="%.3f")
+    tex_lines = [
+        "\\begin{tabular}{lrrrr}",
+        "\\toprule",
+        ("\\textbf{Injection rate} & $|\\Epre|$ & $\\mathrm{ECR}^{\\mathrm{overlap}}$"
+         " & $\\mathrm{ECR}^{\\mathrm{flag}}$ & $\\mathrm{TBMR}$ \\\\"),
+        "\\midrule",
+    ]
+    for r in results:
+        rate = r["injection_rate"].replace("%", "\\%")
+        tex_lines.append(
+            f"{rate} & {r['E_pre_edges']} & {r['ECR_overlap']:.3f}"
+            f" & {r['ECR_flag']:.3f} & {r['TBMR']:.3f} \\\\"
+        )
+    tex_lines += ["\\bottomrule", "\\end{tabular}", ""]
     with open("results/tables/leak_injection.tex", "w") as f:
-        f.write(tex_str)
+        f.write("\n".join(tex_lines))
 
 if __name__ == "__main__":
     main()
