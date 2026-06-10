@@ -1,0 +1,15 @@
+\begin{tabular}{lllrrrlrllllllll}
+\toprule
+model & codebase & graph\_input & epochs & batch\_size & lr & hp\_search\_budget & split\_seed & graph\_construction & data\_loader\_notes & n\_parameters & early\_stopping\_patience & selection\_metric & checkpoint\_rule & mean\_runtime\_minutes & gpu\_type \\
+\midrule
+bkt & scipy\_lbfgs & None & 30 & 64 & 0.001000 & 0 & 42 & train\_only / full\_log & native & Various & N/A & NLL & N/A & <5m & CPU \\
+dkt & pykt\_stock & None & 30 & 64 & 0.001000 & 0 & 42 & train\_only / full\_log & pykt format & Various & 5 & AUC & Best Valid AUC & \textasciitilde 30-180m & NVIDIA A100/V100 \\
+simplekt & pykt\_stock & None & 30 & 64 & 0.001000 & 0 & 42 & train\_only / full\_log & pykt format & Various & 5 & AUC & Best Valid AUC & \textasciitilde 30-180m & NVIDIA A100/V100 \\
+akt & pykt\_stock & None & 30 & 64 & 0.001000 & 0 & 42 & train\_only / full\_log & pykt format & Various & 5 & AUC & Best Valid AUC & \textasciitilde 30-180m & NVIDIA A100/V100 \\
+gkt & pykt\_stock & E\_pre + E\_sim & 10 & 4 & 0.001000 & 0 & 42 & train\_only / full\_log & pykt format & Various & 5 & AUC & Best Valid AUC & \textasciitilde 30-180m & NVIDIA A100/V100 \\
+gikt & native\_src\_models & E\_pre + E\_sim & 10 & 8 & 0.001000 & 0 & 42 & train\_only / full\_log & native & Various & 5 & AUC & Best Valid AUC & \textasciitilde 30-180m & NVIDIA A100/V100 \\
+skt & native\_src\_models & E\_pre + E\_sim & 10 & 8 & 0.001000 & 0 & 42 & train\_only / full\_log & native & Various & 5 & AUC & Best Valid AUC & \textasciitilde 30-180m & NVIDIA A100/V100 \\
+dygkt & native\_src\_models & E\_pre + E\_sim & 10 & 8 & 0.001000 & 0 & 42 & train\_only / full\_log & native & Various & 5 & AUC & Best Valid AUC & \textasciitilde 30-180m & NVIDIA A100/V100 \\
+dgekt & native\_src\_models & E\_pre + E\_sim & 10 & 8 & 0.001000 & 0 & 42 & train\_only / full\_log & native & Various & 5 & AUC & Best Valid AUC & \textasciitilde 30-180m & NVIDIA A100/V100 \\
+\bottomrule
+\end{tabular}

@@ -756,7 +756,7 @@ def _run_backend_fold(
             graph_npz_path = shared
 
         fit_seed = int(experiment_seed) + int(fold) * 97 + (3 if graph_construction == "full_log" else 0)
-        auc, acc, nll, note = run_pykt_fold(
+        auc, acc, nll, note, ts_eval, ps_eval = run_pykt_fold(
             display_model=model,
             pykt_name=pykt_name,
             work_dir=work_dir,
@@ -791,7 +791,13 @@ def _run_backend_fold(
     predictions = tail[["user_id", "item_id", "kc_id", "correct"]].rename(columns={"correct": "y_true"}).copy()
     predictions["fold"] = fold
     predictions["model"] = model
-    if y_prob_eval is not None:
+    if backend == "pykt":
+        # Save exact pykt tensors to npz for bootstrap script
+        out_dir = Path("results/predictions") / dataset / f"fold_{fold}"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        np.savez(out_dir / f"{model}_tensors.npz", ts=ts_eval, ps=ps_eval)
+        predictions["y_prob"] = np.full(cap, np.nan, dtype=float)
+    elif y_prob_eval is not None:
         predictions["y_prob"] = y_prob_eval[:cap]
     else:
         predictions["y_prob"] = np.full(cap, np.nan, dtype=float)
@@ -835,6 +841,11 @@ def main() -> None:
         default=None,
         help="Number of folds to run. Overrides configuration.",
     )
+    parser.add_argument(
+        "--export-full-predictions",
+        default="",
+        help="Comma-separated list of models to export full predictions.",
+    )
     args = parser.parse_args()
     logging.basicConfig(level=getattr(logging, args.log_level.upper()))
 
@@ -867,7 +878,8 @@ def main() -> None:
     full_log_ready = _full_log_graph_paths(dataset)[0].exists()
     ablation_models = [m for m in graph_ablation_cfg.get("models", ["gkt", "gikt", "skt", "dygkt", "dgekt"]) if m in MODEL_WEIGHTS]
     effective_skip_cold = bool(args.skip_cold_start) or backend == "pykt"
-    pred_cap = 5000 if effective_skip_cold else None
+    base_pred_cap = 5000 if effective_skip_cold else None
+    export_models = [m.strip() for m in args.export_full_predictions.split(",") if m.strip()]
 
     fold_seed_list = fold_seeds(split_cfg, default_seed=args.seed)
     n_plan_folds = len(fold_seed_list)
@@ -897,6 +909,7 @@ def main() -> None:
             cache_res_path = cache_dir / f"{dataset}_fold_{fold}_{model}_train_only_result.json"
             cache_pred_path = cache_dir / f"{dataset}_fold_{fold}_{model}_train_only_preds.csv"
 
+            current_pred_cap = None if model in export_models else base_pred_cap
             if cache_res_path.exists() and cache_pred_path.exists():
                 logger.info("Loading cached result for fold=%s model=%s graph_construction=train_only", fold, model)
                 with open(cache_res_path, "r") as f:
@@ -912,7 +925,7 @@ def main() -> None:
                     fold=fold,
                     split_seed=split_seed,
                     graph_construction="train_only",
-                    prediction_cap=pred_cap,
+                    prediction_cap=current_pred_cap,
                     trained_head_cfg=trained_head_cfg,
                     experiment_seed=args.seed,
                     backend=backend,
@@ -920,7 +933,15 @@ def main() -> None:
                 )
                 with open(cache_res_path, "w") as f:
                     json.dump(result, f, indent=4)
-                predictions.to_csv(cache_pred_path, index=False)
+                predictions.head(5000).to_csv(cache_pred_path, index=False)
+                
+            if model in export_models:
+                # We already exported npz in _run_backend_fold for pykt, we also export the dataframe.
+                out_dir = Path(f"results/predictions/{dataset}/fold_{fold}")
+                out_dir.mkdir(parents=True, exist_ok=True)
+                out_file = out_dir / f"{model}.parquet"
+                if not out_file.exists():
+                    predictions.to_parquet(out_file, index=False)
 
             rows.append(result)
             if not effective_skip_cold:
