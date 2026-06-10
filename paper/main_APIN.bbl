@@ -1,0 +1,210 @@
+\begin{thebibliography}{36}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{{#1}}
+\providecommand{\urlprefix}{URL }
+\providecommand{\doi}[1]{\url{https://doi.org/#1}}
+\providecommand{\eprint}[2][]{\url{#2}}
+ \bibcommenthead
+
+\bibitem[{Abdelrahman et~al.(2023)Abdelrahman, Wang, and
+  Nunes}]{abdelrahman2023kt_survey}
+Abdelrahman G, Wang Q, Nunes BP (2023) Knowledge tracing: A survey. ACM
+  Computing Surveys 55(11):1--37. \doi{10.1145/3569576}
+
+\bibitem[{Badran and Preisach(2024)}]{badran2024labelleakage}
+Badran Y, Preisach C (2024) Addressing label leakage in knowledge tracing
+  models. arXiv preprint arXiv:240315304 \doi{10.48550/arXiv.2403.15304}
+
+\bibitem[{Bai et~al.(2025)Bai, Liu, Guo, Hou, and Xiao}]{bai2025survey}
+Bai Y, Liu Z, Guo T, et~al (2025) Prerequisite relation learning: A survey and
+  outlook. ACM Computing Surveys 57. \doi{10.1145/3733593}
+
+\bibitem[{Chang et~al.(2015)Chang, Hsu, and Chen}]{chang2015junyi}
+Chang HS, Hsu HJ, Chen KT (2015) Modeling exercise relationships in e-learning:
+  A unified approach. In: Proceedings of the 8th International Conference on
+  Educational Data Mining (EDM), pp 532--535,
+  \urlprefix\url{http://www.educationaldatamining.org/EDM2015/proceedings/short532-535.pdf}
+
+\bibitem[{Cheng et~al.(2024)Cheng, Peng, Wang, Ye, Sun, and Du}]{dygkt2024}
+Cheng K, Peng L, Wang P, et~al (2024) {DyGKT}: Dynamic graph learning for
+  knowledge tracing. In: Proceedings of the 30th ACM SIGKDD Conference on
+  Knowledge Discovery and Data Mining (KDD), pp 377--388,
+  \doi{10.1145/3637528.3671773}
+
+\bibitem[{Choi et~al.(2020)Choi, Lee, Shin, Cho, Park, Lee, Baek, Bae, Kim, and
+  Heo}]{choi2020ednet}
+Choi Y, Lee Y, Shin D, et~al (2020) {EdNet}: A large-scale hierarchical dataset
+  in education. In: International Conference on Artificial Intelligence in
+  Education (AIED), pp 69--73, \doi{10.1007/978-3-030-52240-7_13}
+
+\bibitem[{Corbett and Anderson(1994)}]{corbett1995bkt}
+Corbett AT, Anderson JR (1994) Knowledge tracing: Modeling the acquisition of
+  procedural knowledge. User Modeling and User-Adapted Interaction
+  4(4):253--278. \doi{10.1007/BF01099821}
+
+\bibitem[{Cui et~al.(2024)Cui, Yao, Zhang, Ma, Ma, Ren, Zhang, and
+  Ko}]{dgekt2024}
+Cui C, Yao Y, Zhang C, et~al (2024) {DGEKT}: A dual graph ensemble learning
+  method for knowledge tracing. ACM Transactions on Information Systems
+  42(3):1--24. \doi{10.1145/3638350}
+
+\bibitem[{Ghosh et~al.(2020)Ghosh, Heffernan, and Lan}]{ghosh2020akt}
+Ghosh A, Heffernan NT, Lan AS (2020) Context-aware attentive knowledge tracing.
+  In: Proceedings of the 26th ACM SIGKDD Conference on Knowledge Discovery and
+  Data Mining (KDD), pp 2330--2339, \doi{10.1145/3394486.3403282}
+
+\bibitem[{Hamilton et~al.(2017)Hamilton, Ying, and
+  Leskovec}]{hamilton2017graphsage}
+Hamilton WL, Ying R, Leskovec J (2017) Inductive representation learning on
+  large graphs. In: Advances in Neural Information Processing Systems
+  (NeurIPS), pp 1024--1034, \doi{10.48550/arXiv.1706.02216}
+
+\bibitem[{Hassani and Khasahmadi(2020)}]{hassani2020mvgrl}
+Hassani K, Khasahmadi AH (2020) Contrastive multi-view representation learning
+  on graphs. In: Proceedings of the 37th International Conference on Machine
+  Learning (ICML), pp 4116--4126, \doi{10.48550/arXiv.2006.05582}
+
+\bibitem[{Heffernan and Heffernan(2014)}]{heffernan2006assist}
+Heffernan NT, Heffernan CL (2014) The {ASSISTments} ecosystem: Building a
+  platform that brings scientists and teachers together for minimally invasive
+  research on human learning and teaching. International Journal of Artificial
+  Intelligence in Education 24(4):470--497. \doi{10.1007/s40593-014-0024-x}
+
+\bibitem[{Johnson(1975)}]{johnson1975finding}
+Johnson DB (1975) Finding all the elementary circuits of a directed graph. SIAM
+  Journal on Computing 4(1):77--84. \doi{10.1137/0204007}
+
+\bibitem[{{Junyi Academy}(2015)}]{junyi_dataset}
+{Junyi Academy} (2015) Junyi academy online learning activity dataset. PSLC
+  DataShop,
+  \urlprefix\url{https://pslcdatashop.web.cmu.edu/DatasetInfo?datasetId=1198},
+  accessed 2026-06-08
+
+\bibitem[{Kapoor and Narayanan(2023)}]{kapoor2023leakage}
+Kapoor S, Narayanan A (2023) Leakage and the reproducibility crisis in
+  machine-learning-based science. Patterns 4(9).
+  \doi{10.1016/j.patter.2023.100804}
+
+\bibitem[{Kaufman et~al.(2012)Kaufman, Rosset, Perlich, and
+  Stitelman}]{kaufman2012leakage}
+Kaufman S, Rosset S, Perlich C, et~al (2012) Leakage in data mining:
+  Formulation, detection, and avoidance. ACM Transactions on Knowledge
+  Discovery from Data 6(4):1--21. \doi{10.1145/2382577.2382579}
+
+\bibitem[{Kipf and Welling(2017)}]{kipf2017gcn}
+Kipf TN, Welling M (2017) Semi-supervised classification with graph
+  convolutional networks. In: International Conference on Learning
+  Representations (ICLR), \doi{10.48550/arXiv.1609.02907}
+
+\bibitem[{Lee et~al.(2022)Lee, Chun, Lee, Park, and Park}]{lee2022cl4kt}
+Lee W, Chun J, Lee Y, et~al (2022) Contrastive learning for knowledge tracing.
+  In: Proceedings of the ACM Web Conference (WWW), pp 2330--2338,
+  \doi{10.1145/3485447.3512105}
+
+\bibitem[{Liu et~al.(2022)Liu, Liu, Chen, Huang, Tang, and Luo}]{liu2022pykt}
+Liu Z, Liu Q, Chen J, et~al (2022) {pyKT}: A {Python} library to benchmark deep
+  learning based knowledge tracing models. In: Advances in Neural Information
+  Processing Systems (NeurIPS), pp 13248--13261, \doi{10.52202/068431-1347}
+
+\bibitem[{Liu et~al.(2023{\natexlab{a}})Liu, Liu, Chen, Huang, and
+  Luo}]{liu2023simplekt}
+Liu Z, Liu Q, Chen J, et~al (2023{\natexlab{a}}) {simpleKT}: A simple but
+  tough-to-beat baseline for knowledge tracing. In: International Conference on
+  Learning Representations (ICLR), \doi{10.48550/arXiv.2302.06881}
+
+\bibitem[{Liu et~al.(2023{\natexlab{b}})Liu, Liu, Guo, Chen, Huang, Zhao, Tang,
+  Luo, and Weng}]{xes3g5m2023}
+Liu Z, Liu Q, Guo T, et~al (2023{\natexlab{b}}) {XES3G5M}: A knowledge tracing
+  benchmark dataset with auxiliary information. In: Advances in Neural
+  Information Processing Systems (NeurIPS) Datasets and Benchmarks Track, pp
+  40643--40662, \doi{10.52202/075280-1429}
+
+\bibitem[{Nakagawa et~al.(2019)Nakagawa, Iwasawa, and Matsuo}]{nakagawa2019gkt}
+Nakagawa H, Iwasawa Y, Matsuo Y (2019) Graph-based knowledge tracing: Modeling
+  student proficiency using graph neural network. In: IEEE/WIC/ACM
+  International Conference on Web Intelligence (WI), pp 156--163,
+  \doi{10.1145/3350546.3352513}
+
+\bibitem[{Pan et~al.(2017)Pan, Li, Li, and Tang}]{lin2016moocprereq}
+Pan L, Li C, Li J, et~al (2017) Prerequisite relation learning for concepts in
+  {MOOCs}. In: Proceedings of the 55th Annual Meeting of the Association for
+  Computational Linguistics (ACL), pp 1447--1456, \doi{10.18653/v1/P17-1133}
+
+\bibitem[{Pandey and Karypis(2019)}]{pandey2019rkt}
+Pandey S, Karypis G (2019) A self-attentive model for knowledge tracing. In:
+  Proceedings of the 12th International Conference on Educational Data Mining
+  (EDM), pp 384--389,
+  \urlprefix\url{https://drive.google.com/file/d/18d_X6AXkPMhiHFQ2POarstVbX_7oMdFM}
+
+\bibitem[{Piech et~al.(2015)Piech, Bassen, Huang, Ganguli, Sahami, Guibas, and
+  Sohl-Dickstein}]{piech2015dkt}
+Piech C, Bassen J, Huang J, et~al (2015) Deep knowledge tracing. In: Advances
+  in Neural Information Processing Systems (NeurIPS), pp 505--513,
+  \doi{10.48550/arXiv.1506.05908}
+
+\bibitem[{Schein et~al.(2002)Schein, Popescul, Ungar, and
+  Pennock}]{schein2002coldstart}
+Schein AI, Popescul A, Ungar LH, et~al (2002) Methods and metrics for
+  cold-start recommendations. In: Proceedings of the 25th Annual International
+  ACM SIGIR Conference on Research and Development in Information Retrieval, pp
+  253--260, \doi{10.1145/564376.564421}
+
+\bibitem[{Shen et~al.(2020)Shen, Liu, Chen, Wu, Huang, Zhao, Su, Ma, and
+  Wang}]{shen2021saint}
+Shen S, Liu Q, Chen E, et~al (2020) Convolutional knowledge tracing: Modeling
+  individualization in student learning process. In: Proceedings of the 43rd
+  International ACM SIGIR Conference on Research and Development in Information
+  Retrieval, pp 1857--1860, \doi{10.1145/3397271.3401288}
+
+\bibitem[{Thakoor et~al.(2022)Thakoor, Tallec, Azar, Azabou, Dyer, Munos,
+  Veli{\v{c}}kovi{\'c}, and Valko}]{thakoor2021bgrl}
+Thakoor S, Tallec C, Azar MG, et~al (2022) Large-scale representation learning
+  on graphs via bootstrapping. In: International Conference on Learning
+  Representations (ICLR), \doi{10.48550/arXiv.2102.06514}
+
+\bibitem[{Tong et~al.(2022)Tong, Wang, Liu, Zhou, and Han}]{chen2023hgkt}
+Tong H, Wang Z, Liu Q, et~al (2022) {HGKT}: Introducing problem schema with
+  hierarchical exercise graph for knowledge tracing. In: Proceedings of the
+  45th International ACM SIGIR Conference on Research and Development in
+  Information Retrieval, pp 405--415, \doi{10.1145/3477495.3532004}
+
+\bibitem[{Tong et~al.(2020)Tong, Liu, Huang, Huang, Chen, Liu, Ma, and
+  Wang}]{tong2020skt}
+Tong S, Liu Q, Huang W, et~al (2020) Structure-based knowledge tracing: An
+  influence propagation view. In: IEEE International Conference on Data Mining
+  (ICDM), pp 541--550, \doi{10.1109/ICDM50108.2020.00063}
+
+\bibitem[{Veli{\v{c}}kovi{\'c} et~al.(2019)Veli{\v{c}}kovi{\'c}, Fedus,
+  Hamilton, Li{\`o}, Bengio, and Hjelm}]{velickovic2018dgi}
+Veli{\v{c}}kovi{\'c} P, Fedus W, Hamilton WL, et~al (2019) Deep graph infomax.
+  In: International Conference on Learning Representations (ICLR),
+  \doi{10.48550/arXiv.1809.10341}
+
+\bibitem[{Xia et~al.(2022)Xia, Wu, Chen, Hu, and Li}]{xia2022simgrace}
+Xia J, Wu L, Chen J, et~al (2022) {SimGRACE}: A simple framework for graph
+  contrastive learning without data augmentation. In: Proceedings of the ACM
+  Web Conference (WWW), pp 1070--1079, \doi{10.1145/3485447.3512156}
+
+\bibitem[{Yang et~al.(2021)Yang, Shen, Qu, Liu, Wang, Zhu, Zhang, and
+  Yu}]{yang2021gikt}
+Yang Y, Shen J, Qu Y, et~al (2021) {GIKT}: A graph-based interaction model for
+  knowledge tracing. In: Machine Learning and Knowledge Discovery in Databases
+  (ECML-PKDD 2020), pp 299--315, \doi{10.1007/978-3-030-67658-2_18}
+
+\bibitem[{You et~al.(2020)You, Chen, Sui, Chen, Wang, and
+  Shen}]{you2020graphcl}
+You Y, Chen T, Sui Y, et~al (2020) Graph contrastive learning with
+  augmentations. In: Advances in Neural Information Processing Systems
+  (NeurIPS), pp 5812--5823, \doi{10.48550/arXiv.2010.13902}
+
+\bibitem[{Zhang et~al.(2017)Zhang, Shi, King, and Yeung}]{zhang2017dkvmn}
+Zhang J, Shi X, King I, et~al (2017) Dynamic key-value memory networks for
+  knowledge tracing. In: Proceedings of the 26th International Conference on
+  World Wide Web (WWW), pp 765--774, \doi{10.1145/3038912.3052580}
+
+\bibitem[{Zhu et~al.(2021)Zhu, Xu, Yu, Liu, Wu, and Wang}]{zhu2021gca}
+Zhu Y, Xu Y, Yu F, et~al (2021) Graph contrastive learning with adaptive
+  augmentation. In: Proceedings of the Web Conference (WWW), pp 2069--2080,
+  \doi{10.1145/3442381.3449802}
+
+\end{thebibliography}

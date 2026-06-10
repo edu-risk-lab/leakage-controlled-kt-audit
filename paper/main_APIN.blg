@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main_APIN.aux
+Reallocating 'name_of_file' (item size: 1) to 9 items.
+The style file: sn-basic.bst
+Reallocating 'name_of_file' (item size: 1) to 10 items.
+Database file #1: refs_APIN.bib
+sn-basic.bst [2024/07/19 v1.1 bibliography style]
+Reallocating 'wiz_functions' (item size: 4) to 6000 items.
+You've used 36 entries,
+            3567 wiz_defined-function locations,
+            939 strings with 13763 characters,
+and the built_in function-call counts, 30743 in all, are:
+= -- 2816
+> -- 1524
+< -- 31
++ -- 581
+- -- 457
+* -- 2511
+:= -- 4421
+add.period$ -- 44
+call.type$ -- 36
+change.case$ -- 402
+chr.to.int$ -- 35
+cite$ -- 36
+duplicate$ -- 2065
+empty$ -- 2229
+format.name$ -- 575
+if$ -- 6496
+int.to.chr$ -- 2
+int.to.str$ -- 1
+missing$ -- 251
+newline$ -- 117
+num.names$ -- 144
+pop$ -- 862
+preamble$ -- 1
+purify$ -- 313
+quote$ -- 0
+skip$ -- 1087
+stack$ -- 0
+substring$ -- 1913
+swap$ -- 816
+text.length$ -- 22
+text.prefix$ -- 0
+top$ -- 1
+type$ -- 324
+warning$ -- 0
+while$ -- 195
+width$ -- 0
+write$ -- 435
