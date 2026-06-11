@@ -1,0 +1,4 @@
+Model,Clean AUC,Leak 5% AUC,Leak 20% AUC
+simplekt,0.85,0.852,0.858
+gkt,0.81,0.825,0.86
+gikt,0.852,0.86,0.88

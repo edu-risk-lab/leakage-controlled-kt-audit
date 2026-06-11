@@ -1,0 +1,3 @@
+Model Pair,Delta AUC,95% CI (Learner Bootstrap),p-value
+GKT vs simplekt,-0.041,"[-0.044, -0.038]",<0.001
+GIKT vs simplekt,0.003,"[+0.003, +0.003]",<0.001
