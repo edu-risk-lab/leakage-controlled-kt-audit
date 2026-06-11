@@ -5,9 +5,9 @@
     "model": "simplekt",
     "graph_construction": "train_only",
     "eval_split": "valid+test",
-    "auc": 0.8742340944122137,
-    "acc": 0.857454121743193,
-    "nll": 0.3249410839452385,
+    "auc": 0.8746415655770653,
+    "acc": 0.8578114701899091,
+    "nll": 0.32474639662272525,
     "n_eval": 1922840,
     "status": "pykt_checkpoint",
     "note": "pyKT `simplekt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs."

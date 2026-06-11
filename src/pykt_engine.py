@@ -91,14 +91,23 @@ def _model_forward_loss(model, batch: dict, model_name: str) -> torch.Tensor:
     raise ValueError(f"Unsupported model_name={model_name}")
 
 
-def _evaluate_detailed(model, loader, model_name: str) -> tuple[float, float, np.ndarray, np.ndarray]:
-    from pykt.models.evaluate_model import device as pt_device
-
+def _evaluate_detailed(model, loader, model_name: str, te_path: str = None) -> tuple[float, float, np.ndarray, np.ndarray, np.ndarray]:
     model.eval()
-    y_trues: list[np.ndarray] = []
-    y_scores: list[np.ndarray] = []
+    y_trues, y_scores = [], []
+    uids_out = []
+    
+    pt_device = "cuda" if torch.cuda.is_available() else "cpu"
     dev = torch.device(pt_device)
     from torch.nn.functional import one_hot
+    
+    uids = None
+    if te_path is not None:
+        import pandas as pd
+        df_test = pd.read_csv(te_path)
+        df_test = df_test[df_test["fold"] == -1]
+        uids = df_test["uid"].values
+        
+    batch_idx = 0
 
     with torch.no_grad():
         for data in loader:
@@ -136,15 +145,27 @@ def _evaluate_detailed(model, loader, model_name: str) -> tuple[float, float, np
             t = torch.masked_select(rshft, sm).detach().cpu()
             y_trues.append(t.numpy())
             y_scores.append(y.numpy())
+            
+            if uids is not None:
+                batch_size = y.shape[0] if y.dim() > 0 else 1 # Not quite right for masked_select
+                # Masked select flattens it.
+                # sm shape is [batch_size, seq_len-1].
+                batch_uids = uids[batch_idx * loader.batch_size : batch_idx * loader.batch_size + sm.shape[0]]
+                batch_uids_tensor = torch.tensor(batch_uids, dtype=torch.int64).unsqueeze(1).expand(-1, sm.shape[1])
+                uid_selected = torch.masked_select(batch_uids_tensor, sm.cpu())
+                uids_out.append(uid_selected.numpy())
+            batch_idx += 1
 
     ts = np.concatenate(y_trues, axis=0)
     ps = np.concatenate(y_scores, axis=0)
+    us = np.concatenate(uids_out, axis=0) if uids_out else None
+    
     if len(np.unique(ts)) < 2:
         auc = float("nan")
     else:
         auc = float(metrics.roc_auc_score(ts, ps))
     acc = float(metrics.accuracy_score(ts, (ps >= 0.5).astype(int)))
-    return auc, acc, ts, ps
+    return auc, acc, ts, ps, us
 
 
 def _train_loop(model, train_loader, valid_loader, epochs: int, lr: float, patience: int = 3) -> None:
@@ -162,7 +183,7 @@ def _train_loop(model, train_loader, valid_loader, epochs: int, lr: float, patie
             opt.step()
             losses.append(float(loss.detach().cpu()))
         tr_loss = float(np.mean(losses)) if losses else 0.0
-        auc, acc, _, _ = _evaluate_detailed(model, valid_loader, model.model_name)
+        auc, acc, _, _, _ = _evaluate_detailed(model, valid_loader, model.model_name)
         logger.info("pyKT epoch %s train_loss=%.5f valid_auc=%.5f valid_acc=%.5f", ep, tr_loss, auc, acc)
         if auc > best_auc + 1e-4:
             best_auc = auc
@@ -191,7 +212,7 @@ def run_pykt_fold(
     lr: float,
     seed: int,
     max_seq_len: int,
-) -> tuple[float, float, float, str, np.ndarray, np.ndarray]:
+) -> tuple[float, float, float, str, np.ndarray, np.ndarray, np.ndarray]:
     """Train on fold 0 / validate on fold 1 rows inside ``train_valid_sequences.csv``; eval fold -1 test file."""
     import shutil
 
@@ -362,9 +383,17 @@ def run_pykt_fold(
     if display_model != pykt_name:
         note += f" YAML alias `{display_model}` maps to `{pykt_name}` (GIKT not bundled in pyKT)."
 
-    patience = int(hyperparams.get("patience", 3))
-    _train_loop(model, train_loader, valid_loader, epochs=max(1, int(epochs)), lr=float(lr), patience=patience)
-    auc, acc, ts, ps = _evaluate_detailed(model, eval_loader, model.model_name)
+    ckpt_path = work_dir / f"{pykt_name}_{graph_tag}_best.ckpt"
+    if ckpt_path.exists():
+        logger.info(f"Loading existing checkpoint {ckpt_path}")
+        model.load_state_dict(torch.load(ckpt_path))
+    else:
+        patience = int(hyperparams.get("patience", 3))
+        _train_loop(model, train_loader, valid_loader, epochs=max(1, int(epochs)), lr=float(lr), patience=patience)
+        torch.save(model.state_dict(), ckpt_path)
+        logger.info(f"Saved PyKT checkpoint to {ckpt_path}")
+        
+    auc, acc, ts, ps, us = _evaluate_detailed(model, eval_loader, model.model_name, te_path=te_path)
     nll = _mean_nll(ts, ps)
 
     # Explicitly release GPU memory to prevent Out of Memory in sequential baseline runs
@@ -378,4 +407,4 @@ def run_pykt_fold(
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
 
-    return auc, acc, nll, note, ts, ps
+    return auc, acc, nll, note, ts, ps, us
