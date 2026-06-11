@@ -82,6 +82,11 @@ def _protocol_edge_csvs(dataset: str, fold: int, graph_construction: str) -> lis
             Path("data/processed") / dataset / "full_log" / "e_pre.csv",
             Path("data/processed") / dataset / "full_log" / "e_sim.csv",
         ]
+    elif graph_construction.startswith("inject"):
+        return [
+            Path("data/processed") / dataset / f"fold_{fold}" / f"e_pre_{graph_construction}.csv",
+            Path("data/processed") / dataset / f"fold_{fold}" / f"e_sim_{graph_construction}.csv",
+        ]
     return [
         Path("data/processed") / dataset / f"fold_{fold}" / "e_pre_train_only.csv",
         Path("data/processed") / dataset / f"fold_{fold}" / "e_sim_train_only.csv",
@@ -667,6 +672,7 @@ def _run_backend_fold(
     experiment_seed: int,
     backend: str,
     full_df: pd.DataFrame,
+    export_predictions: bool = False,
 ) -> tuple[dict, pd.DataFrame]:
     """Dispatch diagnostic ensembles, classical BKT, or pyKT training."""
     train = splits["train"]
@@ -756,7 +762,7 @@ def _run_backend_fold(
             graph_npz_path = shared
 
         fit_seed = int(experiment_seed) + int(fold) * 97 + (3 if graph_construction == "full_log" else 0)
-        auc, acc, nll, note, ts_eval, ps_eval = run_pykt_fold(
+        auc, acc, nll, note, ts_eval, ps_eval, us_eval = run_pykt_fold(
             display_model=model,
             pykt_name=pykt_name,
             work_dir=work_dir,
@@ -786,21 +792,35 @@ def _run_backend_fold(
             "note": note,
         }
 
-    cap = len(eval_df) if prediction_cap is None else min(int(prediction_cap), len(eval_df))
-    tail = eval_df.iloc[:cap]
-    predictions = tail[["user_id", "item_id", "kc_id", "correct"]].rename(columns={"correct": "y_true"}).copy()
-    predictions["fold"] = fold
-    predictions["model"] = model
     if backend == "pykt":
-        # Save exact pykt tensors to npz for bootstrap script
+        # Create perfect alignment dataframe from pykt outputs
+        predictions = pd.DataFrame({
+            "user_id": us_eval if us_eval is not None else np.zeros_like(ts_eval),
+            "y_true": ts_eval,
+            "y_prob": ps_eval,
+            "fold": fold,
+            "model": model
+        })
         out_dir = Path("results/predictions") / dataset / f"fold_{fold}"
         out_dir.mkdir(parents=True, exist_ok=True)
-        np.savez(out_dir / f"{model}_tensors.npz", ts=ts_eval, ps=ps_eval)
-        predictions["y_prob"] = np.full(cap, np.nan, dtype=float)
-    elif y_prob_eval is not None:
-        predictions["y_prob"] = y_prob_eval[:cap]
+        # Also keep npz for backwards compatibility
+        np.savez(out_dir / f"{model}_tensors.npz", ts=ts_eval, ps=ps_eval, us=us_eval)
     else:
-        predictions["y_prob"] = np.full(cap, np.nan, dtype=float)
+        cap = len(eval_df) if prediction_cap is None else min(int(prediction_cap), len(eval_df))
+        tail = eval_df.iloc[:cap]
+        predictions = tail[["user_id", "item_id", "kc_id", "correct"]].rename(columns={"correct": "y_true"}).copy()
+        predictions["fold"] = fold
+        predictions["model"] = model
+        if y_prob_eval is not None:
+            predictions["y_prob"] = y_prob_eval[:cap]
+        else:
+            predictions["y_prob"] = np.full(cap, np.nan, dtype=float)
+
+    if export_predictions:
+        out_dir = Path("results/predictions") / dataset / f"fold_{fold}"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        predictions.to_parquet(out_dir / f"{model}.parquet", index=False)
+        logger.info(f"Exported {len(predictions)} predictions to {out_dir / f'{model}.parquet'}")
     return result, predictions
 
 
@@ -840,6 +860,18 @@ def main() -> None:
         type=int,
         default=None,
         help="Number of folds to run. Overrides configuration.",
+    )
+    parser.add_argument(
+        "--fold-idx",
+        type=int,
+        default=None,
+        help="Specific fold index to run (e.g. 0). If set, runs only this fold.",
+    )
+    parser.add_argument(
+        "--graph-construction",
+        type=str,
+        default=None,
+        help="Specific graph construction to run (e.g. inject05). If set, runs only this construction.",
     )
     parser.add_argument(
         "--export-full-predictions",
@@ -894,9 +926,53 @@ def main() -> None:
     cache_dir.mkdir(parents=True, exist_ok=True)
 
     for fold, split_seed, splits in learner_based_folds(df, ratios, split_cfg, default_seed=args.seed):
+        if args.fold_idx is not None and fold != args.fold_idx:
+            continue
         strata_once = bin_kcs_by_frequency(splits["train"])
         for model in models:
             run_idx += 1
+            
+            if args.graph_construction is not None:
+                gc_name = args.graph_construction
+                logger.info(
+                    "Baseline progress [%s] fold=%s model=%s graph_construction=%s",
+                    dataset,
+                    fold,
+                    model,
+                    gc_name,
+                )
+                cache_res_path = cache_dir / f"{dataset}_fold_{fold}_{model}_{gc_name}_result.json"
+                cache_pred_path = cache_dir / f"{dataset}_fold_{fold}_{model}_{gc_name}_preds.csv"
+
+                current_pred_cap = None if model in export_models else base_pred_cap
+
+                if cache_res_path.exists() and cache_pred_path.exists() and not args.clear_cache:
+                    logger.info("Loading cached result for fold=%s model=%s graph_construction=%s", fold, model, gc_name)
+                    with open(cache_res_path, "r") as f:
+                        result = json.load(f)
+                    predictions = pd.read_csv(cache_pred_path)
+                else:
+                    result, predictions = _run_backend_fold(
+                        cfg,
+                        args,
+                        model=model,
+                        splits=splits,
+                        dataset=dataset,
+                        fold=fold,
+                        split_seed=split_seed,
+                        graph_construction=gc_name,
+                        prediction_cap=current_pred_cap,
+                        trained_head_cfg=trained_head_cfg,
+                        experiment_seed=args.seed,
+                        backend=backend,
+                        full_df=df,
+                    )
+                    with open(cache_res_path, "w") as f:
+                        json.dump(result, f, indent=4)
+                    predictions.head(5000).to_csv(cache_pred_path, index=False)
+                rows.append(result)
+                continue
+
             logger.info(
                 "Baseline progress [%s] %d/%d (~%.0f%%) fold=%s model=%s graph_construction=train_only",
                 dataset,
@@ -949,6 +1025,10 @@ def main() -> None:
                 if not cold.empty:
                     cold_frames.append(cold)
             prediction_samples.append(predictions.head(5000))
+
+        if args.graph_construction is not None:
+            continue
+
         if ablation_enabled and full_log_ready:
             for model in ablation_models:
                 if model not in models:
