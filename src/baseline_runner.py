@@ -878,6 +878,23 @@ def main() -> None:
         default="",
         help="Comma-separated list of models to export full predictions.",
     )
+    parser.add_argument(
+        "--split-base-seed",
+        type=int,
+        default=None,
+        help="Override split.seed in config (fold seeds = base, base+1, … for n_folds).",
+    )
+    parser.add_argument(
+        "--models",
+        default="",
+        help="Comma-separated subset of enabled baselines to run (e.g. gkt,simplekt).",
+    )
+    parser.add_argument(
+        "--isolated-results",
+        type=str,
+        default=None,
+        help="Write results under results/q1/<tag>/ only; do not merge main tables.",
+    )
     args = parser.parse_args()
     logging.basicConfig(level=getattr(logging, args.log_level.upper()))
 
@@ -892,11 +909,21 @@ def main() -> None:
     dataset = cfg["dataset"]
     df = load_interactions(Path(cfg.get("processed_path", f"data/processed/{dataset}.parquet")))
     split_cfg = cfg.get("split", {})
+    if args.split_base_seed is not None:
+        split_cfg = dict(split_cfg)
+        split_cfg["seed"] = int(args.split_base_seed)
     if args.folds is not None:
         split_cfg["n_folds"] = args.folds
     ratios = tuple(split_cfg.get("ratios", [0.7, 0.1, 0.2]))
     n_bootstrap = int(cfg.get("evaluation", {}).get("n_bootstrap", cfg.get("baselines_n_bootstrap", 1000)))
     models = _enabled_models(cfg)
+    if args.models.strip():
+        wanted = {m.strip().lower() for m in args.models.split(",") if m.strip()}
+        models = [m for m in models if m in wanted]
+        if not models:
+            raise ValueError(f"--models {args.models!r} matched no enabled baselines in config")
+    split_base_seed = int(split_cfg.get("seed", args.seed))
+    experiment_tag = args.isolated_results or ""
     backend = _evaluation_backend(cfg, args)
     logger.info("baseline_runner backend=%s dataset=%s", backend, dataset)
 
@@ -1078,19 +1105,41 @@ def main() -> None:
                 dataset,
             )
     fold_results = pd.DataFrame(rows)
+    if not fold_results.empty:
+        fold_results["experiment_tag"] = experiment_tag
+        fold_results["split_base_seed"] = split_base_seed
     results = _summarize_fold_results(fold_results, seed=args.seed, n_bootstrap=n_bootstrap)
-    _merge_csv(Path("results/tables/baseline_fold_results.csv"), fold_results, dataset)
-    _merge_csv(Path("results/tables/baseline_results.csv"), results, dataset)
-    ab_summary = _summarize_graph_ablation(fold_results)
-    if not ab_summary.empty:
-        _merge_csv(Path("results/tables/graph_ablation_summary.csv"), ab_summary, dataset)
-    if not effective_skip_cold:
-        cold_rows = pd.concat(cold_frames, ignore_index=True) if cold_frames else pd.DataFrame()
-        _merge_csv(Path("results/tables/cold_start_metrics.csv"), cold_rows, dataset)
+    if args.isolated_results:
+        q1_dir = Path("results/q1") / args.isolated_results
+        q1_dir.mkdir(parents=True, exist_ok=True)
+        fold_path = q1_dir / "baseline_fold_results.csv"
+        if fold_path.exists():
+            prev = pd.read_csv(fold_path)
+            keys = ["dataset", "fold", "model", "graph_construction", "split_seed", "experiment_tag"]
+            for col in keys:
+                if col not in prev.columns:
+                    prev[col] = "" if col == "experiment_tag" else np.nan
+            combined = pd.concat([prev, fold_results], ignore_index=True)
+            combined = combined.drop_duplicates(subset=keys, keep="last")
+            dump_csv(combined, fold_path)
+        else:
+            dump_csv(fold_results, fold_path)
+        dump_csv(results, q1_dir / "baseline_results.csv")
+        logger.info("Wrote isolated Q1 results to %s", q1_dir)
     else:
-        logger.info("Cold-start CSV merge skipped (--skip-cold-start or baseline_backend=pykt)")
-    predictions_sample = pd.concat(prediction_samples, ignore_index=True)
-    dump_csv(predictions_sample, Path("results/predictions") / f"{dataset}_diagnostic_predictions_sample.csv")
+        _merge_csv(Path("results/tables/baseline_fold_results.csv"), fold_results, dataset)
+        _merge_csv(Path("results/tables/baseline_results.csv"), results, dataset)
+        ab_summary = _summarize_graph_ablation(fold_results)
+        if not ab_summary.empty:
+            _merge_csv(Path("results/tables/graph_ablation_summary.csv"), ab_summary, dataset)
+        if not effective_skip_cold:
+            cold_rows = pd.concat(cold_frames, ignore_index=True) if cold_frames else pd.DataFrame()
+            _merge_csv(Path("results/tables/cold_start_metrics.csv"), cold_rows, dataset)
+        else:
+            logger.info("Cold-start CSV merge skipped (--skip-cold-start or baseline_backend=pykt)")
+    if not args.isolated_results:
+        predictions_sample = pd.concat(prediction_samples, ignore_index=True)
+        dump_csv(predictions_sample, Path("results/predictions") / f"{dataset}_diagnostic_predictions_sample.csv")
 
 
 if __name__ == "__main__":
