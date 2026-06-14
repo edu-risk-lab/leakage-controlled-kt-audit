@@ -629,12 +629,30 @@ def main() -> None:
     stats_for_csv = stats[["dataset", "n_learners", "n_items", "n_kcs", "n_interactions", "missing_total"]]
     stats_for_csv.to_csv("results/tables/dataset_stats.csv", index=False)
     _write_dataset_stats_tex(stats, Path("results/tables/dataset_stats.tex"))
-    _write_baseline_tex(Path("results/tables/baseline_results.tex"))
+    _write_baseline_tex(Path("results/tables/baseline_results_full.tex"))
     _write_graph_ablation_tex(Path("results/tables/graph_ablation.tex"))
-    _write_leakage_metrics_tex(Path("results/tables/leakage_metrics.tex"))
     _write_dag_audit_summary_tex(Path("results/tables/dag_audit_summary.tex"))
     _write_cold_start_by_stratum_tex(Path("results/tables/cold_start_by_stratum.tex"))
     _write_cold_start_tex(Path("results/tables/cold_start_metrics.tex"))
+
+    # Phase-C: mean±std summaries, DDR raw, cold-start summary, ANOVA (overwrites
+    # baseline_results.tex and leakage_metrics.tex with fold-aggregated formats).
+    import subprocess
+
+    phase_c_script = Path(__file__).resolve().parent / "generate_phase_c_tables.py"
+    subprocess.run([sys.executable, str(phase_c_script)], check=True, cwd=_ROOT)
+
+    for script in (
+        "generate_training_parity.py",
+        "bootstrap_auc_ci.py",
+        "plot_kt_graph_figures.py",
+    ):
+        subprocess.run(
+            [sys.executable, str(Path(__file__).resolve().parent / script)],
+            check=True,
+            cwd=_ROOT,
+        )
+
     _write_artifact_index(Path("results/reports/paper_artifact_index.md"))
 
 

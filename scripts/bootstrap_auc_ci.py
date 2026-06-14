@@ -1,162 +1,249 @@
-import pandas as pd
-import numpy as np
-from sklearn.metrics import roc_auc_score
-from pathlib import Path
+"""Learner-cluster bootstrap CI for Delta-AUC (Package B2).
+
+Primary path: pooled valid+test predictions in
+  results/predictions/xes3g5m/fold_{f}/{model}.parquet
+Fallback (when parquets are absent): paired-$t$ 95% intervals over three
+learner-disjoint CV folds from baseline_fold_results.csv.
+"""
+
+from __future__ import annotations
+
 import logging
-from concurrent.futures import ProcessPoolExecutor
-import multiprocessing
+from pathlib import Path
 
-logging.basicConfig(level=logging.INFO, format='%(message)s')
+import numpy as np
+import pandas as pd
+from scipy import stats
+from sklearn.metrics import roc_auc_score
 
-def compute_delta(args):
-    """
-    args is a tuple: (user_indices_sampled, users_unique, groups, y_true, y_prob_a, y_prob_b)
-    """
-    user_indices, groups, y_true, y_prob_a, y_prob_b = args
-    
-    # We need to map the sampled user_indices to the actual row indices.
-    # To do this fast, we can use np.concatenate on the pre-computed row indices for each user.
-    resampled_rows = np.concatenate([groups[u] for u in user_indices])
-    
-    true_resampled = y_true[resampled_rows]
-    if len(np.unique(true_resampled)) < 2:
-        return np.nan
-        
-    prob_a_resampled = y_prob_a[resampled_rows]
-    prob_b_resampled = y_prob_b[resampled_rows]
-    
-    auc_a = roc_auc_score(true_resampled, prob_a_resampled)
-    auc_b = roc_auc_score(true_resampled, prob_b_resampled)
-    
-    return auc_a - auc_b
+logging.basicConfig(level=logging.INFO, format="%(message)s")
 
-def bootstrap_pair(df_a, df_b, pair_name, n_resamples=10000, n_jobs=None):
-    # Align rows
-    if len(df_a) != len(df_b):
-        logging.warning(f"Length mismatch for {pair_name}: {len(df_a)} vs {len(df_b)}")
-        
-    # We assume rows are already aligned by baseline_runner.py (same fold, same order)
-    # Check if user_id perfectly matches
-    if not np.array_equal(df_a["user_id"].values, df_b["user_id"].values):
-        logging.warning("user_id arrays do not match exactly! Sorting or aligning required.")
-        # We can just join them, but the output is already 1:1 matching from PyKT test sequence
-        pass
-        
-    y_true = df_a["y_true"].values
-    y_prob_a = df_a["y_prob"].values
-    y_prob_b = df_b["y_prob"].values
-    users = df_a["user_id"].values
-    
-    # Pre-group row indices by user
-    # pandas groupby is fast
-    # df_a["_row_idx"] = np.arange(len(df_a))
-    # groups_dict = df_a.groupby("user_id")["_row_idx"].apply(np.array).to_dict()
-    
-    # A faster numpy way to group contiguous users (since they are contiguous in PyKT):
-    # wait, PyKT keeps users contiguous!
-    _, user_starts, user_counts = np.unique(users, return_index=True, return_counts=True)
-    
-    # groups_dict maps index i (from 0 to num_users-1) to an array of row indices
-    groups = [np.arange(start, start + count) for start, count in zip(user_starts, user_counts)]
-    num_users = len(user_starts)
-    
-    np.random.seed(42)
-    # Generate all resamples
-    # We sample indices from 0 to num_users-1
-    resamples = np.random.randint(0, num_users, size=(n_resamples, num_users))
-    
-    args_list = [(resamples[i], groups, y_true, y_prob_a, y_prob_b) for i in range(n_resamples)]
-    
-    logging.info(f"Starting {n_resamples} resamples for {pair_name} with {num_users} learners and {len(y_true)} rows.")
-    
-    deltas = []
-    if n_jobs is None:
-        n_jobs = max(1, multiprocessing.cpu_count() - 2)
-        
-    with ProcessPoolExecutor(max_workers=n_jobs) as executor:
-        for delta in executor.map(compute_delta, args_list, chunksize=100):
-            if not np.isnan(delta):
-                deltas.append(delta)
-                
-    deltas = np.array(deltas)
-    delta_mean = np.mean(deltas)
-    ci_lower = np.percentile(deltas, 2.5)
-    ci_upper = np.percentile(deltas, 97.5)
-    
-    logging.info(f"{pair_name}: Delta={delta_mean:.4f} 95% CI=[{ci_lower:.4f}, {ci_upper:.4f}]")
-    
+PRETTY = {"gkt": "GKT", "gikt": "GIKT", "simplekt": r"\textit{simpleKT}"}
+ROOT = Path(__file__).resolve().parents[1]
+BOOTSTRAP_MAX_ROWS = 100_000
+BOOTSTRAP_N_RESAMPLES = 400
+
+
+def _cap_for_bootstrap(
+    df_a: pd.DataFrame, df_b: pd.DataFrame, max_rows: int = BOOTSTRAP_MAX_ROWS
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    if len(df_a) <= max_rows:
+        return df_a.reset_index(drop=True), df_b.reset_index(drop=True)
+    n_users = df_a["user_id"].nunique()
+    per_user = max(8, int(np.ceil(max_rows / n_users)))
+    keep_idx: list[int] = []
+    for _, grp in df_a.groupby("user_id", sort=False):
+        idx = grp.index.to_numpy()
+        if len(idx) > per_user:
+            pick = grp.sample(n=per_user, random_state=0).index.to_numpy()
+            idx = pick
+        keep_idx.extend(int(i) for i in idx)
+    keep_idx = sorted(keep_idx)
+    logging.info(
+        "Bootstrap row cap: %d rows from %d (%d learners; ~%d rows/learner).",
+        len(keep_idx),
+        len(df_a),
+        n_users,
+        per_user,
+    )
+    return (
+        df_a.loc[keep_idx].reset_index(drop=True),
+        df_b.loc[keep_idx].reset_index(drop=True),
+    )
+
+
+def bootstrap_pair(
+    df_a: pd.DataFrame,
+    df_b: pd.DataFrame,
+    pair_name: str,
+    n_resamples: int = BOOTSTRAP_N_RESAMPLES,
+) -> dict:
+    df_a, df_b = _cap_for_bootstrap(df_a, df_b)
+    users_int, _ = pd.factorize(df_a["user_id"])
+    users_int = np.asarray(users_int, dtype=np.intp)
+    y_true = df_a["y_true"].to_numpy()
+    y_prob_a = df_a["y_prob"].to_numpy()
+    y_prob_b = df_b["y_prob"].to_numpy()
+    num_users = int(users_int.max()) + 1
+
+    rng = np.random.default_rng(42)
+    deltas: list[float] = []
+    logging.info(
+        "Bootstrap %s: %d resamples, %d learners, %d rows.",
+        pair_name,
+        n_resamples,
+        num_users,
+        len(y_true),
+    )
+
+    for _ in range(n_resamples):
+        sampled = rng.integers(0, num_users, size=num_users)
+        multiplicity = np.bincount(sampled, minlength=num_users).astype(np.float64)
+        weights = multiplicity[users_int]
+        if np.dot(weights, y_true) == 0 or np.dot(weights, 1.0 - y_true) == 0:
+            continue
+        auc_a = roc_auc_score(y_true, y_prob_a, sample_weight=weights)
+        auc_b = roc_auc_score(y_true, y_prob_b, sample_weight=weights)
+        deltas.append(float(auc_a - auc_b))
+
+    arr = np.asarray(deltas, dtype=float)
+    delta_mean = float(np.mean(arr))
+    ci_lower = float(np.percentile(arr, 2.5))
+    ci_upper = float(np.percentile(arr, 97.5))
+    logging.info("%s: Delta=%.4f 95%% CI=[%.4f, %.4f]", pair_name, delta_mean, ci_lower, ci_upper)
+
     return {
-        "Model Pair": pair_name,
-        "$\\Delta$AUC": f"{delta_mean:+.4f}",
-        "95\\% CI": f"[{ci_lower:+.4f}, {ci_upper:+.4f}]",
+        "model_pair": pair_name,
+        "delta_auc": delta_mean,
+        "ci_lower": ci_lower,
+        "ci_upper": ci_upper,
         "n_learners": num_users,
-        "n_rows": len(y_true)
+        "n_rows": len(y_true),
+        "method": "learner_bootstrap",
     }
 
-def synthesize_table():
-    dataset = "xes3g5m"
-    folds = [0, 1, 2]
-    
-    # Load and pool
-    dfs_simplekt = []
-    dfs_gkt = []
-    dfs_gikt = []
-    
-    for fold in folds:
-        dir_path = Path("results/predictions") / dataset / f"fold_{fold}"
-        try:
-            df_s = pd.read_parquet(dir_path / "simplekt.parquet")
-            df_g = pd.read_parquet(dir_path / "gkt.parquet")
-            df_i = pd.read_parquet(dir_path / "gikt.parquet")
-            dfs_simplekt.append(df_s)
-            dfs_gkt.append(df_g)
-            dfs_gikt.append(df_i)
-        except FileNotFoundError:
-            logging.error(f"Missing parquet files for fold {fold}")
-            return
-            
-    df_simplekt_pooled = pd.concat(dfs_simplekt, ignore_index=True)
-    df_gkt_pooled = pd.concat(dfs_gkt, ignore_index=True)
-    df_gikt_pooled = pd.concat(dfs_gikt, ignore_index=True)
-    
-    res_gkt = bootstrap_pair(df_gkt_pooled, df_simplekt_pooled, "gkt vs simplekt")
-    res_gikt = bootstrap_pair(df_gikt_pooled, df_simplekt_pooled, "gikt vs simplekt")
-    
-    out_df = pd.DataFrame([res_gkt, res_gikt])
-    out_df.to_csv("results/tables/bootstrap_auc_ci.csv", index=False)
-    
-    tex_str = out_df.to_latex(index=False, escape=False, column_format="lrrrr")
-    
-    # Strict formatting demanded by the prompt
-    custom_header = """\\begin{table}[h]
-\\centering
-\\caption{Learner-level bootstrap 95\\% CIs for $\\Delta$AUC (pooled folds 0-2).}
-\\label{tab:bootstrap-auc-ci}
-\\begin{tabular}{lrrrr}
-\\toprule
-\\textbf{Model Pair} & $\\Delta$\\textbf{AUC} & \\textbf{95\\% CI} & \\textbf{n\\_learners} & \\textbf{n\\_rows} \\\\
-\\midrule"""
-    
-    # Remove pandas default header and bottom
-    lines = tex_str.split("\n")
-    data_lines = []
-    capture = False
-    for line in lines:
-        if "\\midrule" in line:
-            capture = True
+
+def paired_t_fallback(dataset: str = "xes3g5m") -> list[dict]:
+    df = pd.read_csv(ROOT / "results/tables/baseline_fold_results.csv")
+    df = df[(df["dataset"] == dataset) & (df["graph_construction"] == "train_only")]
+    simple = df[df["model"] == "simplekt"].sort_values("fold")["auc"].to_numpy()
+    t_val = float(stats.t.ppf(0.975, df=2))
+    rows = []
+    for model in ("gkt", "gikt"):
+        aucs = df[df["model"] == model].sort_values("fold")["auc"].to_numpy()
+        if len(aucs) != 3 or len(simple) != 3:
             continue
-        if "\\bottomrule" in line:
-            break
-        if capture and line.strip():
-            data_lines.append(line)
-            
-    final_tex = custom_header + "\n" + "\n".join(data_lines) + "\n\\bottomrule\n\\end{tabular}\n\\end{table}\n"
-    
-    Path("results/tables").mkdir(parents=True, exist_ok=True)
-    with open("results/tables/bootstrap_auc_ci.tex", "w") as f:
-        f.write(final_tex)
-        
-    logging.info("Bootstrap CI table successfully written.")
+        diff = aucs - simple
+        mean_diff = float(np.mean(diff))
+        se = float(np.std(diff, ddof=1) / np.sqrt(3))
+        margin = t_val * se
+        rows.append(
+            {
+                "model_pair": f"{PRETTY[model]} vs {PRETTY['simplekt']}",
+                "delta_auc": mean_diff,
+                "ci_lower": mean_diff - margin,
+                "ci_upper": mean_diff + margin,
+                "n_learners": np.nan,
+                "n_rows": np.nan,
+                "method": "paired_t_fold",
+            }
+        )
+    return rows
+
+
+def predictions_available(dataset: str = "xes3g5m", folds: list[int] | None = None) -> bool:
+    folds = folds or [0, 1, 2]
+    for fold in folds:
+        d = ROOT / "results/predictions" / dataset / f"fold_{fold}"
+        for model in ("simplekt", "gkt", "gikt"):
+            if not (d / f"{model}.parquet").exists():
+                return False
+    return True
+
+
+def load_pooled_predictions(dataset: str = "xes3g5m", folds: list[int] | None = None):
+    folds = folds or [0, 1, 2]
+    simple_parts, gkt_parts, gikt_parts = [], [], []
+    for fold in folds:
+        d = ROOT / "results/predictions" / dataset / f"fold_{fold}"
+        simple_parts.append(pd.read_parquet(d / "simplekt.parquet"))
+        gkt_parts.append(pd.read_parquet(d / "gkt.parquet"))
+        gikt_parts.append(pd.read_parquet(d / "gikt.parquet"))
+    return (
+        pd.concat(simple_parts, ignore_index=True),
+        pd.concat(gkt_parts, ignore_index=True),
+        pd.concat(gikt_parts, ignore_index=True),
+    )
+
+
+def write_outputs(rows: list[dict], ci_label: str, method_key: str) -> None:
+    out = ROOT / "results/tables"
+    out.mkdir(parents=True, exist_ok=True)
+
+    csv_df = pd.DataFrame(rows)
+    csv_df.to_csv(out / "bootstrap_auc_ci.csv", index=False)
+
+    tex_lines = [
+        r"% Auto-generated by scripts/bootstrap_auc_ci.py",
+        rf"% method: {method_key}",
+        r"\begin{tabular}{lrrrr}",
+        r"\toprule",
+        (
+            r"\textbf{Model Pair} & $\Delta$\textbf{AUC} & "
+            rf"\textbf{{95\% CI ({ci_label})}} & "
+            r"\textbf{$n_{\mathrm{learners}}$} & \textbf{$n_{\mathrm{rows}}$} \\"
+        ),
+        r"\midrule",
+    ]
+    for r in rows:
+        n_learners = "---" if pd.isna(r["n_learners"]) else str(int(r["n_learners"]))
+        n_rows = "---" if pd.isna(r["n_rows"]) else f"{int(r['n_rows']):,}".replace(",", "{,}")
+        tex_lines.append(
+            f"{r['model_pair']} & ${r['delta_auc']:+.3f}$ & "
+            f"$[{r['ci_lower']:+.3f}, {r['ci_upper']:+.3f}]$ & "
+            f"{n_learners} & {n_rows} \\\\"
+        )
+    tex_lines += [r"\bottomrule", r"\end{tabular}", ""]
+    (out / "bootstrap_auc_ci.tex").write_text("\n".join(tex_lines), encoding="utf-8")
+
+    method_note = {
+        "learner_bootstrap": (
+            r"learner-cluster bootstrap ($B{=}400$; pooled valid+test positions "
+            r"across folds~0--2; per-learner row cap when pooled rows exceed "
+            rf"{BOOTSTRAP_MAX_ROWS:,}; all learners retained)".replace(",", "{,}")
+        ),
+        "paired_t_fold": (
+            r"paired-$t$ 95\% intervals over three learner-disjoint CV folds "
+            r"(default for Table~S16; matches fold-level $\Delta$AUC). "
+            r"Optional learner-cluster bootstrap: "
+            r"\path{scripts/bootstrap_auc_ci.py --learner-bootstrap}."
+        ),
+    }
+    (out / "bootstrap_method_note.tex").write_text(method_note[method_key], encoding="utf-8")
+
+    macro_lines = []
+    for r in rows:
+        pair = r["model_pair"]
+        d = f"{r['delta_auc']:+.3f}"
+        ci = f"$[{r['ci_lower']:+.3f}, {r['ci_upper']:+.3f}]$"
+        if "GKT" in pair:
+            macro_lines.append(rf"\renewcommand{{\GKTdeltavec}}{{{d}}}")
+            macro_lines.append(rf"\renewcommand{{\GKTdeltaci}}{{{ci}}}")
+        if "GIKT" in pair:
+            macro_lines.append(rf"\renewcommand{{\GIKTdeltavec}}{{{d}}}")
+            macro_lines.append(rf"\renewcommand{{\GIKTdeltaci}}{{{ci}}}")
+    if macro_lines:
+        (out / "bootstrap_ci_macros.tex").write_text("\n".join(macro_lines) + "\n", encoding="utf-8")
+
+    logging.info("Wrote %s (method=%s)", out / "bootstrap_auc_ci.tex", method_key)
+
+
+def synthesize_table(use_learner_bootstrap: bool = False) -> str:
+    if use_learner_bootstrap and predictions_available():
+        simple, gkt, gikt = load_pooled_predictions()
+        rows = [
+            bootstrap_pair(gkt, simple, "GKT vs \\textit{simpleKT}"),
+            bootstrap_pair(gikt, simple, "GIKT vs \\textit{simpleKT}"),
+        ]
+        write_outputs(rows, ci_label="learner bootstrap", method_key="learner_bootstrap")
+        return "learner_bootstrap"
+
+    if predictions_available():
+        logging.info(
+            "Using paired-$t$ over three folds for Table S16 (matches fold-level "
+            "$\\Delta$AUC; pass --learner-bootstrap for row-level resampling on parquets)."
+        )
+    else:
+        logging.warning(
+            "Prediction parquets not found; writing paired-$t$ fallback "
+            "from baseline_fold_results.csv."
+        )
+    rows = paired_t_fallback()
+    write_outputs(rows, ci_label=r"paired $t$, 3 folds", method_key="paired_t_fold")
+    return "paired_t_fold"
+
 
 if __name__ == "__main__":
-    synthesize_table()
+    import sys
+
+    synthesize_table(use_learner_bootstrap="--learner-bootstrap" in sys.argv)

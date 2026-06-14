@@ -136,27 +136,51 @@ def collect_results():
                 import json
                 with open(res_path, "r") as f:
                     data = json.load(f)
+                    auc = data.get("auc", data.get("test_auc", np.nan))
+                    acc = data.get("acc", data.get("test_acc", np.nan))
                     results.append({
-                        "Model": model,
-                        "Injection Arm": tag,
-                        "AUC": data.get("test_auc", 0.0),
-                        "ACC": data.get("test_acc", 0.0)
+                        "model": model,
+                        "arm": tag,
+                        "auc": auc,
+                        "acc": acc,
                     })
     
     df = pd.DataFrame(results)
-    if not df.empty:
-        # Pivot the table to show Model rows and Injection Arm columns for AUC
-        pivot_df = df.pivot(index="Model", columns="Injection Arm", values="AUC").reset_index()
-        print("\nDownstream AUC Results (Fold 0):")
-        print(pivot_df.to_string(index=False))
-        
-        Path("results/tables").mkdir(parents=True, exist_ok=True)
-        pivot_df.to_csv("results/tables/downstream_auc_injection.csv", index=False)
-        
-        # Output simple LaTeX table
-        tex = pivot_df.to_latex(index=False, float_format="%.4f")
-        with open("results/tables/downstream_auc_injection.tex", "w") as f:
-            f.write(tex)
+    if df.empty:
+        logging.warning("No injection AUC results found in results/cache.")
+        return
+
+    clean_auc = df[(df["arm"] == "inject00")].set_index("model")["auc"]
+    df["delta_auc_vs_clean"] = df.apply(
+        lambda r: r["auc"] - clean_auc.get(r["model"], np.nan), axis=1
+    )
+
+    pivot_df = df.pivot(index="model", columns="arm", values="auc").reset_index()
+    print("\nDownstream AUC Results (Fold 0):")
+    print(pivot_df.to_string(index=False))
+
+    out_dir = Path("results/tables")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    df.to_csv(out_dir / "downstream_auc_injection.csv", index=False)
+
+    arm_pretty = {"inject00": "0\\%", "inject05": "5\\%", "inject20": "20\\%"}
+    tex_lines = [
+        r"\begin{tabular}{lrrr}",
+        r"\toprule",
+        r"\textbf{Model} & \textbf{0\%} & \textbf{5\%} & \textbf{20\%} \\",
+        r"\midrule",
+    ]
+    for model in ("simplekt", "gkt", "gikt"):
+        row = pivot_df[pivot_df["model"] == model]
+        if row.empty:
+            continue
+        vals = [float(row[a].iloc[0]) if a in row.columns else np.nan for a in ("inject00", "inject05", "inject20")]
+        label = {"simplekt": r"\textit{simpleKT}", "gkt": "GKT", "gikt": "GIKT"}[model]
+        tex_lines.append(
+            f"{label} & {vals[0]:.4f} & {vals[1]:.4f} & {vals[2]:.4f} \\\\"
+        )
+    tex_lines += [r"\bottomrule", r"\end{tabular}", ""]
+    (out_dir / "downstream_auc_injection.tex").write_text("\n".join(tex_lines), encoding="utf-8")
 
 if __name__ == "__main__":
     build_injected_graphs()
