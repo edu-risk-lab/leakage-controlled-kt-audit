@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import os
 from pathlib import Path
 
 import numpy as np
@@ -33,7 +34,23 @@ def _mean_nll(y_true: np.ndarray, y_prob: np.ndarray, eps: float = 1e-4) -> floa
 
 
 def _batch_to_device(dcur: dict, device: torch.device) -> dict:
-    return {k: (v.to(device) if torch.is_tensor(v) else v) for k, v in dcur.items()}
+    non_blocking = device.type == "cuda"
+    return {
+        k: (v.to(device, non_blocking=non_blocking) if torch.is_tensor(v) else v)
+        for k, v in dcur.items()
+    }
+
+
+def _dataloader_kwargs(batch_size: int) -> dict:
+    use_cuda = torch.cuda.is_available()
+    # Windows multiprocessing in DataLoader is fragile; keep workers at 0 locally.
+    num_workers = 0 if os.name == "nt" else min(4, os.cpu_count() or 1)
+    return {
+        "batch_size": batch_size,
+        "num_workers": num_workers,
+        "pin_memory": use_cuda,
+        "persistent_workers": use_cuda and num_workers > 0,
+    }
 
 
 def _model_forward_loss(model, batch: dict, model_name: str) -> torch.Tensor:
@@ -53,41 +70,41 @@ def _model_forward_loss(model, batch: dict, model_name: str) -> torch.Tensor:
         y = (y * one_hot(cshft.long(), model.num_c)).sum(-1)
         pred = torch.masked_select(y, sm)
         target = torch.masked_select(rshft, sm)
-        return binary_cross_entropy(pred.double(), target.double())
+        return binary_cross_entropy(pred, target)
     if model_name == "akt":
         y, reg = model(cc.long(), cr.long(), cq.long())
         y = y[:, 1:]
         pred = torch.masked_select(y, sm)
         pred = torch.clamp(pred, 1e-6, 1.0 - 1e-6)
         target = torch.masked_select(rshft, sm)
-        return binary_cross_entropy(pred.double(), target.double()) + reg
+        return binary_cross_entropy(pred, target) + reg
     if model_name == "gkt":
         y = model(cc.long(), cr.long())
         pred = torch.masked_select(y, sm)
         target = torch.masked_select(rshft, sm)
-        return binary_cross_entropy(pred.double(), target.double())
+        return binary_cross_entropy(pred, target)
     if model_name == "simplekt":
         y, _y2, _y3 = model(dcur, train=True)
         y = y[:, 1:]
         pred = torch.masked_select(y, sm)
         target = torch.masked_select(rshft, sm)
-        return binary_cross_entropy(pred.double(), target.double())
+        return binary_cross_entropy(pred, target)
     if model_name == "gikt":
         y = model(cq.long(), cc.long(), cr.long())
         y = y[:, 1:]
         pred = torch.masked_select(y, sm)
         target = torch.masked_select(rshft, sm)
-        return binary_cross_entropy(pred.double(), target.double())
+        return binary_cross_entropy(pred, target)
     if model_name == "sakt":
         y = model(c.long(), r.long(), cshft.long())
         pred = torch.masked_select(y, sm)
         target = torch.masked_select(rshft, sm)
-        return binary_cross_entropy(pred.double(), target.double())
+        return binary_cross_entropy(pred, target)
     if model_name in ("skt", "dygkt", "dgekt"):
         y = model(c.long(), r.long(), cshft.long())
         pred = torch.masked_select(y, sm)
         target = torch.masked_select(rshft, sm)
-        return binary_cross_entropy(pred.double(), target.double())
+        return binary_cross_entropy(pred, target)
     raise ValueError(f"Unsupported model_name={model_name}")
 
 
@@ -238,9 +255,10 @@ def run_pykt_fold(
     valid_ds = KTDataset(tv_path, input_type, {1})
     eval_ds = KTDataset(te_path, input_type, {-1})
 
-    train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True)
-    valid_loader = DataLoader(valid_ds, batch_size=batch_size, shuffle=False)
-    eval_loader = DataLoader(eval_ds, batch_size=batch_size, shuffle=False)
+    loader_kw = _dataloader_kwargs(batch_size)
+    train_loader = DataLoader(train_ds, shuffle=True, **loader_kw)
+    valid_loader = DataLoader(valid_ds, shuffle=False, **loader_kw)
+    eval_loader = DataLoader(eval_ds, shuffle=False, **loader_kw)
 
     emb_type = "qid"
     data_cfg = {
