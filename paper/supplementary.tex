@@ -15,6 +15,8 @@
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage{url}
+\usepackage{xr}
+\externaldocument{main_APIN}
 \makeatletter\@ifundefined{path}{}{\let\path\relax}\makeatother
 \DeclareUrlCommand\path{\urlstyle{tt}}
 
@@ -30,8 +32,8 @@
 Graph Construction and Cold-Start Diagnostic Protocol for Knowledge Tracing}
 
 \author[1]{\fnm{Dao Minh} \sur{Tuan}}
-\author[1]{\fnm{Nguyen Tien} \sur{Duong}}
 \author[1]{\fnm{Nguyen Khanh} \sur{Trinh}}
+\author[1]{\fnm{Nguyen Tien} \sur{Duong}}
 \author[3]{\fnm{Ngo Quoc} \sur{Khanh}}
 \author*[1]{\fnm{Nguyen Van} \sur{Hau}}
 \author[2]{\fnm{Le Hoang} \sur{Son}}
@@ -39,9 +41,9 @@ Graph Construction and Cold-Start Diagnostic Protocol for Knowledge Tracing}
 \affil*[1]{\orgdiv{Department of Quality Assurance and Testing},
 \orgname{Hung Yen University of Technology and Education},
 \orgaddress{\city{Hung Yen}, \country{Vietnam}}}
-\affil[2]{\orgdiv{Informatics},
-\orgname{VNU University of Science, Vietnam National University (VNU)},
-\orgaddress{\city{Hanoi}, \country{Vietnam}}}
+\affil[2]{\orgdiv{Information Technology Institute},
+\orgname{Vietnam National University},
+\orgaddress{\street{144 Xuan Thuy Street, Cau Giay}, \city{Hanoi}, \country{Vietnam}}}
 \affil[3]{\orgdiv{Advanced International Research Center on Applied Artificial Intelligence, Information Technology Institute},
 \orgname{Vietnam National University},
 \orgaddress{\city{Hanoi}, \country{Vietnam}}}
@@ -50,7 +52,10 @@ Graph Construction and Cold-Start Diagnostic Protocol for Knowledge Tracing}
 paired significance tests, full cold-start strata, DDR downstream scatter
 plot, sequence-autocorrelation statistics, operator definitions, ground-truth
 disagreement examples, extended ground-truth metrics with node Jaccard, and
-multi-benchmark schematic figures omitted from the main manuscript for length.}
+supplementary \DDR{} / KT-graph figures omitted from the main manuscript for
+length.
+Tables~S15--S18 report training parity, $\Delta$AUC intervals (paired-$t$ by
+default), controlled leak-injection metrics, and downstream AUC on injected graphs.}
 
 \maketitle
 
@@ -65,8 +70,11 @@ S12--S13: cold-start diagnostics (Section~\ref{sec:supp-coldstart});
 S14: ground-truth metrics including node Jaccard
 (Section~\ref{sec:supp-gtxv-extended});
 S15: training parity (Section~\ref{sec:supp-training-parity});
-S16: fold-level $\Delta$AUC intervals (Section~\ref{sec:supp-bootstrap});
-S17: controlled leak injection (Section~\ref{sec:supp-leak-injection}).
+S16: $\Delta$AUC intervals for primary pairs (Section~\ref{sec:supp-bootstrap});
+S17--S18: controlled leak injection and downstream AUC
+(Section~\ref{sec:supp-leak-injection});
+S19--S20: exploratory ANOVA on backbone and DGEKT downstream AUC
+(Section~\ref{sec:supp-anova}).
 
 \medskip\noindent\textbf{Sections and figures.}
 Section~S3: sequence-autocorrelation analysis
@@ -74,17 +82,21 @@ Section~S3: sequence-autocorrelation analysis
 Section~S4: \DDR{} augmentation operators (Section~\ref{sec:supp-operators});
 Section~S5: ground-truth disagreement examples
 (Section~\ref{sec:supp-disagreement});
-Figure~S1: multi-benchmark KT-graph schematics
+Figure~S1: multi-benchmark train-only $\Epre$ samples
 (Figure~\ref{fig:supp-kt-graph-all});
 Figure~S2: multi-benchmark \DDR{} curves (Figure~\ref{fig:supp-ddr-all});
 Figure~S3: \DDR{} downstream scatter plot
 (Figure~\ref{fig:supp-ddr-downstream}).
+Cold-start panels in the main manuscript (Figure~\ref{fig:coldstart-viz}) are
+generated from fold~0 exports by \path{scripts/plot\_kt\_graph\_figures.py}.
 
 \section{Per-dataset baseline diagnostics}
 \label{sec:supp-baseline}
 Tables~S1--S5 (Tables~\ref{tab:baseline-junyi}--\ref{tab:baseline-synthetic-c5})
 reproduce the five diagnostic baseline tables (AUC, ACC, NLL with 95\% bootstrap
 CIs) that the main manuscript summarises in its cross-dataset AUC summary table.
+pyKT GKT is omitted on Junyi Academy because the stock wrapper is impractical on
+the dense multi-million-interaction graphs under our compute budget.
 
 \input{results/tables/baseline_results_full.tex}
 
@@ -164,8 +176,8 @@ ground-truth table with node Jaccard across the same top-$K$ cutoffs.
 \label{sec:supp-coldstart}
 Table~S12 (Table~\ref{tab:cold-start-strata}) reports fold~0 \textit{simpleKT}
 metrics by KC-frequency stratum; Table~S13 (Table~\ref{tab:cold-start-comparison})
-lists three-fold per-model AUC and $\Delta_{\max}$ by stratum. The main
-manuscript summarises both in a single table.
+lists three-fold per-model AUC (mean~$\pm$~std) and $\Delta_{\max}$ by stratum.
+The main manuscript summarises both in a single table.
 
 \input{results/tables/cold_start_by_stratum.tex}
 \input{results/tables/cold_start_comparison.tex}
@@ -180,7 +192,7 @@ manuscript summarises both in a single table.
 \label{fig:supp-ddr-downstream}
 \end{figure}
 
-\section{Additional schematic figures}
+\section{Additional KT-graph figures}
 \label{sec:supp-figures}
 
 \begin{figure}[t]
@@ -205,7 +217,7 @@ manuscript summarises both in a single table.
   \caption{XES3G5M}
   \label{fig:supp-ktgraph-xes}
 \end{subfigure}
-\caption{Supplementary Figure~S1. Schematic visualisations of high-support prerequisite chains in train-only $\Epre$ after DAG audit (representative subgraphs). The main manuscript shows the Junyi panel only.}
+\caption{Supplementary Figure~S1. High-weight samples from train-only $\Epre$ after DAG audit (fold~0 exports). The main manuscript shows the Junyi panel only.}
 \label{fig:supp-kt-graph-all}
 \end{figure}
 
@@ -257,21 +269,23 @@ exported $\Epre$ and, where available, $\Esim$ edges.
 \input{results/tables/training_parity.tex}}
 \end{table}
 
-\section{Fold-level $\Delta$AUC intervals for primary pairs}
+\section{$\Delta$AUC intervals for primary pairs}
 \label{sec:supp-bootstrap}
 Table~S16 (Table~\ref{tab:bootstrap-auc-ci}) reports the mean AUC difference
 ($\Delta$AUC) between the primary model pairs on XES3G5M under train-only
-graph construction, with 95\% paired-$t$ intervals computed over the three
-learner-disjoint CV folds. With $n{=}3$ folds these intervals are
-\emph{descriptive} summaries of fold-to-fold variation, not substitutes for
-large-sample inference; we report them because the GKT deficit
-($-0.041$) is more than an order of magnitude larger than the interval
-half-width ($\pm 0.003$), so the model-specific conclusion does not hinge on
-the test. Learner-level bootstrap intervals require full per-position
-prediction exports and can be reproduced with the released harness.
+graph construction. The released bundle reports paired-$t$ 95\% intervals
+over three learner-disjoint folds (default; matches fold-level
+$\Delta$AUC). Optional row-level learner bootstrap:
+\path{scripts/bootstrap_auc_ci.py --learner-bootstrap}.
+The GKT deficit ($-0.041$; CI $[-0.044,-0.038]$) is more than an order of
+magnitude larger than the interval half-width, so the model-specific conclusion
+does not hinge on fragile three-fold $t$-tests. Reproducers may optionally run
+\texttt{python scripts/bootstrap\_auc\_ci.py --learner-bootstrap} on exported
+prediction parquets for row-level learner resampling (slower; fold-level
+paired-$t$ is the default).
 \begin{table}[h!]
 \centering
-\caption{Fold-level $\Delta$AUC with paired-$t$ 95\% intervals, XES3G5M, train-only graphs (Table S16)}
+\caption{$\Delta$AUC intervals for primary pairs, XES3G5M, train-only graphs (Table S16)}
 \label{tab:bootstrap-auc-ci}
 \input{results/tables/bootstrap_auc_ci.tex}
 \end{table}
@@ -295,5 +309,35 @@ in the main manuscript.
 \label{tab:leak-injection}
 \input{results/tables/leak_injection.tex}
 \end{table}
+
+Table~S18 (Table~\ref{tab:downstream-injection-auc}) reports fold-0 test AUC
+after retraining \textit{simpleKT}, GKT, and GIKT on the clean and injected
+graphs. Headline AUC does not track the structural audit monotonically: GKT
+and GIKT AUC \emph{rise} at $20\%$ injection on this dense log, whereas
+\textit{simpleKT} remains near $0.850$--$0.858$. We therefore treat S18 as
+evidence that metric-tier reporting must precede AUC-only leakage
+conclusions, not as proof that contamination always lowers accuracy.
+\begin{table}[h!]
+\centering
+\caption{Downstream test AUC under controlled leak injection, XES3G5M fold~0 (Table S18)}
+\label{tab:downstream-injection-auc}
+\input{results/tables/downstream_auc_injection.tex}
+\end{table}
+
+\section{Exploratory ANOVA summaries}
+\label{sec:supp-anova}
+The main manuscript reports fold-level means~$\pm$~std throughout
+Tables~\ref{tab:baseline-summary}, \ref{tab:baseline-cv},
+\ref{tab:leakage-metrics}, \ref{tab:ddr-raw}, and
+\ref{tab:cold-start-summary}, with Table~S16 $\Delta$AUC intervals
+(Table~S16) as the primary inferential evidence for the XES3G5M ranking
+observation. For reviewer-requested completeness, Tables~S19--S20 add
+exploratory ANOVA models on fold-level observations. Because each
+dataset--model cell contains only three folds, we interpret ANOVA
+$p$-values as descriptive rather than as proof of backbone dominance.
+
+\input{results/tables/anova_baseline.tex}
+
+\input{results/tables/anova_ddr_downstream.tex}
 
 \end{document}
