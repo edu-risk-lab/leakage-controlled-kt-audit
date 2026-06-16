@@ -3,14 +3,19 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
+ROOT = Path(__file__).resolve().parents[1]
+GKT_VALID_AUC_FLOOR = 0.80
 
-def _load_all(q1_root: Path) -> pd.DataFrame:
+
+def _load_q1_folders(q1_root: Path) -> pd.DataFrame:
     frames = []
+    if not q1_root.exists():
+        return pd.DataFrame()
     for sub in sorted(q1_root.iterdir()):
         csv_path = sub / "baseline_fold_results.csv"
         if csv_path.exists():
@@ -19,34 +24,84 @@ def _load_all(q1_root: Path) -> pd.DataFrame:
                 df["experiment_tag"] = sub.name
             frames.append(df)
     if not frames:
-        raise FileNotFoundError(f"No baseline_fold_results.csv under {q1_root}")
+        return pd.DataFrame()
     out = pd.concat(frames, ignore_index=True)
     out = out[out["dataset"] == "xes3g5m"]
     out = out[out["graph_construction"].fillna("train_only") == "train_only"]
     return out
 
 
-def _paired_delta(df: pd.DataFrame, baseline: str, challenger: str) -> pd.DataFrame:
+def _load_trio_fallback(out_dir: Path, q1_df: pd.DataFrame) -> pd.DataFrame:
+    """Keep Phase-3 trio rows when trio folders are absent (gitignored on server)."""
+    if not q1_df.empty:
+        trio_in_q1 = q1_df[q1_df["experiment_tag"].astype(str).str.startswith("trio_matched")]
+        if not trio_in_q1.empty:
+            return pd.DataFrame()
+
+    merged = out_dir / "q1_baseline_fold_results.csv"
+    if not merged.exists():
+        return pd.DataFrame()
+    prev = pd.read_csv(merged)
+    trio = prev[prev["experiment_tag"].astype(str).str.startswith("trio_matched", na=False)]
+    return trio.copy()
+
+
+def _merge_q1_tables(q1_root: Path, out_dir: Path) -> pd.DataFrame:
+    q1_df = _load_q1_folders(q1_root)
+    trio_df = _load_trio_fallback(out_dir, q1_df)
+    parts = [p for p in (q1_df, trio_df) if not p.empty]
+    if not parts:
+        raise FileNotFoundError(f"No Q1 results under {q1_root} or trio rows in merged CSV")
+    merged = pd.concat(parts, ignore_index=True)
+    key = ["experiment_tag", "fold", "model", "split_base_seed"]
+    return merged.drop_duplicates(subset=key, keep="first")
+
+
+def _gkt_seed_valid(gkt_part: pd.DataFrame) -> bool:
+    return float(gkt_part["auc"].mean()) >= GKT_VALID_AUC_FLOOR
+
+
+def _paired_delta_cross_tag(df: pd.DataFrame, baseline: str, challenger: str) -> pd.DataFrame:
+    """Pair GKT (gkt_epochs30_*) vs simpleKT (trio_matched_*) at the same split_base_seed."""
     rows = []
-    for base_seed, part in df.groupby("split_base_seed", dropna=False):
-        pivot = part.pivot_table(index="fold", columns="model", values="auc", aggfunc="first")
-        if baseline not in pivot.columns or challenger not in pivot.columns:
+    gkt = df[(df["model"] == challenger) & df["experiment_tag"].astype(str).str.startswith("gkt_epochs30")]
+    simple = df[(df["model"] == baseline) & df["experiment_tag"].astype(str).str.startswith("trio_matched")]
+    for seed in sorted(gkt["split_base_seed"].dropna().unique()):
+        gpart = gkt[gkt["split_base_seed"] == seed].sort_values("fold")
+        spart = simple[simple["split_base_seed"] == seed].sort_values("fold")
+        if gpart.empty or spart.empty:
             continue
-        delta = pivot[challenger] - pivot[baseline]
-        tag = "mixed_tags" if len(part["experiment_tag"].dropna().unique()) > 1 else part["experiment_tag"].dropna().iloc[0]
+        mdf = spart[["fold", "auc"]].merge(gpart[["fold", "auc"]], on="fold", suffixes=("_sk", "_gkt"))
+        if len(mdf) != 3:
+            continue
+        delta = mdf["auc_gkt"] - mdf["auc_sk"]
+        valid = _gkt_seed_valid(gpart)
         rows.append(
             {
-                "experiment_tag": tag,
-                "split_base_seed": base_seed,
+                "experiment_tag": f"gkt_epochs30_s{int(seed)}",
+                "split_base_seed": int(seed),
                 "baseline": baseline,
                 "challenger": challenger,
-                "n_folds": int(delta.notna().sum()),
+                "n_folds": 3,
                 "delta_mean": float(delta.mean()),
-                "delta_std": float(delta.std(ddof=1)) if delta.notna().sum() > 1 else 0.0,
-                "delta_values": ";".join(f"{v:.6f}" for v in delta.dropna().tolist()),
+                "delta_std": float(delta.std(ddof=1)),
+                "delta_values": ";".join(f"{v:.6f}" for v in delta.tolist()),
+                "gkt_mean_auc": float(gpart["auc"].mean()),
+                "valid": valid,
             }
         )
-    cols = ["experiment_tag", "split_base_seed", "baseline", "challenger", "n_folds", "delta_mean", "delta_std", "delta_values"]
+    cols = [
+        "experiment_tag",
+        "split_base_seed",
+        "baseline",
+        "challenger",
+        "n_folds",
+        "gkt_mean_auc",
+        "delta_mean",
+        "delta_std",
+        "delta_values",
+        "valid",
+    ]
     return pd.DataFrame(rows, columns=cols)
 
 
@@ -56,41 +111,77 @@ def _write_tex(summary: pd.DataFrame, out_path: Path) -> None:
         r"\begin{table}[t]",
         r"\centering",
         r"\caption{Epoch-matched GKT ablation on XES3G5M (isolated Q1 GPU runs). "
-        r"$\Delta$AUC = AUC(challenger) $-$ AUC(baseline) per fold; mean $\pm$ std over folds.}",
+        r"$\Delta$AUC = AUC(GKT) $-$ AUC(\textit{simpleKT} from matched trio run) per fold. "
+        r"Rows with mean GKT AUC below 0.80 are stale mis-aligned runs and omitted.}",
         r"\label{tab:q1-gkt-epochs30}",
         r"\footnotesize",
         r"\begin{tabular}{llrrl}",
         r"\toprule",
-        r"Tag & Split base seed & Folds & $\Delta$AUC (GKT $-$ simpleKT) & Fold deltas \\",
+        r"Tag & Seed & Folds & $\Delta$AUC (GKT $-$ \textit{simpleKT}) & Fold deltas \\",
         r"\midrule",
     ]
-    if not summary.empty and "challenger" in summary.columns:
-        gkt = summary[summary["challenger"] == "gkt"]
+    gkt = summary[(summary["challenger"] == "gkt") & summary["valid"].fillna(False)]
+    if gkt.empty:
+        lines.append(r"% No valid paired GKT rows (rebuild graph per seed before rerun).")
+    else:
         for row in gkt.itertuples(index=False):
             pm = f"${row.delta_mean:+.3f} \\pm {row.delta_std:.3f}$"
             lines.append(
                 f"{row.experiment_tag} & {int(row.split_base_seed)} & {row.n_folds} & {pm} & "
                 f"\\texttt{{{row.delta_values}}} \\\\"
             )
-    else:
-        lines.append(r"% No paired comparison data available yet (e.g. simplekt not run).")
+    stale = summary[(summary["challenger"] == "gkt") & ~summary["valid"].fillna(False)]
+    for row in stale.itertuples(index=False):
+        lines.append(
+            f"% stale (omit): seed {int(row.split_base_seed)} GKT mean={row.gkt_mean_auc:.3f}"
+        )
     lines.extend([r"\bottomrule", r"\end{tabular}", r"\end{table}", ""])
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text("\n".join(lines), encoding="utf-8")
+
+
+def sync_gkt_cache_fold0(dataset: str = "xes3g5m", split_base_seed: int = 17) -> bool:
+    """Promote aligned fold-0 cache into results/q1 if isolated CSV is stale."""
+    cache = ROOT / f"results/cache/{dataset}_fold_0_gkt_s{split_base_seed}_train_only_result.json"
+    q1_csv = ROOT / f"results/q1/gkt_epochs30_s{split_base_seed}/baseline_fold_results.csv"
+    if not cache.exists() or not q1_csv.exists():
+        return False
+    payload = json.loads(cache.read_text(encoding="utf-8"))
+    df = pd.read_csv(q1_csv)
+    if df.empty or float(df.loc[df["fold"] == 0, "auc"].iloc[0]) >= GKT_VALID_AUC_FLOOR:
+        return False
+    if float(payload["auc"]) < GKT_VALID_AUC_FLOOR:
+        return False
+    idx = df["fold"] == 0
+    df.loc[idx, "auc"] = payload["auc"]
+    df.loc[idx, "acc"] = payload["acc"]
+    df.loc[idx, "nll"] = payload["nll"]
+    df.loc[idx, "note"] = (
+        "pyKT `gkt` trained on learner-split train users; metrics on valid+test sequence positions. "
+        "GKT adjacency from P0 exported graphs (aligned graph rerun; fold 0)."
+    )
+    df.to_csv(q1_csv, index=False)
+    return True
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--q1-root", type=Path, default=Path("results/q1"))
     parser.add_argument("--out-dir", type=Path, default=Path("results/tables"))
+    parser.add_argument("--sync-cache", action="store_true", help="Promote valid fold-0 cache into q1 CSVs")
     args = parser.parse_args()
 
-    df = _load_all(args.q1_root)
+    if args.sync_cache:
+        for seed in (17, 1234, 42):
+            if sync_gkt_cache_fold0(split_base_seed=seed):
+                print(f"Synced fold-0 cache -> results/q1/gkt_epochs30_s{seed}/")
+
+    df = _merge_q1_tables(args.q1_root, args.out_dir)
     args.out_dir.mkdir(parents=True, exist_ok=True)
     merged_path = args.out_dir / "q1_baseline_fold_results.csv"
     df.to_csv(merged_path, index=False)
 
-    summary = _paired_delta(df, baseline="simplekt", challenger="gkt")
+    summary = _paired_delta_cross_tag(df, baseline="simplekt", challenger="gkt")
     summary_path = args.out_dir / "q1_gkt_vs_simplekt.csv"
     summary.to_csv(summary_path, index=False)
     _write_tex(summary, args.out_dir / "q1_gkt_epochs30_ablation.tex")
@@ -99,8 +190,8 @@ def main() -> None:
     print(f"Wrote {summary_path}")
     print(f"Wrote {args.out_dir / 'q1_gkt_epochs30_ablation.tex'}")
     if not summary.empty:
-        print("\nGKT vs simpleKT (mean delta AUC across tags/seeds):")
-        print(summary[["experiment_tag", "split_base_seed", "delta_mean", "delta_std", "n_folds"]])
+        print("\nGKT vs simpleKT (cross-tag, same seed):")
+        print(summary[["experiment_tag", "split_base_seed", "gkt_mean_auc", "delta_mean", "valid"]])
 
 
 if __name__ == "__main__":

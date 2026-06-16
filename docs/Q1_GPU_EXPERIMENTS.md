@@ -31,32 +31,33 @@ Kiểm tra GPU:
 python -c "import torch; print(torch.cuda.get_device_name(0), torch.cuda.get_device_properties(0).total_memory/1e9)"
 ```
 
-**24GB VRAM:** đủ cho GKT XES3G5M batch 64 (epochs30 config). Nếu OOM → sửa tạm `batch_size: 32` trong `configs/xes3g5m_gkt_epochs30.yaml`.
+**24GB VRAM:** đủ cho GKT XES3G5M; config hiện tại dùng **batch 32** (`configs/xes3g5m_gkt_epochs30.yaml`) sau OOM trên 16GB.
 
 ---
 
-## 0.1 Kết quả đã pull (đánh giá — cập nhật paper xong)
+## 0.1 Kết quả đã pull (cập nhật sau pull mới nhất)
 
 | Run | Trạng thái | Mean GKT AUC | Δ vs simpleKT | Dùng trong paper? |
 |-----|------------|--------------|---------------|-----------------|
 | GKT **10ep** primary (seed 42) | ✅ baseline chính | **0.834** | **−0.041** [−0.044, −0.038] | Table S16 |
-| GKT **30ep** matched (seed 42) | ✅ hợp lệ | **0.837** | **−0.038** [−0.048, −0.027] | **Table S21** |
-| GKT 30ep (seed 17) | ⚠️ **confounded** | ~0.711 | — | **Không** — graph export vẫn seed 42 |
-| GKT 30ep (seed 1234) | ⚠️ **confounded** | ~0.710 | — | **Không** — cùng lý do |
-| Phase 3 `trio_matched_s*` | ✅ đã pull (merged CSV) | simpleKT ~0.877, GIKT ~0.879 | GIKT +0.002…+0.003 vs simpleKT | Supplementary / báo cáo |
+| GKT **30ep** matched (seed 42) | ✅ hợp lệ (folder `gkt_epochs30_s42/`) | **0.837** | **−0.038** [−0.048, −0.027] | **Table S21** |
+| GKT 30ep (seed 17) | 🔄 **đang rerun** — fold 0 aligned **0.842**; fold 1–2 vẫn stale (~0.71) | 0.755* | — | **Chưa** — cần xong 3 fold |
+| GKT 30ep (seed 1234) | ⚠️ stale (graph chưa rebuild) | ~0.710 | −0.167 | **Không** |
+| Phase 3 `trio_matched_s*` | ✅ merged CSV (18 dòng) | simpleKT ~0.877, GIKT ~0.879 | GIKT +0.002…+0.003 | Supplementary |
 
-**Kết luận (kịch bản B):** epoch matching thu hẹp gap **≈+0.003 AUC** (0.834 → 0.837); Δ GKT vs simpleKT còn **≈−0.038**. Ordering trio primary **giữ nguyên** → C5 vẫn là *benchmarking boundary*, không phải ranking reversal.
+\*Mean 3 fold nếu trộn 1 fold mới + 2 fold cũ — **không dùng** cho paper.
 
-Paper đã cập nhật: `paper/main_APIN.tex` (abstract, C5, §4.2, Discussion, Conclusion), `paper/supplementary.tex` (Table S21), `paper/cover_letter_APIN.md`.
+**Kết luận paper (không đổi):** seed **42** đủ cho Table S21 (kịch bản B: gap −0.041 → −0.038). Rerun seed 17 **fold 0 = 0.842** xác nhận graph rebuild **đúng hướng**; cần hoàn tất fold 1–2 (seed 17) rồi seed 1234.
 
-Regenerate bảng:
+Regenerate bảng (local, sau mỗi lần pull):
 
 ```bash
-python scripts/summarize_q1_phase3.py          # Phase 3 trio summary
-python scripts/generate_gkt_epoch_ablation.py  # Table S21 (seed 42)
+python scripts/summarize_q1_experiments.py --sync-cache
+python scripts/summarize_q1_phase3.py
+python scripts/generate_gkt_epoch_ablation.py
 ```
 
-**Phase 3 (đã pull):** `simpleKT` + `GIKT` retrain (tag `trio_matched_s*`); `GKT` lấy từ Phase 1/2 (`gkt_epochs30_s*`, config tắt GKT trong trio). Xem `results/tables/q1_phase3_trio_summary.csv`.
+**Lưu ý:** `--sync-cache` copy fold-0 cache aligned (`results/cache/*_s17_*`) vào `results/q1/` nếu CSV cũ vẫn ~0.71.
 
 ---
 
