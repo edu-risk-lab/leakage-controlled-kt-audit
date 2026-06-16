@@ -77,9 +77,21 @@ function Run-GktEpochs30 {
     param([string]$baseSeed)
     $tag = "gkt_epochs30_s$baseSeed"
     Log-Message "=== GKT epochs30 | split_base_seed=$baseSeed | tag=$tag ==="
-    # & $PYTHON scripts/clear_baseline_cache.py --dataset xes3g5m --models gkt
-    # if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     
+    # 1) Rebuild graph for the correct split seed
+    Log-Message "Rebuilding graphs for split seed $baseSeed..."
+    $config_file = "configs/xes3g5m_split$baseSeed.yaml"
+    if (-not (Test-Path $config_file)) {
+        $config_file = "configs/xes3g5m.yaml"
+    }
+    cmd /c """$PYTHON"" -m src.graph_builder --config $config_file 2>&1" | Tee-Object -Append -FilePath "$LOG_DIR/graph_builder_s$baseSeed.log"
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    
+    # 2) Clear GKT cache to be safe
+    & $PYTHON scripts/clear_baseline_cache.py --dataset xes3g5m --models gkt
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    
+    # 3) Train GKT 30ep
     $cmd_str = """$PYTHON"" -m src.baseline_runner --config configs/xes3g5m_gkt_epochs30.yaml --split-base-seed ""$baseSeed"" --isolated-results ""$tag"" --log-level INFO 2>&1"
     cmd /c $cmd_str | Tee-Object -Append -FilePath "$LOG_DIR/$tag.log"
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
@@ -89,9 +101,21 @@ function Run-PrimaryTrio {
     param([string]$baseSeed)
     $tag = "trio_matched_s$baseSeed"
     Log-Message "=== Primary trio (GKT 30ep) | split_base_seed=$baseSeed | tag=$tag ==="
-    # & $PYTHON scripts/clear_baseline_cache.py --dataset xes3g5m --models gkt,simplekt,gikt
-    # if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
     
+    # 1) Rebuild graph for the correct split seed
+    Log-Message "Rebuilding graphs for split seed $baseSeed..."
+    $config_file = "configs/xes3g5m_split$baseSeed.yaml"
+    if (-not (Test-Path $config_file)) {
+        $config_file = "configs/xes3g5m.yaml"
+    }
+    cmd /c """$PYTHON"" -m src.graph_builder --config $config_file 2>&1" | Tee-Object -Append -FilePath "$LOG_DIR/graph_builder_s$baseSeed.log"
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    
+    # 2) Clear baseline cache
+    & $PYTHON scripts/clear_baseline_cache.py --dataset xes3g5m --models gkt,simplekt,gikt
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    
+    # 3) Run baseline_runner
     $cmd_str = """$PYTHON"" -m src.baseline_runner --config configs/experiments/xes3g5m_primary_trio_matched.yaml --split-base-seed ""$baseSeed"" --isolated-results ""$tag"" --log-level INFO 2>&1"
     cmd /c $cmd_str | Tee-Object -Append -FilePath "$LOG_DIR/$tag.log"
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
