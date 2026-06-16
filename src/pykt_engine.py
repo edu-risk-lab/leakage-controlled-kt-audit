@@ -303,7 +303,9 @@ def run_pykt_fold(
     elif pykt_name == "gkt":
         if graph_npz is None:
             raise ValueError("GKT requires graph_npz")
-        shutil.copy(graph_npz, work_dir / f"gkt_graph_{graph_tag}.npz")
+        dest = work_dir / f"gkt_graph_{graph_tag}.npz"
+        if graph_npz.resolve() != dest.resolve():
+            shutil.copy(graph_npz, dest)
         model_cfg = {
             "hidden_dim": int(hyperparams.get("hidden_dim", 100)),
             "emb_size": int(hyperparams.get("emb_size", 100)),

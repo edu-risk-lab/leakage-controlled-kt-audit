@@ -39,7 +39,7 @@ baselines:
   - name: gkt
     enabled: true
     hyperparams:
-      batch_size: 64
+      batch_size: 16
       epochs: 30
   - name: gikt
     enabled: true
@@ -54,5 +54,5 @@ pykt:
   max_seq_len: 200
   gkt_graph_tag: p0_protocol
   epochs: 30
-  batch_size: 64
+  batch_size: 16
   lr: 0.001

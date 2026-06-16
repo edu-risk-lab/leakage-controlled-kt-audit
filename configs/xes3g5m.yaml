@@ -55,12 +55,12 @@ baselines:
     enabled: true
     hyperparams:
       batch_size: 16
-      epochs: 10
+      epochs: 1
   - name: gikt
     enabled: true
     hyperparams:
       batch_size: 16
-      epochs: 10
+      epochs: 1
   - name: skt
     enabled: true
     hyperparams:
