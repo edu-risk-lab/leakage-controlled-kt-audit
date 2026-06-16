@@ -40,14 +40,18 @@ ensure_graphs() {
 
 run_gkt_epochs30() {
   local BASE_SEED="$1"
+  shift
   local TAG="gkt_epochs30_s${BASE_SEED}"
   log "=== GKT epochs30 | split_base_seed=${BASE_SEED} | tag=${TAG} ==="
-  $PYTHON scripts/clear_baseline_cache.py --dataset xes3g5m --models gkt
+  if [ "${SKIP_CACHE_CLEAR:-0}" -ne 1 ]; then
+    $PYTHON scripts/clear_baseline_cache.py --dataset xes3g5m --models gkt
+  fi
   $PYTHON -m src.baseline_runner \
     --config configs/xes3g5m_gkt_epochs30.yaml \
     --split-base-seed "$BASE_SEED" \
     --isolated-results "$TAG" \
     --log-level INFO \
+    "$@" \
     2>&1 | tee -a "$LOG_DIR/${TAG}.log"
 }
 
@@ -74,9 +78,16 @@ phase1() {
 phase2() {
   check_env
   ensure_graphs
-  for S in 17 1234; do
-    run_gkt_epochs30 "$S"
-  done
+  log "Running Phase 2 sequentially (16GB VRAM insufficient for parallel GKT)..."
+  export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+
+  log "Running seed 17 sequentially..."
+  SKIP_CACHE_CLEAR=1 run_gkt_epochs30 17 "$@"
+
+  log "Running seed 1234 sequentially..."
+  SKIP_CACHE_CLEAR=1 run_gkt_epochs30 1234 "$@"
+
+  log "Phase 2 sequential runs completed."
   summarize
 }
 
@@ -97,7 +108,7 @@ summarize() {
 
 case "$PHASE" in
   phase1) phase1 ;;
-  phase2) check_env; ensure_graphs; run_gkt_epochs30 17; run_gkt_epochs30 1234; summarize ;;
+  phase2) phase2 ;;
   phase3) phase3 ;;
   summarize) summarize ;;
   all)

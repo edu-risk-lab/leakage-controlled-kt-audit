@@ -113,16 +113,13 @@ class SKTPyTorch(nn.Module):
             # Calculate difference (delta) for propagation
             delta = updated_state - state_curr  # [batch_size, hidden_dim]
 
-            # Construct sparse update matrix: only curr_c index has delta
-            delta_M = torch.zeros_like(M)  # [batch_size, num_c, hidden_dim]
-            delta_M[torch.arange(batch_size, device=device), curr_c_clamped] = delta
-
-            # Propagate delta to neighboring concepts using the normalized adjacency matrix
-            # M_{t+1} = M_t + delta_M + beta * A_norm * delta_M
-            # A_norm shape: [num_c, num_c], delta_M shape: [batch_size, num_c, hidden_dim]
-            propagation = torch.matmul(self.A_norm.unsqueeze(0), delta_M)  # [batch_size, num_c, hidden_dim]
+            # Propagate delta to neighboring concepts using the normalized adjacency matrix column slicing
+            A_col = self.A_norm[:, curr_c_clamped].t()  # [batch_size, num_c]
+            propagation = A_col.unsqueeze(-1) * delta.unsqueeze(1)  # [batch_size, num_c, hidden_dim]
 
             # Update the mastery states
-            M = M + delta_M + self.beta * propagation
+            M = M + self.beta * propagation
+            M = M.clone()
+            M[torch.arange(batch_size, device=device), curr_c_clamped] = M[torch.arange(batch_size, device=device), curr_c_clamped] + delta
 
         return probs

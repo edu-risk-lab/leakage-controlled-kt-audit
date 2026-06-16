@@ -968,8 +968,8 @@ def main() -> None:
                     model,
                     gc_name,
                 )
-                cache_res_path = cache_dir / f"{dataset}_fold_{fold}_{model}_{gc_name}_result.json"
-                cache_pred_path = cache_dir / f"{dataset}_fold_{fold}_{model}_{gc_name}_preds.csv"
+                cache_res_path = cache_dir / f"{dataset}_fold_{fold}_{model}_s{split_base_seed}_{gc_name}_result.json"
+                cache_pred_path = cache_dir / f"{dataset}_fold_{fold}_{model}_s{split_base_seed}_{gc_name}_preds.csv"
 
                 current_pred_cap = None if model in export_models else base_pred_cap
 
@@ -1009,8 +1009,8 @@ def main() -> None:
                 fold,
                 model,
             )
-            cache_res_path = cache_dir / f"{dataset}_fold_{fold}_{model}_train_only_result.json"
-            cache_pred_path = cache_dir / f"{dataset}_fold_{fold}_{model}_train_only_preds.csv"
+            cache_res_path = cache_dir / f"{dataset}_fold_{fold}_{model}_s{split_base_seed}_train_only_result.json"
+            cache_pred_path = cache_dir / f"{dataset}_fold_{fold}_{model}_s{split_base_seed}_train_only_preds.csv"
 
             current_pred_cap = None if model in export_models else base_pred_cap
             if cache_res_path.exists() and cache_pred_path.exists():
@@ -1070,8 +1070,8 @@ def main() -> None:
                     fold,
                     model,
                 )
-                cache_res_path = cache_dir / f"{dataset}_fold_{fold}_{model}_full_log_result.json"
-                cache_pred_path = cache_dir / f"{dataset}_fold_{fold}_{model}_full_log_preds.csv"
+                cache_res_path = cache_dir / f"{dataset}_fold_{fold}_{model}_s{split_base_seed}_full_log_result.json"
+                cache_pred_path = cache_dir / f"{dataset}_fold_{fold}_{model}_s{split_base_seed}_full_log_preds.csv"
 
                 if cache_res_path.exists() and cache_pred_path.exists():
                     logger.info("Loading cached result for fold=%s model=%s graph_construction=full_log", fold, model)

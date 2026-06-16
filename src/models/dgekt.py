@@ -131,11 +131,14 @@ class DGEKTPyTorch(nn.Module):
             updated_state = self.gkt_gru(interaction_t, state_graph_curr)
 
             delta = updated_state - state_graph_curr
-            delta_M = torch.zeros_like(M_graph)
-            delta_M[torch.arange(batch_size, device=device), curr_c_clamped] = delta
 
-            # Concept-concept graph propagation
-            propagation = torch.matmul(self.A_norm.unsqueeze(0), delta_M)
-            M_graph = M_graph + delta_M + self.beta * propagation
+            # Propagate delta to neighboring concepts using the normalized adjacency matrix column slicing
+            A_col = self.A_norm[:, curr_c_clamped].t()  # [batch_size, num_c]
+            propagation = A_col.unsqueeze(-1) * delta.unsqueeze(1)  # [batch_size, num_c, hidden_dim]
+
+            # Update the mastery states
+            M_graph = M_graph + self.beta * propagation
+            M_graph = M_graph.clone()
+            M_graph[torch.arange(batch_size, device=device), curr_c_clamped] = M_graph[torch.arange(batch_size, device=device), curr_c_clamped] + delta
 
         return probs

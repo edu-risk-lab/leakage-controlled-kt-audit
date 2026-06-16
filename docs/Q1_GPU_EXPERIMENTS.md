@@ -57,6 +57,9 @@ chmod +x scripts/run_q1_gpu_experiments.sh
 cat results/tables/q1_gkt_vs_simplekt.csv
 
 # Phase 2 — thêm 2 split seeds (chỉ GKT epochs30)
+# Quy trình thực thi đồng thời (Co-execution):
+# Lệnh này chạy song song seed 17 và 1234 trên GPU nhờ cơ chế Bash background.
+# File cache được phân tách bằng hậu tố seed (ví dụ: *_s17_*, *_s1234_*) để tránh xung đột.
 ./scripts/run_q1_gpu_experiments.sh phase2
 
 # Phase 3 — optional Q1: cả trio (simpleKT + GKT30 + GIKT) × 3 seeds
