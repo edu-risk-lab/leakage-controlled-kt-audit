@@ -63,13 +63,16 @@ def _write_tex(summary: pd.DataFrame, out_path: Path) -> None:
         r"Tag & Split base seed & Folds & $\Delta$AUC (GKT $-$ simpleKT) & Fold deltas \\",
         r"\midrule",
     ]
-    gkt = summary[summary["challenger"] == "gkt"]
-    for row in gkt.itertuples(index=False):
-        pm = f"${row.delta_mean:+.3f} \\pm {row.delta_std:.3f}$"
-        lines.append(
-            f"{row.experiment_tag} & {int(row.split_base_seed)} & {row.n_folds} & {pm} & "
-            f"\\texttt{{{row.delta_values}}} \\\\"
-        )
+    if not summary.empty and "challenger" in summary.columns:
+        gkt = summary[summary["challenger"] == "gkt"]
+        for row in gkt.itertuples(index=False):
+            pm = f"${row.delta_mean:+.3f} \\pm {row.delta_std:.3f}$"
+            lines.append(
+                f"{row.experiment_tag} & {int(row.split_base_seed)} & {row.n_folds} & {pm} & "
+                f"\\texttt{{{row.delta_values}}} \\\\"
+            )
+    else:
+        lines.append(r"% No paired comparison data available yet (e.g. simplekt not run).")
     lines.extend([r"\bottomrule", r"\end{tabular}", r"\end{table}", ""])
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text("\n".join(lines), encoding="utf-8")

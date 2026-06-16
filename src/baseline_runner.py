@@ -742,16 +742,20 @@ def _run_backend_fold(
             / f"fold_{fold}_seed_{split_seed}"
             / graph_construction
         )
-        work_dir = base / model
-        num_q, num_c = dataframe_to_pykt_csvs(
-            train_df=train,
-            valid_df=splits["valid"],
-            test_df=splits["test"],
-            q_map=q_map,
-            c_map=c_map,
-            out_dir=work_dir,
-            max_seq_len=max_seq_len,
-        )
+        work_dir = base
+        if not (work_dir / "train_valid_sequences.csv").exists():
+            num_q, num_c = dataframe_to_pykt_csvs(
+                train_df=train,
+                valid_df=splits["valid"],
+                test_df=splits["test"],
+                q_map=q_map,
+                c_map=c_map,
+                out_dir=work_dir,
+                max_seq_len=max_seq_len,
+            )
+        else:
+            num_q = max(q_map.values(), default=-1) + 1
+            num_c = max(c_map.values(), default=-1) + 1
 
         graph_npz_path: Path | None = None
         if pykt_name == "gkt":
