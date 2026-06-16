@@ -158,3 +158,15 @@
 [2026-06-16T14:12:44+07:00] === Summarize Q1 results ===
 [2026-06-16T14:12:45+07:00] Done. Inspect results/tables/q1_gkt_epochs30_ablation.tex
 [2026-06-16T14:12:45+07:00] === Finished phase: phase2 ===
+[2026-06-16T15:23:01+07:00] === Environment check ===
+[2026-06-16T15:23:09+07:00] Parquet OK
+[2026-06-16T15:23:09+07:00] === Graph builder (skip if exports exist) ===
+[2026-06-16T15:23:09+07:00] Fold exports present; skipping graph_builder
+[2026-06-16T15:23:09+07:00] Running Phase 3 sequentially (16GB VRAM — one seed at a time)...
+[2026-06-16T15:23:09+07:00] === Primary trio (GKT+simpleKT+GIKT 30ep) | split_base_seed=42 | tag=trio_matched_s42 ===
+[2026-06-16T15:24:32+07:00] === Environment check ===
+[2026-06-16T15:24:40+07:00] Parquet OK
+[2026-06-16T15:24:40+07:00] === Graph builder (skip if exports exist) ===
+[2026-06-16T15:24:40+07:00] Fold exports present; skipping graph_builder
+[2026-06-16T15:24:40+07:00] Running Phase 3 sequentially (16GB VRAM — one seed at a time)...
+[2026-06-16T15:24:40+07:00] === Primary trio (GKT+simpleKT+GIKT 30ep) | split_base_seed=42 | tag=trio_matched_s42 ===
