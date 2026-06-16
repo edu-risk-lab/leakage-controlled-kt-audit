@@ -43,17 +43,20 @@ python -c "import torch; print(torch.cuda.get_device_name(0), torch.cuda.get_dev
 | GKT **30ep** matched (seed 42) | ✅ hợp lệ | **0.837** | **−0.038** [−0.048, −0.027] | **Table S21** |
 | GKT 30ep (seed 17) | ⚠️ **confounded** | ~0.711 | — | **Không** — graph export vẫn seed 42 |
 | GKT 30ep (seed 1234) | ⚠️ **confounded** | ~0.710 | — | **Không** — cùng lý do |
-| Phase 3 `trio_matched_s*` | ❌ chưa có | — | — | Chưa chạy / chưa pull |
+| Phase 3 `trio_matched_s*` | ✅ đã pull (merged CSV) | simpleKT ~0.877, GIKT ~0.879 | GIKT +0.002…+0.003 vs simpleKT | Supplementary / báo cáo |
 
 **Kết luận (kịch bản B):** epoch matching thu hẹp gap **≈+0.003 AUC** (0.834 → 0.837); Δ GKT vs simpleKT còn **≈−0.038**. Ordering trio primary **giữ nguyên** → C5 vẫn là *benchmarking boundary*, không phải ranking reversal.
 
 Paper đã cập nhật: `paper/main_APIN.tex` (abstract, C5, §4.2, Discussion, Conclusion), `paper/supplementary.tex` (Table S21), `paper/cover_letter_APIN.md`.
 
-Regenerate bảng S21 trên máy local:
+Regenerate bảng:
 
 ```bash
-python scripts/generate_gkt_epoch_ablation.py
+python scripts/summarize_q1_phase3.py          # Phase 3 trio summary
+python scripts/generate_gkt_epoch_ablation.py  # Table S21 (seed 42)
 ```
+
+**Phase 3 (đã pull):** `simpleKT` + `GIKT` retrain (tag `trio_matched_s*`); `GKT` lấy từ Phase 1/2 (`gkt_epochs30_s*`, config tắt GKT trong trio). Xem `results/tables/q1_phase3_trio_summary.csv`.
 
 ---
 
@@ -166,7 +169,7 @@ results/q1/
   gkt_epochs30_s42/baseline_fold_results.csv   # Phase 1 ✅ (cần pull folder)
   gkt_epochs30_s17/...                         # ⚠️ cần chạy lại sau graph rebuild
   gkt_epochs30_s1234/...
-  trio_matched_s42/...                         # Phase 3 — chưa có
+  trio_matched_s42/...                         # Phase 3 — chỉ merged CSV trên git (folder gitignored)
 
 results/tables/
   q1_baseline_fold_results.csv                 # merged (có thể chứa s42 từ merge tay)
@@ -257,7 +260,8 @@ python scripts/generate_gkt_epoch_ablation.py
 - [ ] Phase 2: AUC GKT **~0.83+** (không ~0.71) sau graph rebuild
 - [ ] `results/tables/gkt_epoch_ablation.tex` / `gkt_epoch_ablation.csv` có dòng 30ep
 - [ ] `logs/q1/run.log` không có traceback
-- [ ] (Phase 3) đủ 3 tag `trio_matched_s*`
+- [x] Phase 3: `q1_baseline_fold_results.csv` có 18 dòng `trio_matched_s*` (simpleKT + GIKT × 3 seeds)
+- [ ] Phase 2 hợp lệ seed 17/1234: GKT mean AUC **~0.83+** (hiện ~0.71 — cần rerun với graph rebuild)
 
 Scp về local:
 
