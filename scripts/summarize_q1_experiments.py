@@ -45,7 +45,8 @@ def _paired_delta(df: pd.DataFrame, baseline: str, challenger: str) -> pd.DataFr
                 "delta_values": ";".join(f"{v:.6f}" for v in delta.dropna().tolist()),
             }
         )
-    return pd.DataFrame(rows)
+    cols = ["experiment_tag", "split_base_seed", "baseline", "challenger", "n_folds", "delta_mean", "delta_std", "delta_values"]
+    return pd.DataFrame(rows, columns=cols)
 
 
 def _write_tex(summary: pd.DataFrame, out_path: Path) -> None:

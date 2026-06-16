@@ -1,0 +1,211 @@
+INFO:src.io_utils:Loading YAML from configs\xes3g5m_gkt_epochs30.yaml
+INFO:src.io_utils:Loaded YAML keys: ['augmentation', 'baselines', 'cold_start', 'dataset', 'evaluation', 'graph', 'graph_ablation', 'has_dag', 'logging', 'processed_path', 'pykt', 'raw_format', 'raw_path', 'raw_sequence_files', 'schema_mapping', 'split']
+INFO:src.io_utils:Loading interactions from data\processed\xes3g5m.parquet
+INFO:src.io_utils:Loaded interactions shape=(6413353, 5)
+INFO:__main__:baseline_runner backend=pykt dataset=xes3g5m
+INFO:src.split_checker:Creating learner split shape=(6413353, 5) ratios=(0.7, 0.1, 0.2) seed=17
+INFO:src.split_checker:Created split sizes={'train': 4493771, 'valid': 633783, 'test': 1285799}
+INFO:src.cold_start_report:Binning KCs train_shape=(4493771, 7) bins=((-1, 19), (20, 99), (100, 499), (500, 10000000))
+INFO:src.cold_start_report:KC strata shape=(858, 3)
+INFO:__main__:Baseline progress [xes3g5m] 1/3 (~0%) fold=0 model=gkt graph_construction=train_only
+C:\TUAN\p0_project\.venv\Lib\site-packages\torch\nn\modules\module.py:1326: UserWarning: expandable_segments not supported on this platform (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\c10/cuda/CUDAAllocatorConfig.h:28.)
+  return t.to(
+INFO:src.pykt_engine:pyKT epoch 1 train_loss=0.48581 valid_auc=0.68702 valid_acc=0.80413
+INFO:src.pykt_engine:pyKT epoch 2 train_loss=0.46475 valid_auc=0.69367 valid_acc=0.80465
+INFO:src.pykt_engine:pyKT epoch 3 train_loss=0.46209 valid_auc=0.69740 valid_acc=0.80505
+INFO:src.pykt_engine:pyKT epoch 4 train_loss=0.46085 valid_auc=0.70016 valid_acc=0.80526
+INFO:src.pykt_engine:pyKT epoch 5 train_loss=0.45964 valid_auc=0.70110 valid_acc=0.80618
+INFO:src.pykt_engine:pyKT epoch 6 train_loss=0.45874 valid_auc=0.70067 valid_acc=0.80547
+INFO:src.pykt_engine:pyKT epoch 7 train_loss=0.45800 valid_auc=0.70230 valid_acc=0.80579
+INFO:src.pykt_engine:pyKT epoch 8 train_loss=0.45770 valid_auc=0.70384 valid_acc=0.80630
+INFO:src.pykt_engine:pyKT epoch 9 train_loss=0.45739 valid_auc=0.70464 valid_acc=0.80700
+INFO:src.pykt_engine:pyKT epoch 10 train_loss=0.45694 valid_auc=0.70502 valid_acc=0.80697
+INFO:src.pykt_engine:pyKT epoch 11 train_loss=0.45649 valid_auc=0.70518 valid_acc=0.80652
+INFO:src.pykt_engine:pyKT epoch 12 train_loss=0.45618 valid_auc=0.70560 valid_acc=0.80663
+INFO:src.pykt_engine:pyKT epoch 13 train_loss=0.45621 valid_auc=0.70624 valid_acc=0.80682
+INFO:src.pykt_engine:pyKT epoch 14 train_loss=0.45582 valid_auc=0.70664 valid_acc=0.80700
+INFO:src.pykt_engine:pyKT epoch 15 train_loss=0.45553 valid_auc=0.70730 valid_acc=0.80721
+INFO:src.pykt_engine:pyKT epoch 16 train_loss=0.45499 valid_auc=0.70630 valid_acc=0.80696
+INFO:src.pykt_engine:pyKT epoch 17 train_loss=0.45500 valid_auc=0.70792 valid_acc=0.80708
+INFO:src.pykt_engine:pyKT epoch 18 train_loss=0.45478 valid_auc=0.70782 valid_acc=0.80725
+INFO:src.pykt_engine:pyKT epoch 19 train_loss=0.45440 valid_auc=0.70819 valid_acc=0.80716
+INFO:src.pykt_engine:pyKT epoch 20 train_loss=0.45464 valid_auc=0.70891 valid_acc=0.80729
+INFO:src.pykt_engine:pyKT epoch 21 train_loss=0.45412 valid_auc=0.70845 valid_acc=0.80662
+INFO:src.pykt_engine:pyKT epoch 22 train_loss=0.45425 valid_auc=0.70858 valid_acc=0.80729
+INFO:src.pykt_engine:pyKT epoch 23 train_loss=0.45423 valid_auc=0.70958 valid_acc=0.80726
+INFO:src.pykt_engine:pyKT epoch 24 train_loss=0.45394 valid_auc=0.70953 valid_acc=0.80721
+INFO:src.pykt_engine:pyKT epoch 25 train_loss=0.45336 valid_auc=0.70925 valid_acc=0.80748
+INFO:src.pykt_engine:pyKT epoch 26 train_loss=0.45366 valid_auc=0.71016 valid_acc=0.80753
+INFO:src.pykt_engine:pyKT epoch 27 train_loss=0.45348 valid_auc=0.71009 valid_acc=0.80743
+INFO:src.pykt_engine:pyKT epoch 28 train_loss=0.45339 valid_auc=0.70981 valid_acc=0.80767
+INFO:src.pykt_engine:pyKT epoch 29 train_loss=0.45321 valid_auc=0.70988 valid_acc=0.80728
+INFO:src.pykt_engine:Saved PyKT checkpoint to results\pykt_work\xes3g5m\fold_0_seed_17\train_only\gkt\gkt_p0_protocol_best.ckpt
+INFO:src.split_checker:Creating learner split shape=(6413353, 5) ratios=(0.7, 0.1, 0.2) seed=18
+INFO:src.split_checker:Created split sizes={'train': 4496312, 'valid': 638541, 'test': 1278500}
+INFO:src.cold_start_report:Binning KCs train_shape=(4496312, 7) bins=((-1, 19), (20, 99), (100, 499), (500, 10000000))
+INFO:src.cold_start_report:KC strata shape=(854, 3)
+INFO:__main__:Baseline progress [xes3g5m] 2/3 (~33%) fold=1 model=gkt graph_construction=train_only
+INFO:src.pykt_engine:pyKT epoch 1 train_loss=0.48386 valid_auc=0.67732 valid_acc=0.79929
+INFO:src.pykt_engine:pyKT epoch 2 train_loss=0.46387 valid_auc=0.69563 valid_acc=0.80164
+INFO:src.pykt_engine:pyKT epoch 3 train_loss=0.46108 valid_auc=0.69938 valid_acc=0.80188
+INFO:src.pykt_engine:pyKT epoch 4 train_loss=0.45976 valid_auc=0.70019 valid_acc=0.80162
+INFO:src.pykt_engine:pyKT epoch 5 train_loss=0.45849 valid_auc=0.70154 valid_acc=0.80205
+INFO:src.pykt_engine:pyKT epoch 6 train_loss=0.45803 valid_auc=0.70266 valid_acc=0.80211
+INFO:src.pykt_engine:pyKT epoch 7 train_loss=0.45708 valid_auc=0.70320 valid_acc=0.80221
+INFO:src.pykt_engine:pyKT epoch 8 train_loss=0.45671 valid_auc=0.70486 valid_acc=0.80223
+INFO:src.pykt_engine:pyKT epoch 9 train_loss=0.45630 valid_auc=0.70538 valid_acc=0.80151
+INFO:src.pykt_engine:pyKT epoch 10 train_loss=0.45595 valid_auc=0.70585 valid_acc=0.80140
+INFO:src.pykt_engine:pyKT epoch 11 train_loss=0.45578 valid_auc=0.70632 valid_acc=0.80212
+Traceback (most recent call last):
+  File "C:\TUAN\p0_project\.venv\Lib\site-packages\torch\utils\data\dataloader.py", line 1243, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ADMIN\AppData\Local\Programs\Python\Python311\Lib\queue.py", line 179, in get
+    raise Empty
+_queue.Empty
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\TUAN\p0_project\src\baseline_runner.py", line 1146, in <module>
+    main()
+  File "C:\TUAN\p0_project\src\baseline_runner.py", line 1022, in main
+    result, predictions = _run_backend_fold(
+                          ^^^^^^^^^^^^^^^^^^
+  File "C:\TUAN\p0_project\src\baseline_runner.py", line 765, in _run_backend_fold
+    auc, acc, nll, note, ts_eval, ps_eval, us_eval = run_pykt_fold(
+                                                     ^^^^^^^^^^^^^^
+  File "C:\TUAN\p0_project\src\pykt_engine.py", line 421, in run_pykt_fold
+    logger.info(f"Loading existing checkpoint {ckpt_path}")
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\TUAN\p0_project\src\pykt_engine.py", line 205, in _train_loop
+    for ep in range(1, epochs + 1):
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\TUAN\p0_project\.venv\Lib\site-packages\torch\utils\data\dataloader.py", line 701, in __next__
+    data = self._next_data()
+           ^^^^^^^^^^^^^^^^^
+  File "C:\TUAN\p0_project\.venv\Lib\site-packages\torch\utils\data\dataloader.py", line 1448, in _next_data
+    idx, data = self._get_data()
+                ^^^^^^^^^^^^^^^^
+  File "C:\TUAN\p0_project\.venv\Lib\site-packages\torch\utils\data\dataloader.py", line 1402, in _get_data
+    success, data = self._try_get_data()
+                    ^^^^^^^^^^^^^^^^^^^^
+  File "C:\TUAN\p0_project\.venv\Lib\site-packages\torch\utils\data\dataloader.py", line 1256, in _try_get_data
+    raise RuntimeError(
+RuntimeError: DataLoader worker (pid(s) 5548, 8140) exited unexpectedly
+Start preprocessing results\pykt_work\xes3g5m\fold_0_seed_17\train_only\gkt\train_valid_sequences.csv fold: _0...
+interaction_num: 1264600
+file path: results\pykt_work\xes3g5m\fold_0_seed_17\train_only\gkt\train_valid_sequences.csv, qlen: 12646, clen: 12646, rlen: 12646
+Start preprocessing results\pykt_work\xes3g5m\fold_0_seed_17\train_only\gkt\train_valid_sequences.csv fold: _1...
+interaction_num: 180600
+file path: results\pykt_work\xes3g5m\fold_0_seed_17\train_only\gkt\train_valid_sequences.csv, qlen: 1806, clen: 1806, rlen: 1806
+Start preprocessing results\pykt_work\xes3g5m\fold_0_seed_17\train_only\gkt\test_sequences.csv fold: _-1...
+interaction_num: 361400
+file path: results\pykt_work\xes3g5m\fold_0_seed_17\train_only\gkt\test_sequences.csv, qlen: 3614, clen: 3614, rlen: 3614
+Start preprocessing results\pykt_work\xes3g5m\fold_1_seed_18\train_only\gkt\train_valid_sequences.csv fold: _0...
+interaction_num: 1264600
+file path: results\pykt_work\xes3g5m\fold_1_seed_18\train_only\gkt\train_valid_sequences.csv, qlen: 12646, clen: 12646, rlen: 12646
+Start preprocessing results\pykt_work\xes3g5m\fold_1_seed_18\train_only\gkt\train_valid_sequences.csv fold: _1...
+interaction_num: 180600
+file path: results\pykt_work\xes3g5m\fold_1_seed_18\train_only\gkt\train_valid_sequences.csv, qlen: 1806, clen: 1806, rlen: 1806
+Start preprocessing results\pykt_work\xes3g5m\fold_1_seed_18\train_only\gkt\test_sequences.csv fold: _-1...
+interaction_num: 361400
+file path: results\pykt_work\xes3g5m\fold_1_seed_18\train_only\gkt\test_sequences.csv, qlen: 3614, clen: 3614, rlen: 3614
+INFO:src.io_utils:Loading YAML from configs\xes3g5m_gkt_epochs30.yaml
+INFO:src.io_utils:Loaded YAML keys: ['augmentation', 'baselines', 'cold_start', 'dataset', 'evaluation', 'graph', 'graph_ablation', 'has_dag', 'logging', 'processed_path', 'pykt', 'raw_format', 'raw_path', 'raw_sequence_files', 'schema_mapping', 'split']
+INFO:src.io_utils:Loading interactions from data\processed\xes3g5m.parquet
+INFO:src.io_utils:Loaded interactions shape=(6413353, 5)
+INFO:__main__:baseline_runner backend=pykt dataset=xes3g5m
+INFO:src.split_checker:Creating learner split shape=(6413353, 5) ratios=(0.7, 0.1, 0.2) seed=17
+INFO:src.split_checker:Created split sizes={'train': 4493771, 'valid': 633783, 'test': 1285799}
+INFO:src.cold_start_report:Binning KCs train_shape=(4493771, 7) bins=((-1, 19), (20, 99), (100, 499), (500, 10000000))
+INFO:src.cold_start_report:KC strata shape=(858, 3)
+INFO:__main__:Baseline progress [xes3g5m] 1/3 (~0%) fold=0 model=gkt graph_construction=train_only
+INFO:__main__:Loading cached result for fold=0 model=gkt graph_construction=train_only
+INFO:src.split_checker:Creating learner split shape=(6413353, 5) ratios=(0.7, 0.1, 0.2) seed=18
+INFO:src.split_checker:Created split sizes={'train': 4496312, 'valid': 638541, 'test': 1278500}
+INFO:src.cold_start_report:Binning KCs train_shape=(4496312, 7) bins=((-1, 19), (20, 99), (100, 499), (500, 10000000))
+INFO:src.cold_start_report:KC strata shape=(854, 3)
+INFO:__main__:Baseline progress [xes3g5m] 2/3 (~33%) fold=1 model=gkt graph_construction=train_only
+C:\TUAN\p0_project\.venv\Lib\site-packages\torch\nn\modules\module.py:1326: UserWarning: expandable_segments not supported on this platform (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\builder\windows\pytorch\c10/cuda/CUDAAllocatorConfig.h:28.)
+  return t.to(
+INFO:src.pykt_engine:pyKT epoch 1 train_loss=0.48386 valid_auc=0.67732 valid_acc=0.79929
+INFO:src.pykt_engine:pyKT epoch 2 train_loss=0.46387 valid_auc=0.69563 valid_acc=0.80164
+INFO:src.pykt_engine:pyKT epoch 3 train_loss=0.46108 valid_auc=0.69938 valid_acc=0.80188
+INFO:src.pykt_engine:pyKT epoch 4 train_loss=0.45976 valid_auc=0.70019 valid_acc=0.80162
+INFO:src.pykt_engine:pyKT epoch 5 train_loss=0.45849 valid_auc=0.70154 valid_acc=0.80205
+INFO:src.pykt_engine:pyKT epoch 6 train_loss=0.45803 valid_auc=0.70266 valid_acc=0.80211
+INFO:src.pykt_engine:pyKT epoch 7 train_loss=0.45708 valid_auc=0.70320 valid_acc=0.80221
+INFO:src.pykt_engine:pyKT epoch 8 train_loss=0.45671 valid_auc=0.70486 valid_acc=0.80223
+INFO:src.pykt_engine:pyKT epoch 9 train_loss=0.45630 valid_auc=0.70538 valid_acc=0.80151
+INFO:src.pykt_engine:pyKT epoch 10 train_loss=0.45595 valid_auc=0.70585 valid_acc=0.80140
+INFO:src.pykt_engine:pyKT epoch 11 train_loss=0.45578 valid_auc=0.70632 valid_acc=0.80212
+INFO:src.pykt_engine:pyKT epoch 12 train_loss=0.45528 valid_auc=0.70695 valid_acc=0.80210
+INFO:src.pykt_engine:pyKT epoch 13 train_loss=0.45512 valid_auc=0.70724 valid_acc=0.80260
+INFO:src.pykt_engine:pyKT epoch 14 train_loss=0.45483 valid_auc=0.70702 valid_acc=0.80258
+INFO:src.pykt_engine:pyKT epoch 15 train_loss=0.45460 valid_auc=0.70833 valid_acc=0.80259
+INFO:src.pykt_engine:pyKT epoch 16 train_loss=0.45426 valid_auc=0.70852 valid_acc=0.80253
+INFO:src.pykt_engine:pyKT epoch 17 train_loss=0.45422 valid_auc=0.70824 valid_acc=0.80198
+INFO:src.pykt_engine:pyKT epoch 18 train_loss=0.45406 valid_auc=0.70900 valid_acc=0.80237
+INFO:src.pykt_engine:pyKT epoch 19 train_loss=0.45364 valid_auc=0.70938 valid_acc=0.80280
+INFO:src.pykt_engine:pyKT epoch 20 train_loss=0.45365 valid_auc=0.71011 valid_acc=0.80280
+INFO:src.pykt_engine:pyKT epoch 21 train_loss=0.45327 valid_auc=0.70982 valid_acc=0.80247
+INFO:src.pykt_engine:pyKT epoch 22 train_loss=0.45327 valid_auc=0.70946 valid_acc=0.80266
+INFO:src.pykt_engine:pyKT epoch 23 train_loss=0.45311 valid_auc=0.71054 valid_acc=0.80290
+INFO:src.pykt_engine:pyKT epoch 24 train_loss=0.45339 valid_auc=0.70999 valid_acc=0.80268
+INFO:src.pykt_engine:pyKT epoch 25 train_loss=0.45280 valid_auc=0.71101 valid_acc=0.80301
+INFO:src.pykt_engine:pyKT epoch 26 train_loss=0.45276 valid_auc=0.71053 valid_acc=0.80288
+INFO:src.pykt_engine:pyKT epoch 27 train_loss=0.45261 valid_auc=0.71130 valid_acc=0.80301
+INFO:src.pykt_engine:pyKT epoch 28 train_loss=0.45221 valid_auc=0.71156 valid_acc=0.80283
+INFO:src.pykt_engine:pyKT epoch 29 train_loss=0.45227 valid_auc=0.71189 valid_acc=0.80285
+INFO:src.pykt_engine:pyKT epoch 30 train_loss=0.45209 valid_auc=0.71158 valid_acc=0.80273
+INFO:src.pykt_engine:Saved PyKT checkpoint to results\pykt_work\xes3g5m\fold_1_seed_18\train_only\gkt\gkt_p0_protocol_best.ckpt
+INFO:src.split_checker:Creating learner split shape=(6413353, 5) ratios=(0.7, 0.1, 0.2) seed=19
+INFO:src.split_checker:Created split sizes={'train': 4489969, 'valid': 635986, 'test': 1287398}
+INFO:src.cold_start_report:Binning KCs train_shape=(4489969, 7) bins=((-1, 19), (20, 99), (100, 499), (500, 10000000))
+INFO:src.cold_start_report:KC strata shape=(863, 3)
+INFO:__main__:Baseline progress [xes3g5m] 3/3 (~67%) fold=2 model=gkt graph_construction=train_only
+INFO:src.pykt_engine:pyKT epoch 1 train_loss=0.48607 valid_auc=0.68937 valid_acc=0.80454
+INFO:src.pykt_engine:pyKT epoch 2 train_loss=0.46487 valid_auc=0.69613 valid_acc=0.80582
+INFO:src.pykt_engine:pyKT epoch 3 train_loss=0.46237 valid_auc=0.69988 valid_acc=0.80571
+INFO:src.pykt_engine:pyKT epoch 4 train_loss=0.46065 valid_auc=0.70230 valid_acc=0.80546
+INFO:src.pykt_engine:pyKT epoch 5 train_loss=0.45969 valid_auc=0.70352 valid_acc=0.80578
+INFO:src.pykt_engine:pyKT epoch 6 train_loss=0.45871 valid_auc=0.70479 valid_acc=0.80608
+INFO:src.pykt_engine:pyKT epoch 7 train_loss=0.45819 valid_auc=0.70570 valid_acc=0.80658
+INFO:src.pykt_engine:pyKT epoch 8 train_loss=0.45723 valid_auc=0.70583 valid_acc=0.80668
+INFO:src.pykt_engine:pyKT epoch 9 train_loss=0.45716 valid_auc=0.70728 valid_acc=0.80686
+INFO:src.pykt_engine:pyKT epoch 10 train_loss=0.45669 valid_auc=0.70757 valid_acc=0.80687
+INFO:src.pykt_engine:pyKT epoch 11 train_loss=0.45653 valid_auc=0.70759 valid_acc=0.80673
+INFO:src.pykt_engine:pyKT epoch 12 train_loss=0.45582 valid_auc=0.70855 valid_acc=0.80685
+INFO:src.pykt_engine:pyKT epoch 13 train_loss=0.45612 valid_auc=0.70876 valid_acc=0.80694
+INFO:src.pykt_engine:pyKT epoch 14 train_loss=0.45545 valid_auc=0.70920 valid_acc=0.80681
+INFO:src.pykt_engine:pyKT epoch 15 train_loss=0.45518 valid_auc=0.70982 valid_acc=0.80695
+INFO:src.pykt_engine:pyKT epoch 16 train_loss=0.45481 valid_auc=0.70973 valid_acc=0.80697
+INFO:src.pykt_engine:pyKT epoch 17 train_loss=0.45483 valid_auc=0.70935 valid_acc=0.80726
+INFO:src.pykt_engine:pyKT epoch 18 train_loss=0.45468 valid_auc=0.70985 valid_acc=0.80703
+INFO:src.pykt_engine:Saved PyKT checkpoint to results\pykt_work\xes3g5m\fold_2_seed_19\train_only\gkt\gkt_p0_protocol_best.ckpt
+INFO:src.io_utils:Writing CSV shape=(3, 14) to results\q1\gkt_epochs30_s17\baseline_fold_results.csv
+INFO:src.io_utils:Wrote CSV to results\q1\gkt_epochs30_s17\baseline_fold_results.csv
+INFO:src.io_utils:Writing CSV shape=(1, 17) to results\q1\gkt_epochs30_s17\baseline_results.csv
+INFO:src.io_utils:Wrote CSV to results\q1\gkt_epochs30_s17\baseline_results.csv
+INFO:__main__:Wrote isolated Q1 results to results\q1\gkt_epochs30_s17
+Start preprocessing results\pykt_work\xes3g5m\fold_1_seed_18\train_only\gkt\train_valid_sequences.csv fold: _0...
+interaction_num: 1264600
+file path: results\pykt_work\xes3g5m\fold_1_seed_18\train_only\gkt\train_valid_sequences.csv, qlen: 12646, clen: 12646, rlen: 12646
+Start preprocessing results\pykt_work\xes3g5m\fold_1_seed_18\train_only\gkt\train_valid_sequences.csv fold: _1...
+interaction_num: 180600
+file path: results\pykt_work\xes3g5m\fold_1_seed_18\train_only\gkt\train_valid_sequences.csv, qlen: 1806, clen: 1806, rlen: 1806
+Start preprocessing results\pykt_work\xes3g5m\fold_1_seed_18\train_only\gkt\test_sequences.csv fold: _-1...
+interaction_num: 361400
+file path: results\pykt_work\xes3g5m\fold_1_seed_18\train_only\gkt\test_sequences.csv, qlen: 3614, clen: 3614, rlen: 3614
+Start preprocessing results\pykt_work\xes3g5m\fold_2_seed_19\train_only\gkt\train_valid_sequences.csv fold: _0...
+interaction_num: 1264600
+file path: results\pykt_work\xes3g5m\fold_2_seed_19\train_only\gkt\train_valid_sequences.csv, qlen: 12646, clen: 12646, rlen: 12646
+Start preprocessing results\pykt_work\xes3g5m\fold_2_seed_19\train_only\gkt\train_valid_sequences.csv fold: _1...
+interaction_num: 180600
+file path: results\pykt_work\xes3g5m\fold_2_seed_19\train_only\gkt\train_valid_sequences.csv, qlen: 1806, clen: 1806, rlen: 1806
+Start preprocessing results\pykt_work\xes3g5m\fold_2_seed_19\train_only\gkt\test_sequences.csv fold: _-1...
+interaction_num: 361400
+file path: results\pykt_work\xes3g5m\fold_2_seed_19\train_only\gkt\test_sequences.csv, qlen: 3614, clen: 3614, rlen: 3614

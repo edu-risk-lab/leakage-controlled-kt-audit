@@ -39,8 +39,10 @@ baselines:
   - name: gkt
     enabled: true
     hyperparams:
-      batch_size: 64
+      batch_size: 32
       epochs: 30
+      hidden_dim: 64
+      emb_size: 64
 logging:
   level: INFO
   experiment_log: logs/experiment_log.csv
@@ -48,8 +50,8 @@ logging:
 evaluation:
   baseline_backend: pykt
 pykt:
-  max_seq_len: 200
+  max_seq_len: 100
   gkt_graph_tag: p0_protocol
   epochs: 30
-  batch_size: 64
+  batch_size: 32
   lr: 0.001

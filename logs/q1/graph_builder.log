@@ -1,0 +1,134 @@
+INFO:src.io_utils:Loading YAML from configs\xes3g5m.yaml
+INFO:src.io_utils:Loaded YAML keys: ['augmentation', 'baselines', 'cold_start', 'dataset', 'evaluation', 'graph', 'graph_ablation', 'has_dag', 'logging', 'processed_path', 'pykt', 'raw_format', 'raw_path', 'raw_sequence_files', 'schema_mapping', 'split']
+INFO:src.io_utils:Loading interactions from data\processed\xes3g5m.parquet
+INFO:src.io_utils:Loaded interactions shape=(200, 5)
+INFO:src.split_checker:Creating learner split shape=(200, 5) ratios=(0.7, 0.1, 0.2) seed=42
+INFO:src.split_checker:Created split sizes={'train': 141, 'valid': 23, 'test': 36}
+INFO:__main__:Building Q-matrix from train shape=(141, 7)
+INFO:__main__:Building Q-matrix from interactions shape=(141, 7)
+INFO:__main__:Built Q-matrix shape=(133, 2)
+INFO:__main__:Inferring prerequisite edges train_shape=(141, 7) q_shape=(133, 2)
+INFO:__main__:Inferring prerequisite edges interactions_shape=(141, 7) q_shape=(133, 2) source=train_temporal_precedence
+INFO:__main__:Inferred prerequisite edges shape=(4, 4) min_support=2
+INFO:__main__:Inferring similarity edges train_shape=(141, 7) q_shape=(133, 2) method=jaccard threshold=0.1
+INFO:__main__:Inferring similarity edges q_shape=(133, 2) method=jaccard threshold=0.1 source_prefix=train
+INFO:__main__:Inferred similarity edges shape=(310, 4)
+INFO:src.io_utils:Writing CSV shape=(4, 4) to data\processed\xes3g5m\fold_0\e_pre_train_only.csv
+INFO:src.io_utils:Wrote CSV to data\processed\xes3g5m\fold_0\e_pre_train_only.csv
+INFO:src.io_utils:Writing CSV shape=(310, 4) to data\processed\xes3g5m\fold_0\e_sim_train_only.csv
+INFO:src.io_utils:Wrote CSV to data\processed\xes3g5m\fold_0\e_sim_train_only.csv
+INFO:src.io_utils:Writing CSV shape=(4, 4) to data\processed\xes3g5m\fold_0\edges_train_only.csv
+INFO:src.io_utils:Wrote CSV to data\processed\xes3g5m\fold_0\edges_train_only.csv
+INFO:__main__:Appended 4 audit rows for xes3g5m/E_pre
+INFO:__main__:Appended 310 audit rows for xes3g5m/E_sim
+INFO:src.leakage_metrics:Leakage metrics dataset=xes3g5m fold=0 ECR_flag=0.0 ECR_overlap=0.076433 EOC=1.422905 TBVR=0.044444
+INFO:src.split_checker:Creating learner split shape=(200, 5) ratios=(0.7, 0.1, 0.2) seed=43
+INFO:src.split_checker:Created split sizes={'train': 126, 'valid': 21, 'test': 53}
+INFO:__main__:Building Q-matrix from train shape=(126, 7)
+INFO:__main__:Building Q-matrix from interactions shape=(126, 7)
+INFO:__main__:Built Q-matrix shape=(122, 2)
+INFO:__main__:Inferring prerequisite edges train_shape=(126, 7) q_shape=(122, 2)
+INFO:__main__:Inferring prerequisite edges interactions_shape=(126, 7) q_shape=(122, 2) source=train_temporal_precedence
+INFO:__main__:Inferred prerequisite edges shape=(3, 4) min_support=2
+INFO:__main__:Inferring similarity edges train_shape=(126, 7) q_shape=(122, 2) method=jaccard threshold=0.1
+INFO:__main__:Inferring similarity edges q_shape=(122, 2) method=jaccard threshold=0.1 source_prefix=train
+INFO:__main__:Inferred similarity edges shape=(228, 4)
+INFO:src.io_utils:Writing CSV shape=(3, 4) to data\processed\xes3g5m\fold_1\e_pre_train_only.csv
+INFO:src.io_utils:Wrote CSV to data\processed\xes3g5m\fold_1\e_pre_train_only.csv
+INFO:src.io_utils:Writing CSV shape=(228, 4) to data\processed\xes3g5m\fold_1\e_sim_train_only.csv
+INFO:src.io_utils:Wrote CSV to data\processed\xes3g5m\fold_1\e_sim_train_only.csv
+INFO:src.io_utils:Writing CSV shape=(3, 4) to data\processed\xes3g5m\fold_1\edges_train_only.csv
+INFO:src.io_utils:Wrote CSV to data\processed\xes3g5m\fold_1\edges_train_only.csv
+INFO:__main__:Appended 3 audit rows for xes3g5m/E_pre
+INFO:__main__:Appended 228 audit rows for xes3g5m/E_sim
+INFO:src.leakage_metrics:Leakage metrics dataset=xes3g5m fold=1 ECR_flag=0.0 ECR_overlap=0.025974 EOC=1.414214 TBVR=0.100000
+INFO:src.split_checker:Creating learner split shape=(200, 5) ratios=(0.7, 0.1, 0.2) seed=44
+INFO:src.split_checker:Created split sizes={'train': 132, 'valid': 21, 'test': 47}
+INFO:__main__:Building Q-matrix from train shape=(132, 7)
+INFO:__main__:Building Q-matrix from interactions shape=(132, 7)
+INFO:__main__:Built Q-matrix shape=(122, 2)
+INFO:__main__:Inferring prerequisite edges train_shape=(132, 7) q_shape=(122, 2)
+INFO:__main__:Inferring prerequisite edges interactions_shape=(132, 7) q_shape=(122, 2) source=train_temporal_precedence
+INFO:__main__:Inferred prerequisite edges shape=(3, 4) min_support=2
+INFO:__main__:Inferring similarity edges train_shape=(132, 7) q_shape=(122, 2) method=jaccard threshold=0.1
+INFO:__main__:Inferring similarity edges q_shape=(122, 2) method=jaccard threshold=0.1 source_prefix=train
+INFO:__main__:Inferred similarity edges shape=(250, 4)
+INFO:src.io_utils:Writing CSV shape=(3, 4) to data\processed\xes3g5m\fold_2\e_pre_train_only.csv
+INFO:src.io_utils:Wrote CSV to data\processed\xes3g5m\fold_2\e_pre_train_only.csv
+INFO:src.io_utils:Writing CSV shape=(250, 4) to data\processed\xes3g5m\fold_2\e_sim_train_only.csv
+INFO:src.io_utils:Wrote CSV to data\processed\xes3g5m\fold_2\e_sim_train_only.csv
+INFO:src.io_utils:Writing CSV shape=(3, 4) to data\processed\xes3g5m\fold_2\edges_train_only.csv
+INFO:src.io_utils:Wrote CSV to data\processed\xes3g5m\fold_2\edges_train_only.csv
+INFO:__main__:Appended 3 audit rows for xes3g5m/E_pre
+INFO:__main__:Appended 250 audit rows for xes3g5m/E_sim
+INFO:src.leakage_metrics:Leakage metrics dataset=xes3g5m fold=2 ECR_flag=0.0 ECR_overlap=0.055336 EOC=1.417735 TBVR=0.048780
+INFO:src.io_utils:Writing CSV shape=(15, 6) to results\tables\graph_stats.csv
+INFO:src.io_utils:Wrote CSV to results\tables\graph_stats.csv
+INFO:__main__:Graph build report written
+INFO:src.io_utils:Loading YAML from configs\xes3g5m.yaml
+INFO:src.io_utils:Loaded YAML keys: ['augmentation', 'baselines', 'cold_start', 'dataset', 'evaluation', 'graph', 'graph_ablation', 'has_dag', 'logging', 'processed_path', 'pykt', 'raw_format', 'raw_path', 'raw_sequence_files', 'schema_mapping', 'split']
+INFO:src.io_utils:Loading interactions from data\processed\xes3g5m.parquet
+INFO:src.io_utils:Loaded interactions shape=(6413353, 5)
+INFO:src.split_checker:Creating learner split shape=(6413353, 5) ratios=(0.7, 0.1, 0.2) seed=42
+INFO:src.split_checker:Created split sizes={'train': 4490513, 'valid': 640917, 'test': 1281923}
+INFO:__main__:Building Q-matrix from train shape=(4490513, 7)
+INFO:__main__:Building Q-matrix from interactions shape=(4490513, 7)
+INFO:__main__:Built Q-matrix shape=(8848, 2)
+INFO:__main__:Inferring prerequisite edges train_shape=(4490513, 7) q_shape=(8848, 2)
+INFO:__main__:Inferring prerequisite edges interactions_shape=(4490513, 7) q_shape=(8848, 2) source=train_temporal_precedence
+INFO:__main__:Inferred prerequisite edges shape=(1404, 4) min_support=315
+INFO:__main__:Inferring similarity edges train_shape=(4490513, 7) q_shape=(8848, 2) method=jaccard threshold=0.1
+INFO:__main__:Inferring similarity edges q_shape=(8848, 2) method=jaccard threshold=0.1 source_prefix=train
+INFO:__main__:Inferred similarity edges shape=(354, 4)
+INFO:src.io_utils:Writing CSV shape=(1404, 4) to data\processed\xes3g5m\fold_0\e_pre_train_only.csv
+INFO:src.io_utils:Wrote CSV to data\processed\xes3g5m\fold_0\e_pre_train_only.csv
+INFO:src.io_utils:Writing CSV shape=(354, 4) to data\processed\xes3g5m\fold_0\e_sim_train_only.csv
+INFO:src.io_utils:Wrote CSV to data\processed\xes3g5m\fold_0\e_sim_train_only.csv
+INFO:src.io_utils:Writing CSV shape=(1404, 4) to data\processed\xes3g5m\fold_0\edges_train_only.csv
+INFO:src.io_utils:Wrote CSV to data\processed\xes3g5m\fold_0\edges_train_only.csv
+INFO:__main__:Appended 1404 audit rows for xes3g5m/E_pre
+INFO:__main__:Appended 354 audit rows for xes3g5m/E_sim
+INFO:src.leakage_metrics:Leakage metrics dataset=xes3g5m fold=0 ECR_flag=0.0 ECR_overlap=0.448805 EOC=1.418362 TBVR=0.000000
+INFO:src.split_checker:Creating learner split shape=(6413353, 5) ratios=(0.7, 0.1, 0.2) seed=43
+INFO:src.split_checker:Created split sizes={'train': 4490412, 'valid': 641760, 'test': 1281181}
+INFO:__main__:Building Q-matrix from train shape=(4490412, 7)
+INFO:__main__:Building Q-matrix from interactions shape=(4490412, 7)
+INFO:__main__:Built Q-matrix shape=(8757, 2)
+INFO:__main__:Inferring prerequisite edges train_shape=(4490412, 7) q_shape=(8757, 2)
+INFO:__main__:Inferring prerequisite edges interactions_shape=(4490412, 7) q_shape=(8757, 2) source=train_temporal_precedence
+INFO:__main__:Inferred prerequisite edges shape=(1397, 4) min_support=318
+INFO:__main__:Inferring similarity edges train_shape=(4490412, 7) q_shape=(8757, 2) method=jaccard threshold=0.1
+INFO:__main__:Inferring similarity edges q_shape=(8757, 2) method=jaccard threshold=0.1 source_prefix=train
+INFO:__main__:Inferred similarity edges shape=(360, 4)
+INFO:src.io_utils:Writing CSV shape=(1397, 4) to data\processed\xes3g5m\fold_1\e_pre_train_only.csv
+INFO:src.io_utils:Wrote CSV to data\processed\xes3g5m\fold_1\e_pre_train_only.csv
+INFO:src.io_utils:Writing CSV shape=(360, 4) to data\processed\xes3g5m\fold_1\e_sim_train_only.csv
+INFO:src.io_utils:Wrote CSV to data\processed\xes3g5m\fold_1\e_sim_train_only.csv
+INFO:src.io_utils:Writing CSV shape=(1397, 4) to data\processed\xes3g5m\fold_1\edges_train_only.csv
+INFO:src.io_utils:Wrote CSV to data\processed\xes3g5m\fold_1\edges_train_only.csv
+INFO:__main__:Appended 1397 audit rows for xes3g5m/E_pre
+INFO:__main__:Appended 360 audit rows for xes3g5m/E_sim
+INFO:src.leakage_metrics:Leakage metrics dataset=xes3g5m fold=1 ECR_flag=0.0 ECR_overlap=0.451338 EOC=1.419899 TBVR=0.000000
+INFO:src.split_checker:Creating learner split shape=(6413353, 5) ratios=(0.7, 0.1, 0.2) seed=44
+INFO:src.split_checker:Created split sizes={'train': 4493120, 'valid': 640606, 'test': 1279627}
+INFO:__main__:Building Q-matrix from train shape=(4493120, 7)
+INFO:__main__:Building Q-matrix from interactions shape=(4493120, 7)
+INFO:__main__:Built Q-matrix shape=(8823, 2)
+INFO:__main__:Inferring prerequisite edges train_shape=(4493120, 7) q_shape=(8823, 2)
+INFO:__main__:Inferring prerequisite edges interactions_shape=(4493120, 7) q_shape=(8823, 2) source=train_temporal_precedence
+INFO:__main__:Inferred prerequisite edges shape=(1408, 4) min_support=317
+INFO:__main__:Inferring similarity edges train_shape=(4493120, 7) q_shape=(8823, 2) method=jaccard threshold=0.1
+INFO:__main__:Inferring similarity edges q_shape=(8823, 2) method=jaccard threshold=0.1 source_prefix=train
+INFO:__main__:Inferred similarity edges shape=(358, 4)
+INFO:src.io_utils:Writing CSV shape=(1408, 4) to data\processed\xes3g5m\fold_2\e_pre_train_only.csv
+INFO:src.io_utils:Wrote CSV to data\processed\xes3g5m\fold_2\e_pre_train_only.csv
+INFO:src.io_utils:Writing CSV shape=(358, 4) to data\processed\xes3g5m\fold_2\e_sim_train_only.csv
+INFO:src.io_utils:Wrote CSV to data\processed\xes3g5m\fold_2\e_sim_train_only.csv
+INFO:src.io_utils:Writing CSV shape=(1408, 4) to data\processed\xes3g5m\fold_2\edges_train_only.csv
+INFO:src.io_utils:Wrote CSV to data\processed\xes3g5m\fold_2\edges_train_only.csv
+INFO:__main__:Appended 1408 audit rows for xes3g5m/E_pre
+INFO:__main__:Appended 358 audit rows for xes3g5m/E_sim
+INFO:src.leakage_metrics:Leakage metrics dataset=xes3g5m fold=2 ECR_flag=0.0 ECR_overlap=0.443941 EOC=1.421124 TBVR=0.000000
+INFO:src.io_utils:Writing CSV shape=(15, 6) to results\tables\graph_stats.csv
+INFO:src.io_utils:Wrote CSV to results\tables\graph_stats.csv
+INFO:__main__:Graph build report written

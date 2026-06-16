@@ -42,6 +42,10 @@ class DyGKTPyTorch(nn.Module):
         row_norm = torch.clamp(row_sums, min=1.0)
         self.register_buffer("A_norm", self.A / row_norm)
 
+        # Precompute the propagation matrix W = I + gamma * A_norm
+        W_matrix = torch.eye(num_c).float() + gamma * (self.A / row_norm)
+        self.register_buffer("W", W_matrix)
+
         # Predictor mapping joint student-concept state to correctness probability
         self.fc_out = nn.Sequential(
             nn.Linear(hidden_dim * 2, hidden_dim),
@@ -122,9 +126,7 @@ class DyGKTPyTorch(nn.Module):
             C[torch.arange(batch_size, device=device), curr_c_clamped] = updated_c_state
 
             # 3. Dynamic Graph Convolution Propagation
-            # Aggregate neighbors' states on the concept graph
-            # A_norm shape: [num_c, num_c], C shape: [batch_size, num_c, hidden_dim]
-            neighbor_contrib = torch.matmul(self.A_norm.unsqueeze(0), C)  # [batch_size, num_c, hidden_dim]
-            C = C + self.gamma * neighbor_contrib
+            # W shape: [num_c, num_c], C shape: [batch_size, num_c, hidden_dim]
+            C = torch.matmul(self.W.unsqueeze(0), C)
 
         return probs

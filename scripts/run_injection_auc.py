@@ -131,7 +131,7 @@ def collect_results():
     
     for tag in tags:
         for model in models:
-            res_path = cache_dir / f"{dataset}_fold_{fold}_{model}_{tag}_result.json"
+            res_path = cache_dir / f"{dataset}_fold_{fold}_{model}_s42_{tag}_result.json"
             if res_path.exists():
                 import json
                 with open(res_path, "r") as f:

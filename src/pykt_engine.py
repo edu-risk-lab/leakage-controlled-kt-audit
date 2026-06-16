@@ -41,16 +41,22 @@ def _batch_to_device(dcur: dict, device: torch.device) -> dict:
     }
 
 
-def _dataloader_kwargs(batch_size: int) -> dict:
-    use_cuda = torch.cuda.is_available()
-    # Windows multiprocessing in DataLoader is fragile; keep workers at 0 locally.
-    num_workers = 0 if os.name == "nt" else min(4, os.cpu_count() or 1)
-    return {
+def _dataloader_kwargs(batch_size: int, force_cpu: bool = False) -> dict:
+    use_cuda = torch.cuda.is_available() and not force_cpu
+    # Use 4 DataLoader workers on Windows (spawn context) to overlap CPU data
+    # loading with GPU compute. GPU was idle ~92% of time with num_workers=0.
+    # On CPU-only mode, use fewer workers to avoid overhead.
+    num_workers = 0 if force_cpu else min(2, (os.cpu_count() or 1))
+    kw: dict = {
         "batch_size": batch_size,
         "num_workers": num_workers,
         "pin_memory": use_cuda,
-        "persistent_workers": use_cuda and num_workers > 0,
+        "persistent_workers": num_workers > 0,
+        "multiprocessing_context": "spawn" if num_workers > 0 else None,
     }
+    if num_workers > 0:
+        kw["prefetch_factor"] = 2
+    return kw
 
 
 def _model_forward_loss(model, batch: dict, model_name: str) -> torch.Tensor:
@@ -113,7 +119,7 @@ def _evaluate_detailed(model, loader, model_name: str, te_path: str = None) -> t
     y_trues, y_scores = [], []
     uids_out = []
     
-    pt_device = "cuda" if torch.cuda.is_available() else "cpu"
+    pt_device = "cpu" if (os.environ.get("FORCE_CPU", "0") == "1" or not torch.cuda.is_available()) else "cuda"
     dev = torch.device(pt_device)
     from torch.nn.functional import one_hot
     
@@ -186,6 +192,12 @@ def _evaluate_detailed(model, loader, model_name: str, te_path: str = None) -> t
 
 
 def _train_loop(model, train_loader, valid_loader, epochs: int, lr: float, patience: int = 3) -> None:
+    # GKT has internal float32/float16 dtype conflicts with autocast — disable AMP for it
+    # Also disable AMP on CPU (GradScaler requires CUDA)
+    _force_cpu = os.environ.get("FORCE_CPU", "0") == "1"
+    use_amp = torch.cuda.is_available() and not _force_cpu and getattr(model, 'model_name', '') != 'gkt'
+    scaler = torch.amp.GradScaler('cuda', enabled=use_amp)
+    torch.backends.cudnn.benchmark = True  # autotuning for faster kernels
     opt = torch.optim.Adam(model.parameters(), lr=lr)
     best_auc = -1.0
     stale = 0
@@ -194,10 +206,12 @@ def _train_loop(model, train_loader, valid_loader, epochs: int, lr: float, patie
         model.train()
         losses = []
         for data in train_loader:
-            loss = _model_forward_loss(model, data, model.model_name)
-            opt.zero_grad()
-            loss.backward()
-            opt.step()
+            opt.zero_grad(set_to_none=True)  # faster than zero_grad()
+            with torch.amp.autocast('cuda', enabled=use_amp):
+                loss = _model_forward_loss(model, data, model.model_name)
+            scaler.scale(loss).backward()
+            scaler.step(opt)
+            scaler.update()
             losses.append(float(loss.detach().cpu()))
         tr_loss = float(np.mean(losses)) if losses else 0.0
         auc, acc, _, _, _ = _evaluate_detailed(model, valid_loader, model.model_name)
@@ -332,15 +346,14 @@ def run_pykt_fold(
             hidden_dim=hidden_dim,
             bipartite_edges=bipartite_edges,
         )
-        if torch.cuda.is_available():
+        if torch.cuda.is_available() and os.environ.get("FORCE_CPU", "0") != "1":
             model = model.cuda()
     elif pykt_name in ("skt", "dygkt", "dgekt"):
-        import os
         if graph_npz is not None and os.path.exists(graph_npz):
             adj_matrix = torch.tensor(np.load(graph_npz, allow_pickle=True)['matrix']).float()
         else:
             adj_matrix = torch.eye(int(num_c)).float()
-        if torch.cuda.is_available():
+        if torch.cuda.is_available() and os.environ.get("FORCE_CPU", "0") != "1":
             adj_matrix = adj_matrix.cuda()
 
         emb_size = int(hyperparams.get("emb_size", 64))
@@ -376,7 +389,7 @@ def run_pykt_fold(
                 adj_matrix=adj_matrix,
                 beta=beta,
             )
-        if torch.cuda.is_available():
+        if torch.cuda.is_available() and os.environ.get("FORCE_CPU", "0") != "1":
             model = model.cuda()
     elif pykt_name == "sakt":
         model_cfg = {
@@ -393,6 +406,8 @@ def run_pykt_fold(
         model = init_model(pykt_name, model_cfg, data_cfg, emb_type)
         if model is None:
             raise RuntimeError(f"pyKT init_model returned None for {pykt_name}")
+        if torch.cuda.is_available() and os.environ.get("FORCE_CPU", "0") != "1":
+            model = model.cuda()
 
     note = (
         f"pyKT `{pykt_name}` trained on learner-split train users; metrics on valid+test sequence positions. "

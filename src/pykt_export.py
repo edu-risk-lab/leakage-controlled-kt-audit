@@ -15,26 +15,48 @@ def build_dense_maps(train_df: pd.DataFrame) -> tuple[dict[int, int], dict[int, 
 
 
 def _build_rows(df: pd.DataFrame, fold_val: int, q_map: dict[int, int], c_map: dict[int, int], max_seq_len: int) -> pd.DataFrame:
+    df_mapped = df.copy()
+    df_mapped["qi"] = df_mapped["item_id"].map(q_map)
+    df_mapped["ci"] = df_mapped["kc_id"].map(c_map)
+    df_mapped = df_mapped.dropna(subset=["qi", "ci"])
+    df_mapped["qi"] = df_mapped["qi"].astype(int)
+    df_mapped["ci"] = df_mapped["ci"].astype(int)
+    df_mapped = df_mapped[(df_mapped["qi"] >= 0) & (df_mapped["ci"] >= 0)]
+    
+    if df_mapped.empty:
+        return pd.DataFrame(columns=["fold", "uid", "questions", "concepts", "responses", "selectmasks", "timestamps"])
+        
+    df_mapped = df_mapped.sort_values(["user_id", "timestamp"])
+    
+    grp = df_mapped.groupby("user_id", sort=False).agg({
+        "qi": list,
+        "ci": list,
+        "correct": list
+    })
+    
     rows = []
-    for uid, grp in df.groupby("user_id", sort=False):
-        grp = grp.sort_values("timestamp")
-        seq: list[tuple[int, int, int]] = []
-        for _, r in grp.iterrows():
-            qi = q_map.get(int(r["item_id"]), -1)
-            ci = c_map.get(int(r["kc_id"]), -1)
-            if qi < 0 or ci < 0:
-                continue
-            seq.append((qi, ci, int(r["correct"])))
-        if len(seq) < 2:
+    for uid, r in grp.iterrows():
+        q_list = r["qi"]
+        c_list = r["ci"]
+        correct_list = r["correct"]
+        L = len(q_list)
+        if L < 2:
             continue
-        seq = seq[-max_seq_len:]
-        L = len(seq)
+        
+        if L > max_seq_len:
+            q_list = q_list[-max_seq_len:]
+            c_list = c_list[-max_seq_len:]
+            correct_list = correct_list[-max_seq_len:]
+            L = max_seq_len
+            
         pad_n = max_seq_len - L
-        questions = [str(x[0]) for x in seq] + ["-1"] * pad_n
-        concepts = [str(x[1]) for x in seq] + ["-1"] * pad_n
-        responses = [str(int(x[2])) for x in seq] + ["0"] * pad_n
+        
+        questions = [str(x) for x in q_list] + ["-1"] * pad_n
+        concepts = [str(x) for x in c_list] + ["-1"] * pad_n
+        responses = [str(int(x)) for x in correct_list] + ["0"] * pad_n
         smasks = ["1"] * L + ["0"] * pad_n
         timestamps = [str(t) for t in range(L)] + ["-1"] * pad_n
+        
         rows.append(
             {
                 "fold": fold_val,
@@ -70,13 +92,12 @@ def dataframe_to_pykt_csvs(
     te.to_csv(out_dir / "test_sequences.csv", index=False)
     
     # Export question-skill bipartite graph for GIKT PyTorch GCN
-    bipartite_rows = []
-    for _, r in train_df.iterrows():
-        qi = q_map.get(int(r["item_id"]), -1)
-        ci = c_map.get(int(r["kc_id"]), -1)
-        if qi >= 0 and ci >= 0:
-            bipartite_rows.append((qi, ci))
-    bipartite_df = pd.DataFrame(bipartite_rows, columns=["question", "concept"]).drop_duplicates()
+    train_mapped = train_df.copy()
+    train_mapped["qi"] = train_mapped["item_id"].map(q_map)
+    train_mapped["ci"] = train_mapped["kc_id"].map(c_map)
+    train_mapped = train_mapped.dropna(subset=["qi", "ci"])
+    bipartite_df = train_mapped[["qi", "ci"]].astype(int).drop_duplicates()
+    bipartite_df.columns = ["question", "concept"]
     bipartite_df.to_csv(out_dir / "gikt_bipartite.csv", index=False)
 
     num_q = max(q_map.values(), default=-1) + 1
