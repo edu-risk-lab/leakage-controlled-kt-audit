@@ -28,11 +28,12 @@ def _load_all(q1_root: Path) -> pd.DataFrame:
 
 def _paired_delta(df: pd.DataFrame, baseline: str, challenger: str) -> pd.DataFrame:
     rows = []
-    for (tag, base_seed), part in df.groupby(["experiment_tag", "split_base_seed"], dropna=False):
+    for base_seed, part in df.groupby("split_base_seed", dropna=False):
         pivot = part.pivot_table(index="fold", columns="model", values="auc", aggfunc="first")
         if baseline not in pivot.columns or challenger not in pivot.columns:
             continue
         delta = pivot[challenger] - pivot[baseline]
+        tag = "mixed_tags" if len(part["experiment_tag"].dropna().unique()) > 1 else part["experiment_tag"].dropna().iloc[0]
         rows.append(
             {
                 "experiment_tag": tag,

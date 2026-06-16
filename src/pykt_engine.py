@@ -195,7 +195,12 @@ def _train_loop(model, train_loader, valid_loader, epochs: int, lr: float, patie
     # GKT has internal float32/float16 dtype conflicts with autocast — disable AMP for it
     # Also disable AMP on CPU (GradScaler requires CUDA)
     _force_cpu = os.environ.get("FORCE_CPU", "0") == "1"
-    use_amp = torch.cuda.is_available() and not _force_cpu and getattr(model, 'model_name', '') != 'gkt'
+    # Models excluded from AMP due to float16 overflow/dtype issues:
+    # - gkt: float32/float16 conflict in _agg_neighbors scatter
+    # - simplekt: masked_fill_(-1e32) overflows float16
+    # - gikt: similar attention masking issues
+    _NO_AMP_MODELS = {'gkt', 'simplekt', 'gikt'}
+    use_amp = torch.cuda.is_available() and not _force_cpu and getattr(model, 'model_name', '') not in _NO_AMP_MODELS
     scaler = torch.amp.GradScaler('cuda', enabled=use_amp)
     torch.backends.cudnn.benchmark = True  # autotuning for faster kernels
     opt = torch.optim.Adam(model.parameters(), lr=lr)

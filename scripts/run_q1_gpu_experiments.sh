@@ -58,8 +58,10 @@ run_gkt_epochs30() {
 run_primary_trio() {
   local BASE_SEED="$1"
   local TAG="trio_matched_s${BASE_SEED}"
-  log "=== Primary trio (GKT 30ep) | split_base_seed=${BASE_SEED} | tag=${TAG} ==="
-  $PYTHON scripts/clear_baseline_cache.py --dataset xes3g5m --models gkt,simplekt,gikt
+  log "=== Primary trio (GKT+simpleKT+GIKT 30ep) | split_base_seed=${BASE_SEED} | tag=${TAG} ==="
+  if [ "${SKIP_CACHE_CLEAR:-0}" -ne 1 ]; then
+    $PYTHON scripts/clear_baseline_cache.py --dataset xes3g5m --models gkt,simplekt,gikt
+  fi
   $PYTHON -m src.baseline_runner \
     --config configs/experiments/xes3g5m_primary_trio_matched.yaml \
     --split-base-seed "$BASE_SEED" \
@@ -94,8 +96,10 @@ phase2() {
 phase3() {
   check_env
   ensure_graphs
+  log "Running Phase 3 sequentially (16GB VRAM — one seed at a time)..."
+  export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
   for S in 42 17 1234; do
-    run_primary_trio "$S"
+    SKIP_CACHE_CLEAR=0 run_primary_trio "$S"
   done
   summarize
 }
