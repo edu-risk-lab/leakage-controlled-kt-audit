@@ -55,7 +55,8 @@ disagreement examples, extended ground-truth metrics with node Jaccard, and
 supplementary \DDR{} / KT-graph figures omitted from the main manuscript for
 length.
 Tables~S15--S18 report training parity, $\Delta$AUC intervals (paired-$t$ by
-default), controlled leak-injection metrics, and downstream AUC on injected graphs.}
+default), controlled leak-injection metrics, and downstream AUC on injected graphs.
+Table~S21 reports the epoch-matched GKT ablation on XES3G5M.}
 
 \maketitle
 
@@ -74,7 +75,8 @@ S16: $\Delta$AUC intervals for primary pairs (Section~\ref{sec:supp-bootstrap});
 S17--S18: controlled leak injection and downstream AUC
 (Section~\ref{sec:supp-leak-injection});
 S19--S20: exploratory ANOVA on backbone and DGEKT downstream AUC
-(Section~\ref{sec:supp-anova}).
+(Section~\ref{sec:supp-anova});
+S21: epoch-matched GKT ablation (Section~\ref{sec:supp-gkt-epoch}).
 
 \medskip\noindent\textbf{Sections and figures.}
 Section~S3: sequence-autocorrelation analysis
@@ -257,8 +259,9 @@ processed splits under both train-only and full-log graph constructions, and
 checkpoint selection by best validation AUC with early stopping (BKT is fit
 by L-BFGS on NLL without early stopping). Epoch caps and batch sizes differ
 across families (30 epochs for sequence checkpoints vs.\ 10 for graph
-backbones), reflecting per-epoch cost; the main text flags this residual
-budget difference as a caveat on model-comparison claims. ``Native'' denotes
+backbones in the primary release), reflecting per-epoch cost. Table~S21 reports
+an epoch-matched GKT ablation (30 epochs, batch~64) on the aligned split
+seed~$42$. ``Native'' denotes
 our re-implementations in \texttt{src/models}; graph models consume the
 exported $\Epre$ and, where available, $\Esim$ edges.
 \begin{table}[h!]
@@ -277,9 +280,11 @@ graph construction. The released bundle reports paired-$t$ 95\% intervals
 over three learner-disjoint folds (default; matches fold-level
 $\Delta$AUC). Optional row-level learner bootstrap:
 \path{scripts/bootstrap_auc_ci.py --learner-bootstrap}.
-The GKT deficit ($-0.041$; CI $[-0.044,-0.038]$) is more than an order of
+The GKT deficit under the released 10-epoch budget ($-0.041$; CI $[-0.044,-0.038]$) is more than an order of
 magnitude larger than the interval half-width, so the model-specific conclusion
-does not hinge on fragile three-fold $t$-tests. Reproducers may optionally run
+does not hinge on fragile three-fold $t$-tests. Table~S21 shows epoch matching
+recovers only ${\approx}+0.003$ mean AUC, leaving $\Delta{\approx}-0.038$ under
+matched caps. Reproducers may optionally run
 \texttt{python scripts/bootstrap\_auc\_ci.py --learner-bootstrap} on exported
 prediction parquets for row-level learner resampling (slower; fold-level
 paired-$t$ is the default).
@@ -288,6 +293,22 @@ paired-$t$ is the default).
 \caption{$\Delta$AUC intervals for primary pairs, XES3G5M, train-only graphs (Table S16)}
 \label{tab:bootstrap-auc-ci}
 \input{results/tables/bootstrap_auc_ci.tex}
+\end{table}
+
+\section{Epoch-matched GKT ablation}
+\label{sec:supp-gkt-epoch}
+Table~S21 (Table~\ref{tab:gkt-epoch-ablation}) compares the released GKT
+configuration (10~epochs, batch~16) with an epoch-matched rerun
+(\path{configs/xes3g5m_gkt_epochs30.yaml}; 30~epochs, batch~64) on XES3G5M
+under train-only graphs and the aligned split seed~$42$. Fold-level
+$\Delta$AUC intervals use paired-$t$ over three learner-disjoint folds,
+matching Table~S16. Multi-seed replication requires rebuilding fold-specific
+graph exports for each split base seed before retraining GKT.
+\begin{table}[h!]
+\centering
+\caption{Epoch-matched GKT ablation on XES3G5M, split seed~$42$ (Table S21)}
+\label{tab:gkt-epoch-ablation}
+\input{results/tables/gkt_epoch_ablation.tex}
 \end{table}
 
 \section{Controlled Leak Injection}

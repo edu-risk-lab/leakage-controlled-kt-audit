@@ -193,44 +193,44 @@
 \@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Mean~$\pm $~std \textsc  {DDR}{} across three seeds and three train folds for the five augmentation families and four perturbation strengths ($9$ runs per cell). Subgraph sampling is random-walk based (Section~\ref {sec:ddr}); \texttt  {prereq\_preserve} removes only transitively redundant edges at the same per-edge budget as \texttt  {edge\_drop}. Lower is less disruptive.}}{21}{table.caption.37}\protected@file@percent }
 \newlabel{tab:ddr-raw}{{10}{21}{Mean~$\pm $~std \DDR {} across three seeds and three train folds for the five augmentation families and four perturbation strengths ($9$ runs per cell). Subgraph sampling is random-walk based (Section~\ref {sec:ddr}); \texttt {prereq\_preserve} removes only transitively redundant edges at the same per-edge budget as \texttt {edge\_drop}. Lower is less disruptive}{table.caption.37}{}}
 \newlabel{tab:ddr-raw@cref}{{[table][10][]10}{[1][21][]21}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}DAG Disruption Rate}{21}{subsection.4.6}\protected@file@percent }
-\newlabel{sec:exp-ddr}{{4.6}{21}{DAG Disruption Rate}{subsection.4.6}{}}
-\newlabel{sec:exp-ddr@cref}{{[subsection][6][4]4.6}{[1][21][]21}{}{}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces \textsc  {DDR}{} as a function of perturbation strength $p$ on Junyi Academy for five graph augmentation families: four label-agnostic operators (\texttt  {attr\_mask}, \texttt  {subgraph}, \texttt  {edge\_drop}, \texttt  {node\_drop}) and one prerequisite-preserving operator (\texttt  {prereq\_preserve}). Each marker plots the mean \textsc  {DDR}{} averaged across nine stochastic runs (three random seeds on each of three train folds). The same ordering holds on ASSISTments~2012 and XES3G5M (Supplementary Figure~S2): $\textsc  {DDR}(\text  {attr\_mask})=0 < \textsc  {DDR}(\text  {subgraph}) \lesssim \textsc  {DDR}(\text  {prereq\_preserve}) < \textsc  {DDR}(\text  {edge\_drop}) \approx p < \textsc  {DDR}(\text  {node\_drop})$.}}{22}{figure.caption.35}\protected@file@percent }
 \newlabel{fig:ddr-junyi}{{6}{22}{\DDR {} as a function of perturbation strength $p$ on Junyi Academy for five graph augmentation families: four label-agnostic operators (\texttt {attr\_mask}, \texttt {subgraph}, \texttt {edge\_drop}, \texttt {node\_drop}) and one prerequisite-preserving operator (\texttt {prereq\_preserve}). Each marker plots the mean \DDR {} averaged across nine stochastic runs (three random seeds on each of three train folds). The same ordering holds on ASSISTments~2012 and XES3G5M (Supplementary Figure~S2): $\DDR (\text {attr\_mask})=0 < \DDR (\text {subgraph}) \lesssim \DDR (\text {prereq\_preserve}) < \DDR (\text {edge\_drop}) \approx p < \DDR (\text {node\_drop})$}{figure.caption.35}{}}
 \newlabel{fig:ddr-junyi@cref}{{[figure][6][]6}{[1][21][]22}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}DAG Disruption Rate}{22}{subsection.4.6}\protected@file@percent }
+\newlabel{sec:exp-ddr}{{4.6}{22}{DAG Disruption Rate}{subsection.4.6}{}}
+\newlabel{sec:exp-ddr@cref}{{[subsection][6][4]4.6}{[1][21][]22}{}{}{}}
 \@writefile{toc}{\contentsline {paragraph}{\textsc  {DDR}{} is an operator-level structural diagnostic, not a tautology.}{22}{section*.38}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces DDR vs.\ downstream graph-KT accuracy. For each dataset and model, the prerequisite graph $\ensuremath  {E_{\text  {pre}}}$ is perturbed by each operator at strength $p$; \emph  {AUC drop} is the mean decrease in test AUC relative to the unperturbed (DDR$=0$) baseline graph across folds. Pooled correlations (DDR vs.\ AUC drop): assist2012/dgekt: $r$=0.15 ($p$=4.7e-01), $\rho $=0.18; xes3g5m/dgekt: $r$=0.13 ($p$=5.1e-01), $\rho $=0.18.}}{23}{table.caption.40}\protected@file@percent }
-\newlabel{tab:ddr-downstream}{{11}{23}{DDR vs.\ downstream graph-KT accuracy. For each dataset and model, the prerequisite graph $\Epre $ is perturbed by each operator at strength $p$; \emph {AUC drop} is the mean decrease in test AUC relative to the unperturbed (DDR$=0$) baseline graph across folds. Pooled correlations (DDR vs.\ AUC drop): assist2012/dgekt: $r$=0.15 ($p$=4.7e-01), $\rho $=0.18; xes3g5m/dgekt: $r$=0.13 ($p$=5.1e-01), $\rho $=0.18}{table.caption.40}{}}
-\newlabel{tab:ddr-downstream@cref}{{[table][11][]11}{[1][23][]23}{}{}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces Cold-start KC diagnostic summary. Column $n$ counts fold~0 test interactions per stratum for \textit  {simpleKT}; \textit  {simpleKT} AUC and $\Delta _{\max }$ report three-fold means~$\pm $~std ($\Delta _{\max }$: best graph-family AUC minus best sequence-only AUC). Per-model strata appear in Supplementary Tables~S12--S13.}}{24}{table.caption.42}\protected@file@percent }
-\newlabel{tab:cold-start-summary}{{12}{24}{Cold-start KC diagnostic summary. Column $n$ counts fold~0 test interactions per stratum for \textit {simpleKT}; \textit {simpleKT} AUC and $\Delta _{\max }$ report three-fold means~$\pm $~std ($\Delta _{\max }$: best graph-family AUC minus best sequence-only AUC). Per-model strata appear in Supplementary Tables~S12--S13}{table.caption.42}{}}
-\newlabel{tab:cold-start-summary@cref}{{[table][12][]12}{[1][24][]24}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.7}\textsc  {DDR}{} Downstream Stress Test}{24}{subsection.4.7}\protected@file@percent }
-\newlabel{sec:exp-ddr-downstream}{{4.7}{24}{\DDR {} Downstream Stress Test}{subsection.4.7}{}}
-\newlabel{sec:exp-ddr-downstream@cref}{{[subsection][7][4]4.7}{[1][23][]24}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.8}Cold-start KC Diagnostic}{24}{subsection.4.8}\protected@file@percent }
-\newlabel{sec:exp-coldstart}{{4.8}{24}{Cold-start KC Diagnostic}{subsection.4.8}{}}
-\newlabel{sec:exp-coldstart@cref}{{[subsection][8][4]4.8}{[1][24][]24}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.7}\textsc  {DDR}{} Downstream Stress Test}{23}{subsection.4.7}\protected@file@percent }
+\newlabel{sec:exp-ddr-downstream}{{4.7}{23}{\DDR {} Downstream Stress Test}{subsection.4.7}{}}
+\newlabel{sec:exp-ddr-downstream@cref}{{[subsection][7][4]4.7}{[1][23][]23}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.8}Cold-start KC Diagnostic}{23}{subsection.4.8}\protected@file@percent }
+\newlabel{sec:exp-coldstart}{{4.8}{23}{Cold-start KC Diagnostic}{subsection.4.8}{}}
+\newlabel{sec:exp-coldstart@cref}{{[subsection][8][4]4.8}{[1][23][]23}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces DDR vs.\ downstream graph-KT accuracy. For each dataset and model, the prerequisite graph $\ensuremath  {E_{\text  {pre}}}$ is perturbed by each operator at strength $p$; \emph  {AUC drop} is the mean decrease in test AUC relative to the unperturbed (DDR$=0$) baseline graph across folds. Pooled correlations (DDR vs.\ AUC drop): assist2012/dgekt: $r$=0.15 ($p$=4.7e-01), $\rho $=0.18; xes3g5m/dgekt: $r$=0.13 ($p$=5.1e-01), $\rho $=0.18.}}{24}{table.caption.40}\protected@file@percent }
+\newlabel{tab:ddr-downstream}{{11}{24}{DDR vs.\ downstream graph-KT accuracy. For each dataset and model, the prerequisite graph $\Epre $ is perturbed by each operator at strength $p$; \emph {AUC drop} is the mean decrease in test AUC relative to the unperturbed (DDR$=0$) baseline graph across folds. Pooled correlations (DDR vs.\ AUC drop): assist2012/dgekt: $r$=0.15 ($p$=4.7e-01), $\rho $=0.18; xes3g5m/dgekt: $r$=0.13 ($p$=5.1e-01), $\rho $=0.18}{table.caption.40}{}}
+\newlabel{tab:ddr-downstream@cref}{{[table][11][]11}{[1][23][]24}{}{}{}}
+\newlabel{fig:cold-ego}{{7a}{24}{Cold-start KC ego-graph (fold~0 export)}{figure.caption.43}{}}
+\newlabel{fig:cold-ego@cref}{{[subfigure][1][7]7a}{[1][23][]24}{}{}{}}
+\newlabel{sub@fig:cold-ego}{{a}{24}{Cold-start KC ego-graph (fold~0 export)}{figure.caption.43}{}}
+\newlabel{sub@fig:cold-ego@cref}{{[subfigure][1][7]7a}{[1][23][]24}{}{}{}}
+\newlabel{fig:learner-timeline}{{7b}{24}{Learner KC timeline with cold steps}{figure.caption.43}{}}
+\newlabel{fig:learner-timeline@cref}{{[subfigure][2][7]7b}{[1][23][]24}{}{}{}}
+\newlabel{sub@fig:learner-timeline}{{b}{24}{Learner KC timeline with cold steps}{figure.caption.43}{}}
+\newlabel{sub@fig:learner-timeline@cref}{{[subfigure][2][7]7b}{[1][23][]24}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Cold-start visualisation on XES3G5M (fold~0; very-cold stratum $n{=}161$ test interactions for \textit  {simpleKT} in Table~\ref {tab:cold-start-summary}). Panels are generated from released fold exports (\path {e\_pre\_train\_only.csv}, \path {e\_sim\_train\_only.csv}) and the preprocessed interaction log by \path {scripts/plot\_kt\_graph\_figures.py}. \textbf  {(a)}~Ego-graph around a very-cold KC (red): neighbours combine $\ensuremath  {E_{\text  {pre}}}$, $\ensuremath  {E_{\text  {sim}}}$ where present, and train-only temporal transitions. \textbf  {(b)}~A test-sequence window for one held-out learner with repeated very-cold steps; stratum labels derive from train-fold counts only (Section~\ref {sec:cold-start}).}}{24}{figure.caption.43}\protected@file@percent }
+\newlabel{fig:coldstart-viz}{{7}{24}{Cold-start visualisation on XES3G5M (fold~0; very-cold stratum $n{=}161$ test interactions for \textit {simpleKT} in Table~\ref {tab:cold-start-summary}). Panels are generated from released fold exports (\protect \path {e\_pre\_train\_only.csv}, \protect \path {e\_sim\_train\_only.csv}) and the preprocessed interaction log by \protect \path {scripts/plot\_kt\_graph\_figures.py}. \textbf {(a)}~Ego-graph around a very-cold KC (red): neighbours combine $\Epre $, $\Esim $ where present, and train-only temporal transitions. \textbf {(b)}~A test-sequence window for one held-out learner with repeated very-cold steps; stratum labels derive from train-fold counts only (Section~\ref {sec:cold-start})}{figure.caption.43}{}}
+\newlabel{fig:coldstart-viz@cref}{{[figure][7][]7}{[1][23][]24}{}{}{}}
 \citation{junyi_dataset}
-\newlabel{fig:cold-ego}{{7a}{25}{Cold-start KC ego-graph (fold~0 export)}{figure.caption.43}{}}
-\newlabel{fig:cold-ego@cref}{{[subfigure][1][7]7a}{[1][24][]25}{}{}{}}
-\newlabel{sub@fig:cold-ego}{{a}{25}{Cold-start KC ego-graph (fold~0 export)}{figure.caption.43}{}}
-\newlabel{sub@fig:cold-ego@cref}{{[subfigure][1][7]7a}{[1][24][]25}{}{}{}}
-\newlabel{fig:learner-timeline}{{7b}{25}{Learner KC timeline with cold steps}{figure.caption.43}{}}
-\newlabel{fig:learner-timeline@cref}{{[subfigure][2][7]7b}{[1][24][]25}{}{}{}}
-\newlabel{sub@fig:learner-timeline}{{b}{25}{Learner KC timeline with cold steps}{figure.caption.43}{}}
-\newlabel{sub@fig:learner-timeline@cref}{{[subfigure][2][7]7b}{[1][24][]25}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Cold-start visualisation on XES3G5M (fold~0; very-cold stratum $n{=}161$ test interactions for \textit  {simpleKT} in Table~\ref {tab:cold-start-summary}). Panels are generated from released fold exports (\path {e\_pre\_train\_only.csv}, \path {e\_sim\_train\_only.csv}) and the preprocessed interaction log by \path {scripts/plot\_kt\_graph\_figures.py}. \textbf  {(a)}~Ego-graph around a very-cold KC (red): neighbours combine $\ensuremath  {E_{\text  {pre}}}$, $\ensuremath  {E_{\text  {sim}}}$ where present, and train-only temporal transitions. \textbf  {(b)}~A test-sequence window for one held-out learner with repeated very-cold steps; stratum labels derive from train-fold counts only (Section~\ref {sec:cold-start}).}}{25}{figure.caption.43}\protected@file@percent }
-\newlabel{fig:coldstart-viz}{{7}{25}{Cold-start visualisation on XES3G5M (fold~0; very-cold stratum $n{=}161$ test interactions for \textit {simpleKT} in Table~\ref {tab:cold-start-summary}). Panels are generated from released fold exports (\protect \path {e\_pre\_train\_only.csv}, \protect \path {e\_sim\_train\_only.csv}) and the preprocessed interaction log by \protect \path {scripts/plot\_kt\_graph\_figures.py}. \textbf {(a)}~Ego-graph around a very-cold KC (red): neighbours combine $\Epre $, $\Esim $ where present, and train-only temporal transitions. \textbf {(b)}~A test-sequence window for one held-out learner with repeated very-cold steps; stratum labels derive from train-fold counts only (Section~\ref {sec:cold-start})}{figure.caption.43}{}}
-\newlabel{fig:coldstart-viz@cref}{{[figure][7][]7}{[1][24][]25}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces Cold-start KC diagnostic summary. Column $n$ counts fold~0 test interactions per stratum for \textit  {simpleKT}; \textit  {simpleKT} AUC and $\Delta _{\max }$ report three-fold means~$\pm $~std ($\Delta _{\max }$: best graph-family AUC minus best sequence-only AUC). Per-model strata appear in Supplementary Tables~S12--S13.}}{25}{table.caption.42}\protected@file@percent }
+\newlabel{tab:cold-start-summary}{{12}{25}{Cold-start KC diagnostic summary. Column $n$ counts fold~0 test interactions per stratum for \textit {simpleKT}; \textit {simpleKT} AUC and $\Delta _{\max }$ report three-fold means~$\pm $~std ($\Delta _{\max }$: best graph-family AUC minus best sequence-only AUC). Per-model strata appear in Supplementary Tables~S12--S13}{table.caption.42}{}}
+\newlabel{tab:cold-start-summary@cref}{{[table][12][]12}{[1][23][]25}{}{}{}}
 \@writefile{toc}{\contentsline {paragraph}{Similarity edges and dataset properties.}{25}{section*.44}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.9}Ground-Truth Cross-Validation on Junyi}{25}{subsection.4.9}\protected@file@percent }
 \newlabel{sec:exp-gtxv}{{4.9}{25}{Ground-Truth Cross-Validation on Junyi}{subsection.4.9}{}}
 \newlabel{sec:exp-gtxv@cref}{{[subsection][9][4]4.9}{[1][25][]25}{}{}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces GT cross-validation: agreement between train-only inferred $E_{\text  {pre}}$ and expert prerequisite DAG on Junyi Academy ($|E|=1131$ directed edges).}}{26}{table.caption.46}\protected@file@percent }
 \newlabel{tab:gt-validation}{{13}{26}{GT cross-validation: agreement between train-only inferred $E_{\text {pre}}$ and expert prerequisite DAG on Junyi Academy ($|E|=1131$ directed edges)}{table.caption.46}{}}
-\newlabel{tab:gt-validation@cref}{{[table][13][]13}{[1][25][]26}{}{}{}}
+\newlabel{tab:gt-validation@cref}{{[table][13][]13}{[1][26][]26}{}{}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Edge-level precision and recall of train-only inferred $\ensuremath  {E_{\text  {pre}}}$ versus the expert prerequisite annotation on Junyi, across top-$K$ cutoffs $K \in \{200, 500, 800, 1131, 1200, 1800, 2500, 3500, 5000\}$. The curve plateaus at $K \geq 2{,}500$ because the inferred edge pool tops out at $2{,}152$ after DAG audit.}}{26}{figure.caption.47}\protected@file@percent }
 \newlabel{fig:gt-pr-curve}{{8}{26}{Edge-level precision and recall of train-only inferred $\Epre $ versus the expert prerequisite annotation on Junyi, across top-$K$ cutoffs $K \in \{200, 500, 800, 1131, 1200, 1800, 2500, 3500, 5000\}$. The curve plateaus at $K \geq 2{,}500$ because the inferred edge pool tops out at $2{,}152$ after DAG audit}{figure.caption.47}{}}
 \newlabel{fig:gt-pr-curve@cref}{{[figure][8][]8}{[1][26][]26}{}{}{}}
@@ -243,18 +243,18 @@
 \@writefile{toc}{\contentsline {paragraph}{H1 -- Leakage in prior evaluations.}{27}{section*.48}\protected@file@percent }
 \citation{liu2022pykt}
 \citation{tong2020skt,dygkt2024,dgekt2024}
-\citation{choi2020ednet}
 \@writefile{toc}{\contentsline {paragraph}{H2 -- Aggregate-metric masking.}{28}{section*.49}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{H3 -- Strong-backbone substitution.}{28}{section*.50}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Why this strengthens the protocol.}{28}{section*.51}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Caveats.}{28}{section*.52}\protected@file@percent }
+\citation{choi2020ednet}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Broader implications}{29}{subsection.5.2}\protected@file@percent }
 \newlabel{sec:disc-implications}{{5.2}{29}{Broader implications}{subsection.5.2}{}}
-\newlabel{sec:disc-implications@cref}{{[subsection][2][5]5.2}{[1][28][]29}{}{}{}}
+\newlabel{sec:disc-implications@cref}{{[subsection][2][5]5.2}{[1][29][]29}{}{}{}}
 \@writefile{toc}{\contentsline {paragraph}{Scalability and broader domains.}{29}{section*.53}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Implications for graph-enhanced KT.}{29}{section*.54}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Cold-start reporting.}{29}{section*.55}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Deployment decision vignettes.}{29}{section*.56}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Deployment decision vignettes.}{30}{section*.56}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Behavioural versus expert prerequisite curation.}{30}{section*.57}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Implications for graph-KT benchmarking.}{30}{section*.58}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Threats to Validity and Metric Interpretation}{31}{subsection.5.3}\protected@file@percent }
@@ -263,7 +263,7 @@
 \@writefile{toc}{\contentsline {paragraph}{Limitations.}{31}{section*.59}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Future work}{32}{subsection.5.4}\protected@file@percent }
 \newlabel{sec:future-work}{{5.4}{32}{Future work}{subsection.5.4}{}}
-\newlabel{sec:future-work@cref}{{[subsection][4][5]5.4}{[1][31][]32}{}{}{}}
+\newlabel{sec:future-work@cref}{{[subsection][4][5]5.4}{[1][32][]32}{}{}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{32}{section.6}\protected@file@percent }
 \newlabel{sec:concl}{{6}{32}{Conclusion}{section.6}{}}
 \newlabel{sec:concl@cref}{{[section][6][]6}{[1][32][]32}{}{}{}}

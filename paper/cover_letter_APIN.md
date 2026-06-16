@@ -25,7 +25,7 @@ The paper reports an **honest boundary result**: on three public benchmarks, del
 
 ## Applied value (decision shift, not SOTA)
 
-We anchor model-comparison claims on **XES3G5M** (primary benchmark: low KC-repeat, non-saturated AUC). Under leakage-controlled evaluation, deployable backbone ranking changes materially—for example, GKT trails simpleKT by ≈0.041 mean AUC on XES3G5M while GIKT remains competitive (≈0.878 vs 0.875). A team ranking models on near-ceiling Junyi/ASSIST aggregates or on leaky full-log graphs could reach a different shortlist. That **decision shift** is the applied contribution we emphasize for APIN.
+We anchor model-comparison claims on **XES3G5M** (primary benchmark: low KC-repeat, non-saturated AUC). Under leakage-controlled evaluation, deployable backbone ordering within the primary trio is **model-specific**: GKT trails simpleKT by ≈0.041 mean AUC under the released 10-epoch budget (Table S16), while an epoch-matched GKT ablation (30 epochs, batch 64; Table S21) recovers only ≈+0.003 AUC and leaves a ≈−0.038 residual gap—so the under-performer ordering persists under matched training caps. GIKT remains competitive (≈0.878 vs 0.875). A team ranking models on near-ceiling Junyi/ASSIST aggregates or on leaky full-log graphs could reach a different shortlist. That **decision shift** is the applied contribution we emphasize for APIN.
 
 ## Relation to reviewer concerns addressed in this revision
 
@@ -34,7 +34,7 @@ We anchor model-comparison claims on **XES3G5M** (primary benchmark: low KC-repe
 | Protocol/null-result vs applied performance | Reframed as deployment audit + checklist + XES case study (§1, Conclusion) |
 | Weak 3-fold inferential tests | Claims based on **ΔAUC magnitudes**; p-values relegated to supplement |
 | Saturated benchmarks | XES primary; Junyi saturated sanity; ASSIST secondary (Scope, §4) |
-| Implementation parity | Training parity paragraph (§4); limitations note pyKT vs native fork |
+| Implementation parity | Training parity (Table S15) + epoch-matched GKT ablation (Table S21): gap shrinks only ≈+0.003 AUC |
 | DDR downstream overclaim | Explicitly **DGEKT-only, exploratory**; no extrapolation to all backbones |
 | Degenerate leakage scalars | Three-tier audit interpretation + TBMR redefined as within-train stress |
 | “Multi-relational” overclaim | Prerequisite-first wording; \|E_sim\|=0 on ASSIST reported explicitly |

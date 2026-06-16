@@ -1,6 +1,6 @@
 # Kịch bản thí nghiệm Q1 trên GPU server (24GB VRAM)
 
-Tài liệu này mô tả **thứ tự chạy**, **ước lượng thời gian**, và **cách lấy kết quả** cho revision C5 + multi-seed. Mọi run Q1 ghi vào `results/q1/<tag>/` — **không ghi đè** `results/tables/baseline_fold_results.csv` hiện tại.
+Tài liệu này mô tả **thứ tự chạy**, **ước lượng thời gian**, **cách lấy kết quả**, và **đánh giá run đã pull** cho revision C5 + multi-seed. Mọi run Q1 ghi vào `results/q1/<tag>/` — **không ghi đè** `results/tables/baseline_fold_results.csv` hiện tại.
 
 ---
 
@@ -35,37 +35,116 @@ python -c "import torch; print(torch.cuda.get_device_name(0), torch.cuda.get_dev
 
 ---
 
+## 0.1 Kết quả đã pull (đánh giá — cập nhật paper xong)
+
+| Run | Trạng thái | Mean GKT AUC | Δ vs simpleKT | Dùng trong paper? |
+|-----|------------|--------------|---------------|-----------------|
+| GKT **10ep** primary (seed 42) | ✅ baseline chính | **0.834** | **−0.041** [−0.044, −0.038] | Table S16 |
+| GKT **30ep** matched (seed 42) | ✅ hợp lệ | **0.837** | **−0.038** [−0.048, −0.027] | **Table S21** |
+| GKT 30ep (seed 17) | ⚠️ **confounded** | ~0.711 | — | **Không** — graph export vẫn seed 42 |
+| GKT 30ep (seed 1234) | ⚠️ **confounded** | ~0.710 | — | **Không** — cùng lý do |
+| Phase 3 `trio_matched_s*` | ❌ chưa có | — | — | Chưa chạy / chưa pull |
+
+**Kết luận (kịch bản B):** epoch matching thu hẹp gap **≈+0.003 AUC** (0.834 → 0.837); Δ GKT vs simpleKT còn **≈−0.038**. Ordering trio primary **giữ nguyên** → C5 vẫn là *benchmarking boundary*, không phải ranking reversal.
+
+Paper đã cập nhật: `paper/main_APIN.tex` (abstract, C5, §4.2, Discussion, Conclusion), `paper/supplementary.tex` (Table S21), `paper/cover_letter_APIN.md`.
+
+Regenerate bảng S21 trên máy local:
+
+```bash
+python scripts/generate_gkt_epoch_ablation.py
+```
+
+---
+
+## 0.2 ⚠️ Bắt buộc: graph export phải khớp `split_base_seed`
+
+`graph_builder` ghi graph vào `data/processed/xes3g5m/fold_{0,1,2}/` **không có hậu tố seed**. `baseline_runner --split-base-seed N` dùng learner split (N, N+1, N+2) nhưng vẫn đọc graph cũ nếu không rebuild.
+
+**Triệu chứng:** AUC GKT ~0.71 khi seed ≠ 42 trong khi seed 42 ~0.84.
+
+**Quy tắc:** trước mỗi run với `split_base_seed = S`, rebuild graph với **`split.seed: S`** trong config (không chỉ `--seed` CLI — yaml mặc định `seed: 42` ghi đè default).
+
+### Tạo config tạm theo seed
+
+```bash
+python - <<'PY'
+from pathlib import Path
+import yaml
+
+base = yaml.safe_load(Path("configs/xes3g5m.yaml").read_text())
+for s in (42, 17, 1234):
+    cfg = dict(base)
+    cfg["split"] = dict(base["split"])
+    cfg["split"]["seed"] = s
+    out = Path(f"configs/xes3g5m_split{s}.yaml")
+    out.write_text(yaml.dump(cfg, sort_keys=False), encoding="utf-8")
+    print("Wrote", out)
+PY
+```
+
+### Rebuild graph + train GKT 30ep (một seed)
+
+```bash
+SEED=17   # hoặc 42, 1234
+
+python -m src.graph_builder --config configs/xes3g5m_split${SEED}.yaml
+
+python scripts/clear_baseline_cache.py --dataset xes3g5m --models gkt
+
+python -m src.baseline_runner \
+  --config configs/xes3g5m_gkt_epochs30.yaml \
+  --split-base-seed ${SEED} \
+  --isolated-results gkt_epochs30_s${SEED} \
+  --log-level INFO
+```
+
+**Phase 2 không chạy song song** các seed khác nhau trên cùng máy nếu dùng chung thư mục `fold_*` — phải **tuần tự**: rebuild graph seed 17 → train → rebuild seed 1234 → train.
+
+Sau khi hoàn tất multi-seed hợp lệ:
+
+```bash
+python scripts/summarize_q1_experiments.py
+python scripts/generate_gkt_epoch_ablation.py   # nếu mở rộng bảng S21
+```
+
+---
+
 ## 1. Ba phase thí nghiệm
 
 | Phase | Mục tiêu | Config | Split seeds | Runs GKT | Thời gian ước lượng* |
 |-------|----------|--------|-------------|----------|----------------------|
 | **1** | **C5 core** — GKT epoch-matched | `configs/xes3g5m_gkt_epochs30.yaml` | 42 | 3 fold | **4–8 h** |
-| **2** | Multi-seed inferential | cùng config | 17, 1234 | 6 fold | **+8–16 h** |
+| **2** | Multi-seed inferential | cùng config + **graph rebuild/seed** | 17, 1234 | 6 fold | **+10–20 h**† |
 | **3** | Primary trio matched | `configs/experiments/xes3g5m_primary_trio_matched.yaml` | 42, 17, 1234 | 9×3 models | **+24–48 h** |
 
-\*Trên GPU tương đương RTX 3090 / A5000 24GB.
+\*Trên GPU tương đương RTX 3090 / A5000 24GB.  
+†Bao gồm ~2× graph_builder + train tuần tự (§0.2).
 
 ### Chạy từng phase (khuyến nghị)
 
 ```bash
 chmod +x scripts/run_q1_gpu_experiments.sh
 
-# Phase 1 — chạy trước, đủ để cập nhật C5 trong paper
+# Phase 1 — seed 42 (graph mặc định configs/xes3g5m.yaml đã khớp seed 42)
 ./scripts/run_q1_gpu_experiments.sh phase1
 
-# Xem kết quả sơ bộ
-cat results/tables/q1_gkt_vs_simplekt.csv
+# Phase 2 — BẮT BUỘC rebuild graph từng seed (§0.2); KHÔNG chạy parallel trên cùng repo
+for S in 17 1234; do
+  python -m src.graph_builder --config configs/xes3g5m_split${S}.yaml
+  python scripts/clear_baseline_cache.py --dataset xes3g5m --models gkt
+  python -m src.baseline_runner \
+    --config configs/xes3g5m_gkt_epochs30.yaml \
+    --split-base-seed ${S} \
+    --isolated-results gkt_epochs30_s${S} \
+    --log-level INFO
+done
+python scripts/summarize_q1_experiments.py
 
-# Phase 2 — thêm 2 split seeds (chỉ GKT epochs30)
-# Quy trình thực thi đồng thời (Co-execution):
-# Lệnh này chạy song song seed 17 và 1234 trên GPU nhờ cơ chế Bash background.
-# File cache được phân tách bằng hậu tố seed (ví dụ: *_s17_*, *_s1234_*) để tránh xung đột.
-./scripts/run_q1_gpu_experiments.sh phase2
+# Phase 3 — optional: trio matched × 3 seeds (rebuild graph trước mỗi seed)
+./scripts/run_q1_gpu_experiments.sh phase3   # cần sửa script: gọi graph_builder theo seed
 
-# Phase 3 — optional Q1: cả trio (simpleKT + GKT30 + GIKT) × 3 seeds
-./scripts/run_q1_gpu_experiments.sh phase3
-
-# Gộp bảng LaTeX
+# Gộp bảng
 ./scripts/run_q1_gpu_experiments.sh summarize
 ```
 
@@ -76,21 +155,24 @@ nohup ./scripts/run_q1_gpu_experiments.sh all > logs/q1/nohup.log 2>&1 &
 tail -f logs/q1/nohup.log
 ```
 
+> **Lưu ý:** `run_q1_gpu_experiments.sh` hiện **bỏ qua** graph rebuild khi `fold_0/e_pre_train_only.csv` đã tồn tại. Phase 2+ phải rebuild thủ công theo §0.2 (hoặc xóa exports cũ trước khi chạy seed mới).
+
 ---
 
 ## 2. Cấu trúc output
 
 ```
 results/q1/
-  gkt_epochs30_s42/baseline_fold_results.csv   # Phase 1
-  gkt_epochs30_s17/...
+  gkt_epochs30_s42/baseline_fold_results.csv   # Phase 1 ✅ (cần pull folder)
+  gkt_epochs30_s17/...                         # ⚠️ cần chạy lại sau graph rebuild
   gkt_epochs30_s1234/...
-  trio_matched_s42/...                           # Phase 3
+  trio_matched_s42/...                         # Phase 3 — chưa có
 
 results/tables/
-  q1_baseline_fold_results.csv                 # merged
-  q1_gkt_vs_simplekt.csv                       # ΔAUC per tag/seed
-  q1_gkt_epochs30_ablation.tex                 # bảng cho paper
+  q1_baseline_fold_results.csv                 # merged (có thể chứa s42 từ merge tay)
+  q1_gkt_vs_simplekt.csv
+  gkt_epoch_ablation.tex                       # Table S21 (paper)
+  gkt_epoch_ablation.csv
 
 logs/q1/
   run.log, gkt_epochs30_s42.log, ...
@@ -116,17 +198,27 @@ python -m src.baseline_runner \
 
 ---
 
-## 4. Sau khi có số — cập nhật paper
+## 4. Cập nhật paper (đã làm trên local)
 
-1. Mở `results/tables/q1_gkt_vs_simplekt.csv` → lấy `delta_mean` cho tag `gkt_epochs30_s42` (so với baseline cũ −0.041).
-2. Nếu gap thu hẹp / giữ nguyên → chỉnh abstract C5 theo kịch bản A/B (đã thảo luận).
-3. (Tuỳ chọn) `\input{results/tables/q1_gkt_epochs30_ablation.tex}` vào supplementary.
-4. Chạy lại bootstrap nếu merge vào main CSV:
+| Bước | Trạng thái |
+|------|-----------|
+| Table S21 epoch ablation (`generate_gkt_epoch_ablation.py`) | ✅ |
+| Abstract / C5 / §4.2 / Discussion / Conclusion | ✅ |
+| Supplementary index + §S21 | ✅ |
+| Cover letter (`paper/cover_letter_APIN.md`) | ✅ |
+| Bootstrap S16 (vẫn 10ep primary −0.041) | ✅ giữ nguyên — S21 bổ sung 30ep |
+
+Khi có **multi-seed hợp lệ** (9 fold × seed 42/17/1234):
+
+1. Merge vào `q1_baseline_fold_results.csv` qua `summarize_q1_experiments.py`.
+2. Mở rộng `scripts/generate_gkt_epoch_ablation.py` hoặc `bootstrap_auc_ci.py` cho 9 điểm fold-level.
+3. Cập nhật Limitations: bỏ “single seed” nếu đủ 3 seed aligned.
+
+Compile PDF (từ repo root):
 
 ```bash
-# Chỉ khi bạn đã quyết định promote Q1 rows vào main tables
-python scripts/summarize_q1_experiments.py
-# rồi merge thủ công hoặc mở rộng bootstrap_auc_ci.py cho 9 fold
+pdflatex -interaction=nonstopmode -output-directory=paper paper/main_APIN.tex
+pdflatex -interaction=nonstopmode -output-directory=paper paper/supplementary.tex
 ```
 
 ---
@@ -139,27 +231,31 @@ python scripts/summarize_q1_experiments.py
 | OOM 24GB | `batch_size: 32` trong yaml GKT; hoặc `--fold-idx N` từng fold |
 | Cache cũ 10 epoch | `python scripts/clear_baseline_cache.py --models gkt` |
 | Không có CUDA | Script `check_env` sẽ fail sớm |
+| **AUC GKT ~0.71 với seed 17/1234** | Graph chưa rebuild — xem §0.2 |
+| Phase 2 parallel 2 GPU cùng repo | Tránh: graph path không tách seed |
 
 ---
 
-## 6. Lệnh thủ công tương đương (Phase 1)
+## 6. Lệnh thủ công tương đương (Phase 1, seed 42)
 
 ```bash
-python -m src.graph_builder --config configs/xes3g5m.yaml   # nếu thiếu exports
+python -m src.graph_builder --config configs/xes3g5m_split42.yaml
 python scripts/clear_baseline_cache.py --dataset xes3g5m --models gkt
 python -m src.baseline_runner \
   --config configs/xes3g5m_gkt_epochs30.yaml \
   --split-base-seed 42 \
   --isolated-results gkt_epochs30_s42
 python scripts/summarize_q1_experiments.py
+python scripts/generate_gkt_epoch_ablation.py
 ```
 
 ---
 
 ## 7. Checklist trước khi push kết quả về máy local
 
-- [ ] `results/q1/*/baseline_fold_results.csv` tồn tại
-- [ ] `results/tables/q1_gkt_vs_simplekt.csv` có dòng `gkt_epochs30_s42`
+- [ ] `results/q1/gkt_epochs30_s42/baseline_fold_results.csv` tồn tại (Phase 1)
+- [ ] Phase 2: AUC GKT **~0.83+** (không ~0.71) sau graph rebuild
+- [ ] `results/tables/gkt_epoch_ablation.tex` / `gkt_epoch_ablation.csv` có dòng 30ep
 - [ ] `logs/q1/run.log` không có traceback
 - [ ] (Phase 3) đủ 3 tag `trio_matched_s*`
 
@@ -168,4 +264,12 @@ Scp về local:
 ```bash
 scp -r user@server:~/p0_project/results/q1 ./results/
 scp user@server:~/p0_project/results/tables/q1_* ./results/tables/
+scp user@server:~/p0_project/results/tables/gkt_epoch_ablation.* ./results/tables/
+```
+
+Sau pull:
+
+```bash
+python scripts/generate_gkt_epoch_ablation.py
+pdflatex -interaction=nonstopmode -output-directory=paper paper/main_APIN.tex
 ```
