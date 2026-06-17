@@ -16,6 +16,7 @@
 %     (or the Overleaf "Springer Nature LaTeX Template"); put sn-jnl.cls and
 %     sn-basic.bst in this directory.
 %  3. Compile: pdflatex -> bibtex -> pdflatex -> pdflatex.
+%     (Supplementary tables/figures are in the Appendix; no separate supp PDF.)
 %  4. For the FINAL submission package Springer asks for a FLAT directory: move
 %     the figures/tables next to this file and drop the "results/figures/" and
 %     "results/tables/" path prefixes.
@@ -49,8 +50,6 @@
 
 % --- Cross-referencing (load cleveref last) --------------------------------
 \usepackage{cleveref}
-\usepackage{xr}
-\externaldocument{supplementary}
 \let\orcidlogo\relax
 \let\orcid\relax
 \usepackage{orcidlink}
@@ -1423,7 +1422,7 @@ sequence leaders on synthetic hot rows, reinforcing model-specific graph benefit
 \label{fig:learner-timeline}
 \end{subfigure}
 \caption{Cold-start visualisation on XES3G5M (fold~0; very-cold stratum
-$n{=}161$ test interactions for \textit{simpleKT} in
+$n{=}161$ validation+test held-out interactions for \textit{simpleKT} in
 Table~\ref{tab:cold-start-summary}). Panels are generated from released
 fold exports (\protect\path{e\_pre\_train\_only.csv},
 \protect\path{e\_sim\_train\_only.csv}) and the preprocessed interaction log
@@ -1859,6 +1858,333 @@ Reproduction artefacts are at
 \path{https://github.com/tuanymc/p0_project.git}.
 
 %-----------------------------------------------------------------------------
+\appendix
+\section*{Appendix overview}
+\label{sec:appendix-index}
+\noindent\textbf{Tables.}
+S1--S5: per-dataset baseline diagnostics (Section~\ref{sec:supp-baseline});
+S6--S10: per-dataset graph ablation (Section~\ref{sec:supp-ablation});
+S11: paired significance tests on public benchmarks
+(Section~\ref{sec:supp-significance});
+S12--S13: cold-start diagnostics (Section~\ref{sec:supp-coldstart});
+S14: ground-truth metrics including node Jaccard
+(Section~\ref{sec:supp-gtxv-extended});
+S15: training parity (Section~\ref{sec:supp-training-parity});
+S16: $\Delta$AUC intervals for primary pairs (Section~\ref{sec:supp-bootstrap});
+S17--S18: controlled leak injection and downstream AUC
+(Section~\ref{sec:supp-leak-injection});
+S19--S20: exploratory ANOVA on backbone and DGEKT downstream AUC
+(Section~\ref{sec:supp-anova});
+S21: GKT epoch-extended ablation, seed~$42$ (Section~\ref{sec:supp-gkt-epoch});
+S22: multi-seed GKT 30ep replication (Section~\ref{sec:supp-gkt-multiseed}).
+
+\medskip\noindent\textbf{Sections and figures.}
+Section~S3: sequence-autocorrelation analysis
+(Section~\ref{sec:supp-autocorr});
+Section~S4: \DDR{} augmentation operators (Section~\ref{sec:supp-operators});
+Section~S5: ground-truth disagreement examples
+(Section~\ref{sec:supp-disagreement});
+Figure~S1: multi-benchmark train-only $\Epre$ samples
+(Figure~\ref{fig:supp-kt-graph-all});
+Figure~S2: multi-benchmark \DDR{} curves (Figure~\ref{fig:supp-ddr-all});
+Figure~S3: \DDR{} downstream scatter plot
+(Figure~\ref{fig:supp-ddr-downstream}).
+Cold-start panels in the main text (Figure~\ref{fig:coldstart-viz}) are
+generated from fold~0 exports by \path{scripts/plot\_kt\_graph\_figures.py}.
+
+\section{Per-dataset baseline diagnostics}
+\label{sec:supp-baseline}
+Tables~S1--S5 (Tables~\ref{tab:baseline-junyi}--\ref{tab:baseline-synthetic-c5})
+reproduce the five diagnostic baseline tables (AUC, ACC, NLL with 95\% bootstrap
+CIs) that the main text summarises in its cross-dataset AUC summary table.
+pyKT GKT is omitted on Junyi Academy because the stock wrapper is impractical on
+the dense multi-million-interaction graphs under our compute budget.
+
+\input{results/tables/baseline_results_full.tex}
+
+\section{Per-dataset graph construction ablation}
+\label{sec:supp-ablation}
+Tables~S6--S10 (Table~\ref{tab:graph-ablation-junyi}--\ref{tab:graph-ablation-synthetic-c5})
+report fold~0 train-only versus full-log metrics for each graph-augmented pyKT
+model. The main text reports only the maximum $|\Delta$AUC| and
+$|\Delta$ACC per dataset.
+
+\input{results/tables/graph_ablation_full.tex}
+
+\section{Paired significance tests (public benchmarks)}
+\label{sec:supp-significance}
+Table~S11 (Table~\ref{tab:significance-public}) reports paired $t$-test and
+Wilcoxon $p$-values for graph-augmented models versus \textit{simpleKT} on the
+three public benchmarks. The main text baseline-CV table lists only
+Wilcoxon $p$-values because three-fold CV limits Wilcoxon resolution
+($p_{\min}{=}0.25$).
+
+\input{results/tables/significance_tests_public.tex}
+
+\section{Sequence autocorrelation analysis}
+\label{sec:supp-autocorr}
+For every learner we order interactions by timestamp and, over consecutive
+within-learner pairs $(t{-}1,t)$, measure KC-repeat rate, item-repeat rate,
+label persistence, lag-one label autocorrelation $\rho$, and the AUC of the
+trivial previous-answer predictor (\path{scripts/compute_autocorrelation.py}).
+
+\input{results/tables/autocorrelation_stats.tex}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.82\linewidth]{results/figures/fig_autocorr_vs_auc.pdf}
+\caption{Consecutive KC-repeat rate against \textit{simpleKT} AUC across the three public benchmarks.}
+\label{fig:supp-autocorr-auc}
+\end{figure}
+
+\section{DDR augmentation operator definitions}
+\label{sec:supp-operators}
+All operators act on the retained acyclic $\Epre$ at perturbation strength
+$p\in\{0.05,0.10,0.20,0.30\}$:
+\begin{itemize}
+  \item \textbf{Attribute masking} masks a random subset of edge attributes
+  without changing $\Epre$ ($\DDR{=}0$ by construction).
+  \item \textbf{Edge dropping} removes each edge independently with probability
+  $p$ (expected $\DDR{\approx}p$).
+  \item \textbf{Subgraph sampling} performs a random walk until
+  $\lceil(1-p)|\mathcal{C}|\rceil$ nodes are visited and returns the induced
+  subgraph (boundary edges drop; internal connectivity preserved).
+  \item \textbf{Node dropping} removes $\lceil p|\mathcal{C}|\rceil$ nodes and
+  all incident edges.
+  \item \textbf{\texttt{prereq\_preserve}} draws the same per-edge budget as
+  edge dropping but removes only transitively redundant edges, protecting the
+  transitive-reduction backbone.
+\end{itemize}
+
+\section{Ground-truth disagreement examples (Junyi)}
+\label{sec:supp-disagreement}
+The cross-validation procedure exports qualitative disagreement cases to
+\path{results/tables/disagreement_examples.csv}. Inferred-only edges are
+predominantly bidirectional co-occurring arithmetic pairs (e.g.\
+\texttt{number\_line} $\leftrightarrow$ \texttt{addition\_1}). Expert-only
+edges are systematic level-progression annotations (e.g.\
+\texttt{equivalent\_fractions\_2} $\rightarrow$ \texttt{equivalent\_fractions}).
+The \texttt{wrong\_direction} category contains many reversed level-progression
+pairs such as \texttt{addition\_1} $\rightarrow$ \texttt{addition\_2}.
+
+\section{Ground-truth metrics with node Jaccard}
+\label{sec:supp-gtxv-extended}
+Table~S14 (Table~\ref{tab:gt-validation-extended}) extends the main text
+ground-truth table with node Jaccard across the same top-$K$ cutoffs.
+
+\input{results/tables/gt_validation_extended.tex}
+
+\section{Cold-start tables (full)}
+\label{sec:supp-coldstart}
+Table~S12 (Table~\ref{tab:cold-start-strata}) reports fold~0 \textit{simpleKT}
+metrics by KC-frequency stratum; Table~S13 (Table~\ref{tab:cold-start-comparison})
+lists three-fold per-model AUC (mean~$\pm$~std) and $\Delta_{\max}$ by stratum.
+The main text summarises both in a single table.
+
+\input{results/tables/cold_start_by_stratum.tex}
+\input{results/tables/cold_start_comparison.tex}
+
+\section{DDR downstream scatter plot}
+\label{sec:supp-ddr-downstream}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.74\linewidth]{results/figures/fig_ddr_downstream.pdf}
+\caption{Supplementary Figure~S3. Downstream DGEKT sensitivity to prerequisite-graph disruption on ASSISTments~2012 and XES3G5M. Each point is one fold/operator/strength run; the vertical axis is AUC drop relative to the unperturbed train-only graph.}
+\label{fig:supp-ddr-downstream}
+\end{figure}
+
+\section{Additional KT-graph figures}
+\label{sec:supp-figures}
+
+\begin{figure}[t]
+\centering
+\begin{subfigure}[t]{0.32\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{results/figures/fig_kt_graph_junyi.pdf}
+  \caption{Junyi Academy}
+  \label{fig:supp-ktgraph-junyi}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.32\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{results/figures/fig_kt_graph_assist2012.pdf}
+  \caption{ASSISTments 2012}
+  \label{fig:supp-ktgraph-assist}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.32\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{results/figures/fig_kt_graph_xes3g5m.pdf}
+  \caption{XES3G5M}
+  \label{fig:supp-ktgraph-xes}
+\end{subfigure}
+\caption{Supplementary Figure~S1. High-weight samples from train-only $\Epre$ after DAG audit (fold~0 exports). The main text shows the Junyi panel only.}
+\label{fig:supp-kt-graph-all}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\begin{subfigure}[t]{0.319\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{results/figures/fig_ddr_junyi.pdf}
+    \caption{Junyi Academy}
+    \label{fig:supp-ddr-junyi}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.319\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{results/figures/fig_ddr_assist2012.pdf}
+    \caption{ASSISTments 2012}
+    \label{fig:supp-ddr-assist2012}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.319\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{results/figures/fig_ddr_xes3g5m.pdf}
+    \caption{XES3G5M}
+    \label{fig:supp-ddr-xes3g5m}
+\end{subfigure}
+\caption{Supplementary Figure~S2. \DDR{} versus perturbation strength $p$ for five augmentation families across three benchmarks. The main text shows the Junyi panel only.}
+\label{fig:supp-ddr-all}
+\end{figure}
+
+\section{Training parity}
+\label{sec:supp-training-parity}
+Table~S15 (Table~\ref{tab:training-parity}) outlines hyperparameter parity
+and model configuration across \texttt{pyKT} and native baselines. Settings
+shared by all models are kept out of the table: learning rate $0.001$
+(Adam), zero hyperparameter-search budget, split seed $42$, identical
+processed splits under both train-only and full-log graph constructions, and
+checkpoint selection by best validation AUC with early stopping (BKT is fit
+by L-BFGS on NLL without early stopping). Epoch caps and batch sizes differ
+across families (30 epochs for sequence checkpoints vs.\ 10 for graph
+backbones in the primary release), reflecting per-epoch cost. Tables~S21--S22
+report GKT epoch-extended ablations (30~epochs, batch~32; \textit{simpleKT}
+reference at 10~epochs, batch~64) with fold-aligned graph rebuilds per split
+seed ($17$, $42$, $1234$). ``Native'' denotes
+our re-implementations in \texttt{src/models}; graph models consume the
+exported $\Epre$ and, where available, $\Esim$ edges.
+\begin{table}[h!]
+\centering
+\caption{Training parity and hyperparameters (Table S15)}
+\label{tab:training-parity}
+{\small
+\input{results/tables/training_parity.tex}}
+\end{table}
+
+\section{$\Delta$AUC intervals for primary pairs}
+\label{sec:supp-bootstrap}
+Table~S16 (Table~\ref{tab:bootstrap-auc-ci}) reports the mean AUC difference
+($\Delta$AUC) between the primary model pairs on XES3G5M under train-only
+graph construction. The released bundle reports paired-$t$ 95\% intervals
+over three learner-disjoint folds (default; matches fold-level
+$\Delta$AUC). Optional row-level learner bootstrap:
+\path{scripts/bootstrap_auc_ci.py --learner-bootstrap}.
+The GKT deficit under the released 10-epoch budget ($-0.041$; CI $[-0.044,-0.038]$) is more than an order of
+magnitude larger than the interval half-width, so the model-specific conclusion
+does not hinge on fragile three-fold $t$-tests. Tables~S21--S22 show GKT
+epoch extension recovers only ${\approx}+0.003$ mean AUC on seed~$42$, leaving pooled
+$\Delta{\approx}-0.038$ (95\% CI $[-0.041,-0.035]$ over nine folds). Reproducers may optionally run
+\texttt{python scripts/bootstrap\_auc\_ci.py --learner-bootstrap} on exported
+prediction parquets for row-level learner resampling (slower; fold-level
+paired-$t$ is the default).
+\begin{table}[h!]
+\centering
+\caption{$\Delta$AUC intervals for primary pairs, XES3G5M, train-only graphs (Table S16)}
+\label{tab:bootstrap-auc-ci}
+\input{results/tables/bootstrap_auc_ci.tex}
+\end{table}
+
+\section{GKT epoch-extended ablation}
+\label{sec:supp-gkt-epoch}
+Table~S21 (Table~\ref{tab:gkt-epoch-ablation}) compares the released GKT
+configuration (10~epochs, batch~16) with a GKT-only epoch extension on split
+seed~$42$ (\path{configs/xes3g5m_gkt_epochs30.yaml}; 30~epochs, batch~32 under
+our 16--24\,GB GPU budget; \textit{simpleKT} reference unchanged) on XES3G5M
+under train-only graphs. Fold-level
+$\Delta$AUC intervals use paired-$t$ over three learner-disjoint folds,
+matching Table~S16.
+\begin{table}[h!]
+\centering
+\caption{GKT epoch-extended ablation on XES3G5M, split seed~$42$ (Table S21)}
+\label{tab:gkt-epoch-ablation}
+\input{results/tables/gkt_epoch_ablation.tex}
+\end{table}
+
+\section{Multi-seed GKT replication}
+\label{sec:supp-gkt-multiseed}
+Table~S22 (Table~\ref{tab:gkt-multiseed}) replicates GKT epoch-extended training
+at split base seeds $17$, $42$, and $1234$. Each run rebuilds fold-specific
+train-only graph exports before training (see \path{configs/xes3g5m_split17.yaml} and siblings).
+$\Delta$AUC pairs GKT against \textit{simpleKT} from the matched Phase~3 trio
+runs at the same seed (GKT: 30~epochs, batch~32; \textit{simpleKT}: 10~epochs,
+batch~64). Pooled nine-fold summary: Table~\ref{tab:gkt-pooled}.
+\begin{table}[h!]
+\centering
+\caption{GKT epoch-extended vs.\ \textit{simpleKT} by split seed (Table S22)}
+\label{tab:gkt-multiseed}
+\input{results/tables/q1_gkt_epochs30_ablation_tabular.tex}
+\end{table}
+\begin{table}[h!]
+\centering
+\caption{Pooled nine-fold $\Delta$AUC summary (Table S22, continued)}
+\label{tab:gkt-pooled}
+\input{results/tables/gkt_epoch_ablation_pooled.tex}
+\end{table}
+
+\section{Controlled Leak Injection}
+\label{sec:supp-leak-injection}
+Table~S17 (Table~\ref{tab:leak-injection}) probes the sensitivity of the
+audit metrics by deliberately injecting $5\%$ and $20\%$ of test-fold
+interactions into the train-only prerequisite builder on XES3G5M (fold~0).
+Edge counts $|\Epre|$ are \emph{candidate} edges before DAG pruning (the
+main text DAG audit reports 701 retained edges after pruning on the clean
+fold). Candidate-edge count and $\mathrm{TBMR}_f$ increase monotonically with the
+injection rate, while $\mathrm{ECR}^{\mathrm{flag}}_f$ remains $0$ (learner-id
+sets stay disjoint) and $\mathrm{ECR}^{\mathrm{overlap}}_f$ is already
+saturated at $1.0$ on this transition-dense corpus. Flag-level checks alone
+therefore miss this contamination channel, supporting the tiered audit design
+in the main text.
+\begin{table}[h!]
+\centering
+\caption{Controlled Leak Injection, XES3G5M fold~0. $|\Epre|$ counts candidate edges before DAG pruning. (Table S17)}
+\label{tab:leak-injection}
+\input{results/tables/leak_injection.tex}
+\end{table}
+
+Table~S18 (Table~\ref{tab:downstream-injection-auc}) reports fold-0 test AUC
+after retraining \textit{simpleKT}, GKT, and GIKT on the clean and injected
+graphs. Headline AUC does not track the structural audit monotonically: GKT
+and GIKT AUC \emph{rise} at $20\%$ injection on this dense log, whereas
+\textit{simpleKT} remains near $0.850$--$0.858$. We therefore treat S18 as
+evidence that metric-tier reporting must precede AUC-only leakage
+conclusions, not as proof that contamination always lowers accuracy.
+\begin{table}[h!]
+\centering
+\caption{Downstream test AUC under controlled leak injection, XES3G5M fold~0 (Table S18)}
+\label{tab:downstream-injection-auc}
+\input{results/tables/downstream_auc_injection.tex}
+\end{table}
+
+\section{Exploratory ANOVA summaries}
+\label{sec:supp-anova}
+The main text reports fold-level means~$\pm$~std throughout
+Tables~\ref{tab:baseline-summary}, \ref{tab:baseline-cv},
+\ref{tab:leakage-metrics}, \ref{tab:ddr-raw}, and
+\ref{tab:cold-start-summary}, with Table~S16 $\Delta$AUC intervals
+(Table~S16) as the primary inferential evidence for the XES3G5M ranking
+observation. For reviewer-requested completeness, Tables~S19--S20 add
+exploratory ANOVA models on fold-level observations. Because each
+dataset--model cell contains only three folds, we interpret ANOVA
+$p$-values as descriptive rather than as proof of backbone dominance.
+
+\input{results/tables/anova_baseline.tex}
+
+\input{results/tables/anova_ddr_downstream.tex}
+%-----------------------------------------------------------------------------
+
+%-----------------------------------------------------------------------------
 \backmatter
 
 \bmhead{Acknowledgements}
@@ -1900,10 +2226,10 @@ fold-level mean~$\pm$~std and inferential summaries are regenerated by
 \path{scripts/generate_paper_artifacts.py}); $\Delta$AUC intervals (Table~S16)
 use \path{scripts/bootstrap_auc_ci.py} (paired-$t$ over three folds by default;
 \texttt{--learner-bootstrap} for optional row-level resampling on parquets).
-Supplementary tables and figures are provided in the separate supplementary material document.
+Supplementary tables and figures are included in the Appendix of this document.
 
-\medskip\noindent\textbf{Supplementary material.} The supplementary material document
-is provided alongside this manuscript and is indexed at its opening page.
+\medskip\noindent\textbf{Appendix.} Supplementary tables and figures are merged into
+the Appendix (overview at Section~\ref{sec:appendix-index}).
 Tables~S1--S5: per-dataset baseline diagnostics; S6--S10: train-only versus
 full-log ablation; S11: paired significance tests on public benchmarks;
 S12--S13: cold-start strata; S14: ground-truth metrics including node Jaccard;
@@ -1911,12 +2237,11 @@ S15: training parity; S16: $\Delta$AUC intervals for primary pairs;
 Tables~S17--S18 report controlled leak-injection metrics and downstream AUC
 on injected graphs. Tables~S21--S22 report the GKT epoch-extended ablation
 (seed~$42$ and multi-seed replication). Tables~S19--S20 report exploratory ANOVA summaries
-(Section~\ref{sec:supp-anova} in the supplementary material).
+(Section~\ref{sec:supp-anova} in the Appendix).
 Section~S3: sequence-autocorrelation statistics; Sections~S4--S5:
 augmentation-operator definitions and ground-truth disagreement examples.
 Figures~S1--S2: multi-benchmark train-only $\Epre$ samples and \DDR{} curves;
-Figure~S3: \DDR{} downstream scatter plot. Cold-start panels in the main
-manuscript (Figure~\ref{fig:coldstart-viz}) are generated from fold~0 exports.
+Figure~S3: \DDR{} downstream scatter plot. Cold-start panels in the main text (Figure~\ref{fig:coldstart-viz}) are generated from fold~0 exports.
 
 \medskip\noindent\textbf{Author contributions.}
 D.~M. Tuan conceived the protocol, implemented the leakage-controlled pipeline,

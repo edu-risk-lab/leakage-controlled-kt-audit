@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.6.8)  16 JUN 2026 17:48
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.6.8)  17 JUN 2026 11:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -875,23 +875,23 @@ Package hyperref Info: Link coloring ON on input line 29.
 
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Calculating math sizes for size <12.045> on input line 62.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 62.
+LaTeX Font Info:    Calculating math sizes for size <12.045> on input line 63.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 63.
 
 
 (d:\0.\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 62.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 63.
 
  (d:\0.\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Calculating math sizes for size <11.04124> on input line 62
+LaTeX Font Info:    Calculating math sizes for size <11.04124> on input line 63
 .
-LaTeX Font Info:    Calculating math sizes for size <9.03374> on input line 62.
+LaTeX Font Info:    Calculating math sizes for size <9.03374> on input line 63.
 
-LaTeX Font Info:    Calculating math sizes for size <10.03749> on input line 62
+LaTeX Font Info:    Calculating math sizes for size <10.03749> on input line 63
 .
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -902,7 +902,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [1
 
 {C:/Users/tuanymc/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
-Underfull \hbox (badness 1199) in paragraph at lines 81--94
+Underfull \hbox (badness 1199) in paragraph at lines 83--96
 \OT1/cmr/m/n/10 (Figure [][]7[][]) are gen-er-ated from fold 0 exports by $\OT1
 /cmtt/m/n/10.03749 scripts / plot \ _kt \ _graph \
  []
@@ -913,95 +913,94 @@ Underfull \hbox (badness 4940) in paragraph at lines 32--32
 IST-ments 2012 (three-fold learner CV
  []
 
-) (results/tables/graph_ablation_full.tex
+) (results/tables/graph_ablation_full.tex)
+(results/tables/significance_tests_public.tex
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [2])
-(results/tables/significance_tests_public.tex)
 (results/tables/autocorrelation_stats.tex)
-<results/figures/fig_autocorr_vs_auc.pdf, id=118, 426.04985pt x 244.80785pt>
+<results/figures/fig_autocorr_vs_auc.pdf, id=126, 426.04985pt x 244.80785pt>
 File: results/figures/fig_autocorr_vs_auc.pdf Graphic file (type pdf)
 <use results/figures/fig_autocorr_vs_auc.pdf>
 Package pdftex.def Info: results/figures/fig_autocorr_vs_auc.pdf  used on input
- line 135.
+ line 137.
 (pdftex.def)             Requested size: 305.04272pt x 175.28282pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [3]
+LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10.03749> not available
+
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 156.
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [4]
-LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10.03749> not available
-
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 154.
-
-(results/tables/gt_validation_extended.tex
+(results/tables/gt_validation_extended.tex)
+(results/tables/cold_start_by_stratum.tex
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [5])
-(results/tables/cold_start_by_stratum.tex)
 (results/tables/cold_start_comparison.tex)
-<results/figures/fig_ddr_downstream.pdf, id=153, 455.232pt x 295.20601pt>
+<results/figures/fig_ddr_downstream.pdf, id=158, 455.232pt x 295.20601pt>
 File: results/figures/fig_ddr_downstream.pdf Graphic file (type pdf)
 <use results/figures/fig_ddr_downstream.pdf>
 Package pdftex.def Info: results/figures/fig_ddr_downstream.pdf  used on input 
-line 192.
+line 194.
 (pdftex.def)             Requested size: 275.28204pt x 178.51685pt.
 
-Underfull \hbox (badness 2080) in paragraph at lines 193--193
+Underfull \hbox (badness 2080) in paragraph at lines 195--195
 \OT1/cmr/m/n/10 graph dis-rup-tion on ASSIST-ments 2012 and XES3G5M. Each point
  is one
  []
-
-<results/figures/fig_kt_graph_junyi.pdf, id=154, 296.307pt x 223.67941pt>
-File: results/figures/fig_kt_graph_junyi.pdf Graphic file (type pdf)
-<use results/figures/fig_kt_graph_junyi.pdf>
-Package pdftex.def Info: results/figures/fig_kt_graph_junyi.pdf  used on input 
-line 204.
-(pdftex.def)             Requested size: 119.04272pt x 89.86267pt.
-<results/figures/fig_kt_graph_assist2012.pdf, id=155, 296.307pt x 223.67941pt>
-File: results/figures/fig_kt_graph_assist2012.pdf Graphic file (type pdf)
-<use results/figures/fig_kt_graph_assist2012.pdf>
-Package pdftex.def Info: results/figures/fig_kt_graph_assist2012.pdf  used on i
-nput line 211.
-(pdftex.def)             Requested size: 119.04272pt x 89.86267pt.
-<results/figures/fig_kt_graph_xes3g5m.pdf, id=156, 296.307pt x 223.67941pt>
-File: results/figures/fig_kt_graph_xes3g5m.pdf Graphic file (type pdf)
-<use results/figures/fig_kt_graph_xes3g5m.pdf>
-Package pdftex.def Info: results/figures/fig_kt_graph_xes3g5m.pdf  used on inpu
-t line 218.
-(pdftex.def)             Requested size: 119.04272pt x 89.86267pt.
-<results/figures/fig_ddr_junyi.pdf, id=157, 542.025pt x 361.35pt>
-File: results/figures/fig_ddr_junyi.pdf Graphic file (type pdf)
-<use results/figures/fig_ddr_junyi.pdf>
-Package pdftex.def Info: results/figures/fig_ddr_junyi.pdf  used on input line 
-230.
-(pdftex.def)             Requested size: 118.66809pt x 79.11128pt.
-<results/figures/fig_ddr_assist2012.pdf, id=158, 542.025pt x 361.35pt>
-File: results/figures/fig_ddr_assist2012.pdf Graphic file (type pdf)
-<use results/figures/fig_ddr_assist2012.pdf>
-Package pdftex.def Info: results/figures/fig_ddr_assist2012.pdf  used on input 
-line 237.
-(pdftex.def)             Requested size: 118.66809pt x 79.11128pt.
-<results/figures/fig_ddr_xes3g5m.pdf, id=159, 542.025pt x 361.35pt>
-File: results/figures/fig_ddr_xes3g5m.pdf Graphic file (type pdf)
-<use results/figures/fig_ddr_xes3g5m.pdf>
-Package pdftex.def Info: results/figures/fig_ddr_xes3g5m.pdf  used on input lin
-e 244.
-(pdftex.def)             Requested size: 118.66809pt x 79.11128pt.
-(results/tables/training_parity.tex)
-Overfull \hbox (89.51555pt too wide) in paragraph at lines 267--273
- [] 
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [6]
+<results/figures/fig_kt_graph_junyi.pdf, id=172, 296.307pt x 223.67941pt>
+File: results/figures/fig_kt_graph_junyi.pdf Graphic file (type pdf)
+<use results/figures/fig_kt_graph_junyi.pdf>
+Package pdftex.def Info: results/figures/fig_kt_graph_junyi.pdf  used on input 
+line 206.
+(pdftex.def)             Requested size: 119.04272pt x 89.86267pt.
+<results/figures/fig_kt_graph_assist2012.pdf, id=173, 296.307pt x 223.67941pt>
+File: results/figures/fig_kt_graph_assist2012.pdf Graphic file (type pdf)
+<use results/figures/fig_kt_graph_assist2012.pdf>
+Package pdftex.def Info: results/figures/fig_kt_graph_assist2012.pdf  used on i
+nput line 213.
+(pdftex.def)             Requested size: 119.04272pt x 89.86267pt.
+<results/figures/fig_kt_graph_xes3g5m.pdf, id=174, 296.307pt x 223.67941pt>
+File: results/figures/fig_kt_graph_xes3g5m.pdf Graphic file (type pdf)
+<use results/figures/fig_kt_graph_xes3g5m.pdf>
+Package pdftex.def Info: results/figures/fig_kt_graph_xes3g5m.pdf  used on inpu
+t line 220.
+(pdftex.def)             Requested size: 119.04272pt x 89.86267pt.
+<results/figures/fig_ddr_junyi.pdf, id=175, 542.025pt x 361.35pt>
+File: results/figures/fig_ddr_junyi.pdf Graphic file (type pdf)
+<use results/figures/fig_ddr_junyi.pdf>
+Package pdftex.def Info: results/figures/fig_ddr_junyi.pdf  used on input line 
+232.
+(pdftex.def)             Requested size: 118.66809pt x 79.11128pt.
+<results/figures/fig_ddr_assist2012.pdf, id=176, 542.025pt x 361.35pt>
+File: results/figures/fig_ddr_assist2012.pdf Graphic file (type pdf)
+<use results/figures/fig_ddr_assist2012.pdf>
+Package pdftex.def Info: results/figures/fig_ddr_assist2012.pdf  used on input 
+line 239.
+(pdftex.def)             Requested size: 118.66809pt x 79.11128pt.
+<results/figures/fig_ddr_xes3g5m.pdf, id=177, 542.025pt x 361.35pt>
+File: results/figures/fig_ddr_xes3g5m.pdf Graphic file (type pdf)
+<use results/figures/fig_ddr_xes3g5m.pdf>
+Package pdftex.def Info: results/figures/fig_ddr_xes3g5m.pdf  used on input lin
+e 246.
+(pdftex.def)             Requested size: 118.66809pt x 79.11128pt.
+
+(results/tables/training_parity.tex)
+Overfull \hbox (89.51555pt too wide) in paragraph at lines 270--276
+ [] 
+ []
+
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [7 <./results/figures/fig_autocorr_vs_auc.pdf>]
@@ -1009,18 +1008,18 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 LaTeX Font Info:    Calculating math sizes for size <14.05249> on input line 27
-5.
+8.
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 275.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\Delta' on input line 275.
+(hyperref)                removing `math shift' on input line 278.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 275.
+(hyperref)                removing `\Delta' on input line 278.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 278.
 
 (results/tables/bootstrap_auc_ci.tex
 LaTeX Font Info:    Calculating math sizes for size <8.03> on input line 3.
@@ -1029,7 +1028,7 @@ LaTeX Font Info:    Calculating math sizes for size <8.03> on input line 3.
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 (results/tables/gkt_epoch_ablation.tex)
-Overfull \hbox (60.83174pt too wide) in paragraph at lines 307--312
+Overfull \hbox (60.83174pt too wide) in paragraph at lines 310--315
  [] 
  []
 
@@ -1043,6 +1042,18 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
+(results/tables/q1_gkt_epochs30_ablation_tabular.tex)
+Overfull \hbox (27.48936pt too wide) in paragraph at lines 325--330
+ [] 
+ []
+
+(results/tables/gkt_epoch_ablation_pooled.tex)
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
 (results/tables/leak_injection.tex)
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
@@ -1051,20 +1062,21 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 (results/tables/downstream_auc_injection.tex)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [10 <./results/figures/fig_ddr_downstream.pdf> <./results/figures/fig_kt_graph
+_junyi.pdf> <./results/figures/fig_kt_graph_assist2012.pdf> <./results/figures/
+fig_kt_graph_xes3g5m.pdf>]
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [10 <./results/figures/fig_ddr_downstream.pdf> <./results/figures/fig_kt_graph
-_junyi.pdf> <./results/figures/fig_kt_graph_assist2012.pdf> <./results/figures/
-fig_kt_graph_xes3g5m.pdf>] (results/tables/anova_baseline.tex
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
  [11 <./results/figures/fig_ddr_junyi.pdf> <./results/figures/fig_ddr_assist201
-2.pdf> <./results/figures/fig_ddr_xes3g5m.pdf>]) (results/tables/anova_ddr_down
-stream.tex)
+2.pdf> <./results/figures/fig_ddr_xes3g5m.pdf>] (results/tables/anova_baseline.
+tex)
+(results/tables/anova_ddr_downstream.tex)
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [12]
@@ -1076,15 +1088,25 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
-Package rerunfilecheck Info: File `supplementary.out' has not changed.
-(rerunfilecheck)             Checksum: F89F3F2FDDD2572B91D1A593A85158AA;3117.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+Package rerunfilecheck Warning: File `supplementary.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `supplementary.out':
+(rerunfilecheck)             Before: 3BA750EC2178BB915471D33445B161CA;3313
+(rerunfilecheck)             After:  23D9E0B50694003339EB22A238FE77EF;3302.
  ) 
 Here is how much of TeX's memory you used:
- 14204 strings out of 467871
- 224031 string characters out of 5437130
- 718996 words of memory out of 5000000
- 42740 multiletter control sequences out of 15000+600000
- 667484 words of font info for 190 fonts, out of 8000000 for 9000
+ 14226 strings out of 467871
+ 224827 string characters out of 5437130
+ 719428 words of memory out of 5000000
+ 42751 multiletter control sequences out of 15000+600000
+ 667652 words of font info for 191 fonts, out of 8000000 for 9000
  1151 hyphenation exceptions out of 8191
  90i,23n,93p,948b,688s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\tuanymc\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi602\tc
@@ -1108,9 +1130,9 @@ b><d:/0./fonts/type1/public/amsfonts/cm/cmti9.pfb><d:/0./fonts/type1/public/ams
 fonts/cm/cmtt10.pfb><d:/0./fonts/type1/public/amsfonts/cm/cmtt8.pfb><d:/0./font
 s/type1/public/amsfonts/cm/cmtt9.pfb>
 Output written on "D:\0. NCS\CODE\p0_project\paper\supplementary.pdf" (13 pages
-, 579243 bytes).
+, 586129 bytes).
 PDF statistics:
- 757 PDF objects out of 1000 (max. 8388607)
- 79 named destinations out of 1000 (max. 500000)
- 161 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 768 PDF objects out of 1000 (max. 8388607)
+ 84 named destinations out of 1000 (max. 500000)
+ 169 words of extra memory for PDF output out of 10000 (max. 10000000)
 

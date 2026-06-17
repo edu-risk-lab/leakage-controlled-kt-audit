@@ -1,7 +1,6 @@
 %=============================================================================
-% Supplementary Material for main_APIN.tex
-% Compile from PROJECT ROOT:
-%   pdflatex -output-directory=paper paper/supplementary.tex
+% DEPRECATED: supplementary content is merged into main_APIN.tex (Appendix).
+% Compile only: pdflatex paper/main_APIN.tex
 %=============================================================================
 \documentclass[pdflatex,sn-basic]{sn-jnl}
 
@@ -13,6 +12,21 @@
 \usepackage{multirow}
 \usepackage{array}
 \usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[framemethod=tikz]{mdframed}
+\mdfdefinestyle{revhighlight}{
+  backgroundcolor=yellow!45,
+  linecolor=yellow!45,
+  linewidth=0pt,
+  innerleftmargin=3pt,
+  innerrightmargin=3pt,
+  innertopmargin=2pt,
+  innerbottommargin=2pt,
+  skipabove=3pt,
+  skipbelow=3pt,
+}
+\newcommand{\rev}[1]{\begin{mdframed}[style=revhighlight]#1\end{mdframed}}
+% Revision highlight (base rev 501e18c6): remove \rev{} before final submission.
 \usepackage{subcaption}
 \usepackage{url}
 \usepackage{xr}
@@ -56,8 +70,8 @@ supplementary \DDR{} / KT-graph figures omitted from the main manuscript for
 length.
 Tables~S15--S18 report training parity, $\Delta$AUC intervals (paired-$t$ by
 default), controlled leak-injection metrics, and downstream AUC on injected graphs.
-Table~S21 reports the GKT epoch-extended ablation on XES3G5M; Table~S22
-reports multi-seed replication.}
+\rev{Table~S21 reports the GKT epoch-extended ablation on XES3G5M; Table~S22
+reports multi-seed replication.}}
 
 \maketitle
 
@@ -77,8 +91,8 @@ S17--S18: controlled leak injection and downstream AUC
 (Section~\ref{sec:supp-leak-injection});
 S19--S20: exploratory ANOVA on backbone and DGEKT downstream AUC
 (Section~\ref{sec:supp-anova});
-S21: GKT epoch-extended ablation, seed~$42$ (Section~\ref{sec:supp-gkt-epoch});
-S22: multi-seed GKT 30ep replication (Section~\ref{sec:supp-gkt-multiseed}).
+\rev{S21: GKT epoch-extended ablation, seed~$42$ (Section~\ref{sec:supp-gkt-epoch});
+S22: multi-seed GKT 30ep replication (Section~\ref{sec:supp-gkt-multiseed}).}
 
 \medskip\noindent\textbf{Sections and figures.}
 Section~S3: sequence-autocorrelation analysis
@@ -261,10 +275,10 @@ processed splits under both train-only and full-log graph constructions, and
 checkpoint selection by best validation AUC with early stopping (BKT is fit
 by L-BFGS on NLL without early stopping). Epoch caps and batch sizes differ
 across families (30 epochs for sequence checkpoints vs.\ 10 for graph
-backbones in the primary release), reflecting per-epoch cost. Tables~S21--S22
+\rev{backbones in the primary release), reflecting per-epoch cost. Tables~S21--S22
 report GKT epoch-extended ablations (30~epochs, batch~32; \textit{simpleKT}
 reference at 10~epochs, batch~64) with fold-aligned graph rebuilds per split
-seed ($17$, $42$, $1234$). ``Native'' denotes
+seed ($17$, $42$, $1234$). ``Native'' denotes}
 our re-implementations in \texttt{src/models}; graph models consume the
 exported $\Epre$ and, where available, $\Esim$ edges.
 \begin{table}[h!]
@@ -285,9 +299,9 @@ $\Delta$AUC). Optional row-level learner bootstrap:
 \path{scripts/bootstrap_auc_ci.py --learner-bootstrap}.
 The GKT deficit under the released 10-epoch budget ($-0.041$; CI $[-0.044,-0.038]$) is more than an order of
 magnitude larger than the interval half-width, so the model-specific conclusion
-does not hinge on fragile three-fold $t$-tests. Tables~S21--S22 show GKT
+\rev{does not hinge on fragile three-fold $t$-tests. Tables~S21--S22 show GKT
 epoch extension recovers only ${\approx}+0.003$ mean AUC on seed~$42$, leaving pooled
-$\Delta{\approx}-0.038$ (95\% CI $[-0.041,-0.035]$ over nine folds). Reproducers may optionally run
+$\Delta{\approx}-0.038$ (95\% CI $[-0.041,-0.035]$ over nine folds).} Reproducers may optionally run
 \texttt{python scripts/bootstrap\_auc\_ci.py --learner-bootstrap} on exported
 prediction parquets for row-level learner resampling (slower; fold-level
 paired-$t$ is the default).
@@ -298,39 +312,39 @@ paired-$t$ is the default).
 \input{results/tables/bootstrap_auc_ci.tex}
 \end{table}
 
-\section{GKT epoch-extended ablation}
+\rev{\section{GKT epoch-extended ablation}}
 \label{sec:supp-gkt-epoch}
-Table~S21 (Table~\ref{tab:gkt-epoch-ablation}) compares the released GKT
+\rev{Table~S21 (Table~\ref{tab:gkt-epoch-ablation}) compares the released GKT
 configuration (10~epochs, batch~16) with a GKT-only epoch extension on split
 seed~$42$ (\path{configs/xes3g5m_gkt_epochs30.yaml}; 30~epochs, batch~32 under
 our 16--24\,GB GPU budget; \textit{simpleKT} reference unchanged) on XES3G5M
 under train-only graphs. Fold-level
 $\Delta$AUC intervals use paired-$t$ over three learner-disjoint folds,
-matching Table~S16.
+matching Table~S16.}
 \begin{table}[h!]
 \centering
-\caption{GKT epoch-extended ablation on XES3G5M, split seed~$42$ (Table S21)}
+\rev{\caption{GKT epoch-extended ablation on XES3G5M, split seed~$42$ (Table S21)}}
 \label{tab:gkt-epoch-ablation}
 \input{results/tables/gkt_epoch_ablation.tex}
 \end{table}
 
-\section{Multi-seed GKT replication}
+\rev{\section{Multi-seed GKT replication}
 \label{sec:supp-gkt-multiseed}
 Table~S22 (Table~\ref{tab:gkt-multiseed}) replicates GKT epoch-extended training
 at split base seeds $17$, $42$, and $1234$. Each run rebuilds fold-specific
 train-only graph exports before training (see \path{configs/xes3g5m_split17.yaml} and siblings).
 $\Delta$AUC pairs GKT against \textit{simpleKT} from the matched Phase~3 trio
 runs at the same seed (GKT: 30~epochs, batch~32; \textit{simpleKT}: 10~epochs,
-batch~64). Pooled nine-fold summary: Table~\ref{tab:gkt-pooled}.
+batch~64). Pooled nine-fold summary: Table~\ref{tab:gkt-pooled}.}
 \begin{table}[h!]
 \centering
-\caption{GKT epoch-extended vs.\ \textit{simpleKT} by split seed (Table S22)}
+\rev{\caption{GKT epoch-extended vs.\ \textit{simpleKT} by split seed (Table S22)}}
 \label{tab:gkt-multiseed}
 \input{results/tables/q1_gkt_epochs30_ablation_tabular.tex}
 \end{table}
 \begin{table}[h!]
 \centering
-\caption{Pooled nine-fold $\Delta$AUC summary (Table S22, continued)}
+\rev{\caption{Pooled nine-fold $\Delta$AUC summary (Table S22, continued)}}
 \label{tab:gkt-pooled}
 \input{results/tables/gkt_epoch_ablation_pooled.tex}
 \end{table}
