@@ -56,7 +56,8 @@ supplementary \DDR{} / KT-graph figures omitted from the main manuscript for
 length.
 Tables~S15--S18 report training parity, $\Delta$AUC intervals (paired-$t$ by
 default), controlled leak-injection metrics, and downstream AUC on injected graphs.
-Table~S21 reports the epoch-matched GKT ablation on XES3G5M.}
+Table~S21 reports the epoch-matched GKT ablation on XES3G5M; Table~S22
+reports multi-seed replication.}
 
 \maketitle
 
@@ -76,7 +77,8 @@ S17--S18: controlled leak injection and downstream AUC
 (Section~\ref{sec:supp-leak-injection});
 S19--S20: exploratory ANOVA on backbone and DGEKT downstream AUC
 (Section~\ref{sec:supp-anova});
-S21: epoch-matched GKT ablation (Section~\ref{sec:supp-gkt-epoch}).
+S21: epoch-matched GKT ablation, seed~$42$ (Section~\ref{sec:supp-gkt-epoch});
+S22: multi-seed GKT 30ep replication (Section~\ref{sec:supp-gkt-multiseed}).
 
 \medskip\noindent\textbf{Sections and figures.}
 Section~S3: sequence-autocorrelation analysis
@@ -259,9 +261,9 @@ processed splits under both train-only and full-log graph constructions, and
 checkpoint selection by best validation AUC with early stopping (BKT is fit
 by L-BFGS on NLL without early stopping). Epoch caps and batch sizes differ
 across families (30 epochs for sequence checkpoints vs.\ 10 for graph
-backbones in the primary release), reflecting per-epoch cost. Table~S21 reports
-an epoch-matched GKT ablation (30 epochs, batch~64) on the aligned split
-seed~$42$. ``Native'' denotes
+backbones in the primary release), reflecting per-epoch cost. Tables~S21--S22
+report epoch-matched GKT ablations with fold-aligned graph rebuilds per split
+seed ($17$, $42$, $1234$). ``Native'' denotes
 our re-implementations in \texttt{src/models}; graph models consume the
 exported $\Epre$ and, where available, $\Esim$ edges.
 \begin{table}[h!]
@@ -282,9 +284,9 @@ $\Delta$AUC). Optional row-level learner bootstrap:
 \path{scripts/bootstrap_auc_ci.py --learner-bootstrap}.
 The GKT deficit under the released 10-epoch budget ($-0.041$; CI $[-0.044,-0.038]$) is more than an order of
 magnitude larger than the interval half-width, so the model-specific conclusion
-does not hinge on fragile three-fold $t$-tests. Table~S21 shows epoch matching
-recovers only ${\approx}+0.003$ mean AUC, leaving $\Delta{\approx}-0.038$ under
-matched caps. Reproducers may optionally run
+does not hinge on fragile three-fold $t$-tests. Tables~S21--S22 show epoch
+matching recovers only ${\approx}+0.003$ mean AUC on seed~$42$, leaving pooled
+$\Delta{\approx}-0.038$ (95\% CI $[-0.041,-0.035]$ over nine folds). Reproducers may optionally run
 \texttt{python scripts/bootstrap\_auc\_ci.py --learner-bootstrap} on exported
 prediction parquets for row-level learner resampling (slower; fold-level
 paired-$t$ is the default).
@@ -298,17 +300,36 @@ paired-$t$ is the default).
 \section{Epoch-matched GKT ablation}
 \label{sec:supp-gkt-epoch}
 Table~S21 (Table~\ref{tab:gkt-epoch-ablation}) compares the released GKT
-configuration (10~epochs, batch~16) with an epoch-matched rerun
-(\path{configs/xes3g5m_gkt_epochs30.yaml}; 30~epochs, batch~64) on XES3G5M
-under train-only graphs and the aligned split seed~$42$. Fold-level
+configuration (10~epochs, batch~16) with an epoch-matched rerun on split
+seed~$42$ (\path{configs/xes3g5m_gkt_epochs30.yaml}; 30~epochs, batch~32 under
+our 16--24\,GB GPU budget) on XES3G5M under train-only graphs. Fold-level
 $\Delta$AUC intervals use paired-$t$ over three learner-disjoint folds,
-matching Table~S16. Multi-seed replication requires rebuilding fold-specific
-graph exports for each split base seed before retraining GKT.
+matching Table~S16.
 \begin{table}[h!]
 \centering
 \caption{Epoch-matched GKT ablation on XES3G5M, split seed~$42$ (Table S21)}
 \label{tab:gkt-epoch-ablation}
 \input{results/tables/gkt_epoch_ablation.tex}
+\end{table}
+
+\section{Multi-seed GKT replication}
+\label{sec:supp-gkt-multiseed}
+Table~S22 (Table~\ref{tab:gkt-multiseed}) replicates epoch-matched GKT training
+at split base seeds $17$, $42$, and $1234$. Each run rebuilds fold-specific
+train-only graph exports before training (see \path{configs/xes3g5m_split17.yaml} and siblings).
+$\Delta$AUC pairs GKT against \textit{simpleKT} from the matched Phase~3 trio
+runs at the same seed. Pooled nine-fold summary: Table~\ref{tab:gkt-pooled}.
+\begin{table}[h!]
+\centering
+\caption{Epoch-matched GKT vs.\ \textit{simpleKT} by split seed (Table S22)}
+\label{tab:gkt-multiseed}
+\input{results/tables/q1_gkt_epochs30_ablation_tabular.tex}
+\end{table}
+\begin{table}[h!]
+\centering
+\caption{Pooled nine-fold $\Delta$AUC summary (Table S22, continued)}
+\label{tab:gkt-pooled}
+\input{results/tables/gkt_epoch_ablation_pooled.tex}
 \end{table}
 
 \section{Controlled Leak Injection}
