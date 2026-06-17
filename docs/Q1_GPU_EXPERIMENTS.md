@@ -45,7 +45,9 @@ python -c "import torch; print(torch.cuda.get_device_name(0), torch.cuda.get_dev
 | GKT **30ep** seed **1234** | ✅ aligned | **0.836** | **−0.041** [−0.047, −0.034] | Table S21 / multi-seed |
 | Phase 3 trio (3 seeds) | ✅ | simpleKT ~0.877, GIKT ~0.879 | GIKT **+0.002** (9 fold) | Supplementary |
 
-**Pooled 9-fold (3 seeds × 3 folds):** Δ(GKT − simpleKT) = **−0.038** [−0.041, −0.035]; Δ(GIKT − simpleKT) = **+0.002** [+0.002, +0.003].
+**Pooled 9-fold (3 seeds × 3 folds):** Δ(GKT − simpleKT) = **−0.038** [−0.040, −0.035]; Δ(GIKT − simpleKT) = **+0.002** [+0.002, +0.003].
+
+**simpleKT 30ep (9 folds, seeds 17/42/1234):** cache + checkpoints đã push (`results/cache/xes3g5m_fold_*_simplekt_s*.json`, `results/pykt_work/.../simplekt_p0_protocol_best.ckpt`). AUC khớp Phase-3 trio (~0.874–0.878); `summarize_q1_experiments.py` ưu tiên tag `simplekt30_s*` khi có.
 
 **Kết luận:** Sau graph rebuild đúng từng seed, gap GKT **ổn định ~−0.034…−0.041** — **không** có hiện tượng split sensitivity (0.71). Kịch bản B xác nhận: epoch matching + fair protocol → gap ~**−0.038** pooled; ordering trio giữ nguyên.
 
@@ -276,3 +278,25 @@ Sau pull:
 python scripts/generate_gkt_epoch_ablation.py
 pdflatex -interaction=nonstopmode -output-directory=paper paper/main_APIN.tex
 ```
+
+---
+
+## 8. Phase 4 (reviewer M4): DDR downstream cho GKT
+
+Sau khi multi-seed GKT ổn định, chạy thêm **60 retrain GKT** (ASSIST + XES3G5M) để có 2 backbone cho C2 (hiện chỉ DGEKT).
+
+**Playbook đầy đủ:** [DDR_DOWNSTREAM_GKT.md](DDR_DOWNSTREAM_GKT.md)
+
+Tóm tắt:
+
+```bash
+# GPU server
+bash scripts/run_ddr_downstream_gkt.sh              # full
+bash scripts/run_ddr_downstream_gkt.sh --max-folds 1  # calibrate
+
+python scripts/merge_ddr_downstream.py \
+  --append results/q1/ddr_downstream_gkt/ddr_downstream_gkt.csv
+python scripts/plot_ddr_downstream.py
+```
+
+Ước lượng: **~12–24 h** GPU (GKT chậm hơn DGEKT); script resume-safe.

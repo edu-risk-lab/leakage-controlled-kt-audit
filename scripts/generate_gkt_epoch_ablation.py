@@ -35,8 +35,15 @@ def _pooled_nine_fold() -> tuple[float, float, float, pd.DataFrame]:
         (q1["model"] == "gkt") & q1["experiment_tag"].astype(str).str.startswith("gkt_epochs30")
     ][["split_base_seed", "fold", "auc"]]
     sk = q1[
-        (q1["model"] == "simplekt") & q1["experiment_tag"].astype(str).str.startswith("trio_matched")
-    ][["split_base_seed", "fold", "auc"]]
+        (q1["model"] == "simplekt")
+        & (
+            q1["experiment_tag"].astype(str).str.startswith("simplekt30")
+            | q1["experiment_tag"].astype(str).str.startswith("trio_matched")
+        )
+    ][["split_base_seed", "fold", "auc", "experiment_tag"]]
+    # Prefer simpleKT 30ep cache rows over trio when both exist.
+    sk = sk.sort_values("experiment_tag").drop_duplicates(subset=["split_base_seed", "fold"], keep="first")
+    sk = sk[["split_base_seed", "fold", "auc"]]
     merged = gkt.merge(sk, on=["split_base_seed", "fold"], suffixes=("_gkt", "_sk"))
     merged["delta"] = merged["auc_gkt"] - merged["auc_sk"]
     m, lo, hi = _paired_ci(merged["delta"].to_numpy(), T9)
