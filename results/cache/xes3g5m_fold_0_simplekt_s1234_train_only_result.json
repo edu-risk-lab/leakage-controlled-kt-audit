@@ -1,0 +1,14 @@
+{
+    "dataset": "xes3g5m",
+    "fold": 0,
+    "split_seed": 1234,
+    "model": "simplekt",
+    "graph_construction": "train_only",
+    "eval_split": "valid+test",
+    "auc": 0.8778405798231212,
+    "acc": 0.8609308357509796,
+    "nll": 0.317379756654446,
+    "n_eval": 1918817,
+    "status": "pykt_checkpoint",
+    "note": "pyKT `simplekt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs."
+}
