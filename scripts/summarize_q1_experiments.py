@@ -44,10 +44,48 @@ def _load_trio_fallback(out_dir: Path, q1_df: pd.DataFrame) -> pd.DataFrame:
     return trio.copy()
 
 
+def _load_simplekt30_cache() -> pd.DataFrame:
+    """Ingest simpleKT 30ep fold results from results/cache (GPU server exports)."""
+    cache_dir = ROOT / "results/cache"
+    if not cache_dir.exists():
+        return pd.DataFrame()
+    rows = []
+    for path in sorted(cache_dir.glob("xes3g5m_fold_*_simplekt_s*_train_only_result.json")):
+        name = path.name
+        if "inject" in name:
+            continue
+        for base in (17, 42, 1234):
+            token = f"_simplekt_s{base}_"
+            if token not in name:
+                continue
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            rows.append(
+                {
+                    "dataset": payload.get("dataset", "xes3g5m"),
+                    "fold": int(payload["fold"]),
+                    "split_seed": int(payload["split_seed"]),
+                    "model": "simplekt",
+                    "graph_construction": payload.get("graph_construction", "train_only"),
+                    "eval_split": payload.get("eval_split", "valid+test"),
+                    "auc": float(payload["auc"]),
+                    "acc": float(payload["acc"]),
+                    "nll": float(payload["nll"]),
+                    "n_eval": payload.get("n_eval"),
+                    "status": payload.get("status", "pykt_checkpoint"),
+                    "note": payload.get("note", ""),
+                    "experiment_tag": f"simplekt30_s{base}",
+                    "split_base_seed": base,
+                }
+            )
+            break
+    return pd.DataFrame(rows)
+
+
 def _merge_q1_tables(q1_root: Path, out_dir: Path) -> pd.DataFrame:
     q1_df = _load_q1_folders(q1_root)
+    sk30_df = _load_simplekt30_cache()
     trio_df = _load_trio_fallback(out_dir, q1_df)
-    parts = [p for p in (q1_df, trio_df) if not p.empty]
+    parts = [p for p in (q1_df, sk30_df, trio_df) if not p.empty]
     if not parts:
         raise FileNotFoundError(f"No Q1 results under {q1_root} or trio rows in merged CSV")
     merged = pd.concat(parts, ignore_index=True)
@@ -63,7 +101,9 @@ def _paired_delta_cross_tag(df: pd.DataFrame, baseline: str, challenger: str) ->
     """Pair GKT (gkt_epochs30_*) vs simpleKT (trio_matched_*) at the same split_base_seed."""
     rows = []
     gkt = df[(df["model"] == challenger) & df["experiment_tag"].astype(str).str.startswith("gkt_epochs30")]
-    simple = df[(df["model"] == baseline) & df["experiment_tag"].astype(str).str.startswith("trio_matched")]
+    simple = df[(df["model"] == baseline) & df["experiment_tag"].astype(str).str.startswith("simplekt30")]
+    if simple.empty:
+        simple = df[(df["model"] == baseline) & df["experiment_tag"].astype(str).str.startswith("trio_matched")]
     for seed in sorted(gkt["split_base_seed"].dropna().unique()):
         gpart = gkt[gkt["split_base_seed"] == seed].sort_values("fold")
         spart = simple[simple["split_base_seed"] == seed].sort_values("fold")
@@ -109,8 +149,8 @@ def _write_tex(summary: pd.DataFrame, out_path: Path) -> None:
         r"\begin{table}[t]",
         r"\centering",
         r"\caption{Epoch-matched GKT ablation on XES3G5M (isolated Q1 GPU runs). "
-        r"$\Delta$AUC = AUC(GKT) $-$ AUC(\textit{simpleKT} from matched trio run) per fold. "
-        r"Rows with mean GKT AUC below 0.80 are stale mis-aligned runs and omitted.}",
+        r"$\Delta$AUC = AUC(GKT) $-$ AUC(\textit{simpleKT}; 30~epochs from cache when available, else Phase-3 trio) per fold. "
+        r"Only seeds with fold-aligned graph exports are included.}",
         r"\label{tab:q1-gkt-epochs30}",
         r"\footnotesize",
         r"\begin{tabular}{llrrl}",
@@ -124,8 +164,9 @@ def _write_tex(summary: pd.DataFrame, out_path: Path) -> None:
     else:
         for row in gkt.itertuples(index=False):
             pm = f"${row.delta_mean:+.3f} \\pm {row.delta_std:.3f}$"
+            tag = row.experiment_tag.replace("_", r"\_")
             lines.append(
-                f"{row.experiment_tag} & {int(row.split_base_seed)} & {row.n_folds} & {pm} & "
+                f"\\texttt{{{tag}}} & {int(row.split_base_seed)} & {row.n_folds} & {pm} & "
                 f"\\texttt{{{row.delta_values}}} \\\\"
             )
     stale = summary[(summary["challenger"] == "gkt") & ~summary["valid"].fillna(False)]

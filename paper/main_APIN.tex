@@ -65,7 +65,7 @@
 \newcommand{\GKTdeltavec}{$-0.041$}
 \newcommand{\GKTdeltaci}{[$-0.044$, $-0.038$]}
 \newcommand{\GKTthirtydeltavec}{-0.038}
-\newcommand{\GKTthirtydeltaci}{[$-0.041$, $-0.035$]}
+\newcommand{\GKTthirtydeltaci}{[$-0.040$, $-0.035$]}
 \newcommand{\GKTthirtyseedFortydeltaci}{[$-0.048$, $-0.027$]}
 \newcommand{\GKTepochgain}{+0.003}
 \newcommand{\GIKTdeltavec}{$+0.003$}
@@ -122,12 +122,14 @@ do not extrapolate that null sensitivity to other backbones. On XES3G5M the
 audit surfaces a \emph{model-specific} ordering within the \textbf{primary}
 comparison trio (\textit{simpleKT}, stock pyKT GKT, native GIKT): under the
 released 10-epoch training budget (Table~S15), GKT trails \textit{simpleKT} by
-${\approx}0.041$ AUC (paired-$t$ 95\% CI \GKTdeltaci{}; Table~S16). An
-epoch-matched ablation (30~epochs, batch~32; Table~S21--S22) recovers
+${\approx}0.041$ AUC (paired-$t$ 95\% CI \GKTdeltaci{}; Table~S16). A
+GKT \emph{epoch-extended} ablation (30~epochs, batch~32; Table~S21--S22;
+\textit{simpleKT} reference unchanged at 10~epochs, batch~64) recovers
 ${\approx}\GKTepochgain{}$ AUC on seed~$42$ but leaves pooled mean
 $\Delta{\approx}\GKTthirtydeltavec{}$ (95\% CI \GKTthirtydeltaci{} over
-nine folds across split seeds $17$, $42$, and $1234$): the under-performer
-ordering persists under matched training budget.
+nine folds across split seeds $17$, $42$, and $1234$): the GKT
+under-performer ordering on XES3G5M persists under this partially matched
+ablation.
 Ground-truth cross-validation on Junyi shows node-level agreement but
 edge-level divergence between behavioural inference and expert curation.
 A deliberate full-log graph variant shifts headline metrics by at most
@@ -273,13 +275,16 @@ evaluation separates graph backbones more clearly than on repetition-heavy
 corpora: under train-only $\Epre$ and three-fold learner CV, the
 \textbf{primary} backbone trio is \textit{simpleKT} (${\approx}0.875$),
 stock pyKT GKT (${\approx}0.834$; mean $\Delta{\approx}{-}0.041$, 95\% CI
-\GKTdeltaci{} in Table~S16; ${\approx}0.837$ and $\Delta{\approx}\GKTthirtydeltavec{}
-under epoch-matched training in Table~S21), and native GIKT (${\approx}0.878$). The gap is
+\GKTdeltaci{} in Table~S16; Tables~S21--S22 report GKT epoch-extended training
+(${\approx}0.837$ on seed~$42$; pooled $\Delta{\approx}\GKTthirtydeltavec{}$,
+95\% CI \GKTthirtydeltaci{}; \textit{simpleKT} reference held at 10~epochs),
+and native GIKT (${\approx}0.878$). The gap is
 \emph{observational} under fixed epoch caps (30 for sequence checkpoints
 vs.\ 10 for graph backbones; Table~S15), not a causal attribution of graph
-failure. Native SKT and DyGKT (${\approx}0.625$--$0.752$) are included only
-as \emph{wiring diagnostics} under our fork (\path{src/models/}) and are not
-used to conclude that graph-augmented KT fails in general. A team that
+failure on XES3G5M under this protocol. SKT and DyGKT rows in
+Tables~\ref{tab:baseline-summary} and~\ref{tab:baseline-cv} are fork wiring
+sanity checks only (Supplementary Tables~S1--S5 for ACC/NLL) and are excluded
+from primary ranking claims. A team that
 deploys from leaky full-log graphs (the default in original GKT/SKT pipelines
 \cite{nakagawa2019gkt,tong2020skt}) without provenance logs, similarity-edge
 feasibility checks, or cold-start strata may reach different \emph{reporting
@@ -339,12 +344,14 @@ than deferred to the Discussion alone.
   leakage-controlled graphs is \emph{model-specific} within the primary trio
   (\textit{simpleKT}, pyKT GKT, native GIKT): GKT trails \textit{simpleKT} by
   mean $\Delta$AUC ${\approx}{-}0.041$ (95\% CI \GKTdeltaci{}; Table~S16) under
-  the released 10-epoch budget, while GIKT remains competitive. An
-  epoch-matched GKT rerun (30~epochs; Table~S21--S22) recovers
+  the released 10-epoch budget, while GIKT remains competitive. A
+  GKT epoch-extended rerun (30~epochs, batch~32; Table~S21--S22; reference
+  \textit{simpleKT} at 10~epochs, batch~64) recovers
   ${\approx}\GKTepochgain{}$ mean AUC on seed~$42$ but leaves pooled
   $\Delta{\approx}\GKTthirtydeltavec{}$ (95\% CI \GKTthirtydeltaci{};
-  nine folds, seeds $17/42/1234$), so the trio ordering is \emph{budget-sensitive}
-  yet the GKT deficit persists under matched caps. Train-only versus full-log
+  nine folds, seeds $17/42/1234$): the trio ordering on XES3G5M is
+  \emph{partially epoch-sensitive} yet invariant in direction (GKT trails).
+  Train-only versus full-log
   ablation ($|\Delta\text{AUC}|{\leq}0.003$ on the three public benchmarks)
   bounds how much graph provenance alone moves headline metrics here, so C5 is
   a \emph{benchmarking boundary result}, not evidence that leakage control
@@ -400,6 +407,28 @@ catalogues additional leakage types~\cite{kaufman2012leakage,kapoor2023leakage}.
 The complementary channel we study---held-out information entering through the
 \emph{auxiliary concept graph}---is not fixed by sequence-level remedies and
 remains under-audited in KT benchmarks.
+
+\paragraph{Positioning against reproducibility and graph-audit practice.}
+KT benchmark libraries~\cite{liu2022pykt,abdelrahman2023kt_survey} and
+label-leakage audits~\cite{badran2024labelleakage} standardise sequence splits
+and expanded-label hygiene; broader reproducibility work catalogues leakage
+modes beyond a single train/test divide~\cite{kaufman2012leakage,kapoor2023leakage}.
+Our incremental contribution is not another split routine but a
+\emph{fold-conditioned graph provenance layer}: exported edge lists, DAG repair
+logs, tiered scalar diagnostics, and practitioner reporting items that
+sequence-level KT fixes do not supply. Concretely, relative to
+\texttt{pyKT}~\cite{liu2022pykt} split discipline alone, the audit layer adds:
+(i)~fold-specific exported edge artefacts (\path{e\_pre\_train\_only.csv},
+\path{e\_sim\_train\_only.csv}) with per-edge provenance;
+(ii)~logged DAG cycle pruning rather than silent repair;
+(iii)~tiered leakage functionals plus a controlled injection stress test
+(Section~\ref{sec:exp-injection}) that shows $\mathrm{ECR}^{\mathrm{flag}}_f$
+can stay zero while builder-level mass shifts;
+(iv)~\DDR{} structural diagnostics decoupled from AUC;
+(v)~ground-truth cross-validation where expert graphs exist; and
+(vi)~KC cold-start strata tied to train-fold counts. We complement---rather
+than replace---\texttt{pyKT}-style label audits by auditing the auxiliary graph
+channel those audits omit.
 
 Graph-KT models (GKT, SKT, GIKT, DyGKT, DGEKT)~\cite{nakagawa2019gkt,tong2020skt,yang2021gikt,dygkt2024,dgekt2024}
 propagate mastery over KC graphs, while prerequisite-learning work infers
@@ -561,9 +590,16 @@ Edge sets $\Epre^f\subseteq\mathcal{C}\times\mathcal{C}$ and
 $\Esim^f\subseteq\mathcal{C}\times\mathcal{C}$, edge weights
 $w_{ij}\ge 0$, and pruning decisions on cyclic subsets of $\Epre^f$.
 
-\paragraph{Objective.}
-The construction stage maximises retained pedagogical structure subject
-to sparsity and acyclicity:
+\paragraph{Design intent (not a deployed solver).}
+Eq.~\eqref{eq:graph-objective} states a \emph{conceptual} objective---maximise
+retained prerequisite and similarity mass subject to sparsity and acyclicity---but
+the released code does \emph{not} solve it as a joint numerical programme.
+Prerequisite and similarity edges are inferred in separate greedy pipelines with
+$\lambda{=}0$ in practice; sparsity enters through support quantiles, top-$k$
+per-node caps, and a global edge budget~$K$ (Section~\ref{sec:graph}), followed
+by deterministic cycle pruning. Treat Eq.~\eqref{eq:graph-objective} as design
+documentation for constraints~(C3)--(C4), not as an optimiser that is executed
+end-to-end.
 \begin{equation}
 \max_{\Epre^f,\Esim^f}\;
 \sum_{(i,j)\in\Epre^f} w_{ij}
@@ -572,9 +608,8 @@ to sparsity and acyclicity:
 \label{eq:graph-objective}
 \end{equation}
 where $\mathrm{sim}$ is Jaccard or PMI (Section~\ref{sec:graph-sim-theory})
-and $\lambda\ge 0$ trades prerequisite mass against similarity mass (in
-practice $\lambda{=}0$ because the two edge types are inferred in
-separate pipelines).
+and $\lambda\ge 0$ would trade prerequisite mass against similarity mass if the
+two pipelines were merged (they are not in the released implementation).
 
 \paragraph{Constraints.}
 \begin{align}
@@ -1153,12 +1188,21 @@ $\mathrm{ECR}^{\mathrm{overlap}}_f$ is already saturated at $1.0$ on this
 transition-dense corpus (Section~\ref{sec:formal-problem}), so it carries no
 additional signal here. Retraining on the injected graphs (Supplementary
 Table~S18) shows that headline AUC need not move in lockstep with the
-structural audit: GKT AUC rises from $0.810$ (clean) to $0.860$ at
+structural audit: GKT AUC rises from $0.810$ (clean fold~0) to $0.860$ at
 $20\%$ injection, while \textit{simpleKT}---which does not consume the
-graph---stays near $0.850$--$0.858$. Metric-level contamination is therefore
-detectable before practitioners would infer leakage from AUC alone, and
-tiered reporting remains necessary even when a contaminated graph
-accidentally improves a graph backbone on a dense transition log.
+graph---stays near $0.850$--$0.858$. On this transition-dense corpus,
+injected test transitions disproportionately \emph{densify} $\Epre$ with
+high-support curriculum edges ($|\Epre|$ rises $1162{\to}1417$ before pruning;
+Table~S17) that GKT's graph convolution can exploit as additional relational
+context, whereas the sequence-only baseline is unaffected. The lift is therefore
+consistent with \emph{graph-channel enrichment} rather than with improved
+split hygiene---and it illustrates why AUC alone is an unreliable leakage alarm:
+a contaminated graph can act as an accidental structural regulariser even when
+learner ids remain fold-disjoint ($\mathrm{ECR}^{\mathrm{flag}}_f{=}0$).
+Metric-level contamination is detectable in builder mass and $\mathrm{TBMR}_f$
+before practitioners would infer leakage from AUC alone, and tiered reporting
+remains necessary on real data where $\mathrm{ECR}^{\mathrm{overlap}}_f$ is
+already saturated at $1.0$.
 
 \subsection{Baseline Diagnostic}
 \label{sec:exp-baseline}
@@ -1169,37 +1213,53 @@ claim. We read the table through the benchmark roles of Section~\ref{sec:dataset
 On the \emph{primary} benchmark XES3G5M we report three \textbf{primary
 comparison backbones}: sequence-only \textit{simpleKT}/AKT (${\approx}0.875$),
 stock pyKT GKT (${\approx}0.834$), and native GIKT (${\approx}0.878$).
-GKT trails \textit{simpleKT} by ${\approx}0.041$ mean fold AUC (95\% CI
-\GKTdeltaci{}; Table~S16); epoch-matched training narrows the gap to
+GKT trails \textit{simpleKT} by ${\approx}0.041$ mean fold AUC on XES3G5M
+(95\% CI \GKTdeltaci{}; Table~S16). A GKT epoch-extended ablation (30~epochs,
+batch~32; \textit{simpleKT} reference at 10~epochs, batch~64) narrows the gap to
 $\Delta{\approx}\GKTthirtydeltavec{}$ (95\% CI \GKTthirtydeltaci{};
-Tables~S21--S22). GIKT slightly exceeds the sequence leader ($0.878$
-vs.\ $0.875$; bootstrap/paired interval \GIKTdeltaci{}). Native SKT and DyGKT
-(${\approx}0.625$--$0.752$) are \emph{wiring diagnostics} under our fork and
-are not interpreted as backbone SOTA comparisons (Section~\ref{sec:disc-model-specific}).
+Tables~S21--S22): per split seed, mean $\Delta(\text{GKT}-\textit{simpleKT})$
+is ${\approx}{-}0.034$ (seed~$17$), ${\approx}{-}0.040$ (seed~$42$), and
+${\approx}{-}0.041$ (seed~$1234$). GIKT slightly exceeds the sequence leader
+($0.878$ vs.\ $0.875$; paired interval \GIKTdeltaci{}, identical at three
+decimals on all three folds in Table~\ref{tab:baseline-cv}---we report
+magnitudes rather than over-interpreting the degenerate interval width).
+SKT and DyGKT also appear in Tables~\ref{tab:baseline-summary}
+and~\ref{tab:baseline-cv} for fork wiring sanity only; they are excluded from
+primary ranking claims (Section~\ref{sec:disc-model-specific}).
 On ASSISTments (secondary), GKT trails by ${\approx}0.007$ AUC with
 near-ceiling scores for all leaders. On saturated Junyi, all deep models
 cluster near $0.98$--$0.984$ and are poor discriminators of graph benefit.
 Per-dataset ACC/NLL and bootstrap intervals are in Supplementary Tables~S1--S5.
 
 \paragraph{Training parity and comparison scope.}
-Full hyperparameter parity is in Supplementary Table~S15.
+Full epoch/batch parity is in Supplementary Table~S15.
 Sequence-only checkpoints (AKT, DKT, \textit{simpleKT}) use stock
-\texttt{pyKT} configurations. GKT is evaluated through the \texttt{pyKT}
-graph branch where supported; GIKT, SKT, DyGKT, and DGEKT are native
-implementations in our fork (\path{src/models/}) that share processed splits,
-data loaders, evaluation hooks, learning rate, split seed, and early stopping
-(patience~5, best validation AUC). No family receives a hyperparameter search.
-Epoch caps differ in the primary release: sequence checkpoints train up to
-30~epochs (batch~64) while graph backbones use 10-epoch budgets with smaller
-batches (Table~S15), reflecting higher per-epoch cost. Tables~S21--S22 report
-epoch-matched GKT ablations with fold-aligned graph rebuilds per split seed
-($17$, $42$, $1234$): on seed~$42$, mean GKT AUC rises from $0.834$ to $0.837$
+\texttt{pyKT} configurations ($\texttt{lr}{=}10^{-3}$,
+$\texttt{max\_seq\_len}{=}200$, batch~64, 30~epochs). GKT is evaluated
+through the \texttt{pyKT} graph branch (batch~16, 10~epochs under the
+released budget; consumes exported $\Epre/\Esim$). Native GIKT
+(\path{src/models/gikt.py}) uses $\texttt{emb\_size}{=}64$,
+$\texttt{hidden\_dim}{=}128$, the same $\texttt{lr}$, batch~16, and
+10~epochs. We do not claim bit-identical engineering parity across codebases;
+we align processed splits, data loaders, evaluation hooks, and early stopping
+(patience~5, best validation AUC). A one-step label-index misalignment in an
+early GIKT head was caught by fold-wise AUC inconsistency and corrected before
+Table~\ref{tab:baseline-cv} (Section~\ref{sec:threats-validity}). No family
+receives a hyperparameter search. Epoch caps differ in the primary release:
+sequence checkpoints train up to 30~epochs (batch~64) while graph backbones
+use 10-epoch budgets with smaller batches (Table~S15), reflecting higher
+per-epoch cost. Tables~S21--S22 report \emph{GKT-only} epoch extensions with
+fold-aligned graph rebuilds per split seed ($17$, $42$, $1234$), pairing
+against \textit{simpleKT} from Phase~3 trio reruns (10~epochs, batch~64): on
+seed~$42$, mean GKT AUC rises from $0.834$ to $0.837$
 (${\approx}\GKTepochgain{}$), narrowing the gap from ${\approx}{-}0.041$ to
 $\Delta{\approx}{-}0.038$ (seed~$42$ CI \GKTthirtyseedFortydeltaci{}).
 Pooled over nine folds, $\Delta{\approx}\GKTthirtydeltavec{}$ (95\% CI
-\GKTthirtydeltaci{}). The residual deficit under matched caps remains
-an \emph{observational} benchmarking boundary, not a causal claim that graph
-structure is uninformative. Relative to the literature default of pooling transition statistics before
+\GKTthirtydeltaci{}). This ablation isolates the GKT epoch confound; it is
+\emph{not} full compute parity (batch and reference-epoch asymmetry remain).
+The residual deficit remains an \emph{observational} benchmarking boundary on
+XES3G5M under this protocol, not a causal claim that graph structure is
+uninformative. Relative to the literature default of pooling transition statistics before
 learner splitting in GKT/SKT pipelines~\cite{nakagawa2019gkt,tong2020skt}, our
 train-only graphs isolate a provenance factor those papers do not audit.
 
@@ -1211,11 +1271,11 @@ folds the Wilcoxon test is underpowered (minimum two-sided $p{=}0.25$); paired
 $t$-test $p$-values on the same fold AUCs appear in Supplementary Table~S11.
 We treat fold-level $\Delta$AUC magnitudes (Table~\ref{tab:baseline-cv}) and
 Table~S16 intervals as the primary inferential evidence for the XES3G5M primary
-trio; exploratory ANOVA summaries appear only in Supplementary
-Tables~S19--S20. The resulting \emph{model-specific} ordering
-within the primary trio---pyKT GKT as the consistent under-performer relative
-to \textit{simpleKT}, native GIKT competitive or slightly above---is developed
-in Section~\ref{sec:disc-model-specific}.
+trio on this protocol; exploratory ANOVA summaries appear only in Supplementary
+Tables~S19--S20. The resulting \emph{model-specific} ordering on XES3G5M within
+the primary trio---pyKT GKT as the under-performer relative to
+\textit{simpleKT} across all three split seeds, native GIKT competitive or
+slightly above---is developed in Section~\ref{sec:disc-model-specific}.
 
 \subsection{Graph Construction Ablation (Train-only vs.\ Full Log)}
 \label{sec:exp-graph-ablation}
@@ -1332,7 +1392,9 @@ stay near zero and pooled \DDR{}--AUC-drop correlations are weak
 ($r{=}0.13$--$0.15$; supplementary DDR-downstream figure). \DDR{} therefore
 audits augmentation \emph{structure}; it is not, on the evidence reported
 here, a universal proxy for accuracy degradation across graph-consuming
-backbones.
+backbones. Only DGEKT was retrained in this sweep; extending the same
+\DDR{}$\to$AUC protocol to GKT (and ideally GIKT) is the highest-priority
+follow-up for C2 practical value (Section~\ref{sec:future-work}).
 \subsection{Cold-start KC Diagnostic}
 \label{sec:exp-coldstart}
 \input{results/tables/cold_start_summary.tex}
@@ -1454,11 +1516,13 @@ explicit concept-graph benefit is \emph{model-specific} within the
 \textbf{primary trio} (\textit{simpleKT}, pyKT GKT, native GIKT) rather than
 uniform. On XES3G5M, \textit{simpleKT} averages $0.875$ AUC while GKT averages
 $0.834$ under the released budget (mean $\Delta{\approx}{-}0.041$; 95\% CI
-\GKTdeltaci{}, Table~S16; fold stds in Table~\ref{tab:baseline-cv}). An
-epoch-matched GKT rerun reaches $0.837$ AUC but still trails by
-$\Delta{\approx}\GKTthirtydeltavec{}$ (95\% CI \GKTthirtydeltaci{};
-Tables~S21--S22). GIKT ($0.878$) slightly \emph{exceeds}
-the sequence leader ($+0.003$ mean AUC; CI \GIKTdeltaci{}). Native SKT ($0.625$)
+\GKTdeltaci{}, Table~S16; fold stds in Table~\ref{tab:baseline-cv}). A
+GKT epoch-extended rerun on split seed~$42$ reaches $0.837$ AUC but still
+trails by pooled $\Delta{\approx}\GKTthirtydeltavec{}$ (95\% CI \GKTthirtydeltaci{};
+Tables~S21--S22; seed-level $\Delta$ stable at ${\approx}{-}0.034$ to
+${\approx}{-}0.041$). GIKT ($0.878$) slightly \emph{exceeds}
+the sequence leader ($+0.003$ mean AUC; interval \GIKTdeltaci{}, tied at
+three decimals on all folds). Native SKT ($0.625$)
 and DyGKT ($0.752$) are reported as \emph{fork wiring diagnostics} only: their
 large deficits may reflect under-tuned native stacks rather than inherent
 backbone limits and are not used to argue that graph-augmented KT fails. On
@@ -1514,8 +1578,8 @@ benefit from more, all else equal.
 These hypotheses are not exhaustive. Distinguishing among them requires
 re-running prior graph-KT papers under our protocol, which is beyond this
 paper's scope. The narrower observation is that \emph{under leakage-controlled
-evaluation on non-saturated corpora, backbone ordering within the primary
-trio can differ from near-ceiling aggregates}, and benchmarking practice
+evaluation on XES3G5M, backbone ordering within the primary trio can differ
+from near-ceiling aggregates on other corpora}, and benchmarking practice
 should treat graph provenance and training-budget parity as first-order
 reporting factors---while acknowledging that provenance control alone moved
 headline AUC by at most $0.003$ on the public benchmarks studied here.
@@ -1538,13 +1602,14 @@ refer to fold~0 exports by default. GKT, AKT, DKT, and \textit{simpleKT} are
 stock pyKT~\cite{liu2022pykt} checkpoints; GIKT, SKT, DyGKT, and DGEKT are
 native implementations in our fork (\path{src/models/}). Epoch caps differ in
 the primary release (30 for sequence checkpoints vs.\ 10 for graph backbones;
-Table~S15); Tables~S21--S22 show matched caps recover only
+Table~S15); Tables~S21--S22 show GKT-only epoch extension recovers only
 ${\approx}\GKTepochgain{}$ AUC of the GKT deficit on seed~$42$, with pooled
-nine-fold $\Delta{\approx}\GKTthirtydeltavec{}$. The GKT--\textit{simpleKT} gap
-remains \emph{observational} under fair budgets, not proof that graph signal is
-useless after exhaustive tuning. The severe SKT/DyGKT
-deficits are flagged as likely implementation-budget artefacts and excluded
-from primary ranking claims. Stronger graph-KT architectures~\cite{tong2020skt,dygkt2024,dgekt2024}
+nine-fold $\Delta{\approx}\GKTthirtydeltavec{}$ under partially matched caps.
+The GKT--\textit{simpleKT} gap on XES3G5M remains \emph{observational} under
+fair budgets, not proof that graph signal is useless after exhaustive tuning.
+The severe SKT/DyGKT deficits in Tables~\ref{tab:baseline-summary}
+and~\ref{tab:baseline-cv} are flagged as likely implementation-budget artefacts
+and excluded from primary ranking claims. Stronger graph-KT architectures~\cite{tong2020skt,dygkt2024,dgekt2024}
 may behave differently; re-auditing them under the same protocol is explicit
 follow-up (Section~\ref{sec:future-work}).
 
@@ -1618,8 +1683,9 @@ choice:
 \end{itemize}
 These vignettes complement---rather than replace---backbone comparisons: C5
 reports model-specific trio ordering on XES3G5M under fixed budgets, with
-Table~S21--S22 showing that epoch matching recovers only ${\approx}\GKTepochgain{}$ AUC
-of the GKT deficit on seed~$42$ (pooled $\Delta{\approx}\GKTthirtydeltavec{}$).
+Table~S21--S22 showing that GKT epoch extension recovers only ${\approx}\GKTepochgain{}$ AUC
+of the GKT deficit on seed~$42$ (pooled $\Delta{\approx}\GKTthirtydeltavec{}$ under
+partially matched caps).
 
 \paragraph{Behavioural versus expert prerequisite curation.}
 The ground-truth cross-validation on Junyi
@@ -1708,7 +1774,15 @@ exported parquets). The GKT--\textit{simpleKT}
 gap is \emph{observational} under fixed epoch budgets (30 vs.\ 10; Table~S15);
 Table~S21--S22 shows the deficit shrinks only slightly (${\approx}\GKTepochgain{}$ AUC
 on seed~$42$; pooled $\Delta{\approx}\GKTthirtydeltavec{}$) when GKT is trained
-with matched caps, so it is not fully explained by budget parity alone. Native SKT/DyGKT runs
+with extended epoch caps, so it is not fully explained by the released 10-vs-30
+epoch asymmetry alone.
+Tables~S21--S22 pair GKT epoch-extended runs (30~epochs, batch~32) against
+\textit{simpleKT} from Phase~3 trio reruns (10~epochs, batch~64), so training
+caps remain only partially matched; a 30-epoch \textit{simpleKT} reference on
+the same nine folds is required before stronger matched-budget claims.
+Multi-seed GKT replication requires
+sequential fold-aligned graph rebuilds per split seed because default processed
+exports omit a seed suffix in the path layout. Native SKT/DyGKT runs
 are wiring diagnostics, not tuned-backbone benchmarks. Controlled injection
 (Section~\ref{sec:exp-injection}, Tables~S17--S18) demonstrates metric-level
 sensitivity. ASSISTments yields no $\Esim$ under item-overlap Jaccard; GT
@@ -1734,12 +1808,18 @@ remediation outcomes while keeping the train-only provenance contract;
 the edge--outcome diagnostic $|\rho|$ (Eq.~\eqref{eq:rho-edge-outcome})
 provides a starting point for detecting target-conditional artefacts.
 \textbf{Broader backbone and operator coverage.} Re-auditing additional
-graph consumers (GIKT, GKT, contrastive KT) under the same protocol, and
-testing hierarchy-respecting augmentations beyond \DDR{}, would clarify
-whether structural diagnostics transfer across encoders. Epoch-matched GKT
-replication across split seeds $17$, $42$, and $1234$ (Tables~S21--S22) requires
-fold-aligned graph exports before retraining; we do not extrapolate the pooled
-gap to unseen corpora without the same audit.
+graph consumers under the same protocol, and testing hierarchy-respecting
+augmentations beyond \DDR{}, would clarify whether structural diagnostics
+transfer across encoders. The three-seed GKT replication in Tables~S21--S22
+establishes a reproducible multi-seed template; extending it to additional
+corpora and to full compute parity (including a 30-epoch \textit{simpleKT}
+reference at batch~64 on the same folds) remains open.
+\textbf{\DDR{} downstream coverage.} The structural operator sweep is
+backbone-complete at the graph level, but downstream retraining was run only
+for DGEKT under compute budget. A minimal next step is a matched GKT
+retraining sweep on ASSISTments and XES3G5M so C2 reports at least two
+graph consumers before claiming (or refuting) predictive sensitivity to
+\DDR{}.
 
 %-----------------------------------------------------------------------------
 \section{Conclusion}
@@ -1760,11 +1840,12 @@ downstream stress test on ASSISTments and XES3G5M shows that this structural
 ordering does not automatically imply predictive sensitivity for \emph{that}
 backbone ($r{=}0.13$--$0.15$; mean AUC drops near zero).
 
-Under fixed training budgets, the primary trio on XES3G5M shows a
+Under fixed training budgets on XES3G5M, the primary trio shows a
 \emph{model-specific} pattern: GKT trails \textit{simpleKT} by
 ${\approx}0.041$ mean AUC (95\% CI \GKTdeltaci{}; Table~S16) while GIKT
-remains competitive; epoch-matched GKT training recovers only
-${\approx}\GKTepochgain{}$ AUC on seed~$42$ (Tables~S21--S22), leaving pooled
+remains competitive; GKT epoch-extended training (Tables~S21--S22;
+\textit{simpleKT} reference unchanged) recovers only
+${\approx}\GKTepochgain{}$ AUC on seed~$42$, leaving pooled
 $\Delta{\approx}\GKTthirtydeltavec{}$ (95\% CI \GKTthirtydeltaci{}). Train-only versus
 full-log ablation moves headline AUC by at most $0.003$. Ground-truth
 cross-validation on Junyi shows high node overlap but weak edge agreement.
@@ -1828,7 +1909,8 @@ full-log ablation; S11: paired significance tests on public benchmarks;
 S12--S13: cold-start strata; S14: ground-truth metrics including node Jaccard;
 S15: training parity; S16: $\Delta$AUC intervals for primary pairs;
 Tables~S17--S18 report controlled leak-injection metrics and downstream AUC
-on injected graphs. Tables~S19--S20 report exploratory ANOVA summaries
+on injected graphs. Tables~S21--S22 report the GKT epoch-extended ablation
+(seed~$42$ and multi-seed replication). Tables~S19--S20 report exploratory ANOVA summaries
 (Section~\ref{sec:supp-anova} in the supplementary material).
 Section~S3: sequence-autocorrelation statistics; Sections~S4--S5:
 augmentation-operator definitions and ground-truth disagreement examples.

@@ -65,11 +65,17 @@ def main() -> None:
         lines.append(
             f"{display} & {codebase} & {graph} & {epochs} & {batch} & {patience} & {runtime} & {hw} \\\\"
         )
+    ablation_cfg = yaml.safe_load((ROOT / "configs/xes3g5m_gkt_epochs30.yaml").read_text(encoding="utf-8"))
+    ablation_pykt = ablation_cfg.get("pykt", {})
+    ablation_epochs = int(ablation_pykt.get("epochs", 30))
+    ablation_batch = int(ablation_pykt.get("batch_size", 32))
     lines += [
         r"\bottomrule",
         r"\end{tabular}",
         r"\par\smallskip",
-        r"\footnotesize Epoch-matched GKT ablation: \texttt{configs/xes3g5m\_gkt\_epochs30.yaml} (30 epochs, batch 64).",
+        rf"\footnotesize Epoch-matched GKT ablation (Tables~S21--S22): "
+        rf"\texttt{{configs/xes3g5m\_gkt\_epochs30.yaml}} ({ablation_epochs} epochs, batch {ablation_batch}; "
+        r"\textit{simpleKT} reference runs in S22 retain batch~64 from Phase-3 trio reruns).",
         "",
     ]
     out = ROOT / "results/tables/training_parity.tex"
