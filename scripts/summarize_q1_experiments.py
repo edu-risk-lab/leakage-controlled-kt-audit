@@ -33,16 +33,14 @@ def _load_q1_folders(q1_root: Path) -> pd.DataFrame:
 
 def _load_trio_fallback(out_dir: Path, q1_df: pd.DataFrame) -> pd.DataFrame:
     """Keep Phase-3 trio rows when trio folders are absent (gitignored on server)."""
-    if not q1_df.empty:
-        trio_in_q1 = q1_df[q1_df["experiment_tag"].astype(str).str.startswith("trio_matched")]
-        if not trio_in_q1.empty:
-            return pd.DataFrame()
-
     merged = out_dir / "q1_baseline_fold_results.csv"
     if not merged.exists():
         return pd.DataFrame()
     prev = pd.read_csv(merged)
     trio = prev[prev["experiment_tag"].astype(str).str.startswith("trio_matched", na=False)]
+    if not q1_df.empty:
+        keys = set(zip(q1_df["experiment_tag"], q1_df["fold"], q1_df["model"]))
+        trio = trio[~trio.apply(lambda r: (r["experiment_tag"], r["fold"], r["model"]) in keys, axis=1)]
     return trio.copy()
 
 
