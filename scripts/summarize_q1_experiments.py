@@ -139,6 +139,10 @@ def _write_tex(summary: pd.DataFrame, out_path: Path) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text("\n".join(lines), encoding="utf-8")
 
+    tabular_only = [ln for ln in lines if not ln.startswith(r"\begin{table}") and not ln.startswith(r"\end{table}") and not ln.startswith(r"\centering") and not ln.startswith(r"\caption") and not ln.startswith(r"\label") and not ln.startswith(r"\footnotesize")]
+    tabular_path = out_path.parent / "q1_gkt_epochs30_ablation_tabular.tex"
+    tabular_path.write_text("\n".join(tabular_only), encoding="utf-8")
+
 
 def sync_gkt_cache_fold0(dataset: str = "xes3g5m", split_base_seed: int = 17) -> bool:
     """Promote aligned fold-0 cache into results/q1 if isolated CSV is stale."""

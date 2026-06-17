@@ -35,29 +35,27 @@ python -c "import torch; print(torch.cuda.get_device_name(0), torch.cuda.get_dev
 
 ---
 
-## 0.1 Kết quả đã pull (cập nhật sau pull mới nhất)
+## 0.1 Kết quả đã pull (multi-seed aligned — cập nhật mới nhất)
 
-| Run | Trạng thái | Mean GKT AUC | Δ vs simpleKT | Dùng trong paper? |
-|-----|------------|--------------|---------------|-----------------|
+| Run | Trạng thái | Mean GKT AUC | Δ vs simpleKT (3 fold) | Paper? |
+|-----|------------|--------------|-------------------------|--------|
 | GKT **10ep** primary (seed 42) | ✅ baseline chính | **0.834** | **−0.041** [−0.044, −0.038] | Table S16 |
-| GKT **30ep** matched (seed 42) | ✅ hợp lệ (folder `gkt_epochs30_s42/`) | **0.837** | **−0.038** [−0.048, −0.027] | **Table S21** |
-| GKT 30ep (seed 17) | 🔄 **đang rerun** — fold 0 aligned **0.842**; fold 1–2 vẫn stale (~0.71) | 0.755* | — | **Chưa** — cần xong 3 fold |
-| GKT 30ep (seed 1234) | ⚠️ stale (graph chưa rebuild) | ~0.710 | −0.167 | **Không** |
-| Phase 3 `trio_matched_s*` | ✅ merged CSV (18 dòng) | simpleKT ~0.877, GIKT ~0.879 | GIKT +0.002…+0.003 | Supplementary |
+| GKT **30ep** seed **17** | ✅ aligned | **0.844** | **−0.034** [−0.036, −0.031] | Table S21 / multi-seed |
+| GKT **30ep** seed **42** | ✅ aligned | **0.837** | **−0.040** [−0.051, −0.029] | **Table S21** |
+| GKT **30ep** seed **1234** | ✅ aligned | **0.836** | **−0.041** [−0.047, −0.034] | Table S21 / multi-seed |
+| Phase 3 trio (3 seeds) | ✅ | simpleKT ~0.877, GIKT ~0.879 | GIKT **+0.002** (9 fold) | Supplementary |
 
-\*Mean 3 fold nếu trộn 1 fold mới + 2 fold cũ — **không dùng** cho paper.
+**Pooled 9-fold (3 seeds × 3 folds):** Δ(GKT − simpleKT) = **−0.038** [−0.041, −0.035]; Δ(GIKT − simpleKT) = **+0.002** [+0.002, +0.003].
 
-**Kết luận paper (không đổi):** seed **42** đủ cho Table S21 (kịch bản B: gap −0.041 → −0.038). Rerun seed 17 **fold 0 = 0.842** xác nhận graph rebuild **đúng hướng**; cần hoàn tất fold 1–2 (seed 17) rồi seed 1234.
+**Kết luận:** Sau graph rebuild đúng từng seed, gap GKT **ổn định ~−0.034…−0.041** — **không** có hiện tượng split sensitivity (0.71). Kịch bản B xác nhận: epoch matching + fair protocol → gap ~**−0.038** pooled; ordering trio giữ nguyên.
 
-Regenerate bảng (local, sau mỗi lần pull):
+Regenerate bảng:
 
 ```bash
 python scripts/summarize_q1_experiments.py --sync-cache
 python scripts/summarize_q1_phase3.py
 python scripts/generate_gkt_epoch_ablation.py
 ```
-
-**Lưu ý:** `--sync-cache` copy fold-0 cache aligned (`results/cache/*_s17_*`) vào `results/q1/` nếu CSV cũ vẫn ~0.71.
 
 ---
 
