@@ -179,6 +179,39 @@ def apply_prereq_preserve(edges: pd.DataFrame, p: float, seed: int) -> pd.DataFr
     return result
 
 
+def reachability_pairs(edges: pd.DataFrame) -> set[tuple]:
+    """All ordered (u, v) pairs such that v is reachable from u in the DAG
+    induced by ``edges`` (transitive closure, including direct edges)."""
+    if edges.empty:
+        return set()
+    adj: dict[object, set] = {}
+    for src, dst in edges[["src_kc", "dst_kc"]].itertuples(index=False, name=None):
+        adj.setdefault(src, set()).add(dst)
+        adj.setdefault(dst, set())
+    desc = _reachable_sets(adj)
+    return {(u, v) for u, vs in desc.items() for v in vs}
+
+
+def reachability_f1(original: pd.DataFrame, perturbed: pd.DataFrame) -> float:
+    """F1 between the reachability (precedence) relations of two edge sets.
+
+    Treats the original closure as ground truth. ``1 - reachability_f1`` is the
+    *reachability disruption*: how much of the precedence structure a model could
+    care about is destroyed, complementary to the edge-level DDR."""
+    orig = reachability_pairs(original)
+    if not orig:
+        return 1.0
+    pert = reachability_pairs(perturbed)
+    if not pert:
+        return 0.0
+    inter = len(orig & pert)
+    precision = inter / len(pert)
+    recall = inter / len(orig)
+    if precision + recall == 0:
+        return 0.0
+    return 2.0 * precision * recall / (precision + recall)
+
+
 def compute_dag_disruption_rate(original: pd.DataFrame, augmented: pd.DataFrame) -> float:
     """Compute DDR = |E_pre lost or reversed| / |E_pre|."""
     logger.info("Computing DDR original_shape=%s augmented_shape=%s", original.shape, augmented.shape)
