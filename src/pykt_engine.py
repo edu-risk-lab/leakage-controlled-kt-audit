@@ -43,19 +43,15 @@ def _batch_to_device(dcur: dict, device: torch.device) -> dict:
 
 def _dataloader_kwargs(batch_size: int, force_cpu: bool = False) -> dict:
     use_cuda = torch.cuda.is_available() and not force_cpu
-    # Use 4 DataLoader workers on Windows (spawn context) to overlap CPU data
-    # loading with GPU compute. GPU was idle ~92% of time with num_workers=0.
-    # On CPU-only mode, use fewer workers to avoid overhead.
-    num_workers = 0 if force_cpu else min(2, (os.cpu_count() or 1))
+    # FORCE num_workers=0 to prevent multiprocessing deadlock on Windows
+    num_workers = 0
     kw: dict = {
         "batch_size": batch_size,
         "num_workers": num_workers,
         "pin_memory": use_cuda,
-        "persistent_workers": num_workers > 0,
-        "multiprocessing_context": "spawn" if num_workers > 0 else None,
+        "persistent_workers": False,
+        "multiprocessing_context": None,
     }
-    if num_workers > 0:
-        kw["prefetch_factor"] = 2
     return kw
 
 
