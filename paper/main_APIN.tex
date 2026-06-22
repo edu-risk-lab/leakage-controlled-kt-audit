@@ -40,6 +40,8 @@
 \usepackage{xcolor}
 \usepackage{subcaption}
 \usepackage{float}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,fit,shapes.geometric,calc}
 
@@ -131,10 +133,20 @@ under-performer ordering on XES3G5M persists under this partially matched
 ablation.
 Ground-truth cross-validation on Junyi shows node-level agreement but
 edge-level divergence between behavioural inference and expert curation.
-A deliberate full-log graph variant shifts headline metrics by at most
-$0.003$ on the three public benchmarks studied here; we position the
-protocol as reproducibility infrastructure and a practitioner checklist for
-graph-provenance decisions, not as a route to higher headline accuracy.}
+We find that graph-mediated leakage shifts headline AUC only when two
+factors are simultaneously high: the \emph{throughput} of contamination into
+the consumed edge set and the \emph{reliance} of the backbone on graph
+structure. On the three public benchmarks an aggressive support filter holds
+throughput low, so a deliberate full-log variant moves AUC by at most $0.003$;
+a controlled injection that raises throughput shifts graph-reliant backbones
+(GKT ${\approx}{+}0.05$, GIKT ${\approx}{+}0.03$) while a sequence-only
+baseline is unmoved. Because AUC is silent in three of four
+throughput$\times$reliance regimes it is an unreliable leakage alarm; the
+audit instead measures throughput directly (builder mass, $\mathrm{TBMR}$) and
+reports which regime a corpus occupies before accuracy could reveal it. We
+therefore position the protocol as reproducibility infrastructure and a
+practitioner checklist for graph-provenance decisions, not as a route to
+higher headline accuracy.}
 
 \keywords{Knowledge tracing, Concept graphs, Leakage control, DAG audit,
 Ground-truth cross-validation, Cold-start diagnostics, Reproducibility}
@@ -180,13 +192,21 @@ Third, ``cold-start'' is used inconsistently in KT reporting, so
 aggregate AUC can mask tail-\KC{} behaviour.
 
 Two short examples make the audit concrete. (1)~\textbf{Graph-mediated
-leakage:} if an edge $c_i\!\to\!c_j$ is retained because many
-\emph{test-fold} learners traverse $c_i$ then $c_j$, the graph can
-encode future transitions while the optimiser never sees those learners.
-(2)~\textbf{KC cold-start:} if a KC appears only a handful of times in
-$\mathcal{F}_{\text{train}}^f$ but frequently in
+leakage (worked illustration).} Suppose a transition $c_i\!\to\!c_j$ has
+support $40$ in the train fold but support $60$ once the full log is pooled,
+because $20$ of the supporting traversals belong to test-fold learners. Under
+a support-quantile cutoff the train-only count may fall below threshold and be
+dropped, while the pooled count clears it and the edge is retained: the graph
+then encodes a transition carried mainly by held-out learners the optimiser
+never trains on. The fraction of an edge's support that comes from held-out
+tokens---here $20/60$---is exactly the \emph{throughput} our audit measures
+($\mathrm{ECR}^{\mathrm{overlap}}$, $\mathrm{TBMR}$), and it is invisible to a
+learner-disjoint split flag. (2)~\textbf{KC cold-start.} If a KC appears only a
+handful of times in $\mathcal{F}_{\text{train}}^f$ but frequently in
 $\mathcal{F}_{\text{test}}^f$, graph propagation may rely on unstable
-neighbourhood evidence that aggregate metrics hide.
+neighbourhood evidence that aggregate metrics hide---and, as
+Section~\ref{sec:disc-implications} argues, such sparse-train KCs are precisely
+where a single leaked edge has the largest relative throughput.
 
 Concretely, let $\mathcal{D}=\{(u,t,q,c,y)\}$ be a KT interaction log
 with learner $u$, timestamp $t$, item $q$, tagged \KC{} $c$, and
@@ -204,6 +224,16 @@ $\mathcal{F}_{\text{train}}^f$ and score predictions on
 $\mathcal{F}_{\text{test}}^f$. The central question is whether reported
 graph-augmented KT gains remain valid when $G_f$ is audited for leakage,
 acyclicity, and cold-start coverage.
+
+Our central thesis is that graph-mediated leakage is \emph{conditionally}
+harmful rather than uniformly dangerous: it shifts headline AUC only when two
+factors are simultaneously high---the \emph{throughput} of held-out mass into
+the consumed edge set, and the \emph{reliance} of the backbone on graph
+structure. Because AUC stays silent at every other configuration, it cannot
+serve as a leakage alarm; this is precisely why an audit layer that measures
+throughput \emph{independently of accuracy} is necessary. The protocol is the
+instrument that tells a practitioner which throughput$\times$reliance regime
+they occupy before accuracy could reveal it.
 
 \begin{figure}[!t]
 \centering
@@ -782,6 +812,30 @@ splits). Elevated $\mathrm{TBMR}_f$ on dense multi-skill corpora (e.g.\
 XES3G5M) flags reliance on late-train co-assessment patterns, not contamination
 from validation/test learners.
 
+Algorithm~\ref{alg:leak-audit} collects the four scalar diagnostics into a
+single audit pass over a fold. The structural flag $\mathrm{ECR}^{\mathrm{flag}}_f$
+is a hard gate that halts the pipeline; the remaining three quantify
+\emph{throughput} of held-out mass into the consumed edge set
+($\mathrm{ECR}^{\mathrm{overlap}}_f$, $\mathrm{TBMR}_f$) and its correlation
+with outcomes ($|\rho_f|$), none of which reduces to predictive accuracy.
+
+\begin{algorithm}[t]
+\caption{Edge-provenance leakage audit for fold $f$}
+\label{alg:leak-audit}
+\begin{algorithmic}[1]
+\Require learner sets $\mathcal{U}^{\mathrm{tr}}_f,\mathcal{U}^{\mathrm{va}}_f,\mathcal{U}^{\mathrm{te}}_f$;
+  consumed edges $\mathcal{E}_f$; held-out interactions $\mathcal{H}_f$;
+  edge weights $\mathbf{w}_f$; outcome summaries $\mathbf{y}_f$
+\Ensure $\mathrm{ECR}^{\mathrm{flag}}_f,\ \mathrm{ECR}^{\mathrm{overlap}}_f,\ \rho_f,\ \mathrm{TBMR}_f$
+\State $\mathrm{ECR}^{\mathrm{flag}}_f \gets \mathbb{1}\big[(\mathcal{U}^{\mathrm{tr}}_f\cap\mathcal{U}^{\mathrm{va}}_f)\cup(\mathcal{U}^{\mathrm{tr}}_f\cap\mathcal{U}^{\mathrm{te}}_f)\cup(\mathcal{U}^{\mathrm{va}}_f\cap\mathcal{U}^{\mathrm{te}}_f)\neq\emptyset\big]$
+\If{$\mathrm{ECR}^{\mathrm{flag}}_f = 1$} \State \textbf{halt}: structural leakage \EndIf
+\State $\mathrm{ECR}^{\mathrm{overlap}}_f \gets \dfrac{1}{|\mathcal{E}_f|}\sum_{e\in\mathcal{E}_f}\mathbb{1}\big[|S_{\text{hi}}(e)|>0\big]$ \Comment{held-out tokens supporting $e$}
+\State $\rho_f \gets \mathrm{Corr}(\mathbf{w}_f,\mathbf{y}_f)$ \Comment{outcomes used only for this diagnostic}
+\State $\mathrm{TBMR}_f \gets \dfrac{\sum_u |\mathcal{V}_{u,f}|}{\sum_u |\mathcal{I}^{>}_{u,f}|}$ \Comment{within-train $70\%$ chronological cutoff}
+\State \Return $(\mathrm{ECR}^{\mathrm{flag}}_f,\ \mathrm{ECR}^{\mathrm{overlap}}_f,\ \rho_f,\ \mathrm{TBMR}_f)$
+\end{algorithmic}
+\end{algorithm}
+
 \subsection{Graph Representation for Knowledge Tracing}
 \label{sec:graph-repr}
 We represent each fold's knowledge structure as a directed graph
@@ -956,6 +1010,42 @@ count, raw edge count, pruned edge count, retained edge count, root
 count, leaf count, and final topological-sort status. The claim is not
 that the retained DAG is the unique correct prerequisite hierarchy, but
 that the pruning rule and edge provenance are explicit and reproducible.
+
+Algorithm~\ref{alg:graph-build} states the construction and audit steps
+together. Counting and filtering touch only $\mathcal{F}^f_{\text{train}}$,
+so no held-out interaction can support a retained edge; the cycle-pruning loop
+terminates only when no further cycle is detected, guaranteeing an acyclic
+$\Epre^f$.
+
+\begin{algorithm}[t]
+\caption{Train-only prerequisite graph construction with DAG audit}
+\label{alg:graph-build}
+\begin{algorithmic}[1]
+\Require train fold $\mathcal{F}^f_{\text{train}}$; quantile $q$; per-source cap
+  $k$; global cap $K$
+\Ensure acyclic edge set $\Epre^f$ with provenance
+\State $s \gets \emptyset$ \Comment{support counter over KC transitions}
+\For{each learner sequence $(c_1,\dots,c_T)\in\mathcal{F}^f_{\text{train}}$}
+  \For{$t \gets 1$ to $T-1$ \textbf{with} $c_t \neq c_{t+1}$}
+    \State $s[(c_t,c_{t+1})] \gets s[(c_t,c_{t+1})] + 1$
+  \EndFor
+\EndFor
+\State $\theta \gets$ $q$-th percentile of $\{s[\cdot]\}$ \Comment{(i) support-quantile filter}
+\State $C \gets \{(i,j) : s[(i,j)] \ge \theta\}$
+\State $C \gets \bigcup_{i} \textsc{TopK}_{j}(C_i, k)$ by support \Comment{(ii) per-source top-$k$}
+\State $C \gets \textsc{TopK}(C, K)$ by support \Comment{(iii) global top-$K$}
+\For{$(i,j)\in C$}
+  \State $w_{ij} \gets s[(i,j)]/\max_{(a,b)\in C} s[(a,b)]$; tag $(f,\textit{train-only})$
+\EndFor
+\State $\Epre^f \gets C$
+\While{$\Epre^f$ contains a cycle} \Comment{DAG audit}
+  \State $Z \gets \textsc{JohnsonCycles}(\Epre^f,\ \text{cap}=100)$
+  \State $e^\star \gets \arg\min_{e\in\bigcup Z} w_e$; remove $e^\star$; log $e^\star$
+\EndWhile
+\State \Return $\Epre^f$ with topological order
+\end{algorithmic}
+\end{algorithm}
+
 \subsection{DAG Disruption Rate and Augmentation Operators}
 \label{sec:ddr}
 To quantify the structural effect of graph augmentations on prerequisite
@@ -983,6 +1073,24 @@ random seeds on each of three train folds ($3\times 3=9$ runs per
 setting); reported means aggregate across those runs. \DDR{} is a structural diagnostic only: it measures how
 much prerequisite structure is removed or reversed by an augmentation,
 not whether a downstream KT model becomes better or worse.
+
+Algorithm~\ref{alg:ddr} states the computation. An edge counts as disrupted if
+it is removed outright or re-appears with reversed direction, so \DDR{}
+captures both deletion and direction flips of prerequisite precedence.
+
+\begin{algorithm}[t]
+\caption{DAG Disruption Rate (\DDR{})}
+\label{alg:ddr}
+\begin{algorithmic}[1]
+\Require prerequisite edges $\Epre$; augmentation operator $A$; strength $p$
+\Ensure $\DDR(A,p)\in[0,1]$
+\State $E' \gets A(\Epre, p)$ \Comment{apply operator at strength $p$}
+\State $\mathrm{pre} \gets \{(i,j)\in\Epre : (i,j)\in E'\}$ \Comment{kept, same direction}
+\State $\mathrm{rev} \gets \{(i,j)\in\Epre : (j,i)\in E'\ \textbf{and}\ (i,j)\notin E'\}$ \Comment{reversed}
+\State \Return $\big(|\Epre\setminus\mathrm{pre}| + |\mathrm{rev}|\big)\,/\,|\Epre|$
+\end{algorithmic}
+\end{algorithm}
+
 \subsection{Cold-start KC Stratification}
 \label{sec:cold-start}
 We define cold-start at the KC level, distinct from user/item
@@ -1173,7 +1281,9 @@ baseline behaviour in later sections.
 
 \subsection{Controlled test-fold edge injection}
 \label{sec:exp-injection}
-To verify that the audit metrics respond to graph-mediated leakage, we
+This experiment is the controlled realisation of the high-throughput cell of
+the two-factor model (Table~\ref{tab:two-factor}): we raise contamination
+\emph{throughput} on purpose and observe which backbones move. We
 deliberately contaminate the XES3G5M fold-0 train-only prerequisite builder
 with $5\%$ and $20\%$ of test-fold interactions (Supplementary Table~S17).
 Candidate-edge count ($|\Epre|$: $1162{\to}1378{\to}1417$; counted
@@ -1187,9 +1297,12 @@ $\mathrm{ECR}^{\mathrm{overlap}}_f$ is already saturated at $1.0$ on this
 transition-dense corpus (Section~\ref{sec:formal-problem}), so it carries no
 additional signal here. Retraining on the injected graphs (Supplementary
 Table~S18) shows that headline AUC need not move in lockstep with the
-structural audit: GKT AUC rises from $0.810$ (clean fold~0) to $0.860$ at
-$20\%$ injection, while \textit{simpleKT}---which does not consume the
-graph---stays near $0.850$--$0.858$. On this transition-dense corpus,
+structural audit, and that the lift is confined to graph-reliant backbones:
+GKT AUC rises from $0.810$ (clean fold~0) to $0.860$ at $20\%$ injection and
+GIKT from $0.852$ to $0.880$, while \textit{simpleKT}---which does not consume
+the graph---stays near $0.850$--$0.858$. The two graph consumers move together
+($+0.05$ and $+0.03$) and the sequence-only baseline does not, which is exactly
+the reliance contrast the two-factor model predicts. On this transition-dense corpus,
 injected test transitions disproportionately \emph{densify} $\Epre$ with
 high-support curriculum edges ($|\Epre|$ rises $1162{\to}1417$ before pruning;
 Table~S17) that GKT's graph convolution can exploit as additional relational
@@ -1202,6 +1315,60 @@ Metric-level contamination is detectable in builder mass and $\mathrm{TBMR}_f$
 before practitioners would infer leakage from AUC alone, and tiered reporting
 remains necessary on real data where $\mathrm{ECR}^{\mathrm{overlap}}_f$ is
 already saturated at $1.0$.
+
+\paragraph{Worked example: reading injection as throughput.}
+Walking the $20\%$ row of Tables~S17--S18 makes the throughput notion concrete.
+Injecting test-fold transitions grows the candidate builder mass from
+$|\Epre|{=}1162$ to $1417$ (a ${+}255$-edge, ${+}21.9\%$ increase) and lifts
+$\mathrm{TBMR}_f$ from $0.754$ to $0.779$, while $\mathrm{ECR}^{\mathrm{flag}}_f$
+stays at $0$ throughout because learner-id sets remain disjoint. A practitioner
+watching only the learner-disjoint flag would see nothing; a practitioner
+watching builder mass would see a $21.9\%$ inflation \emph{before} any accuracy
+number is computed. Downstream, that extra mass is what a graph-reliant
+backbone converts into a spurious lift (GKT $0.810\!\to\!0.860$), whereas the
+sequence-only baseline---blind to the graph---barely moves ($0.850\!\to\!0.858$).
+The example shows the two audit roles working in sequence: throughput rises
+first and is measured directly, and only then, and only for graph-reliant
+backbones, does AUC inflate.
+
+\begin{table}[t]
+\centering
+\caption{Two-factor interaction: graph-mediated leakage shifts AUC only in the
+high-throughput\,$\times$\,high-reliance cell. Rows are contamination
+\emph{throughput} into the consumed edge set; columns are backbone
+\emph{reliance} on the graph. Entries are observed $\Delta$AUC on XES3G5M.
+Three of four cells are ${\approx}0$; harm concentrates in one cell, and the
+realistic operating point (full-log pooling under our filter) sits in the
+low-throughput row.}
+\label{tab:two-factor}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.34\linewidth}
+  >{\centering\arraybackslash}X >{\centering\arraybackslash}X @{}}
+\toprule
+ & low reliance (\textit{simpleKT}) & high reliance (GKT, GIKT) \\
+\midrule
+low throughput\newline (train-only vs.\ full-log pooling) &
+  ${\approx}0$ &
+  ${\leq}0.003$ (Table~\ref{tab:graph-ablation}) \\
+high throughput\newline ($20\%$ test-fold injection) &
+  ${\approx}0$ ($0.850{\to}0.858$) &
+  $+0.05$ GKT, $+0.03$ GIKT (Tables~S17--S18) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Table~\ref{tab:two-factor} assembles the interaction from evidence already in
+the paper. The decisive point is that the \emph{same} GKT backbone yields
+${\approx}0$ under realistic full-log pooling (Table~\ref{tab:graph-ablation})
+but $+0.05$ under injection: throughput is a genuine knob, and the operating
+point on these corpora happens to fall in the low-throughput row \emph{because
+the support filter throttles the channel} (Section~\ref{sec:exp-graph-ablation}),
+not because leakage is harmless as a rule. Harm therefore behaves
+multiplicatively---approximately throughput\,$\times$\,reliance---so AUC is a
+late and unreliable alarm that fires only when both factors are high, whereas
+the throughput indicators (builder mass, $\mathrm{TBMR}_f$) rise with
+contamination regardless of backbone reliance.
 
 \subsection{Baseline Diagnostic}
 \label{sec:exp-baseline}
@@ -1293,10 +1460,19 @@ or below $0.003$; Synthetic~C5 shows the largest released shift
 ($|\Delta\text{AUC}|{=}0.002$ for GKT). Per-model pairs appear in
 Supplementary Tables~S6--S10. Under our support quantile ($q{=}0.95$),
 top-$k$ cap, and $K{=}5000$ filter, pooling learners before edge inference
-rarely changes surviving transitions on public benchmarks. Train-only
-construction is therefore \emph{not} penalising headline metrics relative
-to this deliberate full-log variant on those corpora, without proving absence
-of leakage in general.
+rarely changes surviving transitions on public benchmarks. We read this null
+shift as a \emph{measurement of operating regime}, not as evidence that
+leakage is harmless: because most edges that survive full-log pooling already
+survive train-only construction, held-out mass has low \emph{throughput} into
+the consumed edge set. The ${\leq}0.003$ shift therefore places these three
+benchmarks in the low-throughput row of Table~\ref{tab:two-factor}; it is the
+aggressive filter that throttles the channel here, not a general property of
+leakage. The same channel carries ${\approx}0.05$ AUC once throughput is raised
+by injection (Section~\ref{sec:exp-injection}). Train-only construction is
+thus \emph{not} penalising headline metrics relative to this deliberate
+full-log variant on those corpora; reporting which regime a corpus occupies,
+with evidence, is itself a useful audit output, and absence of a headline
+shift here does not prove absence of leakage in general.
 
 \subsection{DAG Disruption Rate}
 \label{sec:exp-ddr}
@@ -1659,6 +1835,28 @@ cold strata. Very-cold counts remain small ($n{=}19$--$161$ per dataset in
 Table~\ref{tab:cold-start-summary}); stratum-level AUC therefore carries high
 variance and should be read alongside $n$ and fold-level dispersion.
 
+\paragraph{Leakage risk concentrates at cold-start KCs.}
+Leakage control and cold-start stratification are usually treated as separate
+hygiene checks, but the two-factor model links them directly. \emph{Throughput}
+is the share of an edge's evidence that comes from held-out mass, and this share
+is largest exactly where the train-fold neighbourhood is thinnest. A hot KC with
+hundreds of train transitions barely moves when a few held-out traversals leak
+into its edges; a very-cold KC supported by only a handful of train transitions
+can have its incident edges---and hence its graph-propagated representation---
+dominated by a single leaked transition. Concretely, in the worked example of
+Section~\ref{sec:intro} the same $20$ leaked traversals that change an edge's
+support from $40$ to $60$ ($33\%$ throughput) would, on a KC with train support
+$4$, raise it from $4$ to $24$ ($83\%$ throughput): leakage throughput scales
+inversely with train-fold KC frequency. This is why the leakage taxonomy in
+Table~\ref{tab:leakage-taxonomy} lists a dedicated \emph{cold-start
+neighbourhood} class audited by $\mathrm{ECR}^{\mathrm{overlap}}$ together with
+the strata: cold-start KCs are the highest-throughput entry points for
+graph-mediated leakage, so per-stratum provenance---not just aggregate
+provenance---is the conservative report. Equivalently, an aggregate full-log
+ablation that moves AUC by ${\leq}0.003$ (Table~\ref{tab:graph-ablation}) can
+still mask a larger, throughput-driven shift confined to the very-cold stratum;
+disaggregating the ablation by stratum is the natural next measurement.
+
 \paragraph{Deployment decision vignettes.}
 The audit is most actionable when an output maps to a concrete deployment
 choice:
@@ -1790,6 +1988,21 @@ is omitted because dense multi-million interaction graphs make the stock GKT
 wrapper impractical under our compute budget (Tables~S1, \ref{tab:baseline-summary});
 downstream \DDR{} retraining covers DGEKT only.
 
+\paragraph{Scope of the two-factor claim.}
+Two limits bound the conditional-harm framing of Table~\ref{tab:two-factor}.
+First, the high-throughput cell is reached only by \emph{controlled} injection;
+we have not exhibited a natural workflow (absent deliberate contamination) that
+raises throughput on these corpora, so the dangerous cell is demonstrated, not
+shown to be common. Closing this gap would require a realistic mechanism that
+lifts throughput without hand injection---a looser but commonly used support
+filter, a denser-graph corpus, or a re-built legacy graph-KT pipeline. Second,
+the reliance factor currently rests on GKT and GIKT (positive) versus
+\textit{simpleKT} and DGEKT (${\approx}0$); the interaction is an illustration
+backed by two graph-reliant backbones rather than an exhaustive
+characterisation. A matched \DDR{}$\to$AUC sweep on additional graph-reliant
+backbones at both throughput levels would upgrade the interaction from
+illustration to a tested claim.
+
 \subsection{Future work}
 \label{sec:future-work}
 Three extensions follow naturally from the audit boundary established here.
@@ -1846,7 +2059,15 @@ remains competitive; GKT epoch-extended training (Tables~S21--S22;
 \textit{simpleKT} reference unchanged) recovers only
 ${\approx}\GKTepochgain{}$ AUC on seed~$42$, leaving pooled
 $\Delta{\approx}\GKTthirtydeltavec{}$ (95\% CI \GKTthirtydeltaci{}). Train-only versus
-full-log ablation moves headline AUC by at most $0.003$. Ground-truth
+full-log ablation moves headline AUC by at most $0.003$. These results cohere
+under a two-factor reading: graph-mediated leakage shifts AUC only when
+contamination throughput and backbone reliance are jointly high, and even then
+it inflates ($0.810{\to}0.860$ under injection) rather than distinguishing
+inflation from genuine gain. Leakage control is therefore a deployment
+precondition precisely because AUC is an unreliable alarm; the audit's
+throughput indicators (builder mass, $\mathrm{TBMR}$) fire regardless of
+backbone reliance, giving practitioners a leading indicator before a
+contaminated graph is mistaken for a SOTA improvement. Ground-truth
 cross-validation on Junyi shows high node overlap but weak edge agreement.
 Cold-start strata reveal a narrow graph-aware advantage only in very-cold
 \KCs{} on real data, with small $n$ and high variance. Practitioners can apply
