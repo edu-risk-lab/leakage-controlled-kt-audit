@@ -196,14 +196,14 @@ def main() -> int:
                 logger.info("[dry-run] %s fold=%s ddr=%.3f edges %d->%d", (operator, pp), fold, ddr, len(original), len(perturbed))
             else:
                 fit_seed = int(args.experiment_seed) + int(fold) * 97
-                auc, acc, nll, note = run_pykt_fold(
+                auc, acc, nll, note, *_ = run_pykt_fold(
                     display_model=args.model,
                     pykt_name=args.model,
                     work_dir=work_dir,
                     num_q=num_q,
                     num_c=num_c,
                     graph_npz=npz,
-                    graph_tag=graph_tag,
+                    graph_tag=f"{operator}_{pp:.2f}",
                     hyperparams=hp,
                     epochs=epochs,
                     batch_size=batch_size,
