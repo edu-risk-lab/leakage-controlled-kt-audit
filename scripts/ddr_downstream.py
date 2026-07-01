@@ -174,9 +174,9 @@ def main() -> int:
                 perturbed = OPERATORS[operator](original, float(pp), int(args.perturb_seed))
                 ddr = compute_dag_disruption_rate(original, perturbed)
 
-            pert_csv = work_dir / f"e_pre_{operator}_{pp:.2f}.csv"
+            pert_csv = work_dir / f"e_pre_{operator}_{pp:.2f}_seed{args.experiment_seed}.csv"
             perturbed.to_csv(pert_csv, index=False)
-            npz = work_dir / f"gkt_graph_{operator}_{pp:.2f}.npz"
+            npz = work_dir / f"gkt_graph_{operator}_{pp:.2f}_seed{args.experiment_seed}.npz"
             mat = edges_to_gkt_matrix(num_c, [pert_csv, esim_path], c_map)
             write_gkt_graph_npz(npz, mat)
 
@@ -205,7 +205,7 @@ def main() -> int:
                     num_q=num_q,
                     num_c=num_c,
                     graph_npz=npz,
-                    graph_tag=f"{operator}_{pp:.2f}",
+                    graph_tag=f"{operator}_{pp:.2f}_seed{args.experiment_seed}",
                     hyperparams=hp,
                     epochs=epochs,
                     batch_size=batch_size,
