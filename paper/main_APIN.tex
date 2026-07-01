@@ -117,9 +117,12 @@ model-comparison benchmark), ASSISTments~2012 (secondary), Junyi Academy
 The audit yields acyclic train-only prerequisite graphs on all corpora; the
 \DDR{} sweep separates five augmentation operators, with a prerequisite-preserving
 operator measurably less disruptive than edge dropping at a matched budget.
-An \emph{exploratory} DGEKT-only downstream stress test on ASSISTments and
-XES3G5M finds near-zero AUC changes despite large structural perturbation; we
-do not extrapolate that null sensitivity to other backbones. On XES3G5M the
+An anchored downstream retraining test shows this effect is \emph{conditional}
+on backbone reliance: on a graph-reliant backbone that passes a
+manipulation check (GKT on XES3G5M), \DDR{} predicts AUC loss
+(Pearson $r{=}0.97$) and the prerequisite-preserving operator costs the least
+accuracy at matched budget, whereas on graph-inert cells (DGEKT; GKT on
+ASSISTments) even total graph destruction moves AUC by ${\le}0.002$. On XES3G5M the
 audit surfaces a \emph{model-specific} ordering within the \textbf{primary}
 comparison trio (\textit{simpleKT}, stock pyKT GKT, native GIKT): under the
 released 10-epoch training budget (Table~S15), GKT trails \textit{simpleKT} by
@@ -352,9 +355,15 @@ than deferred to the Discussion alone.
   operator; the latter is measurably less disruptive at a matched
   perturbation budget, showing that \DDR{} discriminates augmentation
   operators at the structural level rather than restating edge counts alone.
-  \emph{Residual risk:} downstream predictive sensitivity was stress-tested
-  only on DGEKT (Section~\ref{sec:exp-ddr-downstream}); we do not claim
-  \DDR{} predicts accuracy for other graph consumers.
+  \emph{Downstream evidence:} under an anchored retraining sweep, \DDR{}
+  predicts accuracy loss on a graph-reliant backbone that passes a
+  manipulation check (GKT on XES3G5M, Pearson $r{=}0.97$; \texttt{prereq\_preserve}
+  costs the least AUC at matched budget), while remaining a purely structural
+  audit on graph-inert backbones (DGEKT, and GKT on ASSISTments), where total
+  graph destruction moves AUC by ${\le}0.002$ (Section~\ref{sec:exp-ddr-downstream}).
+  \emph{Residual risk:} downstream sensitivity is thus backbone- and
+  dataset-conditional; we do not claim \DDR{} predicts accuracy for graph-inert
+  consumers.
   \item \textbf{C3 (addresses L3: cold-start reporting).} A cold-start KC
   diagnostic with explicit frequency-based strata and reproducible scripts
   on three KT benchmarks.
@@ -1539,7 +1548,11 @@ responds to operator structure-awareness in a quantitative,
 non-tautological way. \DDR{} can therefore serve as a concrete design
 target: an augmentation that respects prerequisite directionality is
 measurably rewarded with lower disruption at the same perturbation
-budget.
+budget. On a graph-reliant backbone this structural reward also carries
+downstream---\texttt{prereq\_preserve} costs the least test AUC at a matched
+budget on GKT/XES3G5M---so the design target is validated in accuracy, not
+only in structure, whenever the backbone actually consumes the graph
+(Section~\ref{sec:exp-ddr-downstream}).
 
 The relative ordering
 $\DDR(\text{attr\_mask}) < \DDR(\text{subgraph}) \lesssim
@@ -1558,18 +1571,60 @@ structure-preserving regime.
 \subsection{\DDR{} Downstream Stress Test}
 \label{sec:exp-ddr-downstream}
 \input{results/tables/ddr_downstream.tex}
-Table~\ref{tab:ddr-downstream} connects \DDR{} to an \emph{exploratory}
-DGEKT-only retraining stress test on ASSISTments~2012 and XES3G5M (three
-folds; \texttt{edge\_drop}, \texttt{node\_drop}, \texttt{prereq\_preserve}).
-Despite large structural disruption (\texttt{node\_drop} mean \DDR{}
-$0.493$--$0.555$ at $p{=}0.30$), downstream AUC changes for \emph{DGEKT}
-stay near zero and pooled \DDR{}--AUC-drop correlations are weak
-($r{=}0.13$--$0.15$; supplementary DDR-downstream figure). \DDR{} therefore
-audits augmentation \emph{structure}; it is not, on the evidence reported
-here, a universal proxy for accuracy degradation across graph-consuming
-backbones. Only DGEKT was retrained in this sweep; extending the same
-\DDR{}$\to$AUC protocol to GKT (and ideally GIKT) is the highest-priority
-follow-up for C2 practical value (Section~\ref{sec:future-work}).
+\input{results/tables/ddr_downstream_gkt.tex}
+We retrain graph-consuming backbones on perturbed graphs and ask whether
+structural disruption (\DDR{}) predicts accuracy loss. Because a null
+\DDR{}$\to$AUC relationship is ambiguous---it can mean either ``\DDR{} does not
+predict AUC'' or ``this backbone ignores the graph''---we gate every
+interpretation on a \emph{manipulation check}: an anchor at $p{=}0.90$ that
+destroys almost the entire graph (\DDR{}${\approx}0.9$--$1.0$). A backbone whose
+AUC does not move even under total destruction is graph-inert, and its
+\DDR{}$\to$AUC correlation carries no downstream meaning.
+
+\paragraph{Low-reliance anchors (DGEKT everywhere; GKT on ASSISTments).}
+Table~\ref{tab:ddr-downstream} reports the original DGEKT sweep on
+ASSISTments~2012 and XES3G5M. Despite large structural disruption
+(\texttt{node\_drop} mean \DDR{} $0.493$--$0.555$ at $p{=}0.30$), DGEKT AUC
+changes stay near zero and pooled \DDR{}--AUC-drop correlations are weak
+($r{=}0.13$--$0.15$). GKT on ASSISTments behaves the same way
+(Table~\ref{tab:ddr-downstream-gkt}, second block): destroying the graph
+entirely at the manipulation-check anchor (\texttt{node\_drop} $p{=}0.90$,
+\DDR{}${=}0.998$) moves AUC by only $0.0021$ ($0.9629{\to}0.9609$). These cells
+\emph{fail} the manipulation check; we read them as \emph{low-reliance anchors}
+(reliance ${\approx}0$), not as evidence about \DDR{}. This is exactly the
+low-reliance column of the two-factor account (Table~\ref{tab:two-factor}):
+where the backbone does not consume the graph, no structural metric can shift
+accuracy, and \DDR{}'s value is confined to structure and reproducibility.
+
+\paragraph{Graph-reliant backbone (GKT on XES3G5M): \DDR{} predicts AUC loss.}
+The same protocol on GKT/XES3G5M (Table~\ref{tab:ddr-downstream-gkt}, first
+block; seed~$42$, three folds) tells the opposite story. GKT \emph{passes} the
+manipulation check decisively: near-total destruction drops AUC from the
+baseline $0.8344$ to $0.7629$ (\texttt{edge\_drop} $p{=}0.90$, ${-}0.072$) and
+$0.7469$ (\texttt{node\_drop} $p{=}0.90$, ${-}0.088$), so this backbone
+demonstrably reads the prerequisite graph. Within the interpretable regime,
+\DDR{} tracks the AUC drop almost perfectly: the two rise monotonically together
+(Pearson $r{=}0.97$ over the $p{\le}0.3$ core, $r{=}0.99$ including anchors;
+$n{=}27$ and $33$). Moreover, at a \emph{matched} perturbation budget the
+operator ordering carries through to accuracy: at $p{=}0.30$,
+\texttt{prereq\_preserve} costs $0.0103$ AUC, \texttt{edge\_drop} $0.0138$, and
+\texttt{node\_drop} $0.0414$, and the same
+$\texttt{prereq\_preserve}<\texttt{edge\_drop}<\texttt{node\_drop}$ ordering
+holds at $p{=}0.10$ and $p{=}0.20$. The structure-preserving operator that is
+least disruptive by \DDR{} (Section~\ref{sec:exp-ddr}) is also the one that
+costs the least accuracy on a backbone that actually uses the graph.
+
+This is the positive control the earlier DGEKT-only sweep lacked: on a
+graph-reliant backbone, \DDR{} is not merely a structural audit but a
+\emph{downstream-predictive} one, and \texttt{prereq\_preserve}'s structural
+advantage translates into a measurable accuracy advantage. Because reliance is
+backbone- and dataset-specific (GKT is graph-reliant on XES3G5M yet inert on
+ASSISTments), \DDR{}'s downstream relevance is likewise conditional: it becomes
+a design target precisely in the high-reliance regime that the manipulation
+check identifies. Extending the same anchored protocol to further graph-reliant
+backbones (e.g.\ GIKT, which the injection study in
+Section~\ref{sec:exp-injection} shows is also graph-reliant) is the natural
+follow-up (Section~\ref{sec:future-work}).
 \subsection{Cold-start KC Diagnostic}
 \label{sec:exp-coldstart}
 \input{results/tables/cold_start_summary.tex}
@@ -1809,14 +1864,19 @@ results further show that generic graph augmentations can substantially
 disturb prerequisite structure, especially when they operate at the node
 level, whereas a prerequisite-preserving operator that protects the
 transitive-reduction backbone is measurably less disruptive at the same
-perturbation budget. The exploratory DGEKT-only downstream stress test in
-Section~\ref{sec:exp-ddr-downstream} adds an important qualification:
-on \emph{this} backbone and on ASSISTments/XES3G5M only, large structural
-disruption did not produce a measurable AUC drop in our retraining sweep.
-We do not extrapolate that null predictive sensitivity to GIKT, GKT, SKT,
-DyGKT, or other graph consumers. Future augmentation papers should report
-both structural damage (\DDR{}) and backbone-specific downstream
-retraining evidence.
+perturbation budget. The anchored downstream stress test in
+Section~\ref{sec:exp-ddr-downstream} sharpens this into a \emph{conditional}
+result. Where a manipulation check confirms the backbone reads the graph
+(GKT on XES3G5M: destroying the graph costs $0.07$--$0.09$ AUC), \DDR{}
+predicts the accuracy loss ($r{=}0.97$) and \texttt{prereq\_preserve} costs the
+least AUC at matched budget---structural damage translates into predictive
+damage. Where the manipulation check fails (DGEKT, and GKT on ASSISTments:
+total destruction moves AUC by ${\le}0.002$), the same graph is effectively
+unused and \DDR{} remains a structural/reproducibility audit only. Downstream
+sensitivity to \DDR{} is therefore backbone- and dataset-specific, matching the
+reliance factor of the two-factor account; future augmentation papers should
+report both structural damage (\DDR{}) and a manipulation-check-gated
+downstream retraining test.
 \paragraph{Cold-start reporting.}
 The cold-start diagnostic shows why KT studies should not rely only on
 aggregate AUC. Rare \KCs{} may behave differently from frequent
@@ -1986,7 +2046,9 @@ sensitivity. ASSISTments yields no $\Esim$ under item-overlap Jaccard; GT
 cross-validation is Junyi-only at $\theta{=}0.5$; pyKT GKT on Junyi Academy
 is omitted because dense multi-million interaction graphs make the stock GKT
 wrapper impractical under our compute budget (Tables~S1, \ref{tab:baseline-summary});
-downstream \DDR{} retraining covers DGEKT only.
+downstream \DDR{} retraining covers DGEKT and GKT (the latter with a
+manipulation-check anchor), with GKT/XES3G5M reported for seed~$42$
+(multi-seed replication in progress).
 
 \paragraph{Scope of the two-factor claim.}
 Two limits bound the conditional-harm framing of Table~\ref{tab:two-factor}.
@@ -2026,12 +2088,14 @@ transfer across encoders. The three-seed GKT replication in Tables~S21--S22
 establishes a reproducible multi-seed template; extending it to additional
 corpora and to full compute parity (including a 30-epoch \textit{simpleKT}
 reference at batch~64 on the same folds) remains open.
-\textbf{\DDR{} downstream coverage.} The structural operator sweep is
-backbone-complete at the graph level, but downstream retraining was run only
-for DGEKT under compute budget. A minimal next step is a matched GKT
-retraining sweep on ASSISTments and XES3G5M so C2 reports at least two
-graph consumers before claiming (or refuting) predictive sensitivity to
-\DDR{}.
+\textbf{\DDR{} downstream coverage.} The anchored retraining sweep now covers
+two graph consumers (DGEKT and GKT) and establishes the manipulation-check
+protocol that separates graph-reliant from graph-inert backbones. Remaining
+steps are to complete multi-seed GKT replication on XES3G5M, to add a second
+graph-reliant backbone at both throughput levels (e.g.\ GIKT), and to pair the
+edge-level \DDR{} correlation with the reachability-disruption variant so that
+\emph{which} structural property a backbone consumes can be identified, not just
+that it consumes one.
 
 %-----------------------------------------------------------------------------
 \section{Conclusion}
@@ -2047,10 +2111,13 @@ cycle pruning. The \DDR{} sweep separates augmentation families into
 consistent structural regimes across all three public corpora. The
 prerequisite-preserving operator is strictly less disruptive than edge dropping
 at a matched budget, confirming that \DDR{} separates structure-aware from
-structure-agnostic operators at the graph level. An exploratory DGEKT-only
-downstream stress test on ASSISTments and XES3G5M shows that this structural
-ordering does not automatically imply predictive sensitivity for \emph{that}
-backbone ($r{=}0.13$--$0.15$; mean AUC drops near zero).
+structure-agnostic operators at the graph level. An anchored downstream
+retraining test makes the predictive reading conditional: on a graph-reliant
+backbone that passes a manipulation check (GKT on XES3G5M) \DDR{} predicts AUC
+loss ($r{=}0.97$) and \texttt{prereq\_preserve} costs the least accuracy at
+matched budget, whereas on graph-inert cells (DGEKT; GKT on ASSISTments) total
+graph destruction moves AUC by ${\le}0.002$ and \DDR{} stays a purely
+structural audit.
 
 Under fixed training budgets on XES3G5M, the primary trio shows a
 \emph{model-specific} pattern: GKT trails \textit{simpleKT} by
