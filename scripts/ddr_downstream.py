@@ -118,6 +118,8 @@ def main() -> int:
         run_pykt_fold = _rpf
 
     cfg = load_yaml(args.config)
+    if "split" in cfg and isinstance(cfg["split"], dict):
+        cfg["split"]["seed"] = args.experiment_seed
     dataset = cfg["dataset"]
     df = load_interactions(Path(cfg.get("processed_path", f"data/processed/{dataset}.parquet")))
     ratios = tuple(cfg.get("split", {}).get("ratios", [0.7, 0.1, 0.2]))
