@@ -372,20 +372,126 @@ Cả 4 đều đáp ứng được. ANOVA + leakage↔cold-start phục vụ b�
 
 | Mục | Trạng thái |
 |---|---|
-| Thí nghiệm 2.x (GKT) | **ĐANG CHẠY** trên GPU server (`docs/DDR_DOWNSTREAM_GKT.md`) — 1 seed, thiếu mỏ neo dưới |
+| Thí nghiệm 2.x (GKT) | **XONG cho XES3G5M seed 42** (3 fold + mỏ neo p=0.90) → **Kết cục A** (r=0.97, prereq<edge<node). ASSIST GKT = mỏ neo inert. |
 | Thí nghiệm 2.x (GIKT) | KHÔNG khả thi qua DDR sweep (bipartite Q–C); reliance lấy từ injection S18 |
-| Manipulation check anchors | **SCRIPT SẴN SÀNG** (`run_ddr_downstream_gkt_multiseed.sh`, anchor p=0.90) — chờ chạy server |
-| Multi-seed (≥3) | **SCRIPT SẴN SÀNG** (seed 42/17/1234, CSV riêng mỗi seed) — chờ chạy server |
-| Reachability-disruption (A6) | **SCRIPT SẴN SÀNG** (`reachability_disruption.py`, offline) — chờ data 2.x |
+| Manipulation check anchors | **XONG** — anchor `edge_drop`/`node_drop` p=0.90 đã có trong CSV seed 42 (XES3G5M drop 0.07–0.09; ASSIST ≤0.002) |
+| Multi-seed (≥3) | **MỘT PHẦN**: ASSIST seed 42/17 (+1234 partial); **XES3G5M mới seed 42** → cần 17/1234 để có power |
+| Reachability-disruption (A6) | **SCRIPT SẴN SÀNG** (`reachability_disruption.py`) — **CHƯA chạy** (thiếu `data/processed/*/fold_*/e_pre_train_only.csv` ở máy local) |
 | Text B2 (an toàn) | **ĐÃ XONG** (Abstract, thesis, bảng 2×2, §4.3, §4.5, Conclusion, guardrail §5.3) |
-| Text B3 (phụ thuộc kết cục) | chờ số |
-| ANOVA có power (6.1) | chờ số 2.x |
+| Text B3 (phụ thuộc kết cục) | **ĐÃ XONG** — §4.7 viết lại (Kết cục A + positive control), §4.6/§5.1/Abstract/C2/future work đồng bộ conditional |
+| ANOVA có power (6.1) | **CHỜ** multi-seed XES3G5M đủ (hiện 1 seed×3 fold; ASSIST inert nên ANOVA ít nghĩa) |
 | Ví dụ (6.2) | **ĐÃ XONG** (worked edge-leak ở Intro + injection case study ở §4.3) |
 | Leakage↔cold-start (6.3) | **ĐÃ XONG mức lý luận** (§5.2 paragraph + ví dụ số); phân tích ΔAUC-theo-stratum vẫn chờ |
 | Mã giả (6.4) | **ĐÃ XONG** (Alg 1 graph build+DAG audit, Alg 2 leakage audit, Alg 3 DDR) |
 
 ### Ghi chú build
 - Đã thêm `\usepackage{algorithm}` + `\usepackage{algpseudocode}` (sau `float`).
-- Chưa compile được trong môi trường này (shell không trả output). Cần chạy
-  `pdflatex → bibtex → pdflatex → pdflatex` để kiểm tra, đặc biệt tương thích
-  `algorithm` với `sn-jnl.cls` và các forward-ref `tab:two-factor` / `tab:graph-ablation`.
+- **[2026-07-01] Đã compile thành công** bằng MiKTeX (user-mode, `basic` + autoinstall):
+  `pdflatex → bibtex → pdflatex → pdflatex`, **56 trang, không lỗi TeX**, không
+  undefined refs (kể cả `tab:two-factor`, `tab:graph-ablation`, `tab:ddr-downstream-gkt`).
+  Chỉ còn cảnh báo font-shape `OT1/cmr/bx/sc` vô hại. Lệnh compile chạy từ trong
+  `paper/` với `TEXINPUTS`/`BIBINPUTS`/`BSTINPUTS` trỏ về project root để
+  `results/...` phân giải.
+
+---
+
+## 8. Kế hoạch chỉnh sửa chi tiết sau review APIN (scorecard 7.3/10 → mục tiêu ≥8.0)
+
+> Bám theo §1–§7. Điểm review nội bộ (tiêu chí APIN): Reproducibility 9.5 · Rigor 8.5
+> · Experiments 8.0 · Related work 7.5 · Novelty 7.0 · Clarity 7.0 · Significance 6.5
+> · Scope-APIN 6.5 → **Major Revision**. Năm ưu tiên P1–P5 dưới đây nhắm đúng bốn
+> tiêu chí thấp nhất (Significance, Scope, Clarity, và củng cố Rigor/Experiments).
+>
+> Quy ước mỗi task: **[mã] Mục tiêu — Thao tác (file/§) — DoD (định nghĩa hoàn thành) —
+> Compute — Phụ thuộc.**
+
+### 8.1. P1 + P5 — Foreground đóng góp APPLIED và reframe Title/Abstract (0 compute) — ƯU TIÊN CAO
+Vấn đề: reviewer APIN sẽ hỏi *"đâu là phương pháp thông minh / đóng góp hiệu năng?"*.
+Bài đang tự đóng khung là "reproducibility infrastructure" + null-result ⇒ hạ Significance/Scope.
+Cách chữa: định vị lại audit như một **decision-support / risk-scoring layer** cho triển khai KT.
+
+- [ ] **T1.1 — Đoạn "What a practitioner does differently".** Thêm 1 đoạn ≤8 dòng ở
+  cuối §1 (sau câu thesis, ~dòng 239) *hoặc* đầu §5.2 checklist: 3–4 bước hành động cụ
+  thể (chạy audit train-only trước khi báo cáo → đọc builder-mass/TBMR để định vị regime
+  throughput×reliance → nếu high-throughput thì nghi ngờ AUC → chọn `prereq_preserve`
+  khi cần augmentation). **DoD:** đoạn có động từ hành động, trỏ tới checklist 5 mục và
+  bảng `tab:two-factor`.
+- [ ] **T1.2 — Đổi từ khoá định vị.** Thay/bổ sung "reproducibility infrastructure" →
+  "**decision-support & leakage risk-scoring layer**" ở: Abstract (câu kết, dòng ~150),
+  Conclusion (§6), và mục Contributions (C1–C5). **DoD:** ≥3 chỗ dùng nhất quán "decision/
+  risk", không chỉ "reproducibility"; giữ 1 câu nói rõ *vẫn không* nhằm tăng accuracy (guardrail).
+- [ ] **T1.3 — Bảng/hình "input → audit signal → deployment action".** 1 bảng nhỏ 3 cột
+  (tín hiệu audit: ECRflag / TBMR / builder-mass / DDR / cold-start → ngưỡng → hành động
+  khuyến nghị). Đặt ở §5.2. **DoD:** ≤6 hàng, mỗi hàng một hành động triển khai cụ thể.
+- [ ] **T1.4 — Title/Abstract foreground.** Cân nhắc title đưa "audit + conditional-harm"
+  lên trước; Abstract mở bằng luật two-factor + giá trị quyết định, dời câu "at most 0.003"
+  xuống sau. **DoD:** câu đầu abstract nêu *đóng góp actionable*, không phải null AUC.
+- **Nâng:** Significance 6.5→7.5, Scope 6.5→7.5, Clarity +0.3.
+
+### 8.2. P2 — Rút gọn & tăng tương phản (0 compute) — ƯU TIÊN CAO
+Vấn đề: 56 trang + 22 bảng phụ + nhiều hedging ⇒ core message loãng, hạ Clarity.
+
+- [ ] **T2.1 — Dồn vào phụ lục.** Chuyển các bảng/đoạn chi tiết ít quan trọng xuống
+  Appendix: chi tiết SKT/DyGKT wiring, một phần S19–S20 ANOVA exploratory, phần
+  autocorrelation. **DoD:** thân bài còn ≤ ~14–16 trang trước Appendix (hiện dài hơn).
+- [ ] **T2.2 — Giảm hedging.** Rà các câu "we do not claim / not necessarily / may /
+  observational…" trùng lặp; giữ mỗi ý guardrail **một** lần (gom về §5.3). **DoD:** loại
+  ≥30% câu hedging lặp; không mất guardrail bắt buộc ở §5.3 (Phần 4).
+- [ ] **T2.3 — Một hình 2×2 mạnh làm bằng chứng trung tâm.** Nâng `tab:two-factor` thành
+  hình/heatmap có **anchor GKT mới** (XES3G5M: high-reliance có drop; ASSIST/DGEKT:
+  low-reliance ~0) + injection cell. **DoD:** 1 hình đứng riêng, tự giải thích, được
+  tham chiếu từ Abstract/§4.3/§4.7/§5.1.
+- **Nâng:** Clarity 7.0→8.0.
+
+### 8.3. P3 — Củng cố positive result thành "tested claim" (CẦN COMPUTE) — ƯU TIÊN CAO (khoa học)
+Vấn đề: XES3G5M GKT downstream mới 1 model-seed×3 fold; A6 reachability chưa chạy;
+ANOVA underpowered ⇒ hạ Rigor/Experiments/Significance dù hướng đúng.
+
+- [ ] **T3.1 — Multi-seed XES3G5M GKT.** Chạy `run_ddr_downstream_gkt_multiseed.sh` cho
+  **XES3G5M** seed 17 & 1234 (đã có 42) → 3 seed × 3 fold = 9 obs/ô. **DoD:** 3 CSV
+  `..._seed{17,1234}.csv` có rows XES3G5M; cập nhật `ddr_downstream_gkt.tex` (mean±CI theo
+  seed×fold); Compute: GPU ~ vài giờ; Phụ thuộc: GPU server (playbook `docs/DDR_DOWNSTREAM_GKT.md`).
+- [ ] **T3.2 — Reachability-disruption A6.** Xuất `data/processed/xes3g5m/fold_*/e_pre_train_only.csv`
+  rồi chạy `python -m scripts.reachability_disruption --results ..._seed42.csv --perturb-seed 42`.
+  **DoD:** bảng tương quan (DDR vs AUC-drop) cạnh (reach-disruption vs AUC-drop); nếu reach
+  dự báo tốt hơn ⇒ 1 câu ở §4.7 trả lời A6. Compute: 0 GPU (offline). Phụ thuộc: file e_pre.
+- [ ] **T3.3 — ANOVA có power (6.1).** Sau T3.1: DV = AUC-drop; factors = operator × p ×
+  (backbone/dataset). **DoD:** thay S19–S20 exploratory bằng ANOVA có n=9/ô cho XES3G5M
+  GKT; báo F, p, η²; nêu rõ chỉ diễn giải khi anchor pass.
+- [ ] **T3.4 — Cập nhật số vào text.** Đổi "seed 42, three folds / multi-seed in progress"
+  trong §4.7, Abstract, future work → số multi-seed + CI. **DoD:** không còn "in progress".
+- **Nâng:** Rigor 8.5→9.0, Experiments 8.0→8.5, Significance +0.3.
+
+### 8.4. P4 — Công bằng ranking / compute-parity (compute vừa) — ƯU TIÊN TRUNG BÌNH
+Vấn đề: deficit GKT vs simpleKT dựa trên epoch budget lệch (10 vs 30) ⇒ "observational",
+reviewer dễ đòi parity.
+
+- [ ] **T4.1 — Quyết định phạm vi.** Chọn 1: (a) chạy **simpleKT 30ep, batch 64** trên cùng
+  fold để so parity; hoặc (b) **tách hẳn** claim ranking backbone ra khỏi đóng góp chính,
+  chỉ để như quan sát có kiểm soát epoch. **DoD:** một quyết định ghi vào §5.1 + §5.3.
+- [ ] **T4.2 (nếu chọn a) — Parity run.** Bổ sung cột parity vào Table S15/S21–S22. **DoD:**
+  bảng có cả hai cột budget; kết luận ranking nêu rõ "under parity".
+- **Nâng:** Rigor +0.3, giảm rủi ro phản biện lớn nhất về fairness.
+
+### 8.5. Guardrail giữ nguyên (BẮT BUỘC — đừng gỡ khi rút gọn)
+- Giữ §5.3 hai giới hạn (Phần 4): (1) ô high-throughput chỉ đạt bằng injection; (2) reliance
+  mới có GKT/GIKT dương vs simpleKT/DGEKT≈0. **Không** để P1/P2 vô tình biến audit thành
+  "route to higher accuracy".
+
+### 8.6. Lộ trình đề xuất
+- **Sprint 1 (0 compute, làm ngay):** P1+P5 (§8.1) → P2 (§8.2). Sản phẩm: bản text cải thiện
+  Significance/Scope/Clarity, nộp/compile được ngay (đã có MiKTeX).
+- **Sprint 2 (compute):** P3 (§8.3) — multi-seed XES3G5M + reachability + ANOVA. Sản phẩm:
+  positive result thành "tested claim".
+- **Sprint 3:** P4 (§8.4) parity + hoàn thiện, rà guardrail (§8.5), compile lần cuối.
+
+### 8.7. Bản đồ ưu tiên → tiêu chí điểm
+| Ưu tiên | Tiêu chí nâng chính | Compute |
+|---|---|---|
+| P1+P5 (applied/reframe) | Significance, Scope, Clarity | 0 |
+| P2 (rút gọn) | Clarity | 0 |
+| P3 (multi-seed+A6+ANOVA) | Rigor, Experiments, Significance | GPU + offline |
+| P4 (parity) | Rigor (fairness) | GPU vừa |
+
+> Ước tính nếu hoàn tất P1–P3: tổng hợp 7.3 → ~8.0–8.2 (từ Major Revision sang
+> Minor Revision / Accept-with-revisions). P4 giảm rủi ro reject do fairness.

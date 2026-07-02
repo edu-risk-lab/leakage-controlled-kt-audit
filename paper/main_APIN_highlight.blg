@@ -1,6 +1,6 @@
 This is BibTeX, Version 0.99e
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
-The top-level auxiliary file: main_APIN.aux
+The top-level auxiliary file: main_APIN_highlight.aux
 Reallocating 'name_of_file' (item size: 1) to 16 items.
 The style file: sn-mathphys-num.bst
 Reallocating 'name_of_file' (item size: 1) to 10 items.
@@ -30,7 +30,7 @@ Reallocating 'singl_function' (item size: 4) to 100 items.
 Reallocating 'singl_function' (item size: 4) to 100 items.
 You've used 32 entries,
             7485 wiz_defined-function locations,
-            1388 strings with 17365 characters,
+            1388 strings with 17385 characters,
 and the built_in function-call counts, 1363015 in all, are:
 = -- 265110
 > -- 1412

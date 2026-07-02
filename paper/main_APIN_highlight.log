@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.7.2)  2 JUL 2026 21:17
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.7.2)  2 JUL 2026 21:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**./main_APIN.tex
-(main_APIN.tex
+**./main_APIN_highlight.tex
+(main_APIN_highlight.tex
 LaTeX2e <2026-06-01>
 L3 programming layer <2026-06-18>
 (sn-jnl.cls
@@ -1264,34 +1264,183 @@ File: pgfmoduleparser.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 )
 (D:\0. NCS\CODE\p0_project\results/tables/bootstrap_ci_macros.tex)
 (D:\0. NCS\CODE\p0_project\results/tables/gkt_epoch_ablation_macros.tex)
-Package translations Info: No language package found. I am going to use `englis
-h' as default language. on input line 88.
+(C:\Users\tuanymc\AppData\Local\Programs\MiKTeX\tex/generic/soul\soul.sty
+Package: soul 2026-03-06 v3.2 Permit use of UTF-8 characters in soul (HO)
+
+(C:\Users\tuanymc\AppData\Local\Programs\MiKTeX\tex/generic/soul\soul-ori.sty
+Package: soul-ori 2026-03-06 v3.2 letterspacing/underlining (mf)
+\SOUL@word=\toks53
+\SOUL@lasttoken=\toks54
+\SOUL@syllable=\toks55
+\SOUL@cmds=\toks56
+\SOUL@buffer=\toks57
+\SOUL@token=\toks58
+\SOUL@syllgoal=\dimen346
+\SOUL@syllwidth=\dimen347
+\SOUL@charkern=\dimen348
+\SOUL@hyphkern=\dimen349
+\SOUL@dimen=\dimen350
+\SOUL@dimeni=\dimen351
+\SOUL@minus=\count386
+\SOUL@comma=\count387
+\SOUL@apo=\count388
+\SOUL@grave=\count389
+\SOUL@spaceskip=\skip90
+\SOUL@ttwidth=\dimen352
+\SOUL@uldp=\dimen353
+\SOUL@ulht=\dimen354
+)
+(C:\Users\tuanymc\AppData\Local\Programs\MiKTeX\tex/generic/etexcmds\etexcmds.s
+ty
+Package: etexcmds 2019/12/15 v1.7 Avoid name clashes with e-TeX commands (HO)
+))
+(C:\Users\tuanymc\AppData\Local\Programs\MiKTeX\tex/latex/mdframed\mdframed.sty
+Package: mdframed 2013/07/01 1.9b: mdframed
+
+(C:\Users\tuanymc\AppData\Local\Programs\MiKTeX\tex/latex/l3packages/xparse\xpa
+rse.sty
+(C:\Users\tuanymc\AppData\Local\Programs\MiKTeX\tex/latex/l3kernel\expl3.sty
+Package: expl3 2026-06-18 L3 programming layer (loader) 
 
 (C:\Users\tuanymc\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-p
 dftex.def
 File: l3backend-pdftex.def 2026-02-18 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count386
-) (main_APIN.aux)
-\openout1 = `main_APIN.aux'.
+\l__color_backend_stack_int=\count390
+))
+Package: xparse 2025-10-09 L3 Experimental document command parser
+)
+(C:\Users\tuanymc\AppData\Local\Programs\MiKTeX\tex/latex/zref\zref-abspage.sty
+Package: zref-abspage 2026-03-07 v2.37 Module abspage for zref (HO)
+(C:\Users\tuanymc\AppData\Local\Programs\MiKTeX\tex/latex/zref\zref-base.sty
+Package: zref-base 2026-03-07 v2.37 Module base for zref (HO)
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 88.
-LaTeX Font Info:    ... okay on input line 88.
+(C:\Users\tuanymc\AppData\Local\Programs\MiKTeX\tex/latex/auxhook\auxhook.sty
+Package: auxhook 2019-12-17 v1.6 Hooks for auxiliary files (HO)
+)
+Package zref Info: New property list: main on input line 767.
+Package zref Info: New property: default on input line 768.
+Package zref Info: New property: page on input line 769.
+)
+\c@abspage=\count391
+Package zref Info: New property: abspage on input line 67.
+)
+(C:\Users\tuanymc\AppData\Local\Programs\MiKTeX\tex/latex/needspace\needspace.s
+ty
+Package: needspace 2025/03/13 v1.3e reserve vertical space
+)
+\mdf@templength=\skip91
+\c@mdf@globalstyle@cnt=\count392
+\mdf@skipabove@length=\skip92
+\mdf@skipbelow@length=\skip93
+\mdf@leftmargin@length=\skip94
+\mdf@rightmargin@length=\skip95
+\mdf@innerleftmargin@length=\skip96
+\mdf@innerrightmargin@length=\skip97
+\mdf@innertopmargin@length=\skip98
+\mdf@innerbottommargin@length=\skip99
+\mdf@splittopskip@length=\skip100
+\mdf@splitbottomskip@length=\skip101
+\mdf@outermargin@length=\skip102
+\mdf@innermargin@length=\skip103
+\mdf@linewidth@length=\skip104
+\mdf@innerlinewidth@length=\skip105
+\mdf@middlelinewidth@length=\skip106
+\mdf@outerlinewidth@length=\skip107
+\mdf@roundcorner@length=\skip108
+\mdf@footenotedistance@length=\skip109
+\mdf@userdefinedwidth@length=\skip110
+\mdf@needspace@length=\skip111
+\mdf@frametitleaboveskip@length=\skip112
+\mdf@frametitlebelowskip@length=\skip113
+\mdf@frametitlerulewidth@length=\skip114
+\mdf@frametitleleftmargin@length=\skip115
+\mdf@frametitlerightmargin@length=\skip116
+\mdf@shadowsize@length=\skip117
+\mdf@extratopheight@length=\skip118
+\mdf@subtitleabovelinewidth@length=\skip119
+\mdf@subtitlebelowlinewidth@length=\skip120
+\mdf@subtitleaboveskip@length=\skip121
+\mdf@subtitlebelowskip@length=\skip122
+\mdf@subtitleinneraboveskip@length=\skip123
+\mdf@subtitleinnerbelowskip@length=\skip124
+\mdf@subsubtitleabovelinewidth@length=\skip125
+\mdf@subsubtitlebelowlinewidth@length=\skip126
+\mdf@subsubtitleaboveskip@length=\skip127
+\mdf@subsubtitlebelowskip@length=\skip128
+\mdf@subsubtitleinneraboveskip@length=\skip129
+\mdf@subsubtitleinnerbelowskip@length=\skip130
+
+(C:\Users\tuanymc\AppData\Local\Programs\MiKTeX\tex/latex/mdframed\md-frame-0.m
+df
+File: md-frame-0.mdf 2013/07/01\ 1.9b: md-frame-0
+)
+\mdf@frametitlebox=\box97
+\mdf@footnotebox=\box98
+\mdf@splitbox@one=\box99
+\mdf@splitbox@two=\box100
+\mdf@splitbox@save=\box101
+\mdfsplitboxwidth=\skip131
+\mdfsplitboxtotalwidth=\skip132
+\mdfsplitboxheight=\skip133
+\mdfsplitboxdepth=\skip134
+\mdfsplitboxtotalheight=\skip135
+\mdfframetitleboxwidth=\skip136
+\mdfframetitleboxtotalwidth=\skip137
+\mdfframetitleboxheight=\skip138
+\mdfframetitleboxdepth=\skip139
+\mdfframetitleboxtotalheight=\skip140
+\mdffootnoteboxwidth=\skip141
+\mdffootnoteboxtotalwidth=\skip142
+\mdffootnoteboxheight=\skip143
+\mdffootnoteboxdepth=\skip144
+\mdffootnoteboxtotalheight=\skip145
+\mdftotallinewidth=\skip146
+\mdfboundingboxwidth=\skip147
+\mdfboundingboxtotalwidth=\skip148
+\mdfboundingboxheight=\skip149
+\mdfboundingboxdepth=\skip150
+\mdfboundingboxtotalheight=\skip151
+\mdf@freevspace@length=\skip152
+\mdf@horizontalwidthofbox@length=\skip153
+\mdf@verticalmarginwhole@length=\skip154
+\mdf@horizontalspaceofbox=\skip155
+\mdfsubtitleheight=\skip156
+\mdfsubsubtitleheight=\skip157
+\c@mdfcountframes=\count393
+
+****** mdframed patching \endmdf@trivlist
+
+****** -- success******
+
+\mdf@envdepth=\count394
+\c@mdf@env@i=\count395
+\c@mdf@env@ii=\count396
+\c@mdf@zref@counter=\count397
+Package zref Info: New property: mdf@pagevalue on input line 895.
+)
+Package translations Info: No language package found. I am going to use `englis
+h' as default language. on input line 121.
+ (main_APIN_highlight.aux)
+\openout1 = `main_APIN_highlight.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 121.
+LaTeX Font Info:    ... okay on input line 121.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 121.
+LaTeX Font Info:    ... okay on input line 121.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 121.
+LaTeX Font Info:    ... okay on input line 121.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 121.
+LaTeX Font Info:    ... okay on input line 121.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 121.
+LaTeX Font Info:    ... okay on input line 121.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 121.
+LaTeX Font Info:    ... okay on input line 121.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 121.
+LaTeX Font Info:    ... okay on input line 121.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 121.
+LaTeX Font Info:    ... okay on input line 121.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 121.
+LaTeX Font Info:    ... okay on input line 121.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -1332,17 +1481,17 @@ LaTeX Font Info:    ... okay on input line 88.
 (C:\Users\tuanymc\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.
 mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count387
-\scratchdimen=\dimen346
-\scratchbox=\box97
-\nofMPsegments=\count388
-\nofMParguments=\count389
-\everyMPshowfont=\toks53
-\MPscratchCnt=\count390
-\MPscratchDim=\dimen347
-\MPnumerator=\count391
-\makeMPintoPDFobject=\count392
-\everyMPtoPDFconversion=\toks54
+\scratchcounter=\count398
+\scratchdimen=\dimen355
+\scratchbox=\box102
+\nofMPsegments=\count399
+\nofMParguments=\count400
+\everyMPshowfont=\toks59
+\MPscratchCnt=\count401
+\MPscratchDim=\dimen356
+\MPnumerator=\count402
+\makeMPintoPDFobject=\count403
+\everyMPtoPDFconversion=\toks60
 )
 (C:\Users\tuanymc\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf
 -base.sty
@@ -1354,16 +1503,16 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 .cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-LaTeX Info: Redefining \S on input line 88.
-LaTeX Font Info:    Redeclaring symbol font `AMSa' on input line 88.
+LaTeX Info: Redefining \S on input line 121.
+LaTeX Font Info:    Redeclaring symbol font `AMSa' on input line 121.
 LaTeX Font Info:    Overwriting symbol font `AMSa' in version `normal'
-(Font)                  U/msa/m/n --> U/msa/m/n on input line 88.
+(Font)                  U/msa/m/n --> U/msa/m/n on input line 121.
 LaTeX Font Info:    Overwriting symbol font `AMSa' in version `bold'
-(Font)                  U/msa/m/n --> U/msa/m/n on input line 88.
-Package hyperref Info: Link coloring ON on input line 88.
- (main_APIN.out) (main_APIN.out)
+(Font)                  U/msa/m/n --> U/msa/m/n on input line 121.
+Package hyperref Info: Link coloring ON on input line 121.
+ (main_APIN_highlight.out) (main_APIN_highlight.out)
 \@outlinefile=\write4
-\openout4 = `main_APIN.out'.
+\openout4 = `main_APIN_highlight.out'.
 
 
 (C:\Users\tuanymc\AppData\Local\Programs\MiKTeX\tex/latex/translations/dicts\tr
@@ -1372,27 +1521,27 @@ File: translations-basic-dictionary-english.trsl (english translation file `tra
 nslations-basic-dictionary')
 )
 Package translations Info: loading dictionary `translations-basic-dictionary' f
-or `english'. on input line 88.
+or `english'. on input line 121.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Calculating math sizes for size <12.045> on input line 168.
+LaTeX Font Info:    Calculating math sizes for size <12.045> on input line 201.
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 168
+LaTeX Font Info:    Trying to load font information for U+msa on input line 201
 .
 
 (C:\Users\tuanymc\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 168
+LaTeX Font Info:    Trying to load font information for U+msb on input line 201
 .
 
 (C:\Users\tuanymc\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Calculating math sizes for size <11.04124> on input line 16
-8.
-LaTeX Font Info:    Calculating math sizes for size <9.03374> on input line 168
+LaTeX Font Info:    Calculating math sizes for size <11.04124> on input line 20
+1.
+LaTeX Font Info:    Calculating math sizes for size <9.03374> on input line 201
 .
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1403,9 +1552,9 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [1
 
 {C:/Users/tuanymc/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
-LaTeX Font Info:    Calculating math sizes for size <10.03749> on input line 16
-8.
-LaTeX Font Info:    Calculating math sizes for size <> on input line 168.
+LaTeX Font Info:    Calculating math sizes for size <10.03749> on input line 20
+1.
+LaTeX Font Info:    Calculating math sizes for size <> on input line 201.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
@@ -1413,18 +1562,445 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [2]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Package mdframed Info: mdframed works in twoside mode on input line 241.
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 241.
+Package mdframed Info: mdframed works in twoside mode on input line 277.
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 277.
+
+Overfull \vbox (7.38466pt too high) detected at line 286
+ []
+
+Package mdframed Info: Box was splittet wrong
+ starting loop to iterate the splitting point
+(mdframed)              on input line 286.
+
+Overfull \vbox (8.38466pt too high) detected at line 286
+ []
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Overfull \vbox (9.38466pt too high) detected at line 286
+ []
 
- [3]
+
+Overfull \vbox (10.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (11.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (12.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (13.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (14.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (15.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (16.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (17.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (18.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (19.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (20.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (21.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (22.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (23.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (24.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (25.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (26.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (27.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (28.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (29.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (30.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (31.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (32.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (33.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (34.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (35.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (36.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (37.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (38.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (39.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (40.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (41.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (42.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (43.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (44.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (45.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (46.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (47.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (48.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (49.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (50.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (51.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (52.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (53.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (54.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (55.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (56.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (57.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (58.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (59.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (60.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (61.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (62.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (63.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (64.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (65.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (66.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (67.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (68.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (69.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (70.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (71.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (72.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (73.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (74.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (75.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (76.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (77.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (78.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (79.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (80.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (81.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (82.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (83.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (84.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (85.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (86.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (87.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (88.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (89.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (90.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (91.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (92.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (93.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (94.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (95.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (96.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (97.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (98.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (99.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (100.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (101.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (102.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (103.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (104.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (105.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (106.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (107.38466pt too high) detected at line 286
+ []
+
+
+Overfull \vbox (108.38466pt too high) detected at line 286
+ []
+
+
+Package mdframed Warning: correct box splittet fails
+ It seems you are using a non splittable contents
+(mdframed)                 on input line 286.
+
+Package mdframed Info: You first box width is to small
+ mdframed fixed it
+(mdframed)              on input line 286.
+[3]
+Package mdframed Info: mdframed works in twoside mode on input line 289.
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 289.
+
 
 Package hyperref Warning: Difference (3) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 251.
+(hyperref)                than one, level fixed on input line 289.
 
 
-Overfull \hbox (32.1196pt too wide) in paragraph at lines 304--314
+Overfull \hbox (32.1196pt too wide) in paragraph at lines 343--353
  [][] 
  []
 
@@ -1446,7 +2022,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [6]
 
 Package hyperref Warning: Difference (3) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 478.
+(hyperref)                than one, level fixed on input line 517.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1457,7 +2033,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [8]
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 655.
+(hyperref)                than one, level fixed on input line 694.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1469,15 +2045,22 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [11]
+Package mdframed Info: mdframed works in twoside mode on input line 893.
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 893.
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 861.
+put line 902.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [12]
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 890.
+(hyperref)                than one, level fixed on input line 931.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1485,170 +2068,191 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [13]
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 953.
+(hyperref)                than one, level fixed on input line 994.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 953.
+(hyperref)                removing `math shift' on input line 994.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 953.
+(hyperref)                removing `subscript' on input line 994.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 953.
+(hyperref)                removing `math shift' on input line 994.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1014.
+(hyperref)                removing `math shift' on input line 1055.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 1014.
+(hyperref)                removing `subscript' on input line 1055.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1014.
+(hyperref)                removing `math shift' on input line 1055.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [14]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [15]
+Package mdframed Info: mdframed works in twoside mode on input line 1094.
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 1094.
+
 pdfTeX warning (ext4): destination with the same identifier (name{ALG@line.1}) 
 has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1065 \State
+l.1108 \State
               $s \gets \emptyset$ \Comment{support counter over KC transitions}
 
 pdfTeX warning (ext4): destination with the same identifier (name{ALG@line.2}) 
 has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1066 \For
+l.1109 \For
            {each learner sequence $(c_1,\dots,c_T)\in\mathcal{F}^f_{\text{tr...
 
 pdfTeX warning (ext4): destination with the same identifier (name{ALG@line.3}) 
 has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1067   \For
+l.1110   \For
              {$t \gets 1$ to $T-1$ \textbf{with} $c_t \neq c_{t+1}$}
 pdfTeX warning (ext4): destination with the same identifier (name{ALG@line.4}) 
 has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1068     \State
+l.1111     \State
                   $s[(c_t,c_{t+1})] \gets s[(c_t,c_{t+1})] + 1$
 pdfTeX warning (ext4): destination with the same identifier (name{ALG@line.5}) 
 has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1069   \EndFor
+l.1112   \EndFor
                 
 pdfTeX warning (ext4): destination with the same identifier (name{ALG@line.6}) 
 has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1070 \EndFor
+l.1113 \EndFor
               
 pdfTeX warning (ext4): destination with the same identifier (name{ALG@line.7}) 
 has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1071 \State
+l.1114 \State
               $\theta \gets$ $q$-th percentile of $\{s[\cdot]\}$ \Comment{(i...
 
 pdfTeX warning (ext4): destination with the same identifier (name{ALG@line.8}) 
 has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1072 \State
+l.1115 \State
               $C \gets \{(i,j) : s[(i,j)] \ge \theta\}$
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [15]
-Underfull \hbox (badness 3148) in paragraph at lines 1102--1114
+Underfull \hbox (badness 3148) in paragraph at lines 1145--1157
 \OT1/cmr/m/n/10 random-walk \OT1/cmtt/m/n/10.03749 subgraph\OT1/cmr/m/n/10 , \O
 T1/cmtt/m/n/10.03749 node[]drop\OT1/cmr/m/n/10 ) plus one prerequisite-preservi
 ng oper-a-tor
  []
 
 
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [16]
+Package mdframed Info: mdframed works in twoside mode on input line 1159.
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 1159.
+
 pdfTeX warning (ext4): destination with the same identifier (name{ALG@line.1}) 
 has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1125 \State
+l.1170 \State
               $E' \gets A(\Epre, p)$ \Comment{apply operator at strength $p$}
 pdfTeX warning (ext4): destination with the same identifier (name{ALG@line.2}) 
 has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1126 \State
+l.1171 \State
               $\mathrm{pre} \gets \{(i,j)\in\Epre : (i,j)\in E'\}$ \Comment{...
 
 pdfTeX warning (ext4): destination with the same identifier (name{ALG@line.3}) 
 has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1127 \State
+l.1172 \State
               $\mathrm{rev} \gets \{(i,j)\in\Epre : (j,i)\in E'\ \textbf{and...
 
 pdfTeX warning (ext4): destination with the same identifier (name{ALG@line.4}) 
 has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1128 \State
+l.1173 \State
               \Return $\big(|\Epre\setminus\mathrm{pre}| + |\mathrm{rev}|\bi...
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [16]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [17]
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1230.
+(hyperref)                than one, level fixed on input line 1275.
 
-(D:\0. NCS\CODE\p0_project\results/tables/dataset_stats.tex)
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [18]
+(D:\0. NCS\CODE\p0_project\results/tables/dataset_stats.tex)
 (D:\0. NCS\CODE\p0_project\results/tables/leakage_metrics.tex)
 (D:\0. NCS\CODE\p0_project\results/tables/dag_audit_summary.tex)
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
  [19]
-<results/figures/fig_kt_graph_junyi.pdf, id=664, 296.307pt x 223.67941pt>
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [20]
+<results/figures/fig_kt_graph_junyi.pdf, id=677, 296.307pt x 223.67941pt>
 File: results/figures/fig_kt_graph_junyi.pdf Graphic file (type pdf)
 <use results/figures/fig_kt_graph_junyi.pdf>
 Package pdftex.def Info: results/figures/fig_kt_graph_junyi.pdf  used on input 
-line 1307.
+line 1352.
 (pdftex.def)             Requested size: 230.63818pt x 174.11086pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [20]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
  [21 <D:/0. NCS/CODE/p0_project/results/figures/fig_kt_graph_junyi.pdf>]
+Package mdframed Info: mdframed works in twoside mode on input line 1403.
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 1403.
+
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1357.
+(hyperref)                than one, level fixed on input line 1403.
 
-(D:\0. NCS\CODE\p0_project\results/tables/baseline_results.tex
+Package mdframed Info: mdframed works in twoside mode on input line 1447.
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 1447.
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [22])
+ [22]
+(D:\0. NCS\CODE\p0_project\results/tables/baseline_results.tex)
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1443.
+(hyperref)                than one, level fixed on input line 1492.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1659,101 +2263,104 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [24]
 (D:\0. NCS\CODE\p0_project\results/tables/graph_ablation.tex)
-<results/figures/fig_ddr_junyi.pdf, id=762, 542.025pt x 361.35pt>
+<results/figures/fig_ddr_junyi.pdf, id=784, 542.025pt x 361.35pt>
 File: results/figures/fig_ddr_junyi.pdf Graphic file (type pdf)
 <use results/figures/fig_ddr_junyi.pdf>
 Package pdftex.def Info: results/figures/fig_ddr_junyi.pdf  used on input line 
-1524.
+1573.
 (pdftex.def)             Requested size: 267.84045pt x 178.56279pt.
 
-(D:\0. NCS\CODE\p0_project\results/tables/ddr_raw.tex)
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [25]
+(D:\0. NCS\CODE\p0_project\results/tables/ddr_raw.tex)
 
 LaTeX Font Warning: Font shape `OT1/cmr/bx/scit' undefined
-(Font)              using `OT1/cmr/bx/sc' instead on input line 1556.
+(Font)              using `OT1/cmr/bx/sc' instead on input line 1605.
 
 
 LaTeX Font Warning: Font shape `OT1/cmr/bx/sc' undefined
-(Font)              using `OT1/cmr/bx/n' instead on input line 1556.
+(Font)              using `OT1/cmr/bx/n' instead on input line 1605.
 
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1556.
+(hyperref)                than one, level fixed on input line 1605.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [26 <D:/0. NCS/CODE/p0_project/results/figures/fig_ddr_junyi.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 1591--1604
+Underfull \hbox (badness 10000) in paragraph at lines 1640--1653
 []\OT1/cmr/m/n/10 The rel-a-tive order-ing $[]([]) \OML/cmm/m/it/10.03749 < []\
 OT1/cmr/m/n/10 ([]) \U/msa/m/n/10.03749 .
  []
 
-(D:\0. NCS\CODE\p0_project\results/tables/ddr_downstream.tex)
-(D:\0. NCS\CODE\p0_project\results/tables/ddr_downstream_gkt.tex)
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [27]
+(D:\0. NCS\CODE\p0_project\results/tables/ddr_downstream.tex)
+(D:\0. NCS\CODE\p0_project\results/tables/ddr_downstream_gkt.tex)
+Package mdframed Info: mdframed works in twoside mode on input line 1659.
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 1659.
+
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1618.
+(hyperref)                than one, level fixed on input line 1668.
 
 
 LaTeX Font Warning: Font shape `OT1/cmr/bx/scit' undefined
-(Font)              using `OT1/cmr/bx/sc' instead on input line 1633.
+(Font)              using `OT1/cmr/bx/sc' instead on input line 1683.
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [28]
-(D:\0. NCS\CODE\p0_project\results/tables/cold_start_summary.tex)
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [29]
-<results/figures/fig_cold_kc_ego_xes3g5m.pdf, id=858, 383.69284pt x 238.1334pt>
+Package mdframed Info: Box was splittet wrong
+ starting loop to iterate the splitting point
+(mdframed)              on input line 1712.
+[28] [29] (D:\0. NCS\CODE\p0_project\results/tables/cold_start_summary.tex)
+<results/figures/fig_cold_kc_ego_xes3g5m.pdf, id=886, 383.69284pt x 238.1334pt>
 
 File: results/figures/fig_cold_kc_ego_xes3g5m.pdf Graphic file (type pdf)
 <use results/figures/fig_cold_kc_ego_xes3g5m.pdf>
 Package pdftex.def Info: results/figures/fig_cold_kc_ego_xes3g5m.pdf  used on i
-nput line 1679.
+nput line 1730.
 (pdftex.def)             Requested size: 178.55841pt x 110.81808pt.
-<results/figures/fig_learner_timeline_xes3g5m.pdf, id=859, 383.031pt x 150.0182
+<results/figures/fig_learner_timeline_xes3g5m.pdf, id=887, 383.031pt x 150.0182
 2pt>
 File: results/figures/fig_learner_timeline_xes3g5m.pdf Graphic file (type pdf)
 <use results/figures/fig_learner_timeline_xes3g5m.pdf>
 Package pdftex.def Info: results/figures/fig_learner_timeline_xes3g5m.pdf  used
- on input line 1685.
+ on input line 1736.
 (pdftex.def)             Requested size: 178.55841pt x 69.93628pt.
-
-
-Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1708.
-
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [30]
+
+Package hyperref Warning: Difference (2) between bookmark levels is greater 
+(hyperref)                than one, level fixed on input line 1759.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [31 <D:/0. NCS/CODE/p0_project/results/figures/fig_cold_kc_ego_xes3g5m.pdf> <D
+:/0. NCS/CODE/p0_project/results/figures/fig_learner_timeline_xes3g5m.pdf>]
 (D:\0. NCS\CODE\p0_project\results/tables/gt_validation_table.tex)
-<results/figures/fig_pr_curve.pdf, id=877, 433.62pt x 289.08pt>
+<results/figures/fig_pr_curve.pdf, id=1008, 433.62pt x 289.08pt>
 File: results/figures/fig_pr_curve.pdf Graphic file (type pdf)
 <use results/figures/fig_pr_curve.pdf>
 Package pdftex.def Info: results/figures/fig_pr_curve.pdf  used on input line 1
-746.
+797.
 (pdftex.def)             Requested size: 241.79773pt x 161.19998pt.
 
-Underfull \hbox (badness 3815) in paragraph at lines 1751--1751
+Underfull \hbox (badness 3815) in paragraph at lines 1802--1802
 []\OT1/cmr/bx/sc/10.03749 Fig. 8\OT1/cmr/m/n/10 : |Edge-level pre-ci-sion and r
 ecall of train-only inferred $\OML/cmm/m/it/10.03749 E[]$ \OT1/cmr/m/n/10 ver-s
 us
  []
 
 
-Underfull \hbox (badness 4673) in paragraph at lines 1751--1751
+Underfull \hbox (badness 4673) in paragraph at lines 1802--1802
 \OT1/cmr/m/n/10 the expert pre-req-ui-site anno-ta-tion on Junyi, across top-$\
 OML/cmm/m/it/10.03749 K$ \OT1/cmr/m/n/10 cut-offs $\OML/cmm/m/it/10.03749 K \OM
 S/cmsy/m/n/10.03749 2
@@ -1762,36 +2369,35 @@ S/cmsy/m/n/10.03749 2
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [31 <D:/0. NCS/CODE/p0_project/results/figures/fig_cold_kc_ego_xes3g5m.pdf> <D
-:/0. NCS/CODE/p0_project/results/figures/fig_learner_timeline_xes3g5m.pdf>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
  [32 <D:/0. NCS/CODE/p0_project/results/figures/fig_pr_curve.pdf>]
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1808.
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
+(hyperref)                than one, level fixed on input line 1859.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [33]
-
-Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1883.
-
-
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [34]
+
+Package hyperref Warning: Difference (2) between bookmark levels is greater 
+(hyperref)                than one, level fixed on input line 1934.
+
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [35]
+Package mdframed Info: mdframed works in twoside mode on input line 1984.
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 1984.
+Package mdframed Info: mdframed works in twoside mode on input line 2008.
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 2008.
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [36]
@@ -1800,19 +2406,21 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [37]
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 2098.
+(hyperref)                than one, level fixed on input line 2153.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [38]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
+Package mdframed Info: mdframed works in twoside mode on input line 2183.
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 2183.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [39]
-Underfull \hbox (badness 2653) in paragraph at lines 2197--2222
+Underfull \hbox (badness 2653) in paragraph at lines 2254--2279
 \OT1/cmr/m/n/10 Table S16) while GIKT remains com-pet-i-tive; GKT epoch-extende
 d train-ing
  []
@@ -1827,143 +2435,138 @@ Underfull \hbox (badness 3417) in paragraph at lines 32--32
 SSIST-ments 2012 (three-fold learner CV
  []
 
-) (D:\0. NCS\CODE\p0_project\results/tables/graph_ablation_full.tex
+) (D:\0. NCS\CODE\p0_project\results/tables/graph_ablation_full.tex)
+(D:\0. NCS\CODE\p0_project\results/tables/significance_tests_public.tex
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [41])
-(D:\0. NCS\CODE\p0_project\results/tables/significance_tests_public.tex)
 (D:\0. NCS\CODE\p0_project\results/tables/autocorrelation_stats.tex)
-<results/figures/fig_autocorr_vs_auc.pdf, id=1145, 426.04985pt x 244.80785pt>
+<results/figures/fig_autocorr_vs_auc.pdf, id=1177, 426.04985pt x 244.80785pt>
 File: results/figures/fig_autocorr_vs_auc.pdf Graphic file (type pdf)
 <use results/figures/fig_autocorr_vs_auc.pdf>
 Package pdftex.def Info: results/figures/fig_autocorr_vs_auc.pdf  used on input
- line 2298.
+ line 2355.
 (pdftex.def)             Requested size: 305.04272pt x 175.28282pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [42]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [43]
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10.03749> not available
 
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 2317.
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 2374.
 
 
 (D:\0. NCS\CODE\p0_project\results/tables/gt_validation_extended.tex
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [44])
+ [43])
 (D:\0. NCS\CODE\p0_project\results/tables/cold_start_by_stratum.tex)
 (D:\0. NCS\CODE\p0_project\results/tables/cold_start_comparison.tex)
-<results/figures/fig_ddr_downstream.pdf, id=1178, 455.232pt x 295.20601pt>
+<results/figures/fig_ddr_downstream.pdf, id=1197, 455.232pt x 295.20601pt>
 File: results/figures/fig_ddr_downstream.pdf Graphic file (type pdf)
 <use results/figures/fig_ddr_downstream.pdf>
 Package pdftex.def Info: results/figures/fig_ddr_downstream.pdf  used on input 
-line 2355.
+line 2412.
 (pdftex.def)             Requested size: 275.28204pt x 178.51685pt.
 
-Underfull \hbox (badness 2080) in paragraph at lines 2356--2356
+Underfull \hbox (badness 2080) in paragraph at lines 2413--2413
 \OT1/cmr/m/n/10 graph dis-rup-tion on ASSIST-ments 2012 and XES3G5M. Each point
  is one
  []
 
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [44]
 File: results/figures/fig_kt_graph_junyi.pdf Graphic file (type pdf)
 <use results/figures/fig_kt_graph_junyi.pdf>
 Package pdftex.def Info: results/figures/fig_kt_graph_junyi.pdf  used on input 
-line 2367.
+line 2424.
 (pdftex.def)             Requested size: 119.04272pt x 89.86267pt.
-<results/figures/fig_kt_graph_assist2012.pdf, id=1179, 296.307pt x 223.67941pt>
+<results/figures/fig_kt_graph_assist2012.pdf, id=1209, 296.307pt x 223.67941pt>
 
 File: results/figures/fig_kt_graph_assist2012.pdf Graphic file (type pdf)
 <use results/figures/fig_kt_graph_assist2012.pdf>
 Package pdftex.def Info: results/figures/fig_kt_graph_assist2012.pdf  used on i
-nput line 2374.
+nput line 2431.
 (pdftex.def)             Requested size: 119.04272pt x 89.86267pt.
-<results/figures/fig_kt_graph_xes3g5m.pdf, id=1180, 296.307pt x 223.67941pt>
+<results/figures/fig_kt_graph_xes3g5m.pdf, id=1210, 296.307pt x 223.67941pt>
 File: results/figures/fig_kt_graph_xes3g5m.pdf Graphic file (type pdf)
 <use results/figures/fig_kt_graph_xes3g5m.pdf>
 Package pdftex.def Info: results/figures/fig_kt_graph_xes3g5m.pdf  used on inpu
-t line 2381.
+t line 2438.
 (pdftex.def)             Requested size: 119.04272pt x 89.86267pt.
 File: results/figures/fig_ddr_junyi.pdf Graphic file (type pdf)
 <use results/figures/fig_ddr_junyi.pdf>
 Package pdftex.def Info: results/figures/fig_ddr_junyi.pdf  used on input line 
-2393.
+2450.
 (pdftex.def)             Requested size: 118.66809pt x 79.11128pt.
-<results/figures/fig_ddr_assist2012.pdf, id=1181, 542.025pt x 361.35pt>
+<results/figures/fig_ddr_assist2012.pdf, id=1211, 542.025pt x 361.35pt>
 File: results/figures/fig_ddr_assist2012.pdf Graphic file (type pdf)
 <use results/figures/fig_ddr_assist2012.pdf>
 Package pdftex.def Info: results/figures/fig_ddr_assist2012.pdf  used on input 
-line 2400.
+line 2457.
 (pdftex.def)             Requested size: 118.66809pt x 79.11128pt.
-<results/figures/fig_ddr_xes3g5m.pdf, id=1182, 542.025pt x 361.35pt>
+<results/figures/fig_ddr_xes3g5m.pdf, id=1212, 542.025pt x 361.35pt>
 File: results/figures/fig_ddr_xes3g5m.pdf Graphic file (type pdf)
 <use results/figures/fig_ddr_xes3g5m.pdf>
 Package pdftex.def Info: results/figures/fig_ddr_xes3g5m.pdf  used on input lin
-e 2407.
+e 2464.
 (pdftex.def)             Requested size: 118.66809pt x 79.11128pt.
+
 (D:\0. NCS\CODE\p0_project\results/tables/training_parity.tex)
-Overfull \hbox (89.51555pt too wide) in paragraph at lines 2431--2437
+Overfull \hbox (89.51555pt too wide) in paragraph at lines 2488--2494
  [] 
  []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [45]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [46 <D:/0. NCS/CODE/p0_project/results/figures/fig_autocorr_vs_auc.pdf>]
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 LaTeX Font Info:    Calculating math sizes for size <14.05249> on input line 24
-39.
+96.
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 2439.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\Delta' on input line 2439.
+(hyperref)                removing `math shift' on input line 2496.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 2439.
+(hyperref)                removing `\Delta' on input line 2496.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 2496.
 
 (D:\0. NCS\CODE\p0_project\results/tables/bootstrap_auc_ci.tex
 LaTeX Font Info:    Calculating math sizes for size <8.03> on input line 3.
 )
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [46]
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 (D:\0. NCS\CODE\p0_project\results/tables/gkt_epoch_ablation.tex)
-Overfull \hbox (60.83174pt too wide) in paragraph at lines 2471--2476
+Overfull \hbox (60.83174pt too wide) in paragraph at lines 2528--2533
  [] 
  []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [47]
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 (D:\0. NCS\CODE\p0_project\results/tables/q1_gkt_epochs30_ablation_tabular.tex)
 
-Overfull \hbox (27.48936pt too wide) in paragraph at lines 2486--2491
+Overfull \hbox (27.48936pt too wide) in paragraph at lines 2543--2548
  [] 
  []
 
 (D:\0. NCS\CODE\p0_project\results/tables/gkt_epoch_ablation_pooled.tex)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [47 <D:/0. NCS/CODE/p0_project/results/figures/fig_autocorr_vs_auc.pdf>]
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
@@ -1971,50 +2574,46 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 (D:\0. NCS\CODE\p0_project\results/tables/leak_injection.tex)
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [48]
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 (D:\0. NCS\CODE\p0_project\results/tables/downstream_auc_injection.tex)
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [49 <D:/0. NCS/CODE/p0_project/results/figures/fig_ddr_downstream.pdf> <D:/0. 
-NCS/CODE/p0_project/results/figures/fig_kt_graph_assist2012.pdf> <D:/0. NCS/COD
-E/p0_project/results/figures/fig_kt_graph_xes3g5m.pdf>]
+ [48]
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [50 <D:/0. NCS/CODE/p0_project/results/figures/fig_ddr_assist2012.pdf> <D:/0. 
-NCS/CODE/p0_project/results/figures/fig_ddr_xes3g5m.pdf>]
 (D:\0. NCS\CODE\p0_project\results/tables/anova_baseline.tex)
 (D:\0. NCS\CODE\p0_project\results/tables/anova_ddr_downstream.tex)
 
 Package hyperref Warning: Difference (4) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 2554.
+(hyperref)                than one, level fixed on input line 2611.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [51]
+ [49]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [50 <D:/0. NCS/CODE/p0_project/results/figures/fig_ddr_downstream.pdf> <D:/0. 
+NCS/CODE/p0_project/results/figures/fig_kt_graph_assist2012.pdf> <D:/0. NCS/COD
+E/p0_project/results/figures/fig_kt_graph_xes3g5m.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [51 <D:/0. NCS/CODE/p0_project/results/figures/fig_ddr_assist2012.pdf> <D:/0. 
+NCS/CODE/p0_project/results/figures/fig_ddr_xes3g5m.pdf>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [52]
-(main_APIN.bbl
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [53]
+(main_APIN_highlight.bbl
 Underfull \hbox (badness 1028) in paragraph at lines 128--138
 \OT1/cmr/m/n/10 ing (EDM), pp. 384--389 (2019). $\OT1/cmtt/m/n/10.03749 https :
  / / drive . google . com / file / d / 18d _
  []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -2041,7 +2640,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [57]
-(main_APIN.aux)
+(main_APIN_highlight.aux)
  ***********
 LaTeX2e <2026-06-01>
 L3 programming layer <2026-06-18>
@@ -2050,17 +2649,17 @@ L3 programming layer <2026-06-18>
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-Package rerunfilecheck Info: File `main_APIN.out' has not changed.
+Package rerunfilecheck Info: File `main_APIN_highlight.out' has not changed.
 (rerunfilecheck)             Checksum: 4F01C7B55A6AF8A205EF960CDF186564;16637.
  ) 
 Here is how much of TeX's memory you used:
- 33084 strings out of 467509
- 689662 string characters out of 5407808
- 1098649 words of memory out of 5000000
- 61447 multiletter control sequences out of 15000+600000
- 675939 words of font info for 221 fonts, out of 8000000 for 9000
+ 34293 strings out of 467509
+ 714483 string characters out of 5407808
+ 1167250 words of memory out of 5000000
+ 62615 multiletter control sequences out of 15000+600000
+ 676252 words of font info for 222 fonts, out of 8000000 for 9000
  1151 hyphenation exceptions out of 8191
- 89i,22n,94p,1160b,1254s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 89i,22n,94p,1170b,1248s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\tuanymc\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi602\tc
 rm1000.pk><C:/Users/tuanymc/AppData/Local/Programs/MiKTeX/fonts/type1/public/am
 sfonts/cm/cmbsy10.pfb><C:/Users/tuanymc/AppData/Local/Programs/MiKTeX/fonts/typ
@@ -2104,9 +2703,9 @@ ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt9.pfb><C:/Users/tuanymc/AppData/Lo
 cal/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msam10.pfb><C:/Users/tu
 anymc/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.
 pfb>
-Output written on main_APIN.pdf (57 pages, 1032235 bytes).
+Output written on main_APIN_highlight.pdf (57 pages, 1069729 bytes).
 PDF statistics:
- 1833 PDF objects out of 2073 (max. 8388607)
+ 1865 PDF objects out of 2073 (max. 8388607)
  297 named destinations out of 1000 (max. 500000)
  684 words of extra memory for PDF output out of 10000 (max. 10000000)
 

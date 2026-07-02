@@ -9,7 +9,7 @@
 % BUILD NOTES
 %  1. Place this file at the PROJECT ROOT (next to the results/ folder), the
 %     same location the original main.tex used, so that the
-%     \input{results/tables/...} and \includegraphics{results/figures/...}
+%     \input{...} and \includegraphics{...}
 %     paths resolve correctly.
 %  2. Get the Springer Nature template files (sn-jnl.cls and the .bst files)
 %     from https://www.springernature.com/gp/authors/campaigns/latex-author-support
@@ -18,10 +18,10 @@
 %  3. Compile: pdflatex -> bibtex -> pdflatex -> pdflatex.
 %     (Supplementary tables/figures are in the Appendix; no separate supp PDF.)
 %  4. For the FINAL submission package Springer asks for a FLAT directory: move
-%     the figures/tables next to this file and drop the "results/figures/" and
-%     "results/tables/" path prefixes.
+%     the figures/tables next to this file and drop the "" and
+%     "" path prefixes.
 %=============================================================================
-\documentclass[pdflatex,sn-mathphys-num]{sn-jnl}
+\documentclass[pdflatex,sn-mathphys-num,referee]{sn-jnl}
 % Reference-style options (pick one; APIN = numbered [1] in-text citations):
 %   sn-mathphys-num  -> Math & Physics, numbered [1]  [USED HERE; valid for CS/AI]
 %   sn-basic         -> Basic (author-year in this template version)
@@ -49,11 +49,6 @@
 \usepackage{url}
 \makeatletter\@ifundefined{path}{}{\let\path\relax}\makeatother
 \DeclareUrlCommand\path{\urlstyle{tt}}
-% Make bibliography URLs robust to underscores: the bmc bst defines \burl as
-% \textsf{#1}, which breaks on `_'. Pre-define \burl via url-catcode-safe \path.
-\makeatletter
-\@ifundefined{burl}{\newcommand{\burl}[1]{\path{#1}}}{\renewcommand{\burl}[1]{\path{#1}}}
-\makeatother
 
 % --- Cross-referencing (load cleveref last) --------------------------------
 \usepackage{cleveref}
@@ -76,13 +71,12 @@
 \newcommand{\GKTepochgain}{+0.003}
 \newcommand{\GIKTdeltavec}{$+0.003$}
 \newcommand{\GIKTdeltaci}{[$+0.003$, $+0.003$]}
-\IfFileExists{results/tables/bootstrap_ci_macros.tex}{%
-  \input{results/tables/bootstrap_ci_macros.tex}%
+\IfFileExists{bootstrap_ci_macros.tex}{%
+  \input{bootstrap_ci_macros.tex}%
 }{}
-\IfFileExists{results/tables/gkt_epoch_ablation_macros.tex}{%
-  \input{results/tables/gkt_epoch_ablation_macros.tex}%
+\IfFileExists{gkt_epoch_ablation_macros.tex}{%
+  \input{gkt_epoch_ablation_macros.tex}%
 }{}
-
 
 %=============================================================================
 \begin{document}
@@ -1249,7 +1243,7 @@ enters only the read-only ground-truth cross-validation sub-protocol
 (Section~\ref{sec:exp-gtxv}). ASSISTments provides a Q-matrix but no
 external prerequisite graph. XES3G5M provides hierarchical KC metadata parsed
 at the sequence level; $\Epre$ is inferred by the shared train-only rule.
-\input{results/tables/dataset_stats.tex}
+\input{dataset_stats.tex}
 Table~\ref{tab:dataset-stats} summarises the preprocessed datasets.
 The public benchmarks differ substantially in interaction volume, KC
 vocabulary size, and item-to-KC granularity. This heterogeneity is
@@ -1272,8 +1266,8 @@ and is why we anchor model-comparison claims on XES3G5M rather than on
 Junyi/ASSIST headline AUC.
 \subsection{Leakage and DAG Audit}
 \label{sec:exp-audit}
-\input{results/tables/leakage_metrics.tex}
-\input{results/tables/dag_audit_summary.tex}
+\input{leakage_metrics.tex}
+\input{dag_audit_summary.tex}
 Table~\ref{tab:leakage-metrics} summarises the direct leakage metrics on
 the released runs (mean~$\pm$~std over three folds). $\mathrm{ECR}^{\mathrm{flag}}$ is identically zero on every dataset (fold means), confirming learner-disjoint splits and structural leakage freedom at the evaluation protocol level; $\mathrm{ECR}^{\mathrm{overlap}}$ stays near unity because recurrent transition patterns reappear among held-out learners even though edges are inferred strictly from train folds.
 The edge--outcome correlation is weak on all three public corpora
@@ -1304,7 +1298,7 @@ audit makes the pruning rule explicit rather than silently fixing the graph.
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.62\linewidth]{results/figures/fig_kt_graph_junyi.pdf}
+\includegraphics[width=0.62\linewidth]{fig_kt_graph_junyi.pdf}
 \caption{Schematic visualisation of a high-support prerequisite chain in
 train-only $\Epre$ on Junyi Academy after DAG audit (representative subgraph;
 the full graph contains hundreds to thousands of edges).
@@ -1415,7 +1409,7 @@ the column variable in Table~\ref{tab:two-factor}.
 
 \subsection{Baseline Diagnostic}
 \label{sec:exp-baseline}
-\input{results/tables/baseline_results.tex}
+\input{baseline_results.tex}
 Table~\ref{tab:baseline-summary} sanity-checks preprocessing, learner splits,
 train-only graph export, and pyKT wiring across five corpora; it is not a SOTA
 claim. We read the table through the benchmark roles of Section~\ref{sec:datasets}.
@@ -1472,7 +1466,7 @@ uninformative. Relative to the literature default of pooling transition statisti
 learner splitting in GKT/SKT pipelines~\cite{nakagawa2019gkt,tong2020skt}, our
 train-only graphs isolate a provenance factor those papers do not audit.
 
-\input{results/tables/baseline_cv_template.tex}
+\input{baseline_cv_template.tex}
 Table~\ref{tab:baseline-cv} reports three-fold learner-CV means~$\pm$~std and
 Wilcoxon $p$-values vs.\ \textit{simpleKT}. Table~\ref{tab:baseline-summary}
 provides the same mean~$\pm$~std format across datasets. With only three paired
@@ -1495,7 +1489,7 @@ We contrast fold-specific train-only graph exports
 evaluation code fixed. Only the static graph artefact fed into the pyKT graph
 branch differs; KT optimisation still uses train-fold sequences only.
 
-\input{results/tables/graph_ablation.tex}
+\input{graph_ablation.tex}
 Table~\ref{tab:graph-ablation} summarises the largest train-only versus
 full-log shifts across GKT, GIKT, SKT, DyGKT, and DGEKT (fold~0).
 On the three public benchmarks, $|\Delta$AUC| and $|\Delta$ACC stay at
@@ -1521,7 +1515,7 @@ shift here does not prove absence of leakage in general.
 \label{sec:exp-ddr}
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.72\linewidth]{results/figures/fig_ddr_junyi.pdf}
+\includegraphics[width=0.72\linewidth]{fig_ddr_junyi.pdf}
 \caption{\DDR{} as a function of perturbation strength $p$ on Junyi Academy for
 five graph augmentation families: four label-agnostic operators
 (\texttt{attr\_mask}, \texttt{subgraph}, \texttt{edge\_drop}, \texttt{node\_drop})
@@ -1535,7 +1529,7 @@ $\DDR(\text{attr\_mask})=0 < \DDR(\text{subgraph}) \lesssim
 \label{fig:ddr-junyi}
 \end{figure}
 
-\input{results/tables/ddr_raw.tex}
+\input{ddr_raw.tex}
 Figure~\ref{fig:ddr-junyi} and Table~\ref{tab:ddr-raw} show five
 consistent regimes across the three benchmarks. First, attribute
 masking leaves $\Epre$ structurally unchanged and therefore gives
@@ -1604,8 +1598,8 @@ structure-preserving regime.
 
 \subsection{\DDR{} Downstream Stress Test}
 \label{sec:exp-ddr-downstream}
-\input{results/tables/ddr_downstream.tex}
-\input{results/tables/ddr_downstream_gkt.tex}
+\input{ddr_downstream.tex}
+\input{ddr_downstream_gkt.tex}
 We retrain graph-consuming backbones on perturbed graphs and ask whether
 structural disruption (\DDR{}) predicts accuracy loss. Because a null
 \DDR{}$\to$AUC relationship is ambiguous---it can mean either ``\DDR{} does not
@@ -1661,7 +1655,7 @@ Section~\ref{sec:exp-injection} shows is also graph-reliant) is the natural
 follow-up (Section~\ref{sec:future-work}).
 \subsection{Cold-start KC Diagnostic}
 \label{sec:exp-coldstart}
-\input{results/tables/cold_start_summary.tex}
+\input{cold_start_summary.tex}
 Table~\ref{tab:cold-start-summary} shows that aggregate AUC can hide
 per-stratum variation: on real benchmarks the best graph-aware family
 leads only in \emph{very\_cold} ($\Delta_{\max}{=}0.002$ on ASSISTments,
@@ -1676,13 +1670,13 @@ sequence leaders on synthetic hot rows, reinforcing model-specific graph benefit
 \centering
 \begin{subfigure}[t]{0.48\linewidth}
 \centering
-\includegraphics[width=\linewidth]{results/figures/fig_cold_kc_ego_xes3g5m.pdf}
+\includegraphics[width=\linewidth]{fig_cold_kc_ego_xes3g5m.pdf}
 \caption{Cold-start KC ego-graph (fold~0 export).}
 \label{fig:cold-ego}
 \end{subfigure}\hfill
 \begin{subfigure}[t]{0.48\linewidth}
 \centering
-\includegraphics[width=\linewidth]{results/figures/fig_learner_timeline_xes3g5m.pdf}
+\includegraphics[width=\linewidth]{fig_learner_timeline_xes3g5m.pdf}
 \caption{Learner KC timeline with cold steps.}
 \label{fig:learner-timeline}
 \end{subfigure}
@@ -1739,11 +1733,11 @@ this expert edge set against the fold~0 train-only inferred list in
 candidates (the same file audited in Section~\ref{sec:exp-audit}; cycle
 pruning yields $1{,}139$ retained acyclic edges).
 
-\input{results/tables/gt_validation_table}
+\input{gt_validation_table}
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[width=0.65\linewidth]{results/figures/fig_pr_curve.pdf}
+\includegraphics[width=0.65\linewidth]{fig_pr_curve.pdf}
 \caption{Edge-level precision and recall of train-only inferred
 $\Epre$ versus the expert prerequisite annotation on Junyi, across
 top-$K$ cutoffs $K \in \{200, 500, 800, 1131, 1200, 1800, 2500, 3500,
@@ -2263,7 +2257,7 @@ CIs) that the main text summarises in its cross-dataset AUC summary table.
 pyKT GKT is omitted on Junyi Academy because the stock wrapper is impractical on
 the dense multi-million-interaction graphs under our compute budget.
 
-\input{results/tables/baseline_results_full.tex}
+\input{baseline_results_full.tex}
 
 \section{Per-dataset graph construction ablation}
 \label{sec:supp-ablation}
@@ -2272,7 +2266,7 @@ report fold~0 train-only versus full-log metrics for each graph-augmented pyKT
 model. The main text reports only the maximum $|\Delta$AUC| and
 $|\Delta$ACC per dataset.
 
-\input{results/tables/graph_ablation_full.tex}
+\input{graph_ablation_full.tex}
 
 \section{Paired significance tests (public benchmarks)}
 \label{sec:supp-significance}
@@ -2282,7 +2276,7 @@ three public benchmarks. The main text baseline-CV table lists only
 Wilcoxon $p$-values because three-fold CV limits Wilcoxon resolution
 ($p_{\min}{=}0.25$).
 
-\input{results/tables/significance_tests_public.tex}
+\input{significance_tests_public.tex}
 
 \section{Sequence autocorrelation analysis}
 \label{sec:supp-autocorr}
@@ -2291,11 +2285,11 @@ within-learner pairs $(t{-}1,t)$, measure KC-repeat rate, item-repeat rate,
 label persistence, lag-one label autocorrelation $\rho$, and the AUC of the
 trivial previous-answer predictor (\path{scripts/compute_autocorrelation.py}).
 
-\input{results/tables/autocorrelation_stats.tex}
+\input{autocorrelation_stats.tex}
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.82\linewidth]{results/figures/fig_autocorr_vs_auc.pdf}
+\includegraphics[width=0.82\linewidth]{fig_autocorr_vs_auc.pdf}
 \caption{Consecutive KC-repeat rate against \textit{simpleKT} AUC across the three public benchmarks.}
 \label{fig:supp-autocorr-auc}
 \end{figure}
@@ -2322,7 +2316,7 @@ $p\in\{0.05,0.10,0.20,0.30\}$:
 \section{Ground-truth disagreement examples (Junyi)}
 \label{sec:supp-disagreement}
 The cross-validation procedure exports qualitative disagreement cases to
-\path{results/tables/disagreement_examples.csv}. Inferred-only edges are
+\path{disagreement_examples.csv}. Inferred-only edges are
 predominantly bidirectional co-occurring arithmetic pairs (e.g.\
 \texttt{number\_line} $\leftrightarrow$ \texttt{addition\_1}). Expert-only
 edges are systematic level-progression annotations (e.g.\
@@ -2335,7 +2329,7 @@ pairs such as \texttt{addition\_1} $\rightarrow$ \texttt{addition\_2}.
 Table~S14 (Table~\ref{tab:gt-validation-extended}) extends the main text
 ground-truth table with node Jaccard across the same top-$K$ cutoffs.
 
-\input{results/tables/gt_validation_extended.tex}
+\input{gt_validation_extended.tex}
 
 \section{Cold-start tables (full)}
 \label{sec:supp-coldstart}
@@ -2344,15 +2338,15 @@ metrics by KC-frequency stratum; Table~S13 (Table~\ref{tab:cold-start-comparison
 lists three-fold per-model AUC (mean~$\pm$~std) and $\Delta_{\max}$ by stratum.
 The main text summarises both in a single table.
 
-\input{results/tables/cold_start_by_stratum.tex}
-\input{results/tables/cold_start_comparison.tex}
+\input{cold_start_by_stratum.tex}
+\input{cold_start_comparison.tex}
 
 \section{DDR downstream scatter plot}
 \label{sec:supp-ddr-downstream}
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.74\linewidth]{results/figures/fig_ddr_downstream.pdf}
+\includegraphics[width=0.74\linewidth]{fig_ddr_downstream.pdf}
 \caption{Supplementary Figure~S3. Downstream DGEKT sensitivity to prerequisite-graph disruption on ASSISTments~2012 and XES3G5M. Each point is one fold/operator/strength run; the vertical axis is AUC drop relative to the unperturbed train-only graph.}
 \label{fig:supp-ddr-downstream}
 \end{figure}
@@ -2364,21 +2358,21 @@ The main text summarises both in a single table.
 \centering
 \begin{subfigure}[t]{0.32\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{results/figures/fig_kt_graph_junyi.pdf}
+  \includegraphics[width=\linewidth]{fig_kt_graph_junyi.pdf}
   \caption{Junyi Academy}
   \label{fig:supp-ktgraph-junyi}
 \end{subfigure}
 \hfill
 \begin{subfigure}[t]{0.32\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{results/figures/fig_kt_graph_assist2012.pdf}
+  \includegraphics[width=\linewidth]{fig_kt_graph_assist2012.pdf}
   \caption{ASSISTments 2012}
   \label{fig:supp-ktgraph-assist}
 \end{subfigure}
 \hfill
 \begin{subfigure}[t]{0.32\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{results/figures/fig_kt_graph_xes3g5m.pdf}
+  \includegraphics[width=\linewidth]{fig_kt_graph_xes3g5m.pdf}
   \caption{XES3G5M}
   \label{fig:supp-ktgraph-xes}
 \end{subfigure}
@@ -2390,21 +2384,21 @@ The main text summarises both in a single table.
 \centering
 \begin{subfigure}[t]{0.319\textwidth}
     \centering
-    \includegraphics[width=\linewidth]{results/figures/fig_ddr_junyi.pdf}
+    \includegraphics[width=\linewidth]{fig_ddr_junyi.pdf}
     \caption{Junyi Academy}
     \label{fig:supp-ddr-junyi}
 \end{subfigure}
 \hfill
 \begin{subfigure}[t]{0.319\textwidth}
     \centering
-    \includegraphics[width=\linewidth]{results/figures/fig_ddr_assist2012.pdf}
+    \includegraphics[width=\linewidth]{fig_ddr_assist2012.pdf}
     \caption{ASSISTments 2012}
     \label{fig:supp-ddr-assist2012}
 \end{subfigure}
 \hfill
 \begin{subfigure}[t]{0.319\textwidth}
     \centering
-    \includegraphics[width=\linewidth]{results/figures/fig_ddr_xes3g5m.pdf}
+    \includegraphics[width=\linewidth]{fig_ddr_xes3g5m.pdf}
     \caption{XES3G5M}
     \label{fig:supp-ddr-xes3g5m}
 \end{subfigure}
@@ -2433,7 +2427,7 @@ exported $\Epre$ and, where available, $\Esim$ edges.
 \caption{Training parity and hyperparameters (Table S15)}
 \label{tab:training-parity}
 {\small
-\input{results/tables/training_parity.tex}}
+\input{training_parity.tex}}
 \end{table}
 
 \section{$\Delta$AUC intervals for primary pairs}
@@ -2456,7 +2450,7 @@ paired-$t$ is the default).
 \centering
 \caption{$\Delta$AUC intervals for primary pairs, XES3G5M, train-only graphs (Table S16)}
 \label{tab:bootstrap-auc-ci}
-\input{results/tables/bootstrap_auc_ci.tex}
+\input{bootstrap_auc_ci.tex}
 \end{table}
 
 \section{GKT epoch-extended ablation}
@@ -2472,7 +2466,7 @@ matching Table~S16.
 \centering
 \caption{GKT epoch-extended ablation on XES3G5M, split seed~$42$ (Table S21)}
 \label{tab:gkt-epoch-ablation}
-\input{results/tables/gkt_epoch_ablation.tex}
+\input{gkt_epoch_ablation.tex}
 \end{table}
 
 \section{Multi-seed GKT replication}
@@ -2487,13 +2481,13 @@ batch~64). Pooled nine-fold summary: Table~\ref{tab:gkt-pooled}.
 \centering
 \caption{GKT epoch-extended vs.\ \textit{simpleKT} by split seed (Table S22)}
 \label{tab:gkt-multiseed}
-\input{results/tables/q1_gkt_epochs30_ablation_tabular.tex}
+\input{q1_gkt_epochs30_ablation_tabular.tex}
 \end{table}
 \begin{table}[h!]
 \centering
 \caption{Pooled nine-fold $\Delta$AUC summary (Table S22, continued)}
 \label{tab:gkt-pooled}
-\input{results/tables/gkt_epoch_ablation_pooled.tex}
+\input{gkt_epoch_ablation_pooled.tex}
 \end{table}
 
 \section{Controlled Leak Injection}
@@ -2513,7 +2507,7 @@ in the main text.
 \centering
 \caption{Controlled Leak Injection, XES3G5M fold~0. $|\Epre|$ counts candidate edges before DAG pruning. (Table S17)}
 \label{tab:leak-injection}
-\input{results/tables/leak_injection.tex}
+\input{leak_injection.tex}
 \end{table}
 
 Table~S18 (Table~\ref{tab:downstream-injection-auc}) reports fold-0 test AUC
@@ -2527,7 +2521,7 @@ conclusions, not as proof that contamination always lowers accuracy.
 \centering
 \caption{Downstream test AUC under controlled leak injection, XES3G5M fold~0 (Table S18)}
 \label{tab:downstream-injection-auc}
-\input{results/tables/downstream_auc_injection.tex}
+\input{downstream_auc_injection.tex}
 \end{table}
 
 \section{Exploratory ANOVA summaries}
@@ -2542,9 +2536,9 @@ exploratory ANOVA models on fold-level observations. Because each
 dataset--model cell contains only three folds, we interpret ANOVA
 $p$-values as descriptive rather than as proof of backbone dominance.
 
-\input{results/tables/anova_baseline.tex}
+\input{anova_baseline.tex}
 
-\input{results/tables/anova_ddr_downstream.tex}
+\input{anova_ddr_downstream.tex}
 %-----------------------------------------------------------------------------
 
 %-----------------------------------------------------------------------------
