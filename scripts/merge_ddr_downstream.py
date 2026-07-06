@@ -9,7 +9,7 @@ from pathlib import Path
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
-KEY_COLS = ["dataset", "model", "fold", "operator", "p"]
+KEY_COLS = ["dataset", "model", "fold", "split_seed", "operator", "p"]
 
 
 def main() -> int:
