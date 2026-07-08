@@ -279,7 +279,7 @@ class EraseAddGate(nn.Module):
         add_feat = torch.tanh(self.add(x))
         res = tmp_x + self.weight.unsqueeze(dim=1) * add_feat
         return res
-\"\"\"
+"""
 
 with open(dest_path, "w", encoding="utf-8") as f:
     f.write(optimized_code)

@@ -170,3 +170,9 @@
 [2026-06-16T15:24:40+07:00] Fold exports present; skipping graph_builder
 [2026-06-16T15:24:40+07:00] Running Phase 3 sequentially (16GB VRAM — one seed at a time)...
 [2026-06-16T15:24:40+07:00] === Primary trio (GKT+simpleKT+GIKT 30ep) | split_base_seed=42 | tag=trio_matched_s42 ===
+[2026-07-02T19:46:26+07:00] === Environment check ===
+[2026-07-02T19:47:26+07:00] Parquet OK
+[2026-07-02T19:47:26+07:00] === Graph builder (skip if exports exist) ===
+[2026-07-02T19:47:26+07:00] Fold exports present; skipping graph_builder
+[2026-07-02T19:47:26+07:00] === Primary trio (GKT 30ep) | split_base_seed=42 | tag=trio_matched_s42 ===
+[2026-07-02T19:47:26+07:00] Rebuilding graphs for split seed 42...
