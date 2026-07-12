@@ -1,0 +1,6 @@
+dataset,model,fold,split_seed,operator,p,ddr,n_edges_orig,n_edges_pert,num_c,auc,acc,nll,status
+xes3g5m,gkt,0,1234,none,0.0,0.0,0,0,0,0.0,0.0,0.0,dummy
+xes3g5m,gkt,1,1234,none,0.0,0.0,0,0,0,0.0,0.0,0.0,dummy
+xes3g5m,gkt,2,1234,none,0.0,0.0,0,0,0,0.0,0.0,0.0,dummy
+xes3g5m,gkt,0,1234,node_drop,0.1,0.2358,1162,888,850,0.8174893952513986,0.8357337323029091,0.37683708444281927,pykt_checkpoint
+xes3g5m,gkt,0,1234,node_drop,0.2,0.374355,1162,727,850,0.8068440921364538,0.8333129399070616,0.38370383877186576,pykt_checkpoint
