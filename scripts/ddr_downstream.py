@@ -104,6 +104,7 @@ def main() -> int:
     parser.add_argument("--experiment-seed", type=int, default=42, help="Base seed for fold splitting and GKT fit.")
     parser.add_argument("--out", type=Path, default=ROOT / "results/tables/ddr_downstream.csv")
     parser.add_argument("--max-folds", type=int, default=None, help="Process at most this many folds (calibration/smoke test).")
+    parser.add_argument("--only-fold", type=int, default=None, help="Process ONLY this specific fold.")
     parser.add_argument("--dry-run", action="store_true", help="Build graphs/npz and record DDR only; skip GKT training (no torch).")
     parser.add_argument("--log-level", default="INFO")
     args = parser.parse_args()
@@ -144,6 +145,8 @@ def main() -> int:
     for fold, split_seed, splits in learner_based_folds(df, ratios, cfg.get("split", {}), default_seed=args.experiment_seed):
         if args.max_folds is not None and int(fold) >= int(args.max_folds):
             break
+        if args.only_fold is not None and int(fold) != int(args.only_fold):
+            continue
         train = splits["train"]
         q_map, c_map = build_dense_maps(train)
         work_dir = ROOT / "results/pykt_work" / dataset / f"fold_{fold}_seed_{split_seed}" / "ddr_downstream" / args.model
