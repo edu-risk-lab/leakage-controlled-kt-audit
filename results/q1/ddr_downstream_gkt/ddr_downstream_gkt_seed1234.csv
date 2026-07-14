@@ -35,3 +35,15 @@ assist2012,gkt,1,1235,edge_drop,0.9,0.891827,416,45,265,0.960373248899389,0.9046
 assist2012,gkt,1,1235,node_drop,0.9,0.973558,416,11,265,0.9600559508050429,0.9042983807928532,0.1887236561415288,pykt_checkpoint
 assist2012,gkt,2,1236,edge_drop,0.9,0.891827,416,45,264,0.9605146025868042,0.9051235891148213,0.1887339970710157,pykt_checkpoint
 assist2012,gkt,2,1236,node_drop,0.9,0.978365,416,9,264,0.9603395027880075,0.9046737513872978,0.1892658488248344,pykt_checkpoint
+xes3g5m,gkt,0,1234,none,0.0,0.0,1162,1162,850,,,,dry_run
+xes3g5m,gkt,0,1234,edge_drop,0.0,0.0,1162,1162,850,,,,dry_run
+xes3g5m,gkt,0,1234,node_drop,0.0,0.0,1162,1162,850,,,,dry_run
+xes3g5m,gkt,0,1234,prereq_preserve,0.0,0.0,1162,1162,850,,,,dry_run
+xes3g5m,gkt,1,1235,none,0.0,0.0,1157,1157,858,,,,dry_run
+xes3g5m,gkt,1,1235,edge_drop,0.0,0.0,1157,1157,858,,,,dry_run
+xes3g5m,gkt,1,1235,node_drop,0.0,0.0,1157,1157,858,,,,dry_run
+xes3g5m,gkt,1,1235,prereq_preserve,0.0,0.0,1157,1157,858,,,,dry_run
+xes3g5m,gkt,2,1236,none,0.0,0.0,1168,1168,854,,,,dry_run
+xes3g5m,gkt,2,1236,edge_drop,0.0,0.0,1168,1168,854,,,,dry_run
+xes3g5m,gkt,2,1236,node_drop,0.0,0.0,1168,1168,854,,,,dry_run
+xes3g5m,gkt,2,1236,prereq_preserve,0.0,0.0,1168,1168,854,,,,dry_run
