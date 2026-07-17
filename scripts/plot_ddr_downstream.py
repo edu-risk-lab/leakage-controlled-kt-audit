@@ -39,14 +39,21 @@ _OP_COLOR = {
 }
 
 
-def _baseline_auc(df: pd.DataFrame) -> dict[tuple[str, str, int], float]:
-    """Per (dataset, model, fold) AUC of the DDR=0 baseline graph (operator == none)."""
+def _baseline_auc(df: pd.DataFrame) -> dict[tuple, float]:
+    """Per (dataset, model, fold[, split_seed]) AUC of the DDR=0 baseline graph."""
     base = df[df["operator"] == "none"]
-    return {
-        (str(r.dataset), str(r.model), int(r.fold)): float(r.auc)
-        for r in base.itertuples()
-        if pd.notna(r.auc)
-    }
+    use_seed = "split_seed" in df.columns
+    out: dict[tuple, float] = {}
+    for r in base.itertuples():
+        if pd.isna(r.auc):
+            continue
+        key: tuple
+        if use_seed and pd.notna(getattr(r, "split_seed", np.nan)):
+            key = (str(r.dataset), str(r.model), int(r.fold), int(r.split_seed))
+        else:
+            key = (str(r.dataset), str(r.model), int(r.fold))
+        out[key] = float(r.auc)
+    return out
 
 
 def main() -> int:
@@ -65,7 +72,17 @@ def main() -> int:
         df["model"] = "gkt"  # backward-compat with pre-multi-model CSVs
 
     base = _baseline_auc(df)
-    df["baseline_auc"] = [base.get((str(d), str(m), int(f)), np.nan) for d, m, f in zip(df["dataset"], df["model"], df["fold"])]
+    use_seed = "split_seed" in df.columns
+
+    def _lookup(d, m, f, s) -> float:
+        if use_seed and pd.notna(s):
+            return base.get((str(d), str(m), int(f), int(s)), np.nan)
+        return base.get((str(d), str(m), int(f)), np.nan)
+
+    seeds = df["split_seed"] if use_seed else [np.nan] * len(df)
+    df["baseline_auc"] = [
+        _lookup(d, m, f, s) for d, m, f, s in zip(df["dataset"], df["model"], df["fold"], seeds)
+    ]
     df["auc_drop"] = df["baseline_auc"] - df["auc"]  # positive = degradation
 
     pert = df[df["operator"] != "none"].copy()
