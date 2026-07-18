@@ -1,6 +1,7 @@
 % Auto-derived from results/tables/ddr_downstream.csv (GKT multi-seed merge)
 % XES3G5M: seeds 42/17/1234 x 3 folds (n=9); ASSIST2012: seed-42 grid (+ anchors).
 % AUC drop = mean decrease in test AUC vs. the unperturbed (DDR=0) baseline.
+% Caption scopes: r_core n=81; r_all/rho_all n=99; global pooled r~0.75 is Fig S3 only.
 \begin{table}[t]
 \centering
 \caption{\DDR{}$\to$downstream AUC for the graph-reliant backbone GKT, with a
@@ -10,13 +11,16 @@ AUC relative to the unperturbed (\DDR{}$=0$) baseline across folds (baselines:
 XES3G5M $0.8354$, ASSISTments $0.9630$; XES3G5M pooled over
 3 seeds $\times$ 3 folds). The bottom block reports the
 manipulation-check anchors ($p{=}0.90$, near-total graph destruction). On
-XES3G5M, destroying the graph moves GKT by $0.07$--$0.09$ AUC and \DDR{} tracks
-the drop almost perfectly (Pearson $r{=}0.93$ over the $p{\le}0.3$ core,
-$0.99$ including anchors); at matched budget, \texttt{prereq\_preserve} degrades
-AUC least and \texttt{node\_drop} most. On ASSISTments the same total
-destruction moves GKT by ${\le}0.003$, so this cell (like DGEKT in
-Table~\ref{tab:ddr-downstream}) is a \emph{low-reliance anchor} whose
-correlation is not practically meaningful.}
+XES3G5M/GKT, \DDR{} tracks AUC drop with distinct estimands: Pearson
+$r{=}0.93$ on the $p{\le}0.3$ core ($n{=}81$); Pearson
+$r{=}0.99$ on the full pool including anchors ($n{=}99$); Spearman
+$\rho{=}0.93$ on that same full pool ($n{=}99$). These are not
+interchangeable with the global pooled Pearson $r{\approx}0.75$ ($n{=}186$)
+annotated on Fig.~S3. At matched budget,
+\texttt{prereq\_preserve} degrades AUC least and \texttt{node\_drop} most. On
+ASSISTments the same total destruction moves GKT by ${\le}0.003$, so this cell
+(like DGEKT in Table~\ref{tab:ddr-downstream}) is a \emph{low-reliance anchor}
+whose correlation is not practically meaningful.}
 \label{tab:ddr-downstream-gkt}
 \footnotesize
 \setlength{\tabcolsep}{3pt}

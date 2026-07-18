@@ -54,7 +54,7 @@ baselines:
   - name: gkt
     enabled: true
     hyperparams:
-      batch_size: 8
+      batch_size: 4   # primary attested (619c02cf); do not use HEAD drift for historical AUC
       epochs: 10
   - name: gikt
     enabled: true

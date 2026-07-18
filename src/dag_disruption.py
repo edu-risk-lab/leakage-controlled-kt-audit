@@ -289,19 +289,43 @@ def _resolve_run_config(config: Path | None, edges: Path | None, seed: int) -> t
     )
 
 
+# J05: color + marker + linestyle so operators remain separable in grayscale.
+_DDR_OP_STYLE = {
+    "attr_mask": {"color": "#937860", "marker": "o", "linestyle": "-"},
+    "edge_drop": {"color": "#4C72B0", "marker": "s", "linestyle": "--"},
+    "node_drop": {"color": "#C44E52", "marker": "^", "linestyle": "-."},
+    "prereq_preserve": {"color": "#55A868", "marker": "D", "linestyle": ":"},
+    "subgraph": {"color": "#8172B2", "marker": "v", "linestyle": (0, (3, 1, 1, 1))},
+}
+
+
 def _plot_ddr_figure(dataset: str, summary: pd.DataFrame, fig_path: Path) -> None:
     """Line plot of mean DDR vs perturbation strength (paper-facing PDF)."""
-    fs_title, fs_axis, fs_tick, fs_legend = 18, 15, 13, 13
-    fig, ax = plt.subplots(figsize=(7.5, 5))
+    # Compact canvas + large type so labels stay ≥~7 pt after 0.82\linewidth include.
+    fs_title, fs_axis, fs_tick, fs_legend = 16, 14, 12, 12
+    fig, ax = plt.subplots(figsize=(5.4, 3.6))
     if not summary.empty:
-        for aug, part in summary.groupby("augmentation"):
-            part = part.sort_values("p")
-            ax.plot(part["p"], part["ddr_mean"], marker="o", label=aug)
+        # Stable legend order
+        order = [a for a in _DDR_OP_STYLE if a in set(summary["augmentation"])]
+        order += sorted(set(summary["augmentation"]) - set(order))
+        for aug in order:
+            part = summary.loc[summary["augmentation"] == aug].sort_values("p")
+            style = _DDR_OP_STYLE.get(aug, {"color": "#555555", "marker": "o", "linestyle": "-"})
+            ax.plot(
+                part["p"],
+                part["ddr_mean"],
+                label=aug,
+                color=style["color"],
+                marker=style["marker"],
+                linestyle=style["linestyle"],
+                markersize=7,
+                linewidth=1.8,
+            )
         ax.set_xlabel("$p$", fontsize=fs_axis)
         ax.set_ylabel("Mean DDR", fontsize=fs_axis)
         ax.set_title(f"DDR sweep: {dataset}", fontsize=fs_title)
         ax.tick_params(axis="both", labelsize=fs_tick)
-        ax.legend(fontsize=fs_legend)
+        ax.legend(fontsize=fs_legend, frameon=False)
     fig.tight_layout()
     fig.savefig(fig_path)
     plt.close(fig)

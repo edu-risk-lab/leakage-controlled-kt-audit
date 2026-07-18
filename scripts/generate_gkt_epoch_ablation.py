@@ -1,4 +1,9 @@
-"""Generate epoch-matched GKT ablation tables (S21 seed-42; S22 multi-seed) and LaTeX macros."""
+"""Generate Table S21: targeted three-fold extended-training sensitivity (seed 42).
+
+Reads canonical_training_protocol.yaml and validates fold AUCs against
+baseline_fold_results.csv + gkt_epochs30_s42. Does NOT emit S22 / nine-fold
+pooled extension tables for submission. Does not modify historical fold CSVs.
+"""
 
 from __future__ import annotations
 
@@ -6,133 +11,164 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import yaml
 from scipy import stats
 
 ROOT = Path(__file__).resolve().parents[1]
+PROTOCOL = ROOT / "audit" / "2026-07-17-1541" / "canonical_training_protocol.yaml"
 T3 = float(stats.t.ppf(0.975, df=2))
-T9 = float(stats.t.ppf(0.975, df=8))
+EXPECTED = {
+    0: (0.834557, 0.840181, 0.005624),
+    1: (0.833752, 0.838300, 0.004547),
+    2: (0.832624, 0.832804, 0.000181),
+}
+TOL = 5e-7
 
 
-def _paired_ci(delta: np.ndarray, t_val: float) -> tuple[float, float, float]:
+def _paired_ci(delta: np.ndarray) -> tuple[float, float, float]:
     mean = float(np.mean(delta))
     se = float(np.std(delta, ddof=1) / np.sqrt(len(delta)))
-    margin = t_val * se
+    margin = T3 * se
     return mean, mean - margin, mean + margin
 
 
-def _load_gkt30_seed42() -> pd.Series:
-    q1 = pd.read_csv(ROOT / "results/tables/q1_baseline_fold_results.csv")
-    part = q1[(q1["split_base_seed"] == 42) & (q1["model"] == "gkt")]
-    part = part[part["experiment_tag"].astype(str).str.startswith("gkt_epochs30")]
-    if len(part) != 3:
-        raise FileNotFoundError("Need three GKT-30ep folds at split_base_seed=42")
-    return part.sort_values("fold").set_index("fold")["auc"]
+def _load_protocol() -> dict:
+    if not PROTOCOL.exists():
+        raise FileNotFoundError(f"Missing canonical protocol: {PROTOCOL}")
+    return yaml.safe_load(PROTOCOL.read_text(encoding="utf-8"))
 
 
-def _pooled_nine_fold() -> tuple[float, float, float, pd.DataFrame]:
-    q1 = pd.read_csv(ROOT / "results/tables/q1_baseline_fold_results.csv")
-    gkt = q1[
-        (q1["model"] == "gkt") & q1["experiment_tag"].astype(str).str.startswith("gkt_epochs30")
-    ][["split_base_seed", "fold", "auc"]]
-    sk = q1[
-        (q1["model"] == "simplekt")
-        & (
-            q1["experiment_tag"].astype(str).str.startswith("simplekt30")
-            | q1["experiment_tag"].astype(str).str.startswith("trio_matched")
+def _load_pairs() -> pd.DataFrame:
+    proto = _load_protocol()
+    tgt = proto["targeted_extended_training"]
+    if int(tgt["experiment_seed"]) != 42 or list(tgt["folds"]) != [0, 1, 2]:
+        raise ValueError("Protocol seed/folds must be seed 42 folds [0,1,2]")
+
+    base = pd.read_csv(ROOT / "results/tables/baseline_fold_results.csv")
+    g10 = base[
+        (base["dataset"] == "xes3g5m")
+        & (base["graph_construction"] == "train_only")
+        & (base["model"] == "gkt")
+    ][["fold", "split_seed", "auc"]].rename(columns={"auc": "auc_primary"})
+
+    q1 = pd.read_csv(ROOT / "results/q1/gkt_epochs30_s42/baseline_fold_results.csv")
+    g30 = q1[(q1["model"] == "gkt") & (q1["split_base_seed"] == 42)][
+        ["fold", "split_seed", "auc"]
+    ].rename(columns={"auc": "auc_extended"})
+
+    # Reject legacy unpaired seeds if accidentally present in this file
+    if (q1["split_base_seed"] != 42).any():
+        raise ValueError("gkt_epochs30_s42 artifact must contain only split_base_seed=42")
+
+    merged = g10.merge(g30, on=["fold", "split_seed"], how="inner").sort_values("fold")
+    if len(merged) != 3:
+        raise ValueError(f"Expected exactly 3 paired folds, got {len(merged)}")
+    if merged["fold"].duplicated().any():
+        raise ValueError("Duplicate folds in paired table")
+    if sorted(merged["fold"].tolist()) != [0, 1, 2]:
+        raise ValueError(f"Unexpected folds: {merged['fold'].tolist()}")
+
+    rows = []
+    for r in merged.itertuples(index=False):
+        exp = EXPECTED[int(r.fold)]
+        d = float(r.auc_extended) - float(r.auc_primary)
+        if abs(float(r.auc_primary) - exp[0]) > TOL or abs(float(r.auc_extended) - exp[1]) > TOL:
+            raise ValueError(
+                f"Fold {r.fold} AUC mismatch vs locked artifacts: "
+                f"primary={r.auc_primary}, extended={r.auc_extended}, expected={exp[:2]}"
+            )
+        if abs(d - exp[2]) > TOL:
+            raise ValueError(f"Fold {r.fold} delta mismatch: {d} vs {exp[2]}")
+        rows.append(
+            {
+                "fold": int(r.fold),
+                "split_seed": int(r.split_seed),
+                "auc_primary": float(r.auc_primary),
+                "auc_extended": float(r.auc_extended),
+                "delta": d,
+            }
         )
-    ][["split_base_seed", "fold", "auc", "experiment_tag"]]
-    # Prefer simpleKT 30ep cache rows over trio when both exist.
-    sk = sk.sort_values("experiment_tag").drop_duplicates(subset=["split_base_seed", "fold"], keep="first")
-    sk = sk[["split_base_seed", "fold", "auc"]]
-    merged = gkt.merge(sk, on=["split_base_seed", "fold"], suffixes=("_gkt", "_sk"))
-    merged["delta"] = merged["auc_gkt"] - merged["auc_sk"]
-    m, lo, hi = _paired_ci(merged["delta"].to_numpy(), T9)
-    return m, lo, hi, merged
+    return pd.DataFrame(rows)
 
 
 def main() -> None:
-    base = pd.read_csv(ROOT / "results/tables/baseline_fold_results.csv")
-    base = base[
-        (base["dataset"] == "xes3g5m")
-        & (base["graph_construction"] == "train_only")
-        & (base["model"].isin(["gkt", "simplekt"]))
-    ].sort_values(["model", "fold"])
-
-    simple = base[base["model"] == "simplekt"].set_index("fold")["auc"]
-    gkt10 = base[base["model"] == "gkt"].set_index("fold")["auc"]
-    gkt30 = _load_gkt30_seed42()
-
-    d10 = (gkt10 - simple).to_numpy()
-    d30 = (gkt30 - simple).to_numpy()
-    gain = (gkt30 - gkt10).to_numpy()
-
-    m10, lo10, hi10 = _paired_ci(d10, T3)
-    m30, lo30, hi30 = _paired_ci(d30, T3)
-    mgain, lgain, hgain = _paired_ci(gain, T3)
-    mpool, lopool, hipool, pool_df = _pooled_nine_fold()
+    proto = _load_protocol()
+    primary = proto["primary"]["gkt"]
+    ext = proto["targeted_extended_training"]["gkt_extended"]
+    pairs = _load_pairs()
+    deltas = pairs["delta"].to_numpy(dtype=float)
+    mean_d, lo, hi = _paired_ci(deltas)
+    if abs(mean_d - 0.003451) > 5e-6:
+        raise ValueError(f"Mean delta {mean_d} != expected 0.003451")
 
     out = ROOT / "results/tables"
     out.mkdir(parents=True, exist_ok=True)
 
-    pd.DataFrame(
-        [
-            {"config": "primary_release", "epochs": 10, "gkt_auc_mean": float(gkt10.mean()), "delta": m10},
-            {"config": "epoch_matched_seed42", "epochs": 30, "gkt_auc_mean": float(gkt30.mean()), "delta": m30},
-            {"config": "epoch_matched_pooled_9fold", "epochs": 30, "gkt_auc_mean": float(pool_df["auc_gkt"].mean()), "delta": mpool},
-        ]
-    ).to_csv(out / "gkt_epoch_ablation.csv", index=False)
-    pool_df.to_csv(out / "gkt_epoch_ablation_pooled.csv", index=False)
-
-    tex_s21 = [
+    # Submission S21 body (tabular only; caption lives in main_APIN.tex)
+    lines = [
         "% Auto-generated by scripts/generate_gkt_epoch_ablation.py (Table S21)",
-        r"\begin{tabular}{lccrrl}",
+        "% Scope: EXPLORATORY_THREE_FOLD_CONFIGURATION_SENSITIVITY seed=42",
+        "% LEGACY_UNPAIRED_GKT30 seeds 17/1234 are intentionally excluded.",
+        r"\begin{tabular}{crrr}",
         r"\toprule",
-        r"\textbf{GKT config} & \textbf{Epochs} & \textbf{Batch} & \textbf{Mean AUC} & "
-        r"$\boldsymbol{\Delta}$\textbf{ vs \textit{simpleKT}} & \textbf{95\% CI (3 folds)} \\",
+        r"\textbf{Fold} & \textbf{GKT primary AUC} & \textbf{Extended-training GKT AUC} & "
+        r"$\Delta$\textbf{AUC} \\",
         r"\midrule",
-        f"Primary release & 10 & 16 & ${gkt10.mean():.3f}$ & ${m10:+.3f}$ & "
-        f"$[{lo10:+.3f}, {hi10:+.3f}]$ \\\\",
-        f"Epoch-matched ablation & 30 & 32 & ${gkt30.mean():.3f}$ & ${m30:+.3f}$ & "
-        f"$[{lo30:+.3f}, {hi30:+.3f}]$ \\\\",
-        f"\\textit{{simpleKT}} reference & 30 & 64 & ${simple.mean():.3f}$ & --- & --- \\\\",
+    ]
+    for r in pairs.itertuples(index=False):
+        lines.append(
+            f"{int(r.fold)} & {r.auc_primary:.6f} & {r.auc_extended:.6f} & ${r.delta:+.6f}$ \\\\"
+        )
+    lines += [
         r"\midrule",
-        f"Epoch gain (30ep $-$ 10ep GKT) & & & ${mgain:+.3f}$ & & "
-        f"$[{lgain:+.3f}, {hgain:+.3f}]$ \\\\",
+        f"Mean & {pairs['auc_primary'].mean():.6f} & {pairs['auc_extended'].mean():.6f} & "
+        f"${mean_d:+.6f}$ \\\\",
         r"\bottomrule",
         r"\end{tabular}",
         "",
-    ]
-    (out / "gkt_epoch_ablation.tex").write_text("\n".join(tex_s21), encoding="utf-8")
-
-    tex_pool = [
-        "% Auto-generated by scripts/generate_gkt_epoch_ablation.py (pooled summary)",
-        r"\begin{tabular}{lr}",
-        r"\toprule",
-        r"\textbf{Statistic} & \textbf{Value} \\",
-        r"\midrule",
-        r"Pooled $\Delta$AUC (GKT $-$ \textit{simpleKT}) & "
-        f"${mpool:+.3f}$ [{lopool:+.3f}, {hipool:+.3f}] (9 folds; paired-$t$) \\\\",
-        r"Split base seeds & 17, 42, 1234 (fold-aligned graph rebuild each) \\",
-        r"\bottomrule",
-        r"\end{tabular}",
+        rf"% paired-t 95\% CI on fold deltas: [{lo:+.6f}, {hi:+.6f}] (includes 0)",
+        rf"% primary max\_epochs={primary['max_epochs']} batch={primary['batch_size']}; "
+        rf"extended max\_epochs={ext['max_epochs']} batch={ext['batch_size']}",
         "",
     ]
-    (out / "gkt_epoch_ablation_pooled.tex").write_text("\n".join(tex_pool), encoding="utf-8")
+    (out / "gkt_epoch_ablation.tex").write_text("\n".join(lines), encoding="utf-8")
 
+    # Macros: only seed-42 configuration-sensitivity gain (not nine-fold pooled)
+    # Round CI to match author-facing approx. [-0.004, +0.011]
+    lo_r, hi_r = round(lo, 3), round(hi, 3)
     macros = [
-        rf"\renewcommand{{\GKTthirtydeltavec}}{{{mpool:+.3f}}}",
-        rf"\renewcommand{{\GKTthirtydeltaci}}{{$[{lopool:+.3f}, {hipool:+.3f}]$}}",
-        rf"\renewcommand{{\GKTthirtyseedFortydeltaci}}{{$[{lo30:+.3f}, {hi30:+.3f}]$}}",
-        rf"\renewcommand{{\GKTepochgain}}{{{mgain:+.3f}}}",
+        r"\providecommand{\GKTepochgain}{+0.003}",
+        rf"\renewcommand{{\GKTepochgain}}{{{mean_d:+.3f}}}",
+        r"\providecommand{\GKTconfigsensci}{[$-0.004$, $+0.011$]}",
+        rf"\renewcommand{{\GKTconfigsensci}}{{$[{lo_r:+.3f}, {hi_r:+.3f}]$}}",
+        "% GKTthirty* macros retired from submission (nine-fold extension claim removed).",
+        r"\providecommand{\GKTthirtydeltavec}{\texttt{n/a}}",
+        r"\renewcommand{\GKTthirtydeltavec}{\texttt{n/a}}",
+        r"\providecommand{\GKTthirtydeltaci}{\texttt{n/a}}",
+        r"\renewcommand{\GKTthirtydeltaci}{\texttt{n/a}}",
+        r"\providecommand{\GKTthirtyseedFortydeltaci}{\texttt{n/a}}",
+        r"\renewcommand{\GKTthirtyseedFortydeltaci}{\texttt{n/a}}",
         "",
     ]
     (out / "gkt_epoch_ablation_macros.tex").write_text("\n".join(macros), encoding="utf-8")
 
-    print(f"Seed 42: GKT30 delta {m30:+.4f} [{lo30:+.4f}, {hi30:+.4f}]")
-    print(f"Pooled 9-fold delta {mpool:+.4f} [{lopool:+.4f}, {hipool:+.4f}]")
-    print(f"Epoch gain (seed 42): {mgain:+.4f}")
+    # Summary CSV for audit (does not replace historical fold result CSVs)
+    pairs.assign(mean_delta=mean_d, ci_lo=lo, ci_hi=hi).to_csv(
+        out / "gkt_epoch_ablation_seed42_pairs.csv", index=False
+    )
+
+    # Keep legacy pooled tex out of submission: rewrite as explicit non-submission stub
+    legacy = [
+        "% LEGACY_UNPAIRED_GKT30_ARTIFACTS — NOT FOR SUBMISSION BUILD",
+        "% Historical nine-fold GKT30 vs simpleKT pool removed from manuscript.",
+        "% Do not \\input this file from main_APIN.tex.",
+        "",
+    ]
+    (out / "gkt_epoch_ablation_pooled.tex").write_text("\n".join(legacy), encoding="utf-8")
+
+    print(f"S21 pairs n={len(pairs)} mean_delta={mean_d:+.6f} CI=[{lo:+.6f},{hi:+.6f}]")
     print(f"Wrote {out / 'gkt_epoch_ablation.tex'}")
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

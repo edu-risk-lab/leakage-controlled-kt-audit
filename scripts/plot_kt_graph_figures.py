@@ -72,13 +72,43 @@ def _sample_pre_subgraph(edges: pd.DataFrame, *, max_edges: int = 6, seed: int =
     return [(_kc_label(r.src_kc), _kc_label(r.dst_kc)) for r in top.itertuples(index=False)]
 
 
+def _horizontal_chain_pos(g: nx.DiGraph) -> dict[str, tuple[float, float]] | None:
+    """Left-to-right positions when ``g`` is a single directed path."""
+    if g.number_of_nodes() == 0:
+        return {}
+    sources = [n for n in g.nodes if g.in_degree(n) == 0]
+    if len(sources) != 1:
+        return None
+    path = [sources[0]]
+    seen = {sources[0]}
+    while True:
+        outs = list(g.successors(path[-1]))
+        if not outs:
+            break
+        if len(outs) != 1 or outs[0] in seen:
+            return None
+        path.append(outs[0])
+        seen.add(outs[0])
+    if set(path) != set(g.nodes):
+        return None
+    return {node: (float(i), 0.0) for i, node in enumerate(path)}
+
+
 def _draw(edges: list[tuple[str, str]], title: str, path: Path) -> None:
     g = nx.DiGraph()
     g.add_edges_from(edges)
-    pos = nx.spring_layout(g, seed=42, k=1.4)
-    fig, ax = plt.subplots(figsize=(4.2, 3.2))
-    nx.draw_networkx_nodes(g, pos, node_color="#4C72B0", node_size=520, ax=ax)
-    nx.draw_networkx_labels(g, pos, font_size=7, ax=ax)
+    pos = _horizontal_chain_pos(g)
+    if pos is None:
+        pos = nx.spring_layout(g, seed=42, k=1.4)
+        figsize = (4.2, 3.2)
+        rad = 0.08
+    else:
+        # Compact schematic: wide and short to cut float height in the paper.
+        figsize = (5.4, 1.35)
+        rad = 0.0
+    fig, ax = plt.subplots(figsize=figsize)
+    nx.draw_networkx_nodes(g, pos, node_color="#4C72B0", node_size=620, ax=ax)
+    nx.draw_networkx_labels(g, pos, font_size=10, ax=ax)
     nx.draw_networkx_edges(
         g,
         pos,
@@ -86,12 +116,17 @@ def _draw(edges: list[tuple[str, str]], title: str, path: Path) -> None:
         arrows=True,
         arrowsize=14,
         width=1.4,
-        connectionstyle="arc3,rad=0.08",
+        connectionstyle=f"arc3,rad={rad}",
         ax=ax,
+        min_source_margin=8,
+        min_target_margin=8,
     )
-    ax.set_title(title, fontsize=9)
+    ax.set_title(title, fontsize=12)
     ax.axis("off")
-    fig.tight_layout()
+    if rad == 0.0:
+        ys = [y for _, y in pos.values()]
+        ax.set_ylim(min(ys) - 0.55, max(ys) + 0.55)
+    fig.tight_layout(pad=0.15)
     fig.savefig(path, bbox_inches="tight")
     plt.close(fig)
 
@@ -197,11 +232,11 @@ def _draw_ego_cold(
     g = nx.DiGraph()
     g.add_edges_from(edges)
     pos = nx.spring_layout(g, seed=7, k=1.6)
-    fig, ax = plt.subplots(figsize=(4.6, 3.4))
+    fig, ax = plt.subplots(figsize=(5.2, 3.6))
     node_colors = ["#D62728" if n == center_label else "#4C72B0" for n in g.nodes]
-    node_sizes = [780 if n == center_label else 520 for n in g.nodes]
+    node_sizes = [900 if n == center_label else 640 for n in g.nodes]
     nx.draw_networkx_nodes(g, pos, node_color=node_colors, node_size=node_sizes, ax=ax)
-    nx.draw_networkx_labels(g, pos, font_size=7, ax=ax)
+    nx.draw_networkx_labels(g, pos, font_size=10, ax=ax)
     nx.draw_networkx_edges(
         g,
         pos,
@@ -215,7 +250,7 @@ def _draw_ego_cold(
     ax.set_title(
         f"Ego-graph around very-cold KC {_kc_label(kc_id)} "
         f"({n_train} train hits; fold-0 E_pre + E_sim + transitions)",
-        fontsize=8.5,
+        fontsize=11,
     )
     ax.legend(
         handles=[
@@ -223,7 +258,7 @@ def _draw_ego_cold(
             mpatches.Patch(color="#4C72B0", label="Train-only neighbours"),
         ],
         loc="lower left",
-        fontsize=7,
+        fontsize=9,
         frameon=False,
     )
     ax.axis("off")
@@ -249,20 +284,20 @@ def _draw_learner_timeline(seq: pd.DataFrame, cold_kc: object, learner_id: int, 
     kcs = window["kc_id"].tolist()
     labels = [_kc_label(k) for k in kcs]
     n = len(labels)
-    fig, ax = plt.subplots(figsize=(5.4, 2.2))
+    fig, ax = plt.subplots(figsize=(6.2, 2.4))
     xs = list(range(n))
     colors = ["#D62728" if k == cold_kc else "#4C72B0" for k in kcs]
     ax.bar(xs, [1] * n, color=colors, width=0.72, edgecolor="white", linewidth=0.8)
     ax.set_xticks(xs)
-    ax.set_xticklabels([f"$t_{i}$" for i in xs], fontsize=8)
+    ax.set_xticklabels([f"$t_{i}$" for i in xs], fontsize=10)
     ax.set_yticks([])
     for i, lab in enumerate(labels):
-        ax.text(i, 0.5, lab, ha="center", va="center", fontsize=6.5, color="white")
+        ax.text(i, 0.5, lab, ha="center", va="center", fontsize=9, color="white")
     ax.set_xlabel(
         f"Test-sequence window (learner {str(learner_id)[-6:]}, fold-0 XES3G5M)",
-        fontsize=8,
+        fontsize=10,
     )
-    ax.set_title("KC timeline with very-cold steps highlighted", fontsize=9)
+    ax.set_title("KC timeline with very-cold steps highlighted", fontsize=11)
     ax.spines[["top", "right", "left"]].set_visible(False)
     fig.tight_layout()
     fig.savefig(path, bbox_inches="tight")

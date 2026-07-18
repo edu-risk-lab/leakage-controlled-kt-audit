@@ -15,16 +15,21 @@ OP_ORDER = {"edge_drop": 0, "node_drop": 1, "prereq_preserve": 2}
 DS_ORDER = {"xes3g5m": 0, "assist2012": 1}
 
 
-def _corr(gkt: pd.DataFrame, dataset: str, p_max: float | None = None) -> float:
+def _corr_stats(
+    gkt: pd.DataFrame, dataset: str, p_max: float | None = None
+) -> tuple[float, float, int]:
     part = gkt[gkt["dataset"] == dataset]
     if p_max is not None:
         part = part[part["p"] <= p_max + 1e-9]
     x = part["ddr"].to_numpy(dtype=float)
     y = part["auc_drop"].to_numpy(dtype=float)
     ok = np.isfinite(x) & np.isfinite(y)
-    if ok.sum() < 3:
-        return float("nan")
-    return float(stats.pearsonr(x[ok], y[ok])[0])
+    n = int(ok.sum())
+    if n < 3:
+        return float("nan"), float("nan"), n
+    r = float(stats.pearsonr(x[ok], y[ok])[0])
+    rho = float(stats.spearmanr(x[ok], y[ok])[0])
+    return r, rho, n
 
 
 def _row(r: pd.Series) -> str:
@@ -59,8 +64,8 @@ def main() -> int:
     base = df[(df["model"] == "gkt") & (df["operator"] == "none")]
     xes_base = float(base.loc[base["dataset"] == "xes3g5m", "auc"].mean())
     ast_base = float(base.loc[base["dataset"] == "assist2012", "auc"].mean())
-    r_core = _corr(gkt, "xes3g5m", 0.3)
-    r_all = _corr(gkt, "xes3g5m", None)
+    r_core, _, n_core = _corr_stats(gkt, "xes3g5m", 0.3)
+    r_all, rho_all, n_all = _corr_stats(gkt, "xes3g5m", None)
 
     core = "\n".join(_row(r) for _, r in summary[summary["p"] <= 0.3 + 1e-9].iterrows())
     anchors = "\n".join(_row(r) for _, r in summary[summary["p"] >= 0.9 - 1e-9].iterrows())
@@ -69,6 +74,7 @@ def main() -> int:
     tex = f"""% Auto-derived from results/tables/ddr_downstream.csv (GKT multi-seed merge)
 % XES3G5M: seeds 42/17/1234 x 3 folds (n={n_xes}); ASSIST2012: seed-42 grid (+ anchors).
 % AUC drop = mean decrease in test AUC vs. the unperturbed (DDR=0) baseline.
+% Caption scopes: r_core n={n_core}; r_all/rho_all n={n_all}; global pooled r~0.75 is Fig S3 only.
 \\begin{{table}}[t]
 \\centering
 \\caption{{\\DDR{{}}$\\to$downstream AUC for the graph-reliant backbone GKT, with a
@@ -78,13 +84,16 @@ AUC relative to the unperturbed (\\DDR{{}}$=0$) baseline across folds (baselines
 XES3G5M ${xes_base:.4f}$, ASSISTments ${ast_base:.4f}$; XES3G5M pooled over
 3 seeds $\\times$ 3 folds). The bottom block reports the
 manipulation-check anchors ($p{{=}}0.90$, near-total graph destruction). On
-XES3G5M, destroying the graph moves GKT by $0.07$--$0.09$ AUC and \\DDR{{}} tracks
-the drop almost perfectly (Pearson $r{{=}}{r_core:.2f}$ over the $p{{\\le}}0.3$ core,
-${r_all:.2f}$ including anchors); at matched budget, \\texttt{{prereq\\_preserve}} degrades
-AUC least and \\texttt{{node\\_drop}} most. On ASSISTments the same total
-destruction moves GKT by ${{\\le}}0.003$, so this cell (like DGEKT in
-Table~\\ref{{tab:ddr-downstream}}) is a \\emph{{low-reliance anchor}} whose
-correlation is not practically meaningful.}}
+XES3G5M/GKT, \\DDR{{}} tracks AUC drop with distinct estimands: Pearson
+$r{{=}}{r_core:.2f}$ on the $p{{\\le}}0.3$ core ($n{{=}}{n_core}$); Pearson
+$r{{=}}{r_all:.2f}$ on the full pool including anchors ($n{{=}}{n_all}$); Spearman
+$\\rho{{=}}{rho_all:.2f}$ on that same full pool ($n{{=}}{n_all}$). These are not
+interchangeable with the global pooled Pearson $r{{\\approx}}0.75$ ($n{{=}}186$)
+annotated on Fig.~S3. At matched budget,
+\\texttt{{prereq\\_preserve}} degrades AUC least and \\texttt{{node\\_drop}} most. On
+ASSISTments the same total destruction moves GKT by ${{\\le}}0.003$, so this cell
+(like DGEKT in Table~\\ref{{tab:ddr-downstream}}) is a \\emph{{low-reliance anchor}}
+whose correlation is not practically meaningful.}}
 \\label{{tab:ddr-downstream-gkt}}
 \\footnotesize
 \\setlength{{\\tabcolsep}}{{3pt}}
@@ -104,7 +113,7 @@ Dataset & Operator & $p$ & Mean \\DDR{{}} & Mean AUC & AUC drop \\\\
     out.write_text(tex, encoding="utf-8")
     print(f"Wrote {out}")
     print(f"XES baseline={xes_base:.4f} ASSIST baseline={ast_base:.4f}")
-    print(f"Pearson XES core p<=0.3 r={r_core:.3f}; all r={r_all:.3f}")
+    print(f"Pearson XES core p<=0.3 r={r_core:.3f} n={n_core}; all r={r_all:.3f} rho={rho_all:.3f} n={n_all}")
     print(summary[summary["dataset"] == "xes3g5m"][["operator", "p", "ddr_mean", "auc_mean", "auc_drop_mean", "n"]].to_string(index=False))
     return 0
 
