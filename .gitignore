@@ -1,16 +1,75 @@
+# ---------------------------------------------------------------------------
+# Data (download separately under each provider's terms of use)
+# ---------------------------------------------------------------------------
 data/raw/**
 !data/raw/.gitkeep
 data/processed/**
 !data/processed/.gitkeep
+
+# ---------------------------------------------------------------------------
+# Python
+# ---------------------------------------------------------------------------
 __pycache__/
 .venv/
+venv/
 *.egg-info/
 *.ipynb_checkpoints
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+dist/
+build/
+
+# ---------------------------------------------------------------------------
+# Experiment caches / large local artefacts (keep tables/figures for paper)
+# ---------------------------------------------------------------------------
 results/pykt_work/
 results/cache/
-tools/basic-miktex-25.12-x64.exe
-tools/miktex/
-logs/
 results/predictions/
 results/q1/
+logs/
+
+# ---------------------------------------------------------------------------
+# Local tooling
+# ---------------------------------------------------------------------------
+tools/basic-miktex-25.12-x64.exe
+tools/miktex/
+
+# ---------------------------------------------------------------------------
+# LaTeX build by-products (keep .tex/.pdf/.bib/.bbl intended for submission)
+# ---------------------------------------------------------------------------
+*.aux
+*.log
+*.out
+*.blg
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.toc
+*.lof
+*.lot
+
+# ---------------------------------------------------------------------------
+# OS / IDE
+# ---------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.cursor/
+
+# ---------------------------------------------------------------------------
+# Transient checklist / audit helpers (keep committed reports if tracked)
+# ---------------------------------------------------------------------------
+Checklist/_*.py
+Checklist/_*.png
+Checklist/_*.txt
+Checklist/_*.json
+audit/**/_*.txt
+audit/**/_*.png
+audit/**/*_page*.png
+
+# Secrets / local env
+.env
+.env.*
+*.pem

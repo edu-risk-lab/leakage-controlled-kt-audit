@@ -5,9 +5,26 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "p0-kc-graph-protocol"
 version = "0.1.0"
-description = "Leakage-controlled KC graph protocol artefact"
+description = "Leakage-controlled knowledge-component graph audit protocol for knowledge tracing (companion research software)"
 requires-python = ">=3.10"
 readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Tuan Dao Minh", email = "tuanymc@utehy.edu.vn" },
+  { name = "Khanh-Trinh Nguyen", email = "trinhnk@utehy.edu.vn" },
+  { name = "Duong Nguyen Tien", email = "duongnt@utehy.edu.vn" },
+  { name = "Quoc Khanh Ngo", email = "quockhanhngo.official@gmail.com" },
+  { name = "Van-Hau Nguyen", email = "nvhau666@gmail.com" },
+  { name = "Le Hoang Son", email = "sonlh@vnu.edu.vn" },
+]
+keywords = [
+  "knowledge-tracing",
+  "concept-graphs",
+  "data-leakage",
+  "reproducibility",
+  "educational-data-mining",
+]
+urls = { Homepage = "https://github.com/tuanymc/p0_project", Repository = "https://github.com/tuanymc/p0_project" }
 
 [tool.setuptools]
 packages = ["src"]
@@ -25,7 +42,8 @@ p0-export-full-log-graph = "src.export_full_log_graph:main"
 [project.optional-dependencies]
 pykt = [
   "torch>=2.1",
-  # Pinned via git submodule at third_party/pykt-toolkit (see .gitmodules).
-  "pykt-toolkit @ file:///C:/TUAN/p0_project/third_party/pykt-toolkit",
   "scipy>=1.10",
+  # Install the pinned submodule after: git submodule update --init --recursive
+  #   pip install -e third_party/pykt-toolkit
+  # (absolute local file:// paths are intentionally avoided for portability)
 ]
