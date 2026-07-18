@@ -1,12 +1,19 @@
-# P0: Leakage-Controlled KC Graph Construction & Cold-Start Diagnostic Protocol
+# Leakage-Controlled KC Graph Protocol for Knowledge Tracing
 
-Companion code repository for the journal manuscript *Leakage-Controlled Concept
-Graph Construction and Cold-Start Diagnostic Protocol for Knowledge Tracing*,
-submitted to **Applied Intelligence (APIN), Springer Nature**. The single
-canonical camera-ready source is the self-contained package
-`paper/submission_APIN/` (`main_APIN.tex`, Springer `sn-jnl` class,
-`sn-mathphys-num` numbered references, bibliography `refs_APIN.bib` in that
-folder).
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
+[![CITATION.cff](https://img.shields.io/badge/citation-CITATION.cff-9cf)](CITATION.cff)
+
+Companion **research software** for the manuscript *Leakage-Controlled Concept
+Graph Construction and Cold-Start Diagnostic Protocol for Knowledge Tracing*
+(Applied Intelligence / APIN, Springer Nature). This repository supports
+reproducible audit experiments and paper artefact generation; it is **not** a
+new SOTA knowledge-tracing backbone.
+
+**Canonical manuscript package:** `paper/submission_APIN/` (`main_APIN.tex`,
+Springer Nature `sn-jnl`, `sn-mathphys-num`, `refs_APIN.bib`).
+
+**How to cite:** see [§10](#10-citation-licence-and-contact) and `CITATION.cff`.
 
 > **What this repo is.** A protocol and audit pipeline that treats
 > graph-mediated leakage as a *conditional* risk and turns the audit into a
@@ -122,13 +129,15 @@ pip install -e .
 git submodule update --init --recursive
 ```
 
-Then install extras:
+Then install PyTorch/SciPy extras and the pinned submodule editable package:
 
 ```bash
 pip install -e ".[pykt]"
+pip install -e third_party/pykt-toolkit
 ```
 
-(`pykt-toolkit` is pinned via `third_party/pykt-toolkit`; see `third_party/README.md`.)
+(`pykt-toolkit` is pinned as a git submodule under `third_party/pykt-toolkit`;
+see `third_party/README.md`. Do not rely on machine-specific `file://` paths.)
 
 ### 2.3 Tests
 
@@ -142,7 +151,8 @@ pytest -q
 
 Structural stages (`preprocess` → `graph_builder` → `dag_*`) use NumPy/pandas only.
 
-PyTorch / CUDA matters only when you install **`pip install -e ".[pykt]"`** and run
+PyTorch / CUDA matters only when you install the optional pyKT stack
+(`pip install -e ".[pykt]"` and `pip install -e third_party/pykt-toolkit`) and run
 `baseline_runner` with **`evaluation.baseline_backend: pykt`** (or `--baseline-backend pykt`).
 Install a CUDA build that matches your driver when appropriate:
 
@@ -232,6 +242,7 @@ Follow **A → B** once per machine; then choose **one track** under **C**. Comm
 4. **(Optional)** Install PyTorch + submodule-backed **`pykt-toolkit`** for `--baseline-backend pykt` / `evaluation.baseline_backend: pykt`:
    ```bash
    pip install -e ".[pykt]"
+   pip install -e third_party/pykt-toolkit
    ```
    Default YAML in this repo keeps **`diagnostic`** ensembles unless you change `evaluation.baseline_backend` or pass `--baseline-backend pykt` to `baseline_runner`.
 5. **Sanity check:** `pytest -q` ([§2.3](#23-tests)).
@@ -851,8 +862,9 @@ calibrate with `--max-folds 1` to estimate per-run time before scaling up. Use `
 Junyi GKT is impractical and intentionally omitted. Runs are **resumable**: re-running skips
 `(dataset, model, fold, operator, p)` rows already in the output CSV.
 
-**`baseline_backend=pykt` import errors** — Run `git submodule update --init --recursive`
-and `pip install -e ".[pykt]"` from the repo root (see [§2.2](#22-dependencies)).
+**`baseline_backend=pykt` import errors** — Run `git submodule update --init --recursive`,
+then `pip install -e ".[pykt]"` and `pip install -e third_party/pykt-toolkit`
+(see [§2.2](#22-dependencies)).
 
 **Junyi baseline RAM (Linux/macOS full pipeline)** — `scripts/run_all_datasets_full.sh` invokes `baseline_runner` without `--skip-cold-start`; Windows `run_all_datasets_full.ps1` adds `--skip-cold-start` for Junyi.
 If you hit OOM on Bash/WSL, rerun only that stage:
@@ -865,6 +877,8 @@ If you hit OOM on Bash/WSL, rerun only that stage:
 ```
 p0_project/
 ├── README.md
+├── LICENSE                 # MIT (code); datasets remain under provider ToU
+├── CITATION.cff            # machine-readable citation metadata
 ├── requirements.txt
 ├── pyproject.toml
 ├── configs/
@@ -920,7 +934,7 @@ p0_project/
 │   ├── run_injection_auc.py          # downstream AUC on injected graphs (§4.9)
 │   ├── bootstrap_auc_ci.py           # ΔAUC intervals, Table S16 (§4.10)
 │   ├── generate_phase_c_tables.py    # significance + ANOVA tables (§4.10)
-│   ├── generate_gkt_epoch_ablation.py / generate_training_parity.py  # S21–S22 / S15
+│   ├── generate_gkt_epoch_ablation.py / generate_training_parity.py  # S21 / S15
 │   ├── compute_autocorrelation.py    # sequence-autocorrelation stats (§4.7)
 │   ├── plot_autocorrelation.py       # repeat-rate vs AUC bar chart
 │   ├── run_significance_testing.py   # paired t-test / Wilcoxon (§4.8)
@@ -938,16 +952,47 @@ p0_project/
 
 ## 10. Citation, licence, and contact
 
-If you use this code or protocol, please cite the manuscript *Leakage-Controlled
-Concept Graph Construction and Cold-Start Diagnostic Protocol for Knowledge
-Tracing* (Dao M. Tuan, Nguyen K. Trinh, Nguyen T. Duong, Ngo Q. Khanh,
-Nguyen V. Hau, Le H. Son), submitted to **Applied Intelligence (Springer
-Nature)**. BibTeX entries live in `paper/refs_APIN.bib` and will be updated with
-volume/DOI on publication.
+### 10.1 Preferred citation (article)
 
-**Licence.** Confirm code licence (e.g. MIT) with your institution before a
-public release. Dataset licences remain with their respective publishers.
+If you use this software or protocol, please cite the companion article:
 
-**Contact.** Dao Minh Tuan — `tuanymc@utehy.edu.vn` (corresponding supervisor:
-Nguyen Van Hau — `nvhau666@gmail.com`). Issues and improvements welcome via the
-repository host: https://github.com/tuanymc/p0_project.git.
+> Tuan Dao Minh, Khanh-Trinh Nguyen, Duong Nguyen Tien, Quoc Khanh Ngo,
+> Van-Hau Nguyen, Le Hoang Son.
+> *Leakage-Controlled Concept Graph Construction and Cold-Start Diagnostic
+> Protocol for Knowledge Tracing*.
+> Applied Intelligence (Springer Nature), 2026. Manuscript under submission.
+
+Machine-readable metadata: [`CITATION.cff`](CITATION.cff).
+Bibliography source used in the paper: `paper/submission_APIN/refs_APIN.bib`
+(volume / pages / DOI will be updated upon publication).
+
+```bibtex
+@article{dao2026leakage,
+  title   = {Leakage-Controlled Concept Graph Construction and Cold-Start
+             Diagnostic Protocol for Knowledge Tracing},
+  author  = {Dao Minh, Tuan and Nguyen, Khanh-Trinh and Nguyen Tien, Duong
+             and Ngo, Quoc Khanh and Nguyen, Van-Hau and Le, Hoang Son},
+  journal = {Applied Intelligence},
+  year    = {2026},
+  note    = {Manuscript under submission},
+  publisher = {Springer Nature}
+}
+```
+
+### 10.2 Licence
+
+- **Code in this repository** is released under the [MIT License](LICENSE).
+- **pyKT** (optional submodule `third_party/pykt-toolkit`) is MIT; see upstream
+  [pykt-team/pykt-toolkit](https://github.com/pykt-team/pykt-toolkit).
+- **Datasets** are **not** redistributed here. Obtain them under each provider’s
+  terms (Junyi / PSLC DataShop; ASSISTments 2012–2013; XES3G5M MIT; see
+  manuscript Data availability and [§3](#3-data-download-and-preparation)).
+
+### 10.3 Contact and contributions
+
+- **Corresponding author:** Van-Hau Nguyen — `nvhau666@gmail.com`
+- **Technical contact:** Tuan Dao Minh — `tuanymc@utehy.edu.vn`
+- Repository: https://github.com/tuanymc/p0_project
+
+Bug reports and reproducibility issues are welcome via GitHub Issues. For
+substantial scientific changes, open an issue before a large pull request.
