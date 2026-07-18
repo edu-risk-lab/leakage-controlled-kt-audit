@@ -44,7 +44,7 @@
 \csname PreBibitemsHook\endcsname
 
 %%% 1
-\bibitem[\protect\citeauthoryear{Corbett and Anderson}{1994}]{corbett1995bkt}
+\bibitem[\protect\citeauthoryear{Corbett and Anderson}{1995}]{corbett1995bkt}
 \begin{barticle}
 \bauthor{\bsnm{Corbett}, \binits{A.T.}},
 \bauthor{\bsnm{Anderson}, \binits{J.R.}}:
@@ -52,7 +52,7 @@
 \bjtitle{User Modeling and User-Adapted Interaction}
 \bvolume{4}(\bissue{4}),
 \bfpage{253}--\blpage{278}
-(\byear{1994})
+(\byear{1995})
 \doiurl{10.1007/BF01099821}
 \end{barticle}
 \endbibitem
@@ -83,8 +83,7 @@ pp. \bfpage{505}--\blpage{513}
 \bauthor{\bsnm{King}, \binits{I.}},
 \bauthor{\bsnm{Yeung}, \binits{D.-Y.}}:
 \bctitle{Dynamic key-value memory networks for knowledge tracing}.
-In: \bbtitle{Proceedings of the 26th International Conference on World Wide Web
-  (WWW)},
+In: \bbtitle{Proceedings of the 26th International Conference on World Wide Web (WWW)},
 pp. \bfpage{765}--\blpage{774}
 (\byear{2017}).
 \doiurl{10.1145/3038912.3052580}
@@ -98,8 +97,7 @@ pp. \bfpage{765}--\blpage{774}
 \bauthor{\bsnm{Heffernan}, \binits{N.T.}},
 \bauthor{\bsnm{Lan}, \binits{A.S.}}:
 \bctitle{Context-aware attentive knowledge tracing}.
-In: \bbtitle{Proceedings of the 26th ACM SIGKDD Conference on Knowledge
-  Discovery and Data Mining (KDD)},
+In: \bbtitle{Proceedings of the 26th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD)},
 pp. \bfpage{2330}--\blpage{2339}
 (\byear{2020}).
 \doiurl{10.1145/3394486.3403282}
@@ -114,8 +112,7 @@ pp. \bfpage{2330}--\blpage{2339}
 \bauthor{\bsnm{Chen}, \binits{J.}},
 \bauthor{\bsnm{Huang}, \binits{S.}},
 \bauthor{\bsnm{Luo}, \binits{W.}}:
-\bctitle{{simpleKT}: A simple but tough-to-beat baseline for knowledge
-  tracing}.
+\bctitle{{simpleKT}: A simple but tough-to-beat baseline for knowledge tracing}.
 In: \bbtitle{International Conference on Learning Representations (ICLR)}
 (\byear{2023}).
 \doiurl{10.48550/arXiv.2302.06881}
@@ -128,10 +125,10 @@ In: \bbtitle{International Conference on Learning Representations (ICLR)}
 \bauthor{\bsnm{Pandey}, \binits{S.}},
 \bauthor{\bsnm{Karypis}, \binits{G.}}:
 \bctitle{A self-attentive model for knowledge tracing}.
-In: \bbtitle{Proceedings of the 12th International Conference on Educational
-  Data Mining (EDM)},
+In: \bbtitle{Proceedings of the 12th International Conference on Educational Data Mining (EDM)},
 pp. \bfpage{384}--\blpage{389}
 (\byear{2019}).
+\doiurl{10.48550/arXiv.1907.06837} .
 \burl{https://drive.google.com/file/d/18d_X6AXkPMhiHFQ2POarstVbX_7oMdFM}
 \end{bchapter}
 \endbibitem
@@ -148,10 +145,8 @@ pp. \bfpage{384}--\blpage{389}
 \bauthor{\bsnm{Su}, \binits{Y.}},
 \bauthor{\bsnm{Ma}, \binits{H.}},
 \bauthor{\bsnm{Wang}, \binits{S.}}:
-\bctitle{Convolutional knowledge tracing: Modeling individualization in student
-  learning process}.
-In: \bbtitle{Proceedings of the 43rd International ACM SIGIR Conference on
-  Research and Development in Information Retrieval},
+\bctitle{Convolutional knowledge tracing: Modeling individualization in student learning process}.
+In: \bbtitle{Proceedings of the 43rd International ACM SIGIR Conference on Research and Development in Information Retrieval},
 pp. \bfpage{1857}--\blpage{1860}
 (\byear{2020}).
 \doiurl{10.1145/3397271.3401288}
@@ -164,8 +159,7 @@ pp. \bfpage{1857}--\blpage{1860}
 \bauthor{\bsnm{Nakagawa}, \binits{H.}},
 \bauthor{\bsnm{Iwasawa}, \binits{Y.}},
 \bauthor{\bsnm{Matsuo}, \binits{Y.}}:
-\bctitle{Graph-based knowledge tracing: Modeling student proficiency using
-  graph neural network}.
+\bctitle{Graph-based knowledge tracing: Modeling student proficiency using graph neural network}.
 In: \bbtitle{IEEE/WIC/ACM International Conference on Web Intelligence (WI)},
 pp. \bfpage{156}--\blpage{163}
 (\byear{2019}).
@@ -204,8 +198,7 @@ pp. \bfpage{541}--\blpage{550}
 \bauthor{\bsnm{Zhang}, \binits{W.}},
 \bauthor{\bsnm{Yu}, \binits{Y.}}:
 \bctitle{{GIKT}: A graph-based interaction model for knowledge tracing}.
-In: \bbtitle{Machine Learning and Knowledge Discovery in Databases (ECML-PKDD
-  2020)}.
+In: \bbtitle{Machine Learning and Knowledge Discovery in Databases (ECML-PKDD 2020)}.
 \bsertitle{LNCS},
 vol. \bseriesno{12457},
 pp. \bfpage{299}--\blpage{315}
@@ -224,9 +217,8 @@ pp. \bfpage{299}--\blpage{315}
 \bauthor{\bsnm{Sun}, \binits{L.}},
 \bauthor{\bsnm{Du}, \binits{B.}}:
 \bctitle{{DyGKT}: Dynamic graph learning for knowledge tracing}.
-In: \bbtitle{Proceedings of the 30th ACM SIGKDD Conference on Knowledge
-  Discovery and Data Mining (KDD)},
-pp. \bfpage{377}--\blpage{388}
+In: \bbtitle{Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD)},
+pp. \bfpage{409}--\blpage{420}
 (\byear{2024}).
 \doiurl{10.1145/3637528.3671773}
 \end{bchapter}
@@ -260,10 +252,8 @@ pp. \bfpage{377}--\blpage{388}
 \bauthor{\bsnm{Liu}, \binits{Q.}},
 \bauthor{\bsnm{Zhou}, \binits{Y.}},
 \bauthor{\bsnm{Han}, \binits{W.}}:
-\bctitle{{HGKT}: Introducing problem schema with hierarchical exercise graph
-  for knowledge tracing}.
-In: \bbtitle{Proceedings of the 45th International ACM SIGIR Conference on
-  Research and Development in Information Retrieval},
+\bctitle{{HGKT}: Introducing problem schema with hierarchical exercise graph for knowledge tracing}.
+In: \bbtitle{Proceedings of the 45th International ACM SIGIR Conference on Research and Development in Information Retrieval},
 pp. \bfpage{405}--\blpage{415}
 (\byear{2022}).
 \doiurl{10.1145/3477495.3532004}
@@ -287,8 +277,7 @@ pp. \bfpage{405}--\blpage{415}
 \endbibitem
 
 %%% 15
-\bibitem[\protect\citeauthoryear{Kapoor and
-  Narayanan}{2023}]{kapoor2023leakage}
+\bibitem[\protect\citeauthoryear{Kapoor and Narayanan}{2023}]{kapoor2023leakage}
 \begin{botherref}
 \oauthor{\bsnm{Kapoor}, \binits{S.}},
 \oauthor{\bsnm{Narayanan}, \binits{A.}}:
@@ -308,8 +297,7 @@ Patterns
 \bauthor{\bsnm{Ungar}, \binits{L.H.}},
 \bauthor{\bsnm{Pennock}, \binits{D.M.}}:
 \bctitle{Methods and metrics for cold-start recommendations}.
-In: \bbtitle{Proceedings of the 25th Annual International ACM SIGIR Conference
-  on Research and Development in Information Retrieval},
+In: \bbtitle{Proceedings of the 25th Annual International ACM SIGIR Conference on Research and Development in Information Retrieval},
 pp. \bfpage{253}--\blpage{260}
 (\byear{2002}).
 \doiurl{10.1145/564376.564421}
@@ -325,19 +313,17 @@ pp. \bfpage{253}--\blpage{260}
 \bauthor{\bsnm{Huang}, \binits{S.}},
 \bauthor{\bsnm{Tang}, \binits{J.}},
 \bauthor{\bsnm{Luo}, \binits{W.}}:
-\bctitle{{pyKT}: A {Python} library to benchmark deep learning based knowledge
-  tracing models}.
+\bctitle{{pyKT}: A {Python} library to benchmark deep learning based knowledge tracing models}.
 In: \bbtitle{Advances in Neural Information Processing Systems (NeurIPS)},
 vol. \bseriesno{35},
-pp. \bfpage{13248}--\blpage{13261}
+pp. \bfpage{18542}--\blpage{18555}
 (\byear{2022}).
 \doiurl{10.52202/068431-1347}
 \end{bchapter}
 \endbibitem
 
 %%% 18
-\bibitem[\protect\citeauthoryear{Badran and
-  Preisach}{2024}]{badran2024labelleakage}
+\bibitem[\protect\citeauthoryear{Badran and Preisach}{2024}]{badran2024labelleakage}
 \begin{barticle}
 \bauthor{\bsnm{Badran}, \binits{Y.}},
 \bauthor{\bsnm{Preisach}, \binits{C.}}:
@@ -384,14 +370,11 @@ pp. \bfpage{2069}--\blpage{2080}
 \endbibitem
 
 %%% 21
-\bibitem[\protect\citeauthoryear{Heffernan and
-  Heffernan}{2014}]{heffernan2006assist}
+\bibitem[\protect\citeauthoryear{Heffernan and Heffernan}{2014}]{heffernan2006assist}
 \begin{barticle}
 \bauthor{\bsnm{Heffernan}, \binits{N.T.}},
 \bauthor{\bsnm{Heffernan}, \binits{C.L.}}:
-\batitle{The {ASSISTments} ecosystem: Building a platform that brings
-  scientists and teachers together for minimally invasive research on human
-  learning and teaching}.
+\batitle{The {ASSISTments} ecosystem: Building a platform that brings scientists and teachers together for minimally invasive research on human learning and teaching}.
 \bjtitle{International Journal of Artificial Intelligence in Education}
 \bvolume{24}(\bissue{4}),
 \bfpage{470}--\blpage{497}
@@ -426,8 +409,7 @@ Accessed 2026-06-08
 \bauthor{\bsnm{Kim}, \binits{B.}},
 \bauthor{\bsnm{Heo}, \binits{J.}}:
 \bctitle{{EdNet}: A large-scale hierarchical dataset in education}.
-In: \bbtitle{International Conference on Artificial Intelligence in Education
-  (AIED)},
+In: \bbtitle{International Conference on Artificial Intelligence in Education (AIED)},
 pp. \bfpage{69}--\blpage{73}
 (\byear{2020}).
 \doiurl{10.1007/978-3-030-52240-7_13}
@@ -446,12 +428,10 @@ pp. \bfpage{69}--\blpage{73}
 \bauthor{\bsnm{Tang}, \binits{J.}},
 \bauthor{\bsnm{Luo}, \binits{W.}},
 \bauthor{\bsnm{Weng}, \binits{J.}}:
-\bctitle{{XES3G5M}: A knowledge tracing benchmark dataset with auxiliary
-  information}.
-In: \bbtitle{Advances in Neural Information Processing Systems (NeurIPS)
-  Datasets and Benchmarks Track},
+\bctitle{{XES3G5M}: A knowledge tracing benchmark dataset with auxiliary information}.
+In: \bbtitle{Advances in Neural Information Processing Systems (NeurIPS) Datasets and Benchmarks Track},
 vol. \bseriesno{36},
-pp. \bfpage{40643}--\blpage{40662}
+pp. \bfpage{32958}--\blpage{32970}
 (\byear{2023}).
 \doiurl{10.52202/075280-1429}
 \end{bchapter}
@@ -464,8 +444,7 @@ pp. \bfpage{40643}--\blpage{40662}
 \bauthor{\bsnm{Hsu}, \binits{H.-J.}},
 \bauthor{\bsnm{Chen}, \binits{K.-T.}}:
 \bctitle{Modeling exercise relationships in e-learning: A unified approach}.
-In: \bbtitle{Proceedings of the 8th International Conference on Educational
-  Data Mining (EDM)},
+In: \bbtitle{Proceedings of the 8th International Conference on Educational Data Mining (EDM)},
 pp. \bfpage{532}--\blpage{535}
 (\byear{2015}).
 \burl{http://www.educationaldatamining.org/EDM2015/proceedings/short532-535.pdf}
@@ -473,8 +452,7 @@ pp. \bfpage{532}--\blpage{535}
 \endbibitem
 
 %%% 26
-\bibitem[\protect\citeauthoryear{Abdelrahman
-  et~al.}{2023}]{abdelrahman2023kt_survey}
+\bibitem[\protect\citeauthoryear{Abdelrahman et~al.}{2023}]{abdelrahman2023kt_survey}
 \begin{barticle}
 \bauthor{\bsnm{Abdelrahman}, \binits{G.}},
 \bauthor{\bsnm{Wang}, \binits{Q.}},
@@ -512,8 +490,7 @@ pp. \bfpage{2330}--\blpage{2338}
 \bauthor{\bsnm{Li}, \binits{J.}},
 \bauthor{\bsnm{Tang}, \binits{J.}}:
 \bctitle{Prerequisite relation learning for concepts in {MOOCs}}.
-In: \bbtitle{Proceedings of the 55th Annual Meeting of the Association for
-  Computational Linguistics (ACL)},
+In: \bbtitle{Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics (ACL)},
 pp. \bfpage{1447}--\blpage{1456}
 (\byear{2017}).
 \doiurl{10.18653/v1/P17-1133}

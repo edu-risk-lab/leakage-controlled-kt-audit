@@ -39,7 +39,7 @@ baselines:
   - name: gkt
     enabled: false   # Already run: seed42 from remote, seed17/1234 from Phase2
     hyperparams:
-      batch_size: 32
+      batch_size: 16   # S21 targeted extension attested (was 32 drift)
       epochs: 30
       hidden_dim: 64
       emb_size: 64

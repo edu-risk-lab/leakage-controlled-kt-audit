@@ -1,6 +1,7 @@
 % Auto-derived from results/tables/ddr_downstream.csv (GKT multi-seed merge)
-% XES3G5M: seeds 42/17/1234 x 3 folds (n=9); ASSIST2012: seed-42 grid (+ anchors).
+% XES3G5M: seeds 42/17/1234 x 3 folds (n=9); ASSIST'12: seed-42 grid (+ anchors).
 % AUC drop = mean decrease in test AUC vs. the unperturbed (DDR=0) baseline.
+% Caption scopes: r_core n=81; r_all/rho_all n=99; global pooled r~0.75 is Fig S3 only.
 \begin{table}[t]
 \centering
 \caption{\DDR{}$\to$downstream AUC for the graph-reliant backbone GKT, with a
@@ -10,13 +11,16 @@ AUC relative to the unperturbed (\DDR{}$=0$) baseline across folds (baselines:
 XES3G5M $0.8354$, ASSISTments $0.9630$; XES3G5M pooled over
 3 seeds $\times$ 3 folds). The bottom block reports the
 manipulation-check anchors ($p{=}0.90$, near-total graph destruction). On
-XES3G5M, destroying the graph moves GKT by $0.07$--$0.09$ AUC and \DDR{} tracks
-the drop almost perfectly (Pearson $r{=}0.93$ over the $p{\le}0.3$ core,
-$0.99$ including anchors); at matched budget, \texttt{prereq\_preserve} degrades
-AUC least and \texttt{node\_drop} most. On ASSISTments the same total
-destruction moves GKT by ${\le}0.003$, so this cell (like DGEKT in
-Table~\ref{tab:ddr-downstream}) is a \emph{low-reliance anchor} whose
-correlation is not practically meaningful.}
+XES3G5M/GKT, \DDR{} tracks AUC drop with distinct estimands: Pearson
+$r{=}0.93$ on the $p{\le}0.3$ core ($n{=}81$); Pearson
+$r{=}0.99$ on the full pool including anchors ($n{=}99$); Spearman
+$\rho{=}0.93$ on that same full pool ($n{=}99$). These are not
+interchangeable with the global pooled Pearson $r{\approx}0.75$ ($n{=}186$)
+annotated on Fig.~S3. At matched budget,
+\texttt{prereq\_preserve} degrades AUC least and \texttt{node\_drop} most. On
+ASSISTments the same total destruction moves GKT by ${\le}0.003$, so this cell
+(like DGEKT in Table~\ref{tab:ddr-downstream}) is a \emph{low-reliance anchor}
+whose correlation is not practically meaningful.}
 \label{tab:ddr-downstream-gkt}
 \footnotesize
 \setlength{\tabcolsep}{3pt}
@@ -33,21 +37,21 @@ XES3G5M & \texttt{node\_drop} & 0.30 & 0.534 & 0.7928 & 0.0426 \\
 XES3G5M & \texttt{prereq\_preserve} & 0.10 & 0.073 & 0.8321 & 0.0033 \\
 XES3G5M & \texttt{prereq\_preserve} & 0.20 & 0.160 & 0.8285 & 0.0069 \\
 XES3G5M & \texttt{prereq\_preserve} & 0.30 & 0.237 & 0.8250 & 0.0104 \\
-ASSIST2012 & \texttt{edge\_drop} & 0.10 & 0.086 & 0.9630 & -0.0000 \\
-ASSIST2012 & \texttt{edge\_drop} & 0.20 & 0.221 & 0.9629 & 0.0002 \\
-ASSIST2012 & \texttt{edge\_drop} & 0.30 & 0.304 & 0.9627 & 0.0003 \\
-ASSIST2012 & \texttt{node\_drop} & 0.10 & 0.199 & 0.9626 & 0.0004 \\
-ASSIST2012 & \texttt{node\_drop} & 0.20 & 0.460 & 0.9619 & 0.0012 \\
-ASSIST2012 & \texttt{node\_drop} & 0.30 & 0.553 & 0.9619 & 0.0011 \\
-ASSIST2012 & \texttt{prereq\_preserve} & 0.10 & 0.075 & 0.9630 & 0.0000 \\
-ASSIST2012 & \texttt{prereq\_preserve} & 0.20 & 0.187 & 0.9629 & 0.0001 \\
-ASSIST2012 & \texttt{prereq\_preserve} & 0.30 & 0.255 & 0.9628 & 0.0003 \\
+ASSIST'12 & \texttt{edge\_drop} & 0.10 & 0.086 & 0.9630 & -0.0000 \\
+ASSIST'12 & \texttt{edge\_drop} & 0.20 & 0.221 & 0.9629 & 0.0002 \\
+ASSIST'12 & \texttt{edge\_drop} & 0.30 & 0.304 & 0.9627 & 0.0003 \\
+ASSIST'12 & \texttt{node\_drop} & 0.10 & 0.199 & 0.9626 & 0.0004 \\
+ASSIST'12 & \texttt{node\_drop} & 0.20 & 0.460 & 0.9619 & 0.0012 \\
+ASSIST'12 & \texttt{node\_drop} & 0.30 & 0.553 & 0.9619 & 0.0011 \\
+ASSIST'12 & \texttt{prereq\_preserve} & 0.10 & 0.075 & 0.9630 & 0.0000 \\
+ASSIST'12 & \texttt{prereq\_preserve} & 0.20 & 0.187 & 0.9629 & 0.0001 \\
+ASSIST'12 & \texttt{prereq\_preserve} & 0.30 & 0.255 & 0.9628 & 0.0003 \\
 \midrule
 \multicolumn{6}{@{}l}{\emph{Manipulation-check anchors (near-total destruction)}}\\
 XES3G5M & \texttt{edge\_drop} & 0.90 & 0.901 & 0.7637 & 0.0717 \\
 XES3G5M & \texttt{node\_drop} & 0.90 & 0.990 & 0.7469 & 0.0885 \\
-ASSIST2012 & \texttt{edge\_drop} & 0.90 & 0.906 & 0.9612 & 0.0018 \\
-ASSIST2012 & \texttt{node\_drop} & 0.90 & 0.995 & 0.9610 & 0.0021 \\
+ASSIST'12 & \texttt{edge\_drop} & 0.90 & 0.906 & 0.9612 & 0.0018 \\
+ASSIST'12 & \texttt{node\_drop} & 0.90 & 0.995 & 0.9610 & 0.0021 \\
 \bottomrule
 \end{tabularx}
 \end{table}

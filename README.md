@@ -2,11 +2,11 @@
 
 Companion code repository for the journal manuscript *Leakage-Controlled Concept
 Graph Construction and Cold-Start Diagnostic Protocol for Knowledge Tracing*,
-submitted to **Applied Intelligence (APIN), Springer Nature**. The camera source
-is `paper/main_APIN.tex` (Springer `sn-jnl` class, `sn-mathphys-num` numbered
-references, bibliography `paper/refs_APIN.bib`); the flattened submission package
-is under `paper/submission_APIN/`. Older `paper/main.tex` (LNCS) and
-`paper/main_ieee.tex` (IEEE) are legacy drafts kept for reference only.
+submitted to **Applied Intelligence (APIN), Springer Nature**. The single
+canonical camera-ready source is the self-contained package
+`paper/submission_APIN/` (`main_APIN.tex`, Springer `sn-jnl` class,
+`sn-mathphys-num` numbered references, bibliography `refs_APIN.bib` in that
+folder).
 
 > **What this repo is.** A protocol and audit pipeline that treats
 > graph-mediated leakage as a *conditional* risk and turns the audit into a
@@ -89,7 +89,7 @@ multi-fold baselines. Junyi preprocess + graph stages are memory-heavy; prefer
 **Sanity.** `split_checker` should report no learner leakage and temporal
 ordering OK. `dag_audit` may report `cycles_before` hitting the **representative
 cycle cap (100)** on dense graphs; the pruning loop still runs until the graph
-is acyclic (see `paper/main_APIN.tex` / `src/dag_audit.py`).
+is acyclic (see `paper/submission_APIN/main_APIN.tex` / `src/dag_audit.py`).
 
 **Reports.** `results/reports/p0_diagnostic_report.md` aggregates available
 CSVs and markdown reports.
@@ -593,7 +593,7 @@ public-benchmark paired table `results/tables/significance_tests_public.tex`
 `scripts/generate_phase_c_tables.py`. With three folds the Wilcoxon two-sided
 \(p\) cannot fall below `0.25`, so significance claims rest on the paired
 \(t\)-test and on the ΔAUC intervals ([§4.10](#410-inferential-summaries-auc-cis-anova-epochparity);
-see `paper/main_APIN.tex`).
+see `paper/submission_APIN/main_APIN.tex`).
 
 ### 4.9 Controlled leak injection (two-factor "high-throughput" cell)
 
@@ -741,18 +741,16 @@ See `tests/test_graph_builder_train_only.py` for examples.
 
 ## 7. Paper artefacts, reproduction map, and LaTeX build
 
-- **Manuscript (submitted version):** `paper/main_APIN.tex`, bibliography
-  `paper/refs_APIN.bib`. Class: Springer Nature `sn-jnl.cls` with option
-  `sn-mathphys-num` (numbered `[1]` citations); the `.bst` files live in
-  `paper/` and `paper/bst/`.
-- **Flat submission package:** `paper/submission_APIN/` holds `main_APIN.tex`
-  with every table/figure copied next to it and the `results/...` path prefixes
-  stripped — this is the self-contained bundle a reviewer/editor can compile
-  without the repository.
-- **Legacy drafts (not the submission):** `paper/main.tex` (LNCS/`llncs`) and
-  `paper/main_ieee.tex` (IEEE) are earlier versions kept for history.
-- **Inputs pulled from `results/`:** `main_APIN.tex` uses
-  `\input{results/tables/*.tex}` and `\includegraphics{results/figures/*}`.
+- **Manuscript (canonical / submitted):** `paper/submission_APIN/main_APIN.tex`
+  with bibliography `paper/submission_APIN/refs_APIN.bib` (and a mirror at
+  `paper/refs_APIN.bib` if present). Class: Springer Nature `sn-jnl.cls` with
+  option `sn-mathphys-num` only (**no** `referee`); the `.cls`/`.bst` files
+  live beside the manuscript in `paper/submission_APIN/`.
+- **Locked scope (2026-07-18):** Table **S22 / pooled nine-fold GKT30 removed**
+  (S21 exploratory only; CI includes zero); B03 wording uses *associated with*
+  (not causal *inflates*). See `paper/submission_APIN/BUILD_INSTRUCTIONS.txt`.
+- **Do not maintain parallel flat trees** (e.g. `Leakage_Controlled_*` was
+  merged into `submission_APIN/` and removed).
 
 ### 7.1 Paper table/figure → how to reproduce
 
@@ -788,29 +786,28 @@ below. Table numbers `Sxx` are the appendix labels used in the manuscript.
 
 ### 7.2 Build the PDF
 
-Compile so `results/...` resolves. Two equivalent options:
+Compile the canonical package only:
+
+```bash
+cd paper/submission_APIN
+pdflatex -interaction=nonstopmode main_APIN.tex && bibtex main_APIN && \
+  pdflatex main_APIN.tex && pdflatex main_APIN.tex
+```
 
 ```powershell
-# (A) Compile in place from paper/, pointing TeX at the repo root for results/:
-cd paper
-$root = (Resolve-Path ..).Path
-$env:TEXINPUTS = ".;$root;$root\paper;"; $env:BIBINPUTS = $env:TEXINPUTS; $env:BSTINPUTS = $env:TEXINPUTS
+cd paper\submission_APIN
 pdflatex -interaction=nonstopmode main_APIN.tex
 bibtex main_APIN
 pdflatex -interaction=nonstopmode main_APIN.tex
 pdflatex -interaction=nonstopmode main_APIN.tex
 ```
 
-```bash
-# (B) Compile the flat, self-contained submission bundle (no results/ needed):
-cd paper/submission_APIN
-pdflatex -interaction=nonstopmode main_APIN.tex && bibtex main_APIN && \
-  pdflatex main_APIN.tex && pdflatex main_APIN.tex
-```
-
-`sn-jnl.cls` and the Springer `.bst` files ship in `paper/` (and are duplicated
-in `submission_APIN/`); if missing, fetch the
+`sn-jnl.cls` and the Springer `.bst` files ship in `paper/submission_APIN/`;
+if missing, fetch the
 [Springer Nature LaTeX template](https://www.springernature.com/gp/authors/campaigns/latex-author-support).
+After regenerating tables/figures under `results/`, copy the needed snippets
+into `paper/submission_APIN/` (or re-run your flat-package sync script) before
+rebuilding.
 
 ### 7.3 Full regeneration recipe
 
@@ -875,12 +872,9 @@ p0_project/
 │   ├── assist2012.yaml
 │   └── xes3g5m.yaml
 ├── paper/
-│   ├── main_APIN.tex           # submitted Applied Intelligence manuscript (sn-jnl)
-│   ├── refs_APIN.bib           # bibliography for the APIN version
-│   ├── sn-jnl.cls              # Springer Nature class (+ .bst files, bst/)
-│   ├── submission_APIN/        # flat, self-contained submission bundle
-│   ├── main.tex / main_ieee.tex  # legacy LNCS / IEEE drafts (not submitted)
-│   └── cover_letter_APIN.md
+│   ├── submission_APIN/        # CANONICAL camera-ready package (main_APIN.tex + assets)
+│   ├── refs_APIN.bib           # bibliography mirror (prefer submission_APIN/refs_APIN.bib)
+│   └── cover_letter_APIN.md    # optional cover letter
 ├── docs/
 │   ├── DDR_DOWNSTREAM_GKT.md   # GPU playbook: anchored DDR->downstream (GKT)
 │   └── Q1_GPU_EXPERIMENTS.md   # GPU experiment tracking / wall-clock notes

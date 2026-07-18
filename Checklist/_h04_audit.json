@@ -1,0 +1,891 @@
+{
+  "n": 32,
+  "PASS": 29,
+  "PASS_URL": 2,
+  "REVIEW": 1,
+  "FAIL": 0,
+  "results": [
+    {
+      "key": "kaufman2012leakage",
+      "type": "article",
+      "bib_title": "Leakage in Data Mining: Formulation, Detection, and Avoidance",
+      "bib_year": "2012",
+      "doi": "10.1145/2382577.2382579",
+      "url": "",
+      "verdict": "REVIEW",
+      "notes": [
+        "title overlap 0.50; author_ok=True"
+      ],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "Leakage in data mining",
+        "author": [
+          "Kaufman,Shachar",
+          "Rosset,Saharon",
+          "Perlich,Claudia",
+          "Stitelman,Ori"
+        ],
+        "year": 2012,
+        "type": "journal-article",
+        "container": "ACM Transactions on Knowledge Discovery from Data"
+      },
+      "title_overlap": 0.5,
+      "author_ok": true,
+      "meta_title": "Leakage in data mining",
+      "meta_year": 2012
+    },
+    {
+      "key": "kapoor2023leakage",
+      "type": "article",
+      "bib_title": "Leakage and the Reproducibility Crisis in Machine-Learning-Based Science",
+      "bib_year": "2023",
+      "doi": "10.1016/j.patter.2023.100804",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "Leakage and the reproducibility crisis in machine-learning-based science",
+        "author": [
+          "Kapoor,Sayash",
+          "Narayanan,Arvind"
+        ],
+        "year": 2023,
+        "type": "journal-article",
+        "container": "Patterns"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "Leakage and the reproducibility crisis in machine-learning-based science",
+      "meta_year": 2023
+    },
+    {
+      "key": "badran2024labelleakage",
+      "type": "article",
+      "bib_title": "Addressing Label Leakage in Knowledge Tracing Models",
+      "bib_year": "2024",
+      "doi": "10.48550/arXiv.2403.15304",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "datacite",
+        "status": 200,
+        "title": "Addressing Label Leakage in Knowledge Tracing Models",
+        "author": [
+          "Badran, Yahya",
+          "Preisach, Christine"
+        ],
+        "year": 2024,
+        "type": "Text",
+        "container": ""
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "Addressing Label Leakage in Knowledge Tracing Models",
+      "meta_year": 2024
+    },
+    {
+      "key": "liu2022pykt",
+      "type": "inproceedings",
+      "bib_title": "{pyKT}: A {Python} Library to Benchmark Deep Learning Based Knowledge Tracing Models",
+      "bib_year": "2022",
+      "doi": "10.52202/068431-1347",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "PyKT: A Python Library to Benchmark Deep Learning Based Knowledge Tracing Models",
+        "author": [
+          "Liu,Zitao",
+          "Liu,Qiongqiong",
+          "Chen,Jiahao",
+          "Huang,Shuyan",
+          "Tang,Jiliang",
+          "Luo,Weiqi"
+        ],
+        "year": 2022,
+        "type": "proceedings-article",
+        "container": "Advances in Neural Information Processing Systems 35"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "PyKT: A Python Library to Benchmark Deep Learning Based Knowledge Tracing Models",
+      "meta_year": 2022
+    },
+    {
+      "key": "abdelrahman2023kt_survey",
+      "type": "article",
+      "bib_title": "Knowledge Tracing: A Survey",
+      "bib_year": "2023",
+      "doi": "10.1145/3569576",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "Knowledge Tracing: A Survey",
+        "author": [
+          "Abdelrahman,Ghodai",
+          "Wang,Qing",
+          "Nunes,Bernardo"
+        ],
+        "year": 2023,
+        "type": "journal-article",
+        "container": "ACM Computing Surveys"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "Knowledge Tracing: A Survey",
+      "meta_year": 2023
+    },
+    {
+      "key": "corbett1995bkt",
+      "type": "article",
+      "bib_title": "Knowledge Tracing: Modeling the Acquisition of Procedural Knowledge",
+      "bib_year": "1995",
+      "doi": "10.1007/BF01099821",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "Knowledge tracing: Modeling the acquisition of procedural knowledge",
+        "author": [
+          "Corbett,Albert T.",
+          "Anderson,John R."
+        ],
+        "year": 1995,
+        "type": "journal-article",
+        "container": "User Modelling and User-Adapted Interaction"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "Knowledge tracing: Modeling the acquisition of procedural knowledge",
+      "meta_year": 1995
+    },
+    {
+      "key": "piech2015dkt",
+      "type": "inproceedings",
+      "bib_title": "Deep Knowledge Tracing",
+      "bib_year": "2015",
+      "doi": "10.48550/arXiv.1506.05908",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "datacite",
+        "status": 200,
+        "title": "Deep Knowledge Tracing",
+        "author": [
+          "Piech, Chris",
+          "Spencer, Jonathan",
+          "Huang, Jonathan",
+          "Ganguli, Surya",
+          "Sahami, Mehran",
+          "Guibas, Leonidas"
+        ],
+        "year": 2015,
+        "type": "Preprint",
+        "container": ""
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "Deep Knowledge Tracing",
+      "meta_year": 2015
+    },
+    {
+      "key": "zhang2017dkvmn",
+      "type": "inproceedings",
+      "bib_title": "Dynamic Key-Value Memory Networks for Knowledge Tracing",
+      "bib_year": "2017",
+      "doi": "10.1145/3038912.3052580",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "Dynamic Key-Value Memory Networks for Knowledge Tracing",
+        "author": [
+          "Zhang,Jiani",
+          "Shi,Xingjian",
+          "King,Irwin",
+          "Yeung,Dit-Yan"
+        ],
+        "year": 2017,
+        "type": "proceedings-article",
+        "container": "Proceedings of the 26th International Conference on World Wide Web"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "Dynamic Key-Value Memory Networks for Knowledge Tracing",
+      "meta_year": 2017
+    },
+    {
+      "key": "ghosh2020akt",
+      "type": "inproceedings",
+      "bib_title": "Context-Aware Attentive Knowledge Tracing",
+      "bib_year": "2020",
+      "doi": "10.1145/3394486.3403282",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "Context-Aware Attentive Knowledge Tracing",
+        "author": [
+          "Ghosh,Aritra",
+          "Heffernan,Neil",
+          "Lan,Andrew S."
+        ],
+        "year": 2020,
+        "type": "proceedings-article",
+        "container": "Proceedings of the 26th ACM SIGKDD International Conference on Knowledge Discovery &amp; Data Mining"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "Context-Aware Attentive Knowledge Tracing",
+      "meta_year": 2020
+    },
+    {
+      "key": "liu2023simplekt",
+      "type": "inproceedings",
+      "bib_title": "{simpleKT}: A Simple But Tough-to-Beat Baseline for Knowledge Tracing",
+      "bib_year": "2023",
+      "doi": "10.48550/arXiv.2302.06881",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "datacite",
+        "status": 200,
+        "title": "simpleKT: A Simple But Tough-to-Beat Baseline for Knowledge Tracing",
+        "author": [
+          "Liu, Zitao",
+          "Liu, Qiongqiong",
+          "Chen, Jiahao",
+          "Huang, Shuyan",
+          "Luo, Weiqi"
+        ],
+        "year": 2023,
+        "type": "Preprint",
+        "container": ""
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "simpleKT: A Simple But Tough-to-Beat Baseline for Knowledge Tracing",
+      "meta_year": 2023
+    },
+    {
+      "key": "pandey2019rkt",
+      "type": "inproceedings",
+      "bib_title": "A Self-Attentive Model for Knowledge Tracing",
+      "bib_year": "2019",
+      "doi": "10.48550/arXiv.1907.06837",
+      "url": "https://drive.google.com/file/d/18d_X6AXkPMhiHFQ2POarstVbX_7oMdFM",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "datacite",
+        "status": 200,
+        "title": "A Self-Attentive model for Knowledge Tracing",
+        "author": [
+          "Pandey, Shalini",
+          "Karypis, George"
+        ],
+        "year": 2019,
+        "type": "Preprint",
+        "container": ""
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "A Self-Attentive model for Knowledge Tracing",
+      "meta_year": 2019
+    },
+    {
+      "key": "shen2021saint",
+      "type": "inproceedings",
+      "bib_title": "Convolutional Knowledge Tracing: Modeling Individualization in Student Learning Process",
+      "bib_year": "2020",
+      "doi": "10.1145/3397271.3401288",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "Convolutional Knowledge Tracing: Modeling Individualization in Student Learning Process",
+        "author": [
+          "Shen,Shuanghong",
+          "Liu,Qi",
+          "Chen,Enhong",
+          "Wu,Han",
+          "Huang,Zhenya",
+          "Zhao,Weihao"
+        ],
+        "year": 2020,
+        "type": "proceedings-article",
+        "container": "Proceedings of the 43rd International ACM SIGIR Conference on Research and Development in Information Retrieval"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "Convolutional Knowledge Tracing: Modeling Individualization in Student Learning Process",
+      "meta_year": 2020
+    },
+    {
+      "key": "nakagawa2019gkt",
+      "type": "inproceedings",
+      "bib_title": "Graph-based Knowledge Tracing: Modeling Student Proficiency Using Graph Neural Network",
+      "bib_year": "2019",
+      "doi": "10.1145/3350546.3352513",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "Graph-based Knowledge Tracing: Modeling Student Proficiency Using Graph Neural Network",
+        "author": [
+          "Nakagawa,Hiromi",
+          "Iwasawa,Yusuke",
+          "Matsuo,Yutaka"
+        ],
+        "year": 2019,
+        "type": "proceedings-article",
+        "container": "IEEE/WIC/ACM International Conference on Web Intelligence"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "Graph-based Knowledge Tracing: Modeling Student Proficiency Using Graph Neural Network",
+      "meta_year": 2019
+    },
+    {
+      "key": "tong2020skt",
+      "type": "inproceedings",
+      "bib_title": "Structure-based Knowledge Tracing: An Influence Propagation View",
+      "bib_year": "2020",
+      "doi": "10.1109/ICDM50108.2020.00063",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "Structure-Based Knowledge Tracing: An Influence Propagation View",
+        "author": [
+          "Tong,Shiwei",
+          "Liu,Qi",
+          "Huang,Wei",
+          "Hunag,Zhenya",
+          "Chen,Enhong",
+          "Liu,Chuanren"
+        ],
+        "year": 2020,
+        "type": "proceedings-article",
+        "container": "2020 IEEE International Conference on Data Mining (ICDM)"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "Structure-Based Knowledge Tracing: An Influence Propagation View",
+      "meta_year": 2020
+    },
+    {
+      "key": "yang2021gikt",
+      "type": "inproceedings",
+      "bib_title": "{GIKT}: A Graph-based Interaction Model for Knowledge Tracing",
+      "bib_year": "2021",
+      "doi": "10.1007/978-3-030-67658-2_18",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "GIKT: A Graph-Based Interaction Model for Knowledge Tracing",
+        "author": [
+          "Yang,Yang",
+          "Shen,Jian",
+          "Qu,Yanru",
+          "Liu,Yunfei",
+          "Wang,Kerong",
+          "Zhu,Yaoming"
+        ],
+        "year": 2021,
+        "type": "book-chapter",
+        "container": "Lecture Notes in Computer Science"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "GIKT: A Graph-Based Interaction Model for Knowledge Tracing",
+      "meta_year": 2021
+    },
+    {
+      "key": "chen2023hgkt",
+      "type": "inproceedings",
+      "bib_title": "{HGKT}: Introducing Problem Schema with Hierarchical Exercise Graph for Knowledge Tracing",
+      "bib_year": "2022",
+      "doi": "10.1145/3477495.3532004",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "Introducing Problem Schema with Hierarchical Exercise Graph for Knowledge Tracing",
+        "author": [
+          "Tong,Hanshuang",
+          "Wang,Zhen",
+          "Zhou,Yun",
+          "Tong,Shiwei",
+          "Han,Wenyuan",
+          "Liu,Qi"
+        ],
+        "year": 2022,
+        "type": "proceedings-article",
+        "container": "Proceedings of the 45th International ACM SIGIR Conference on Research and Development in Information Retrieval"
+      },
+      "title_overlap": 0.909,
+      "author_ok": true,
+      "meta_title": "Introducing Problem Schema with Hierarchical Exercise Graph for Knowledge Tracing",
+      "meta_year": 2022
+    },
+    {
+      "key": "dygkt2024",
+      "type": "inproceedings",
+      "bib_title": "{DyGKT}: Dynamic Graph Learning for Knowledge Tracing",
+      "bib_year": "2024",
+      "doi": "10.1145/3637528.3671773",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "DyGKT: Dynamic Graph Learning for Knowledge Tracing",
+        "author": [
+          "Cheng,Ke",
+          "Peng,Linzhi",
+          "Wang,Pengyang",
+          "Ye,Junchen",
+          "Sun,Leilei",
+          "Du,Bowen"
+        ],
+        "year": 2024,
+        "type": "proceedings-article",
+        "container": "Proceedings of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "DyGKT: Dynamic Graph Learning for Knowledge Tracing",
+      "meta_year": 2024
+    },
+    {
+      "key": "dgekt2024",
+      "type": "article",
+      "bib_title": "{DGEKT}: A Dual Graph Ensemble Learning Method for Knowledge Tracing",
+      "bib_year": "2024",
+      "doi": "10.1145/3638350",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "DGEKT: A Dual Graph Ensemble Learning Method for Knowledge Tracing",
+        "author": [
+          "Cui,Chaoran",
+          "Yao,Yumo",
+          "Zhang,Chunyun",
+          "Ma,Hebo",
+          "Ma,Yuling",
+          "Ren,Zhaochun"
+        ],
+        "year": 2024,
+        "type": "journal-article",
+        "container": "ACM Transactions on Information Systems"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "DGEKT: A Dual Graph Ensemble Learning Method for Knowledge Tracing",
+      "meta_year": 2024
+    },
+    {
+      "key": "bai2025survey",
+      "type": "article",
+      "bib_title": "Prerequisite Relation Learning: A Survey and Outlook",
+      "bib_year": "2025",
+      "doi": "10.1145/3733593",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "Prerequisite Relation Learning: A Survey and Outlook",
+        "author": [
+          "Bai,Youheng",
+          "Liu,Zitao",
+          "Guo,Teng",
+          "Hou,Mingliang",
+          "Xiao,Kui"
+        ],
+        "year": 2025,
+        "type": "journal-article",
+        "container": "ACM Computing Surveys"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "Prerequisite Relation Learning: A Survey and Outlook",
+      "meta_year": 2025
+    },
+    {
+      "key": "lin2016moocprereq",
+      "type": "inproceedings",
+      "bib_title": "Prerequisite Relation Learning for Concepts in {MOOCs}",
+      "bib_year": "2017",
+      "doi": "10.18653/v1/P17-1133",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "Prerequisite Relation Learning for Concepts in MOOCs",
+        "author": [
+          "Pan,Liangming",
+          "Li,Chengjiang",
+          "Li,Juanzi",
+          "Tang,Jie"
+        ],
+        "year": 2017,
+        "type": "proceedings-article",
+        "container": "Proceedings of the 55th Annual Meeting of the Association for\n          Computational Linguistics (Volume 1: Long Papers)"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "Prerequisite Relation Learning for Concepts in MOOCs",
+      "meta_year": 2017
+    },
+    {
+      "key": "chang2015junyi",
+      "type": "inproceedings",
+      "bib_title": "Modeling Exercise Relationships in E-Learning: A Unified Approach",
+      "bib_year": "2015",
+      "doi": "",
+      "url": "http://www.educationaldatamining.org/EDM2015/proceedings/short532-535.pdf",
+      "verdict": "PASS_URL",
+      "notes": [
+        "No DOI; URL reachable"
+      ],
+      "url_check": {
+        "status": 200,
+        "final": "https://www.educationaldatamining.org/EDM2015/proceedings/short532-535.pdf"
+      }
+    },
+    {
+      "key": "you2020graphcl",
+      "type": "inproceedings",
+      "bib_title": "Graph Contrastive Learning with Augmentations",
+      "bib_year": "2020",
+      "doi": "10.48550/arXiv.2010.13902",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "datacite",
+        "status": 200,
+        "title": "Graph Contrastive Learning with Augmentations",
+        "author": [
+          "You, Yuning",
+          "Chen, Tianlong",
+          "Sui, Yongduo",
+          "Chen, Ting",
+          "Wang, Zhangyang",
+          "Shen, Yang"
+        ],
+        "year": 2020,
+        "type": "Preprint",
+        "container": ""
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "Graph Contrastive Learning with Augmentations",
+      "meta_year": 2020
+    },
+    {
+      "key": "zhu2021gca",
+      "type": "inproceedings",
+      "bib_title": "Graph Contrastive Learning with Adaptive Augmentation",
+      "bib_year": "2021",
+      "doi": "10.1145/3442381.3449802",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "Graph Contrastive Learning with Adaptive Augmentation",
+        "author": [
+          "Zhu,Yanqiao",
+          "Xu,Yichen",
+          "Yu,Feng",
+          "Liu,Qiang",
+          "Wu,Shu",
+          "Wang,Liang"
+        ],
+        "year": 2021,
+        "type": "proceedings-article",
+        "container": "Proceedings of the Web Conference 2021"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "Graph Contrastive Learning with Adaptive Augmentation",
+      "meta_year": 2021
+    },
+    {
+      "key": "hamilton2017graphsage",
+      "type": "inproceedings",
+      "bib_title": "Inductive Representation Learning on Large Graphs",
+      "bib_year": "2017",
+      "doi": "10.48550/arXiv.1706.02216",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "datacite",
+        "status": 200,
+        "title": "Inductive Representation Learning on Large Graphs",
+        "author": [
+          "Hamilton, William L.",
+          "Ying, Rex",
+          "Leskovec, Jure"
+        ],
+        "year": 2017,
+        "type": "Preprint",
+        "container": ""
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "Inductive Representation Learning on Large Graphs",
+      "meta_year": 2017
+    },
+    {
+      "key": "kipf2017gcn",
+      "type": "inproceedings",
+      "bib_title": "Semi-Supervised Classification with Graph Convolutional Networks",
+      "bib_year": "2017",
+      "doi": "10.48550/arXiv.1609.02907",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "datacite",
+        "status": 200,
+        "title": "Semi-Supervised Classification with Graph Convolutional Networks",
+        "author": [
+          "Kipf, Thomas N.",
+          "Welling, Max"
+        ],
+        "year": 2016,
+        "type": "Preprint",
+        "container": ""
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "Semi-Supervised Classification with Graph Convolutional Networks",
+      "meta_year": 2016
+    },
+    {
+      "key": "lee2022cl4kt",
+      "type": "inproceedings",
+      "bib_title": "Contrastive Learning for Knowledge Tracing",
+      "bib_year": "2022",
+      "doi": "10.1145/3485447.3512105",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "Contrastive Learning for Knowledge Tracing",
+        "author": [
+          "Lee,Wonsung",
+          "Chun,Jaeyoon",
+          "Lee,Youngmin",
+          "Park,Kyoungsoo",
+          "Park,Sungrae"
+        ],
+        "year": 2022,
+        "type": "proceedings-article",
+        "container": "Proceedings of the ACM Web Conference 2022"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "Contrastive Learning for Knowledge Tracing",
+      "meta_year": 2022
+    },
+    {
+      "key": "johnson1975finding",
+      "type": "article",
+      "bib_title": "Finding All the Elementary Circuits of a Directed Graph",
+      "bib_year": "1975",
+      "doi": "10.1137/0204007",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "Finding All the Elementary Circuits of a Directed Graph",
+        "author": [
+          "Johnson,Donald B."
+        ],
+        "year": 1975,
+        "type": "journal-article",
+        "container": "SIAM Journal on Computing"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "Finding All the Elementary Circuits of a Directed Graph",
+      "meta_year": 1975
+    },
+    {
+      "key": "choi2020ednet",
+      "type": "inproceedings",
+      "bib_title": "{EdNet}: A Large-Scale Hierarchical Dataset in Education",
+      "bib_year": "2020",
+      "doi": "10.1007/978-3-030-52240-7_13",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "EdNet: A Large-Scale Hierarchical Dataset in Education",
+        "author": [
+          "Choi,Youngduck",
+          "Lee,Youngnam",
+          "Shin,Dongmin",
+          "Cho,Junghyun",
+          "Park,Seoyon",
+          "Lee,Seewoo"
+        ],
+        "year": 2020,
+        "type": "book-chapter",
+        "container": "Lecture Notes in Computer Science"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "EdNet: A Large-Scale Hierarchical Dataset in Education",
+      "meta_year": 2020
+    },
+    {
+      "key": "xes3g5m2023",
+      "type": "inproceedings",
+      "bib_title": "{XES3G5M}: A Knowledge Tracing Benchmark Dataset with Auxiliary Information",
+      "bib_year": "2023",
+      "doi": "10.52202/075280-1429",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "XES3G5M: A Knowledge Tracing Benchmark Dataset with Auxiliary Information",
+        "author": [
+          "Liu,Zitao",
+          "Liu,Qiongqiong",
+          "Guo,Teng",
+          "Chen,Jiahao",
+          "Huang,Shuyan",
+          "Zhao,Xiangyu"
+        ],
+        "year": 2023,
+        "type": "proceedings-article",
+        "container": "Advances in Neural Information Processing Systems 36"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "XES3G5M: A Knowledge Tracing Benchmark Dataset with Auxiliary Information",
+      "meta_year": 2023
+    },
+    {
+      "key": "junyi_dataset",
+      "type": "misc",
+      "bib_title": "Junyi Academy Online Learning Activity Dataset",
+      "bib_year": "2015",
+      "doi": "",
+      "url": "https://pslcdatashop.web.cmu.edu/DatasetInfo?datasetId=1198",
+      "verdict": "PASS_URL",
+      "notes": [
+        "No DOI; URL reachable"
+      ],
+      "url_check": {
+        "status": 200,
+        "final": "https://pslcdatashop.web.cmu.edu/DatasetInfo?datasetId=1198"
+      }
+    },
+    {
+      "key": "heffernan2006assist",
+      "type": "article",
+      "bib_title": "The {ASSISTments} Ecosystem: Building a Platform that Brings Scientists and Teachers Together for Minimally Invasive Research on Human Learning and Teaching",
+      "bib_year": "2014",
+      "doi": "10.1007/s40593-014-0024-x",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "The ASSISTments Ecosystem: Building a Platform that Brings Scientists and Teachers Together for Minimally Invasive Research on Human Learning and Teaching",
+        "author": [
+          "Heffernan,Neil T.",
+          "Heffernan,Cristina Lindquist"
+        ],
+        "year": 2014,
+        "type": "journal-article",
+        "container": "International Journal of Artificial Intelligence in Education"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "The ASSISTments Ecosystem: Building a Platform that Brings Scientists and Teachers Together for Minimally Invasive Research on Human Learning and Teaching",
+      "meta_year": 2014
+    },
+    {
+      "key": "schein2002coldstart",
+      "type": "inproceedings",
+      "bib_title": "Methods and Metrics for Cold-Start Recommendations",
+      "bib_year": "2002",
+      "doi": "10.1145/564376.564421",
+      "url": "",
+      "verdict": "PASS",
+      "notes": [],
+      "resolved": {
+        "source": "crossref",
+        "status": 200,
+        "title": "Methods and metrics for cold-start recommendations",
+        "author": [
+          "Schein,Andrew I.",
+          "Popescul,Alexandrin",
+          "Ungar,Lyle H.",
+          "Pennock,David M."
+        ],
+        "year": 2002,
+        "type": "proceedings-article",
+        "container": "Proceedings of the 25th annual international ACM SIGIR conference on Research and development in information retrieval"
+      },
+      "title_overlap": 1.0,
+      "author_ok": true,
+      "meta_title": "Methods and metrics for cold-start recommendations",
+      "meta_year": 2002
+    }
+  ]
+}

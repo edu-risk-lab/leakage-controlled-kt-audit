@@ -1,0 +1,14 @@
+number,locations,status,notes
+0.041 / GKTdeltaci,abstract;C5;baseline;discussion;conclusion;S16,PASS_ROUNDING,Unchanged primary Δ vs simpleKT
+0.003451 fold deltas,S21 table; results/tables/gkt_epoch_ablation_seed42_pairs.csv; prose,PASS_DETERMINISTIC,"Mean of +0.005624,+0.004547,+0.000181"
+approx CI [-0.004,+0.011],S21 caption; macros GKTconfigsensci,PASS_ROUNDING,Paired-t df=2 on three fold deltas; includes 0
+primary GKT 10/4,S15; experimental setup; S21; limitations; canonical yaml,ALIGNED_ATTESTED,Not EXECUTION_VERIFIED
+simpleKT 30/64,S15; experimental setup; canonical yaml,ALIGNED_ATTESTED,
+extended GKT 30/16 seed42,S21; S15 footnote; limitations,ALIGNED_ARTIFACT,CONFIG_AND_ARTIFACT_SUPPORTED
+max |dAUC| 0.003,ablation prose; C5; conclusion,PASS,From graph_ablation summary
+max |dACC| 0.008,ablation prose; C5; conclusion,PASS,Junyi SKT row in graph_ablation
+simpleKT +0.008 injection,abstract; §exp-injection; Table S18,PASS,0.850→0.858
+DDR r=0.93 n=81,abstract;C2;ddr_gkt caption;§ddr;conclusion,PASS_RECOMPUTE,ddr_downstream.csv filter p<=0.3
+DDR r=0.99 n=99,same,PASS_RECOMPUTE,full pool with anchors
+DDR rho=0.93 n=99,C2; ddr captions,PASS_RECOMPUTE,Spearman full pool
+DDR r=0.75 n=186,Fig S3 caption; ddr_downstream caption,PASS_RECOMPUTE,global pooled only

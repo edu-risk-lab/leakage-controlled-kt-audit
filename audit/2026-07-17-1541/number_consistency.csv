@@ -1,0 +1,16 @@
+concept,location_a,value_a,location_b,value_b,canonical_source,status,notes
+delta_auc_gkt_simplekt_10ep,abstract approx 0.041 / macros -0.041, -0.041,Table S16 bootstrap_auc_ci.tex,-0.041 CI [-0.044,-0.038],bootstrap_auc_ci.tex,CONSISTENT,Matches 0.834-0.875 baseline
+baseline_auc_xes_simplekt,baseline_cv_template.tex,0.875 ± 0.000,abstract/intro approx 0.875,0.875,baseline_cv_template.tex,CONSISTENT,
+baseline_auc_xes_gkt,baseline_cv_template.tex,0.834 ± 0.001,intro approx 0.834,0.834,baseline_cv_template.tex,CONSISTENT,
+epoch_gain_gkt,macro GKTepochgain,+0.003,gkt_epoch_ablation.tex epoch gain row,+0.003 CI [-0.004,+0.011],gkt_epoch_ablation.tex,CONSISTENT,
+pooled_delta_30ep,abstract / macros,-0.038 CI [-0.040,-0.035],gkt_epoch_ablation_pooled.tex,-0.038 [-0.040,-0.035] 9 folds,gkt_epoch_ablation_pooled.tex,CONSISTENT_NUMBERS,Reference epoch labeling CONFLICT
+simplekt_ref_epochs_ablation,abstract/prose/S22 narrative,10 epochs batch 64,gkt_epoch_ablation.tex S21 row,30 epochs batch 64,CONFLICTING,CONFLICT,F-R01
+simplekt_primary_epochs,training_parity.tex S15,30 epochs batch 64,prose Phase-3 trio claim,10 epochs batch 64,CONFLICTING,CONFLICT,Also entangled with F-R01
+fulllog_max_abs_delta_auc,abstract/conclusion,<=0.003,graph_ablation.tex,0.003,graph_ablation.tex,CONSISTENT,
+fulllog_max_abs_delta_acc,contributions L460,<=0.003 AUC/ACC,graph_ablation.tex,0.008 Junyi,graph_ablation.tex,CONFLICT,F-R03
+injection_gkt_delta,abstract approx +0.05, +0.05,downstream_auc_injection.tex,0.860-0.810=+0.050,downstream_auc_injection.tex,CONSISTENT,
+injection_gikt_delta,abstract approx +0.03, +0.03,downstream_auc_injection.tex,0.880-0.852=+0.028,downstream_auc_injection.tex,CONSISTENT_ROUNDED,
+injection_simplekt_moved,abstract unmoved,0,downstream_auc_injection.tex,+0.008 at 20%,downstream_auc_injection.tex,CONFLICT,F-R11
+ddr_r_gkt_xes_core,abstract / ddr_downstream_gkt caption,r=0.93 core,ddr_downstream.tex caption,r=0.99 rho=0.93 pooled cell,CONFLICTING,CONFLICT_OR_SUBSET,F-R02 needs subset definition
+ddr_r_figure_pooled,fig_ddr_downstream.pdf annotation,r=0.75,main GKT claim,0.93/0.99,fig annotation,CONFLICT_CLARIFY,Different pool likely; must disclose
+gikt_delta_ci,macros / S16,[+0.003,+0.003],bootstrap_auc_ci.tex,same,bootstrap_auc_ci.tex,CONSISTENT_DEGENERATE,Paper notes degenerate interval
