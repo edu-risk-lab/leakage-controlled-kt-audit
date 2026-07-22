@@ -1,0 +1,13 @@
+event_id,date,source,config_file,commit,run_group,epochs,batch_yaml,batch_attested,publish_status,server,artifact_or_log,notes
+E001,2026-05-20,git,configs/xes3g5m.yaml,de5b8967,primary_GKT_XES,10,4,4,PUBLISH,A_or_B,results/tables/baseline_fold_results.csv,ASSIST uses batch 32 separately
+E002,2026-06-03,git+artifact,configs/xes3g5m.yaml,619c02cf,primary_GKT_XES,10,4,4,PUBLISH,A_or_B,baseline_fold_results.csv,Canonical −0.041; training_parity.csv
+E003,2026-06-03,git,configs/xes3g5m.yaml,91b2fee,DDR_GKT_s42_XES,10,4,4,PUBLISH,B,ddr_downstream_gkt_seed42.csv,DDR seed 42 XES
+E004,2026-06-14,git,configs/xes3g5m_gkt_epochs30.yaml,c0365119,GKT30_init,30,64,,CONFIG_ONLY,,,Q1 pipeline init
+E005,2026-06-16,git+log,configs/xes3g5m_gkt_epochs30.yaml,d9efa271,GKT30_early,30,16,16,DISCARDED,A,logs/q1 (stale),AUC~0.71; replaced by batch 32 rerun
+E006,2026-06-16,git,configs/xes3g5m_gkt_epochs30.yaml,fcb14635,GKT30_publish,30,32,32,PUBLISH,A,results/q1/gkt_epochs30_s*,Final 9-fold AUC~0.84; S21/S22
+E007,2026-06-24,git,configs/xes3g5m.yaml,955a8202,DDR_multiseed_XES,10,8,8,PUBLISH,A,ddr_downstream_gkt s17/s1234 Jul 2026,Yaml drift primary 4→8; Jul runs batch 8
+E008,2026-07-07,git,configs/xes3g5m.yaml,1f457abb,DDR_multiseed_complete,10,8,8,PUBLISH,A+B,ddr_downstream_gkt/*.csv,Three-seed DDR complete
+E009,2026-07-17,attestation,canonical_training_protocol.yaml,,GKT30_s42_only,30,16,16,EXPLORATORY_ONLY,A,paired +0.003 seed42,Superseded by Server A report: publish ablation batch 32
+E010,2026-07-19,git,configs/xes3g5m.yaml,a1b42ef1,primary_GKT_XES,10,4,4,REMEDIATION,,,Yaml restored to attested batch 4
+E011,2026-07-19,git,configs/xes3g5m_gkt_epochs30.yaml,a1b42ef1,GKT30_yaml,30,16,32,REMEDIATION_DRIFT,,,Yaml says 16; publish attested batch 32 per Server A report
+E012,2026-07-22,server_A_report,docs/GKT_Hyperparams_Review_Report.md,672ad7bb,ALL_GKT,,,,CANONICAL,A+B,pulled from origin/docs/gkt-hyperparams-review-report,Authoritative batch attestation matrix

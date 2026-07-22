@@ -23,6 +23,12 @@ ddr_downstream:
     folds: [0, 1, 2]
     evidence_status: SERVER_ATTESTED
     note: Robustness/DDR only; not used to justify targeted GKT30.
+  gkt_multiseed_xes:
+    max_epochs: 10
+    batch_size: 8
+    experiment_seeds: [17, 1234]
+    evidence_status: SERVER_A_ATTESTED
+    evidence_commit: 955a8202
 
 targeted_extended_training:
   dataset: XES3G5M
@@ -33,8 +39,11 @@ targeted_extended_training:
     batch_size: 4
   gkt_extended:
     max_epochs: 30
-    batch_size: 16
-  evidence_status: CONFIG_AND_ARTIFACT_SUPPORTED_SERVER_ATTESTED
+    batch_size: 32
+    hidden_dim: 64
+    emb_size: 64
+    max_seq_len: 100
+  evidence_status: CONFIG_AND_ARTIFACT_SUPPORTED_SERVER_A_ATTESTED
   scope: EXPLORATORY_THREE_FOLD_CONFIGURATION_SENSITIVITY
   expected_fold_auc:
     # Locked to baseline_fold_results.csv + gkt_epochs30_s42 (do not alter)

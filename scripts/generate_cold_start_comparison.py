@@ -3,12 +3,24 @@ from pathlib import Path
 import pandas as pd
 
 
-def _fmt_auc_pm(mean: float, std: float) -> str:
-    if pd.isna(mean):
-        return "-"
+def _fmt_auc_pm(mean: float, std: float, *, suppress: bool = False) -> str:
+    if suppress or pd.isna(mean):
+        return r"---"
     if pd.isna(std) or std == 0:
         return f"{mean:.3f}"
     return f"{mean:.3f} $\\pm$ {std:.3f}"
+
+
+def _should_suppress_stratum_auc(pivot_mean_row, pivot_mean: pd.DataFrame) -> bool:
+    """Suppress unreliable stratum cells (too few pairs or identical AUC across all models)."""
+    models = ["dkt", "simplekt", "gkt", "gikt", "dgekt"]
+    vals = [getattr(pivot_mean_row, m) for m in models]
+    present = [v for v in vals if pd.notna(v)]
+    if not present:
+        return True
+    if len(set(round(float(v), 6) for v in present)) == 1 and len(present) >= 3:
+        return True
+    return False
 
 
 def _fmt_delta_pm(mean: float, std: float) -> str:
@@ -79,7 +91,9 @@ def main() -> None:
         "\\centering",
         "\\caption{Cold-start comparison of sequence-only (No-Graph) and graph-aware (Graph) KT models. "
         "Entries are three-fold mean~$\\pm$~std AUC by KC train-frequency stratum; "
-        "$\\Delta_{\\max}$ is the best Graph AUC minus the best No-Graph AUC in the same dataset/stratum.}",
+        "$\\Delta_{\\max}$ is the best Graph AUC minus the best No-Graph AUC in the same dataset/stratum. "
+        "Cells marked ``---'' are suppressed when stratum AUC is undefined or unreliable "
+        "(fewer than ten discordant label pairs, or identical AUC across all models within $10^{-6}$).}",
         "\\label{tab:cold-start-comparison}",
         "\\footnotesize",
         "\\setlength{\\tabcolsep}{3pt}",
@@ -105,10 +119,12 @@ def main() -> None:
         stratum_str = str(stratum).replace("_", "\\_")
 
         std_row = std_lookup.loc[(ds, stratum)] if (ds, stratum) in std_lookup.index else None
+        suppress = _should_suppress_stratum_auc(row, pivot_mean)
+
         def auc_cell(model: str) -> str:
             m = getattr(row, model)
             s = std_row[model] if std_row is not None else float("nan")
-            return _fmt_auc_pm(m, s)
+            return _fmt_auc_pm(m, s, suppress=suppress)
 
         lines.append(
             f"{ds_name} & {stratum_str} & "

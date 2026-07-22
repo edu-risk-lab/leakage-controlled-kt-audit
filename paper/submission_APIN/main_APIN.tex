@@ -125,8 +125,11 @@ Academy, and two synthetic logs. Audits yield acyclic train-only graphs;
 \DDR{} sweeps separate augmentation operators, and downstream retraining shows
 effects conditional on backbone reliance (strong \DDR{}--AUC coupling for GKT
 on XES3G5M; near-zero AUC movement on graph-inert cells). On XES3G5M, under
-primary training budgets, stock pyKT GKT trails \textit{simpleKT} by about
-$0.041$~AUC. Graph-mediated leakage shifts headline AUC only when contamination
+the released primary budgets (GKT: max 10 epochs, batch 4; sequence checkpoints:
+max 30 epochs, batch 64; Table~S15), stock pyKT GKT trails \textit{simpleKT} by about
+$0.041$~AUC (observational; Table~S21 reports an exploratory extended-training
+configuration-sensitivity check that is not compute-matched).
+Graph-mediated leakage shifts headline AUC only when contamination
 throughput and graph reliance are both high; otherwise AUC is an unreliable
 leakage alarm. We position the protocol as a decision-support and leakage
 risk-scoring layer for graph-provenance choices rather than a route to higher
@@ -306,8 +309,7 @@ Leakage-controlled concept graphs matter wherever KT systems drive
 scheduling and gating decisions in ITS platforms, MOOC pipelines, and
 corporate training~\cite{heffernan2006assist,junyi_dataset,choi2020ednet,xes3g5m2023}.
 Without fold-specific audits, reported AUC improvements are difficult to
-attribute to modelling versus preprocessing. For \textit{Applied
-Intelligence} readers, the deliverable is a \emph{decision-support and
+attribute to modelling versus preprocessing. For applied practitioners, the deliverable is a \emph{decision-support and
 risk-scoring} audit layer for \emph{trustworthy deployment}: provenance
 artefacts, DAG validity checks, cold-start strata, and tiered diagnostics that
 help practitioners decide \emph{whether and how} to deploy graph-augmented KT,
@@ -395,10 +397,11 @@ than deferred to the Discussion alone.
   mean $\Delta$AUC ${\approx}{-}0.041$ (95\% CI \GKTdeltaci{}; Table~S16) under
   the primary GKT maximum-10-epoch budget (batch~4), while GIKT remains competitive. A
   targeted seed-42 three-fold extended-training check (Table~S21; maximum 30~epochs,
-  batch~16) produced an observed mean AUC that was $0.003451$ higher under the
+  batch~32) produced an observed mean AUC that was $0.003451$ higher under the
   extended-training configuration; however, the approximate 95\% CI
-  $[-0.004,0.011]$ included zero. Because both the maximum epoch budget and batch
-  size changed, this exploratory comparison does not isolate the effect of epochs.
+  $[-0.004,0.011]$ included zero. Because the maximum epoch budget, batch
+  size, hidden dimension, and sequence length all changed, this exploratory
+  comparison does not isolate the effect of epochs.
   The trio ordering on XES3G5M remains invariant in direction (GKT trails).
   Train-only versus full-log
   ablation ($|\Delta\text{AUC}|{\leq}0.003$ and $|\Delta\text{ACC}|{\leq}0.008$
@@ -896,19 +899,22 @@ before DAG pruning (Section~\ref{sec:graph}). Transition counting scales
 linearly in train-fold sequence length; cycle detection operates on the
 sparse candidate set, not the full $|\mathcal{C}|^2$ adjacency. Table~\ref{tab:graph-scalability}
 reports observed node and edge counts after pruning on fold~0; density stays
-well below unity on all public benchmarks.
+well below unity on all public benchmarks. We write $|\mathcal{C}_{\text{vocab}}|$ for the
+preprocessed KC vocabulary (Table~\ref{tab:dataset-stats}) and $|V_G|$ for nodes
+incident to at least one retained prerequisite edge after DAG audit; $|V_G|\leq|\mathcal{C}_{\text{vocab}}|$.
 
 \begin{table}[t]
 \centering
 \caption{Observed graph scale after DAG audit (fold~0) versus theoretical
-caps. Density is $|\Epre|/(|\mathcal{C}|(|\mathcal{C}|-1))$ on prerequisite
-edges only. Even million-scale logs yield sparse, auditable $G_f$.}
+caps. Density is $|\Epre|/(|V_G|(|V_G|-1))$ on prerequisite
+edges only. $|V_G|$ counts KCs incident to at least one retained edge, not the full
+vocabulary in Table~\ref{tab:dataset-stats}. Even million-scale logs yield sparse, auditable $G_f$.}
 \label{tab:graph-scalability}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
 \begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.15\linewidth} r r r r >{\centering\arraybackslash}X @{}}
 \toprule
-Dataset & $|\mathcal{C}|$ & $|\Epre|$ & Max out-deg. & Density & Cap regime \\
+Dataset & $|V_G|$ & $|\Epre|$ & Max out-deg. & Density & Cap regime \\
 \midrule
 Junyi Academy & 573 & 1{,}139 & $\leq 5$ & ${\approx}0.0035$ & $K{=}5000$ \\
 ASSIST'12 & 139 & 261 & $\leq 5$ & ${\approx}0.0136$ & $K{=}5000$ \\
@@ -1144,7 +1150,13 @@ is assigned to one of four frequency strata:
 \end{aligned}
 \]
 Strata are assigned from train-fold counts only; test rows inherit their
-\KC{} stratum and aggregate AUC/ACC/NLL per stratum. This exposes tail-\KC{}
+\KC{} stratum and aggregate AUC/ACC/NLL per stratum. KCs with zero train-fold
+interactions are absent from the frequency table and therefore excluded from
+stratum aggregates unless they appear under \emph{out of range} when a held-out
+\KC{} cannot be mapped to the four canonical bins. We use \emph{cold-start}
+throughout in this \emph{frequency-stratum} sense (few train interactions),
+distinct from zero-interaction or zero-shot cold-start splits in the broader
+dissertation roadmap. This exposes tail-\KC{}
 behaviour that aggregate metrics hide and links rare-\KC{} edge support to
 $\mathrm{ECR}^{\mathrm{overlap}}_f$ (Table~\ref{tab:leakage-taxonomy}).
 \subsection{Ground-Truth Cross-Validation}
@@ -1357,6 +1369,14 @@ before practitioners would infer leakage from AUC alone, and tiered reporting
 remains necessary on real data where $\mathrm{ECR}^{\mathrm{overlap}}_f$ is
 already saturated at $1.0$.
 
+\paragraph{Configuration note (Table~S18).}
+The injection retraining sweep in Supplementary Table~S18 reports fold~0 AUC under the
+graph arms \texttt{inject00/05/20}; absolute clean baselines there (e.g.\
+\textit{simpleKT} $0.850$ vs.\ $0.875$ in Table~\ref{tab:baseline-summary}) must be
+read against the exact training budget logged for that sweep. Until a rerun under the
+primary Table~S15 configuration is complete, we treat the \emph{relative} graph-reliant
+vs.\ sequence-only contrast as the supported claim, not the absolute clean levels.
+
 \paragraph{Worked example: reading injection as throughput.}
 Walking the $20\%$ row of Tables~S17--S18 makes the throughput notion concrete.
 Injecting test-fold transitions grows the candidate builder mass from
@@ -1428,11 +1448,12 @@ stock pyKT GKT (${\approx}0.834$), and native GIKT (${\approx}0.878$).
 GKT trails \textit{simpleKT} by ${\approx}0.041$ mean fold AUC on XES3G5M
 (95\% CI \GKTdeltaci{}; Table~S16). In a targeted exploratory check on
 experiment seed~$42$ and three folds (Table~S21), the observed mean AUC under the
-extended-training GKT configuration (maximum 30~epochs, batch size~16) was
+extended-training GKT configuration (maximum 30~epochs, batch size~32) was
 $0.003451$ higher than under the primary GKT configuration (maximum 10~epochs,
 batch size~4); however, the approximate 95\% CI $[-0.004,0.011]$ included zero.
-Because both the maximum epoch budget and batch size changed, this exploratory
-comparison does not isolate the effect of epochs. GIKT slightly exceeds the sequence leader
+Because the maximum epoch budget, batch size, hidden dimension, and sequence
+length all changed, this exploratory comparison does not isolate the effect of
+epochs. GIKT slightly exceeds the sequence leader
 ($0.878$ vs.\ $0.875$; paired interval \GIKTdeltaci{}, identical at three
 decimals on all three folds in Table~\ref{tab:baseline-cv}---we report
 magnitudes rather than over-interpreting the degenerate interval width).
@@ -1464,12 +1485,12 @@ sequence checkpoints train up to a maximum of 30~epochs (batch~64) while graph b
 use maximum 10-epoch budgets with smaller batches (Table~S15), reflecting higher
 per-epoch cost. Table~S21 reports a targeted seed-42 three-fold
 extended-training configuration-sensitivity check for GKT (maximum 30~epochs,
-batch~16 versus primary maximum 10~epochs, batch~4): the observed mean AUC was
+batch~32 versus primary maximum 10~epochs, batch~4): the observed mean AUC was
 $0.003451$ higher under the extended-training configuration; however, the
 approximate 95\% CI $[-0.004,+0.011]$ included zero.
-Because both the maximum epoch budget and batch size changed, this exploratory
-comparison does not isolate the effect of epochs and is not a fully
-compute-matched comparison.
+Because the maximum epoch budget, batch size, hidden dimension, and sequence
+length all changed, this exploratory comparison does not isolate the effect of
+epochs and is not a fully compute-matched comparison.
 The residual deficit remains an \emph{observational} benchmarking boundary on
 XES3G5M under this protocol, not a causal claim that graph structure is
 uninformative. Relative to the literature default of pooling transition statistics before
@@ -2119,13 +2140,17 @@ Due to the substantially greater computational cost of GKT, the
 primary GKT configuration used a maximum of 10 epochs, whereas
 \textit{simpleKT} used a maximum of 30 epochs. A targeted seed-42
 three-fold check evaluated an extended GKT configuration with a
-maximum of 30 epochs; its batch size also differed from
-the primary configuration (4 vs.\ 16). The observed mean AUC was
+maximum of 30 epochs; its batch size, hidden dimension, and maximum sequence
+length also differed from the primary configuration (batch~4 vs.\ batch~32,
+and smaller hidden/sequence caps). The observed mean AUC was
 $0.003451$ higher under the extended-training configuration, but the
-approximate 95\% CI $[-0.004,0.011]$ included zero. Because batch size
-also differed, this result should be interpreted as exploratory
+approximate 95\% CI $[-0.004,0.011]$ included zero. Because multiple
+hyperparameters changed together, this result should be interpreted as exploratory
 configuration sensitivity rather than an isolated epoch effect. The
-study does not provide a fully compute-matched comparison.
+study does not provide a fully compute-matched comparison. Nine-fold GKT30
+artefacts at batch~32 (Server A attestation) yield a pooled $\Delta$AUC of
+${\approx}{-}0.038$ versus \textit{simpleKT} under 30-epoch budgets---directionally
+consistent with the primary $-0.041$ gap but still not batch-matched.
 Native SKT/DyGKT runs
 are wiring diagnostics, not tuned-backbone benchmarks. Controlled injection
 (Section~\ref{sec:exp-injection}, Tables~S17--S18) demonstrates metric-level
@@ -2171,9 +2196,10 @@ provides a starting point for detecting target-conditional artefacts.
 \textbf{Broader backbone and operator coverage.} Re-auditing additional
 graph consumers under the same protocol, and testing hierarchy-respecting
 augmentations beyond \DDR{}, would clarify whether structural diagnostics
-transfer across encoders. Establishing a fully compute-matched
-GKT vs.\ \textit{simpleKT} comparison (matched maximum epochs and batch size
-on the same folds) remains open.
+transfer across encoders. A fully compute-matched GKT vs.\ \textit{simpleKT}
+comparison (matched maximum epochs \emph{and} batch size on the same folds)
+remains open; exploratory GKT30 runs at batch~32 (Table~S21 context) narrow
+but do not close this gap.
 \textbf{\DDR{} downstream coverage.} The anchored retraining sweep now covers
 two graph consumers (DGEKT and GKT), including a completed three-seed GKT
 replication on XES3G5M, and establishes the manipulation-check protocol that
@@ -2448,7 +2474,7 @@ stopping). Epoch caps and batch sizes differ across families (maximum 30
 epochs for sequence checkpoints vs.\ maximum 10 for graph backbones in the
 primary release; primary GKT batch~4, \textit{simpleKT} batch~64),
 reflecting per-epoch cost. Table~S21 reports a targeted seed-42 three-fold
-extended-training configuration-sensitivity check (maximum 30~epochs, batch~16;
+extended-training configuration-sensitivity check (maximum 30~epochs, batch~32;
 same fold seeds $42$--$44$).
 ``Native'' denotes
 our re-implementations in \texttt{src/models}; graph models consume the
@@ -2490,7 +2516,8 @@ Table~S21 (Table~\ref{tab:gkt-epoch-ablation}) reports a targeted three-fold
 extended-training configuration-sensitivity check on XES3G5M using experiment
 seed~$42$ and folds $0$--$2$. Primary GKT artefacts use a maximum of 10~epochs
 and batch size~4; the extended-training configuration uses a maximum of
-30~epochs and batch size~16. Fold AUCs are unchanged historical artefacts;
+30~epochs and batch size~32 (hidden dimension and maximum sequence length also
+differ from primary). Fold AUCs are unchanged historical artefacts;
 legacy unpaired GKT30 artefacts at seeds~$17$ and~$1234$ are excluded from
 submission. This check is exploratory and does not isolate the effect of epochs.
 \begin{table}[h!]
@@ -2499,11 +2526,11 @@ submission. This check is exploratory and does not isolate the effect of epochs.
 check on XES3G5M using experiment seed~$42$. The primary GKT
 configuration used a maximum of 10 epochs and batch size~4,
 whereas the extended-training configuration used a maximum of
-30 epochs and batch size~16. The observed mean AUC was $0.003451$
+30 epochs and batch size~32. The observed mean AUC was $0.003451$
 higher under the extended-training configuration; however, the
 approximate 95\% confidence interval $[-0.004, 0.011]$ included zero.
-Because both maximum epochs and batch size changed, this
-exploratory comparison does not isolate the effect of epochs.}
+Because maximum epochs, batch size, hidden dimension, and sequence length
+all changed, this exploratory comparison does not isolate the effect of epochs.}
 \label{tab:gkt-epoch-ablation}
 \input{gkt_epoch_ablation.tex}
 \end{table}

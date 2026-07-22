@@ -18,7 +18,8 @@ Mục tiêu reviewer **M4**: bổ sung ít nhất **một backbone graph-KT th�
 | Model | **`gkt`** (pyKT graph branch) |
 | Hyperparams | Đọc từ `configs/<ds>.yaml` → `baselines[name=gkt].hyperparams` |
 | | ASSIST: batch **32**, 10 epochs |
-| | XES3G5M: batch **16**, 10 epochs |
+| | XES3G5M seed 42: batch **4**, 10 epochs (primary budget) |
+| | XES3G5M multiseed (17/1234, Jul 2026): batch **8**, 10 epochs |
 | Output | Append/resume CSV; key `(dataset, model, fold, operator, p)` |
 
 **Số run huấn luyện:** 2 dataset × 3 fold × (1 baseline + 3×3 perturb) = **60** forward passes GKT.
@@ -90,7 +91,7 @@ python -m scripts.ddr_downstream \
   2>&1 | tee results/q1/ddr_downstream_gkt/xes_fold0_calib.log
 ```
 
-- GKT trên XES3G5M (batch 16): thường **~8–20 phút/run** trên GPU 24GB (phụ thuộc GPU và early stopping).
+- GKT trên XES3G5M (batch **4** primary / **8** multiseed): thường **~8–20 phút/run** trên GPU 24GB (phụ thuộc GPU và early stopping).
 - 10 variant/fold → **~1.5–3 h/dataset-fold**.
 - Full 60 run GKT: **~12–24 h** (chậm hơn DGEKT đáng kể).
 

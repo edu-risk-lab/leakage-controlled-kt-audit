@@ -120,8 +120,10 @@ def compute_ecr_overlap(
     return contaminated / n_edges
 
 
-def compute_eoc(pre_df: pd.DataFrame, sim_df: pd.DataFrame, test_df: pd.DataFrame) -> float:
-    """Frobenius norm of the 2×2 Pearson correlation matrix for (weight, outcome)."""
+def compute_rho_edge_outcome(
+    pre_df: pd.DataFrame, sim_df: pd.DataFrame, test_df: pd.DataFrame
+) -> float:
+    """Pearson |rho| between edge weights and test-fold endpoint outcome summaries (Eq. rho-edge-outcome)."""
     if test_df.empty:
         return 0.0
     stats = test_df.groupby("kc_id")["correct"].mean()
@@ -151,7 +153,12 @@ def compute_eoc(pre_df: pd.DataFrame, sim_df: pd.DataFrame, test_df: pd.DataFram
         return 0.0
     rho = float(np.sum(w_c * y_c) / denom)
     rho = max(-1.0, min(1.0, rho))
-    return float(np.sqrt(2.0 + 2.0 * rho**2))
+    return float(abs(rho))
+
+
+def compute_eoc(pre_df: pd.DataFrame, sim_df: pd.DataFrame, test_df: pd.DataFrame) -> float:
+    """Backward-compatible alias: stores |rho| in the legacy ``eoc`` CSV column."""
+    return compute_rho_edge_outcome(pre_df, sim_df, test_df)
 
 
 def compute_tbvr(train_df: pd.DataFrame, pre_df: pd.DataFrame, train_ratio: float = 0.7) -> float:

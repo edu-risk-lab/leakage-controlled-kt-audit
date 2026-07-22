@@ -10,23 +10,30 @@ Source: author decisions in authorized remediation request. No experiments were 
 - Evidence: SERVER_ATTESTED + HISTORICAL_CONFIG at commit `619c02cf`
 - Not EXECUTION_VERIFIED (no matching training log)
 
+### Targeted extended-training GKT (seed 42, S21 exploratory)
+- XES3G5M, experiment seed 42, folds 0–2
+- max_epochs: 30, batch_size: **32** (also hidden_dim 64, max_seq_len 100 vs primary)
+- Evidence: SERVER_A_REPORT `672ad7bb` + CONFIG @ `fcb14635` / `85afe0c8`
+- Not EXECUTION_VERIFIED (no batch in result JSON; s42 log absent on dev machine)
+- Not epoch-only controlled ablation; configuration sensitivity only
+
+### GKT30 ablation publish (S21–S22 nine-fold context, not +0.003 claim)
+- XES3G5M, seeds 17, 42, 1234 × 3 folds
+- max_epochs: 30, batch_size: **32**, hidden_dim 64, max_seq_len 100
+- Evidence: SERVER_A_REPORT + `results/q1/gkt_epochs30_s*/`
+- Pooled Δ vs simpleKT@30 ≈ −0.038 (artefact); excluded from S21 +0.003451 pairing
+
 ### DDR downstream GKT
 - max_epochs: 10
-- batch_size: 4
-- experiment_seed 1234 includes folds 0–2
-- Use: robustness/DDR only; not evidence for GKT30
+- batch_size: **4** for seed 42 XES (primary budget)
+- batch_size: **8** for multiseed XES seeds 17/1234 (Jul 2026, config `955a820+`)
+- batch_size: **32** for ASSIST2012
+- Use: robustness/DDR only; not evidence for GKT30 epoch gain
 
 ### simpleKT reference
 - max_epochs: 30
 - batch_size: 64
 - Any “simpleKT at 10 epochs” description is incorrect
-
-### Targeted extended-training GKT
-- XES3G5M, experiment seed 42, folds 0–2
-- max_epochs: 30, batch_size: 16
-- Evidence: CONFIG_AND_ARTIFACT_SUPPORTED + SERVER_ATTESTED
-- Not EXECUTION_VERIFIED
-- Not a full rerun, not compute-matched, not epoch-only controlled ablation
 
 ## Confirmed fold deltas (unchanged artifacts)
 
