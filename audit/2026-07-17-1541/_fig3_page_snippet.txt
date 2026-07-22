@@ -1,0 +1,37 @@
+         Raw log
+           D
+
+       Preprocess
+     (Q-matrix, IDs)                                                                 Cold-start KC
+                                    Train sequences                                 (stratum S1 –S4 )
+                                           f
+       Learner split                     Ftrain
+                                                                                    Graph messages
+           Ff                                                                       from neighbours
+                                    Train-only graph
+                                           Gf                Val fold
+    Train-only sample
+          f                                                                         Predict p(y=1)
+        Ĩtr (opt.)                                        Checkpoint                on test steps
+                                     KT backbone            selection
+       Graph Gf                                                                         Report AUC
+      + DAG audit                    Optimise NLL                                       by stratum
+
+(a) Data pipeline from raw (b) Training inputs, train-only (c) Cold-start inference and
+log to audited Gf .        graph construction, and validation- stratum reporting.
+                           based checkpoint selection.
+
+Fig. 3: End-to-end protocol plumbing: (a) data preparation and fold-conditioned
+graph construction, (b) training with a train-only graph and validation-based check-
+point selection, and (c) cold-start knowledge-component evaluation with stratum-
+specific reporting (Section 4.8).
+
+
+                                                        f
+verifies low direct leakage on scalar diagnostics. Let Itr denote train-fold interactions
+              f      f
+and Hf = Fval ∪ Ftest held-out interactions.
+
+Decision variables.
+            f               f
+Edge sets Epre ⊆ C × C and Esim ⊆ C × C , edge weights wij ≥ 0, and pru

@@ -197,15 +197,13 @@ def main() -> int:
                 row.update({"auc": float("nan"), "acc": float("nan"), "nll": float("nan"), "status": "dry_run"})
                 logger.info("[dry-run] %s fold=%s ddr=%.3f edges %d->%d", (operator, pp), fold, ddr, len(original), len(perturbed))
             else:
-                if int(fold) == 0 and operator == "none":
-                    row.update({"auc": 0.8422173236026003, "acc": 0.8470733902388579, "nll": 0.3524157578843413, "status": "pykt_checkpoint"})
-                    _append_row(args.out, row)
-                    logger.info("inserted baseline fold 0")
-                    continue
-                
                 ckpt_path = work_dir / f"{args.model}_{operator}_{pp:.2f}_seed{args.experiment_seed}_best.ckpt"
                 if not ckpt_path.exists():
-                    logger.info("skip (missing ckpt): %s", key)
+                    logger.warning(
+                        "skip (missing ckpt): %s fold=%s — do not insert placeholder AUC",
+                        key,
+                        fold,
+                    )
                     continue
 
                 fit_seed = int(args.experiment_seed) + int(fold) * 97

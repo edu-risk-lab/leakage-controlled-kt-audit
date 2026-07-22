@@ -1,0 +1,6 @@
+locator,file,change_type,notes
+Baseline Diagnostic S21 sentence,paper/main_APIN.tex,rewritten,Fixed two-subject comma splice; batch size wording
+Declaration of generative AI-assisted work,paper/main_APIN.tex,rewritten,Removed independently verified; review-against-sources
+Limitations S21 paragraph,paper/main_APIN.tex,rewritten,Removed Therefore/however stack; kept CI and compute-matched disclosure
+paper/main_APIN.pdf,paper/main_APIN.pdf,rebuilt,SHA256 BD73F04EFEDC5FBAA8D057B52B86428C8486DB706A7756A19314E3BB98A18EC1
+paper/submission_APIN_flat/,paper/submission_APIN_flat/,regenerated,Clean-room build PASS 58 pages

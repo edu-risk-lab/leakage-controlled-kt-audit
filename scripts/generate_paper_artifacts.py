@@ -644,6 +644,7 @@ def main() -> None:
 
     for script in (
         "generate_training_parity.py",
+        "generate_gkt_epoch_ablation.py",  # S21 seed-42 only; fails closed; no S22
         "bootstrap_auc_ci.py",
         "plot_kt_graph_figures.py",
     ):

@@ -1,0 +1,55 @@
+# Canonical protocol for manuscript description (remediation 2026-07-17).
+# NOT a claim of historical EXECUTION_VERIFIED training-loop epoch counts.
+# Source of truth for wording / S15 / S21 generators. Do not use HEAD configs alone.
+
+primary:
+  dataset: XES3G5M
+  gkt:
+    max_epochs: 10
+    batch_size: 4
+    evidence_status: SERVER_ATTESTED_HISTORICAL_CONFIG
+    evidence_commit: 619c02cf
+  simplekt:
+    max_epochs: 30
+    batch_size: 64
+    evidence_status: SERVER_ATTESTED_HISTORICAL_CONFIG
+    evidence_commit: 619c02cf
+
+ddr_downstream:
+  gkt:
+    max_epochs: 10
+    batch_size: 4
+    experiment_seed: 1234
+    folds: [0, 1, 2]
+    evidence_status: SERVER_ATTESTED
+    note: Robustness/DDR only; not used to justify targeted GKT30.
+  gkt_multiseed_xes:
+    max_epochs: 10
+    batch_size: 8
+    experiment_seeds: [17, 1234]
+    evidence_status: SERVER_A_ATTESTED
+    evidence_commit: 955a8202
+
+targeted_extended_training:
+  dataset: XES3G5M
+  experiment_seed: 42
+  folds: [0, 1, 2]
+  gkt_primary:
+    max_epochs: 10
+    batch_size: 4
+  gkt_extended:
+    max_epochs: 30
+    batch_size: 32
+    hidden_dim: 64
+    emb_size: 64
+    max_seq_len: 100
+  evidence_status: CONFIG_AND_ARTIFACT_SUPPORTED_SERVER_A_ATTESTED
+  scope: EXPLORATORY_THREE_FOLD_CONFIGURATION_SENSITIVITY
+  expected_fold_auc:
+    # Locked to baseline_fold_results.csv + gkt_epochs30_s42 (do not alter)
+    0: {gkt_primary: 0.834557, gkt_extended: 0.840181, delta: 0.005624}
+    1: {gkt_primary: 0.833752, gkt_extended: 0.838300, delta: 0.004547}
+    2: {gkt_primary: 0.832624, gkt_extended: 0.832804, delta: 0.000181}
+  expected_mean_delta: 0.003451
+  legacy_unpaired_gkt30_seeds: [17, 1234]
+  legacy_label: LEGACY_UNPAIRED_GKT30_ARTIFACTS

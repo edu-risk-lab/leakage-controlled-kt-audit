@@ -221,7 +221,7 @@ Theo `Training_Configuration.md` (DDR Downstream GKT — Seed 1234 Part 2):
 
 ### 7.2 Bất thường dữ liệu
 
-- **DDR seed 17, fold 0, operator=none** có AUC **trùng tuyệt đối** với `gkt_epochs30_s17` fold 0 (`0.8422173236026003`) dù khác epoch (10 vs 30). Reviewer nên xác minh không có merge CSV nhầm.
+- **DDR seed 17, fold 0, operator=none** có AUC **trùng tuyệt đối** với `gkt_epochs30_s17` fold 0 (`0.8422173236026003`). **Nguyên nhân (2026-07-22):** placeholder hardcode trong `scripts/eval_existing.py` (đã xóa). Cần rerun DDR baseline 10ep trước khi dùng dòng này. Chi tiết: `audit/2026-07-22-A2-DDR-GKT30-duplicate-auc.md`.
 
 ### 7.3 Đề xuất cải thiện pipeline
 

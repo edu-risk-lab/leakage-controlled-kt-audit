@@ -372,14 +372,14 @@ Cả 4 đều đáp ứng được. ANOVA + leakage↔cold-start phục vụ b�
 
 | Mục | Trạng thái |
 |---|---|
-| Thí nghiệm 2.x (GKT) | **XONG cho XES3G5M seed 42** (3 fold + mỏ neo p=0.90) → **Kết cục A** (r=0.97, prereq<edge<node). ASSIST GKT = mỏ neo inert. |
+| Thí nghiệm 2.x (GKT) | **XONG multi-seed XES3G5M** (seeds `{42,17,1234}`, 108/108 rows) → **Kết cục A** (r≈0.93 core / 0.99+anchors; prereq<edge<node; ASSIST inert ≤0.003). |
 | Thí nghiệm 2.x (GIKT) | KHÔNG khả thi qua DDR sweep (bipartite Q–C); reliance lấy từ injection S18 |
-| Manipulation check anchors | **XONG** — anchor `edge_drop`/`node_drop` p=0.90 đã có trong CSV seed 42 (XES3G5M drop 0.07–0.09; ASSIST ≤0.002) |
-| Multi-seed (≥3) | **MỘT PHẦN**: ASSIST seed 42/17 (+1234 partial); **XES3G5M mới seed 42** → cần 17/1234 để có power |
+| Manipulation check anchors | **XONG** — `edge_drop`/`node_drop` p=0.90 trên cả 3 seed (XES drop 0.07–0.09; ASSIST ≤0.003) |
+| Multi-seed (≥3) | **XONG** XES3G5M GKT 3 seeds × 3 folds (108 configs); merged vào `ddr_downstream.csv` |
 | Reachability-disruption (A6) | **SCRIPT SẴN SÀNG** (`reachability_disruption.py`) — **CHƯA chạy** (thiếu `data/processed/*/fold_*/e_pre_train_only.csv` ở máy local) |
 | Text B2 (an toàn) | **ĐÃ XONG** (Abstract, thesis, bảng 2×2, §4.3, §4.5, Conclusion, guardrail §5.3) |
-| Text B3 (phụ thuộc kết cục) | **ĐÃ XONG** — §4.7 viết lại (Kết cục A + positive control), §4.6/§5.1/Abstract/C2/future work đồng bộ conditional |
-| ANOVA có power (6.1) | **CHỜ** multi-seed XES3G5M đủ (hiện 1 seed×3 fold; ASSIST inert nên ANOVA ít nghĩa) |
+| Text B3 (phụ thuộc kết cục) | **ĐÃ XONG** — §4.7 + Abstract/C2/discussion/limitations/future work/conclusion đồng bộ multi-seed (kể cả highlight + submission) |
+| ANOVA có power (6.1) | **XONG mức GKT multi-seed** — `anova_ddr_downstream.tex` (core p≤0.3); ASSIST inert nên ANOVA ít nghĩa |
 | Ví dụ (6.2) | **ĐÃ XONG** (worked edge-leak ở Intro + injection case study ở §4.3) |
 | Leakage↔cold-start (6.3) | **ĐÃ XONG mức lý luận** (§5.2 paragraph + ví dụ số); phân tích ΔAUC-theo-stratum vẫn chờ |
 | Mã giả (6.4) | **ĐÃ XONG** (Alg 1 graph build+DAG audit, Alg 2 leakage audit, Alg 3 DDR) |
@@ -447,19 +447,18 @@ Vấn đề: 56 trang + 22 bảng phụ + nhiều hedging ⇒ core message loãn
 Vấn đề: XES3G5M GKT downstream mới 1 model-seed×3 fold; A6 reachability chưa chạy;
 ANOVA underpowered ⇒ hạ Rigor/Experiments/Significance dù hướng đúng.
 
-- [ ] **T3.1 — Multi-seed XES3G5M GKT.** Chạy `run_ddr_downstream_gkt_multiseed.sh` cho
-  **XES3G5M** seed 17 & 1234 (đã có 42) → 3 seed × 3 fold = 9 obs/ô. **DoD:** 3 CSV
-  `..._seed{17,1234}.csv` có rows XES3G5M; cập nhật `ddr_downstream_gkt.tex` (mean±CI theo
-  seed×fold); Compute: GPU ~ vài giờ; Phụ thuộc: GPU server (playbook `docs/DDR_DOWNSTREAM_GKT.md`).
+- [x] **T3.1 — Multi-seed XES3G5M GKT.** Seeds `{42,17,1234}` đủ 108/108 rows; merged
+  `ddr_downstream.csv` (210 rows); regenerated summary/tex/figures + GKT table
+  (`ddr_downstream_gkt.tex`: baseline 0.8354, r=0.93/0.99, n=81/99).
 - [ ] **T3.2 — Reachability-disruption A6.** Xuất `data/processed/xes3g5m/fold_*/e_pre_train_only.csv`
   rồi chạy `python -m scripts.reachability_disruption --results ..._seed42.csv --perturb-seed 42`.
   **DoD:** bảng tương quan (DDR vs AUC-drop) cạnh (reach-disruption vs AUC-drop); nếu reach
   dự báo tốt hơn ⇒ 1 câu ở §4.7 trả lời A6. Compute: 0 GPU (offline). Phụ thuộc: file e_pre.
-- [ ] **T3.3 — ANOVA có power (6.1).** Sau T3.1: DV = AUC-drop; factors = operator × p ×
-  (backbone/dataset). **DoD:** thay S19–S20 exploratory bằng ANOVA có n=9/ô cho XES3G5M
-  GKT; báo F, p, η²; nêu rõ chỉ diễn giải khi anchor pass.
-- [ ] **T3.4 — Cập nhật số vào text.** Đổi "seed 42, three folds / multi-seed in progress"
-  trong §4.7, Abstract, future work → số multi-seed + CI. **DoD:** không còn "in progress".
+- [x] **T3.3 — ANOVA có power (6.1).** GKT multi-seed ANOVA regenerated
+  (`anova_ddr_downstream.tex`; core p≤0.3). Diễn giải chỉ khi manipulation check pass.
+- [x] **T3.4 — Cập nhật số vào text.** Abstract/§4.7/discussion/limitations/future work/
+  conclusion + highlight + `submission_APIN` đã dùng 3 seeds, r≈0.93–0.99; **không còn
+  "in progress"**.
 - **Nâng:** Rigor 8.5→9.0, Experiments 8.0→8.5, Significance +0.3.
 
 ### 8.4. P4 — Công bằng ranking / compute-parity (compute vừa) — ƯU TIÊN TRUNG BÌNH

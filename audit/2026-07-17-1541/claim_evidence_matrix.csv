@@ -1,0 +1,11 @@
+claim_id,claim,location,evidence_artifact,support,verification_status,notes
+C01,GKT trails simpleKT by approx 0.041 AUC on XES3G5M with paired-t CI [-0.044,-0.038],abstract; Table S16; macros,results/tables/bootstrap_auc_ci.tex; baseline_cv_template.tex,SUPPORTED,ARTIFACT_INSPECTED,Regeneration NOT VERIFIED
+C02,Epoch-extended GKT recovers approx +0.003 AUC; pooled Delta approx -0.038 CI [-0.040,-0.035],abstract; S21-S22,results/tables/gkt_epoch_ablation.tex; gkt_epoch_ablation_pooled.tex,PARTIAL,CONFLICT_OPEN,Numbers match tables but simpleKT epoch label conflicts (F-R01)
+C03,Train-only vs full-log moves AUC by at most 0.003 on public benchmarks,abstract; contributions; conclusion,results/tables/graph_ablation.tex,SUPPORTED,ARTIFACT_INSPECTED,AUC only; ACC claim at L460 conflicts
+C04,Headline metrics move by at most 0.003 AUC/ACC under full-log ablation,contributions L460,results/tables/graph_ablation.tex,CONTRADICTED,FAIL,max |dACC|=0.008 on Junyi
+C05,Leak injection raises GKT approx +0.05 and GIKT approx +0.03 AUC; simpleKT unmoved relative claim,abstract; S17-S18,results/tables/downstream_auc_injection.tex,SUPPORTED,ARTIFACT_INSPECTED,simpleKT moves +0.008 at 20% (0.850 to 0.858); abstract says unmoved — mild overstatement risk
+C06,DDR predicts AUC loss for GKT on XES3G5M with r approx 0.93 core and 0.99 with anchors,abstract; tab:ddr-downstream-gkt,results/tables/ddr_downstream_gkt.tex caption,PARTIAL,NOT_RECOMPUTED,Conflicts with other caption/figure framings (F-R02)
+C07,Graph-inert cells (DGEKT; GKT on ASSIST) move AUC by <=0.003 under total graph destruction,abstract; ddr tables,results/tables/ddr_downstream_gkt.tex ASSIST anchors,SUPPORTED,ARTIFACT_INSPECTED,Table shows ASSIST node_drop p=0.90 drop 0.0021
+C08,Protocol yields acyclic train-only prerequisite graphs on all corpora,abstract,results/tables/dag_audit_summary.tex,NOT VERIFIED,NOT_CROSSWALKED,Rapid pass did not fully verify every corpus row
+C09,Literature claims on leakage and graph-KT practice,introduction cites,refs_APIN.bib; REFERENCES_AUDIT.md,NOT VERIFIED,PRIMARY_SOURCE_NOT_READ,Prior author audit noted; this audit did not re-read sources
+C10,Wilcoxon underpowered at 3 folds (min p=0.25); primary claims use paired-t CI,results discussion L1478-1480,baseline_cv_template.tex p_W=0.250,SUPPORTED,ARTIFACT_INSPECTED,Careful wording observed
