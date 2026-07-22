@@ -63,7 +63,7 @@ def test_tbvr_positive_when_future_tail_supports_retained_edge():
     assert tbvr == pytest.approx(1.0)
 
 
-def test_eoc_frobenius_two_when_weights_align_with_test_means():
+def test_eoc_reports_abs_rho_when_weights_align_with_test_means():
     pre_df = pd.DataFrame({
         "src_kc": [10, 12],
         "dst_kc": [11, 13],
@@ -78,7 +78,7 @@ def test_eoc_frobenius_two_when_weights_align_with_test_means():
         "timestamp": [1, 2, 3, 4],
         "correct": [0, 0, 1, 1],
     })
-    assert compute_eoc(pre_df, sim_df, test_df) == pytest.approx(2.0)
+    assert compute_eoc(pre_df, sim_df, test_df) == pytest.approx(1.0)
 
 
 def test_compute_leakage_row_shapes_splits():

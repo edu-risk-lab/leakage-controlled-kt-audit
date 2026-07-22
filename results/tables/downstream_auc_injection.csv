@@ -1,4 +1,4 @@
-Model,Clean AUC,Leak 5% AUC,Leak 20% AUC
-simplekt,0.85,0.852,0.858
-gkt,0.81,0.825,0.86
-gikt,0.852,0.86,0.88
+Model,Clean AUC,Leak 5% AUC,Leak 20% AUC,clean_status,leak5_status,leak20_status
+simplekt,0.8744411161851224,,,verified_train_only_proxy,pending_gpu_rerun,pending_gpu_rerun
+gkt,0.8345570064591779,,,verified_train_only_proxy,pending_gpu_rerun,pending_gpu_rerun
+gikt,0.8775823299875001,,,verified_train_only_proxy,pending_gpu_rerun,pending_gpu_rerun

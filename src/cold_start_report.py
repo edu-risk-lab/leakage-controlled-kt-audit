@@ -14,6 +14,9 @@ from src.io_utils import dump_csv
 
 logger = logging.getLogger(__name__)
 
+# Minimum discordant (pos, neg) pairs required before stratum AUC is reported.
+MIN_DISCORDANT_PAIRS = 10
+
 
 def _binary_nll_mean_chunked(
     y_true: np.ndarray,
@@ -75,6 +78,39 @@ def _binary_roc_auc_mann_whitney(y_true: np.ndarray, y_score: np.ndarray) -> flo
     return (rank_sum_pos - n_pos * (n_pos + 1) / 2.0) / (n_pos * n_neg)
 
 
+def _binary_auc_diagnostics(y_true: np.ndarray, y_score: np.ndarray) -> tuple[float, int, int, int]:
+    """Return (auc, n_pos, n_neg, n_discordant); auc is nan when undefined or suppressed."""
+    y_true = np.asarray(y_true)
+    y_score = np.asarray(y_score, dtype=np.float64, copy=False)
+    pos = y_true != 0
+    n_pos = int(np.count_nonzero(pos))
+    n_neg = int(y_true.size - n_pos)
+    if n_pos == 0 or n_neg == 0:
+        return float("nan"), n_pos, n_neg, 0
+
+    order = np.argsort(y_score, kind="mergesort")
+    sorted_scores = y_score[order]
+    pos_sorted = pos[order]
+
+    n_discordant = 0
+    i = 0
+    n = sorted_scores.size
+    while i < n:
+        j = i + 1
+        while j < n and sorted_scores[j] == sorted_scores[i]:
+            j += 1
+        block_pos = int(np.count_nonzero(pos_sorted[i:j]))
+        block_neg = (j - i) - block_pos
+        n_discordant += block_pos * block_neg
+        i = j
+
+    if n_discordant < MIN_DISCORDANT_PAIRS:
+        return float("nan"), n_pos, n_neg, n_discordant
+
+    auc = _binary_roc_auc_mann_whitney(y_true, y_score)
+    return float(auc), n_pos, n_neg, n_discordant
+
+
 def _binary_accuracy_mean_chunked(
     y_true: np.ndarray,
     y_prob: np.ndarray,
@@ -112,6 +148,14 @@ def bin_kcs_by_frequency(
     return counts
 
 
+def assign_stratum_for_kc(kc_id: int, strata: pd.DataFrame) -> str | float:
+    """Map a KC id to its train-frequency stratum; NaN if absent from the train vocabulary."""
+    hit = strata[strata["kc_id"] == kc_id]
+    if hit.empty:
+        return float("nan")
+    return str(hit.iloc[0]["stratum"])
+
+
 def per_stratum_metrics(
     predictions: pd.DataFrame,
     strata: pd.DataFrame,
@@ -129,7 +173,9 @@ def per_stratum_metrics(
     stratum_labels = predictions["kc_id"].map(lookup)
     mask = stratum_labels.notna().to_numpy()
     if not mask.any():
-        return pd.DataFrame(columns=["stratum", "n"] + [m for m in metrics if m in ("auc", "acc", "nll")])
+        cols = ["stratum", "n", "n_pos", "n_neg", "n_discordant"]
+        cols += [m for m in metrics if m in ("auc", "acc", "nll")]
+        return pd.DataFrame(columns=cols)
     sub = pd.DataFrame({
         "stratum": stratum_labels.to_numpy()[mask],
         "y_true": predictions["y_true"].to_numpy(dtype=np.int64)[mask],
@@ -140,12 +186,14 @@ def per_stratum_metrics(
         row = {"stratum": stratum, "n": len(part)}
         yt = part["y_true"].to_numpy()
         yp = part["y_prob"].to_numpy()
+        n_pos = int(np.count_nonzero(yt))
+        n_neg = int(len(yt) - n_pos)
         if "auc" in metrics:
-            row["auc"] = (
-                _binary_roc_auc_mann_whitney(yt, yp)
-                if int(yt.min()) != int(yt.max())
-                else np.nan
-            )
+            auc, n_pos, n_neg, n_disc = _binary_auc_diagnostics(yt, yp)
+            row["auc"] = auc
+            row["n_pos"] = n_pos
+            row["n_neg"] = n_neg
+            row["n_discordant"] = n_disc
         if "acc" in metrics:
             row["acc"] = _binary_accuracy_mean_chunked(yt, yp)
         if "nll" in metrics:

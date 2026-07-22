@@ -93,16 +93,26 @@ def _eta_partial(ss_effect: float, ss_error: float) -> float:
     return float(ss_effect / denom) if denom > 0 else float("nan")
 
 
+def _legacy_eoc_to_rho_abs(value: float) -> float:
+    """Convert legacy sqrt(2+2rho^2) exports to |rho|; pass through if already |rho|."""
+    if value is None or np.isnan(value):
+        return float("nan")
+    if value <= 1.0:
+        return float(value)
+    return float(np.sqrt(max(0.0, (float(value) ** 2 - 2.0) / 2.0)))
+
+
 def write_leakage_metrics_tex(df: pd.DataFrame, path: Path) -> None:
     rows = []
     for dataset, part in df.groupby("dataset"):
         label = DATASET_LABELS.get(dataset, dataset)
+        rho_series = part["eoc"].map(_legacy_eoc_to_rho_abs)
         rows.append(
             (
                 label,
                 _fmt_pm(part["ecr_flag"].mean(), part["ecr_flag"].std(ddof=0), 3),
                 _fmt_pm(part["ecr_overlap"].mean(), part["ecr_overlap"].std(ddof=0), 3),
-                _fmt_pm(part["eoc"].mean(), part["eoc"].std(ddof=0), 3),
+                _fmt_pm(rho_series.mean(), rho_series.std(ddof=0), 3),
                 _fmt_pm(part["tbvr"].mean(), part["tbvr"].std(ddof=0), 3),
             )
         )
@@ -113,19 +123,19 @@ def write_leakage_metrics_tex(df: pd.DataFrame, path: Path) -> None:
         r"\caption{Direct leakage diagnostics per dataset (mean~$\pm$~std over three folds). "
         r"\textsc{ECR}\textsubscript{flag}: learner-overlap indicator (Eq.~\ref{eq:ecr-flag}). "
         r"\textsc{ECR}\textsubscript{overlap}: held-out pattern overlap (Eq.~\ref{eq:ecr-overlap}). "
-        r"\textsc{EOC}: exported monotone transform of edge--outcome Pearson $|\rho|$ "
-        r"(Eq.~\ref{eq:rho-edge-outcome}). \textsc{TBMR}: within-train temporal mixing "
+        r"$|\rho|$: edge--outcome Pearson correlation magnitude (Eq.~\ref{eq:rho-edge-outcome}). "
+        r"\textsc{TBMR}: within-train temporal mixing "
         r"(Eq.~\ref{eq:tbvr}), not a train/test violation.}",
         r"\label{tab:leakage-metrics}",
         r"\footnotesize",
         r"\setlength{\tabcolsep}{3pt}",
         r"\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}X *{4}{>{\centering\arraybackslash}X} @{}}",
         r"\toprule",
-        r"Dataset & \textsc{ECR}\textsubscript{flag} & \textsc{ECR}\textsubscript{overlap} & \textsc{EOC} & \textsc{TBMR} \\",
+        r"Dataset & \textsc{ECR}\textsubscript{flag} & \textsc{ECR}\textsubscript{overlap} & $|\rho|$ & \textsc{TBMR} \\",
         r"\midrule",
     ]
-    for label, ecr_f, ecr_o, eoc, tbvr in rows:
-        lines.append(f"{label} & {ecr_f} & {ecr_o} & {eoc} & {tbvr} \\\\")
+    for label, ecr_f, ecr_o, rho, tbvr in rows:
+        lines.append(f"{label} & {ecr_f} & {ecr_o} & {rho} & {tbvr} \\\\")
     lines.extend([r"\bottomrule", r"\end{tabularx}", r"\end{table}", ""])
     path.write_text("\n".join(lines), encoding="utf-8")
 

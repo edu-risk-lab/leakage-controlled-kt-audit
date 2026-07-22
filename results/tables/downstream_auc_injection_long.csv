@@ -1,0 +1,10 @@
+model,arm,auc,source,status
+simplekt,inject00,0.8744411161851224,"baseline_fold_results.csv:fold0,train_only",verified_train_only_proxy
+simplekt,inject05,,,pending_gpu_rerun
+simplekt,inject20,,,pending_gpu_rerun
+gkt,inject00,0.8345570064591779,"baseline_fold_results.csv:fold0,train_only",verified_train_only_proxy
+gkt,inject05,,,pending_gpu_rerun
+gkt,inject20,,,pending_gpu_rerun
+gikt,inject00,0.8775823299875001,"baseline_fold_results.csv:fold0,train_only",verified_train_only_proxy
+gikt,inject05,,,pending_gpu_rerun
+gikt,inject20,,,pending_gpu_rerun
