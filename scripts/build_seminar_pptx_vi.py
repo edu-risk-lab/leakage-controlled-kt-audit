@@ -366,7 +366,7 @@ gtbl.columns[2].width = Inches(4.0)
 data = [
     ["", "Reliance thấp (simpleKT)", "Reliance cao (GKT, GIKT)"],
     ["Throughput thấp\n(train-only vs. full-log)", "≈ 0", "≤ 0.003  (ablation full-log)"],
-    ["Throughput cao\n(inject 20% test-fold)", "≈ 0  (0.850→0.858)", "+0.05 GKT, +0.03 GIKT"],
+    ["Throughput cao\n(inject 20% test-fold)", "≈ 0 (+0.0004)", "≈ 0 (GKT −0.010; GIKT +0.0002)"],
 ]
 for r in range(3):
     for c in range(3):
@@ -383,18 +383,15 @@ for r in range(3):
             cell.fill.solid(); cell.fill.fore_color.rgb = DARK
         else:
             cell.fill.solid()
-            if r == 2 and c == 2:
-                cell.fill.fore_color.rgb = RGBColor(0xF7, 0xD9, 0xC4)
-                run.font.color.rgb = RED; run.font.bold = True
-            else:
-                cell.fill.fore_color.rgb = LIGHT
-                run.font.color.rgb = GRAY
+            cell.fill.fore_color.rgb = LIGHT
+            run.font.color.rgb = GRAY
         cell.vertical_anchor = MSO_ANCHOR.MIDDLE
 tb, tf = textbox(s, Inches(0.85), Inches(6.1), Inches(11.7), Inches(0.8))
 p = tf.paragraphs[0]
 set_run(p.add_run(), "Điểm chốt: ", 15, ACCENT, bold=True)
-set_run(p.add_run(), "tác hại ≈ throughput × reliance. AUC im lặng ở 3/4 vùng, "
-        "nên phải đo throughput một cách trực tiếp.", 15, DARK)
+set_run(p.add_run(), "S17 (builder) phản ứng khi inject, nhưng AUC fold-0 gần phẳng "
+        "(S18 decoupling; GPU verified 2026-07-23). Phải đọc throughput trước AUC.",
+        15, DARK)
 footer(s)
 
 # 12. Conditional harm
@@ -623,10 +620,10 @@ NOTES = [
     "cao. Chỉ cần một mắt xích bằng 0 thì tích bằng 0, nên tác hại là phép NHÂN "
     "chứ không phải phép cộng — đó là lý do ba trong bốn ô đều xấp xỉ 0. Trên "
     "các benchmark công khai, bộ lọc tần suất giữ throughput ở mức thấp nên AUC "
-    "chỉ dịch dưới 0.003; nhưng khi chúng tôi chủ động bơm thêm 20% rò rỉ thì "
-    "GKT tăng vọt 0.05, còn simpleKT gần như bất động. Kết luận: tác hại xấp xỉ "
-    "throughput nhân reliance, nên phải đo throughput trực tiếp thay vì tin vào "
-    "AUC.",
+    "chỉ dịch dưới 0.003; khi chủ động bơm 20% test-fold vào builder thì S17 tăng "
+    "(|E_pre|, TBMR) nhưng AUC retrain gần phẳng (S18: GKT −0.010, simpleKT +0.0004) — "
+    "decoupling builder vs. headline. Kết luận: phải đo throughput trực tiếp, "
+    "không tin AUC làm báo động leakage.",
     # 16. Conditional harm
     "Đây là kết quả tác hại có điều kiện. Trước khi kết luận rằng đồ thị mang "
     "lại lợi ích, ta phải làm một phép thử: cố tình phá đồ thị và xem độ chính "

@@ -1,44 +1,26 @@
-import os
-import pandas as pd
+"""DEPRECATED bootstrap/injection table generator (historical placeholders).
 
-os.makedirs('results/tables', exist_ok=True)
+Table S18 (downstream_auc_injection) must come from verified GPU runs:
+  python -m scripts.collect_injection_auc
 
-# 1. bootstrap_auc_ci
-df_ci = pd.DataFrame([
-    {"Model Pair": "GKT vs simplekt", "Delta AUC": -0.041, "95% CI (Learner Bootstrap)": "[-0.044, -0.038]", "p-value": "<0.001"},
-    {"Model Pair": "GIKT vs simplekt", "Delta AUC": 0.003, "95% CI (Learner Bootstrap)": "[+0.003, +0.003]", "p-value": "<0.001"}
-])
-df_ci.to_csv("results/tables/bootstrap_auc_ci.csv", index=False)
+This script refuses to overwrite injection artefacts. Bootstrap CI rows are
+likewise superseded by scripts/bootstrap_auc_ci.py and generate_phase_c_tables.
+"""
 
-tex_str = r"""\begin{tabular}{lrrr}
-\toprule
-\textbf{Model Pair} & $\Delta$\textbf{AUC} & \textbf{95\% CI (Learner Bootstrap)} & \textbf{$p$-value} \\
-\midrule
-GKT vs \textit{simpleKT} & -0.041 & [-0.044, -0.038] & $<$0.001 \\
-GIKT vs \textit{simpleKT} & +0.003 & [+0.003, +0.003] & $<$0.001 \\
-\bottomrule
-\end{tabular}"""
-with open("results/tables/bootstrap_auc_ci.tex", "w") as f:
-    f.write(tex_str)
+from __future__ import annotations
 
-# 2. downstream_auc_injection
-df_down = pd.DataFrame([
-    {"Model": "simplekt", "Clean AUC": 0.850, "Leak 5% AUC": 0.852, "Leak 20% AUC": 0.858},
-    {"Model": "gkt", "Clean AUC": 0.810, "Leak 5% AUC": 0.825, "Leak 20% AUC": 0.860},
-    {"Model": "gikt", "Clean AUC": 0.852, "Leak 5% AUC": 0.860, "Leak 20% AUC": 0.880}
-])
-df_down.to_csv("results/tables/downstream_auc_injection.csv", index=False)
+import sys
 
-tex_str2 = r"""\begin{tabular}{lrrr}
-\toprule
-\textbf{Model} & \textbf{Clean AUC} & \textbf{Leak 5\% AUC} & \textbf{Leak 20\% AUC} \\
-\midrule
-simplekt & 0.850 & 0.852 & 0.858 \\
-gkt & 0.810 & 0.825 & 0.860 \\
-gikt & 0.852 & 0.860 & 0.880 \\
-\bottomrule
-\end{tabular}"""
-with open("results/tables/downstream_auc_injection.tex", "w") as f:
-    f.write(tex_str2)
 
-print("Tables generated.")
+def main() -> None:
+    sys.stderr.write(
+        "create_fake_tables.py is deprecated.\n"
+        "  Table S18: python -m scripts.collect_injection_auc\n"
+        "  Bootstrap CI: python -m scripts.bootstrap_auc_ci\n"
+        "Verified injection AUC (fold 0, 2026-07-23): see results/tables/downstream_auc_injection.csv\n"
+    )
+    raise SystemExit(1)
+
+
+if __name__ == "__main__":
+    main()

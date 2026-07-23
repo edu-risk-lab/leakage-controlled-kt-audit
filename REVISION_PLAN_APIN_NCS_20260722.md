@@ -223,4 +223,5 @@ Không cắt nhầm: định vị trung thực, manipulation check DDR/GKT, prer
 | **Server A GKT report** | **Đã pull** `docs/GKT_Hyperparams_Review_Report.md`; audit batch history |
 | **A2.1 wording** | **Đã sửa** Abstract + Limitations + Future work |
 | **A2.2 DDR duplicate AUC** | **Root cause found** — hardcode removed; **rerun pending** |
-| Kế hoạch này | **Cập nhật 22/07** với Server A |
+| **scan-placeholder** | **Done** — seminar scripts + deprecate `create_fake_tables.py`; `audit/2026-07-23-placeholder-injection-scan.md` |
+| Kế hoạch này | **Cập nhật 23/07** với Server A |

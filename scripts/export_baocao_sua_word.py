@@ -115,7 +115,8 @@ def main() -> None:
     add_bullets(
         doc,
         [
-            "Giải thích GKT 0.810→0.860 @ 20% injection: densify E_pre, graph-channel enrichment — không phải split hygiene.",
+            "Verified S18 (GPU 2026-07-23): S17 builder mass tăng (|E_pre|, TBMR) nhưng AUC retrain gần phẳng — decoupling (GKT −0.010 @20%, simpleKT +0.0004).",
+            "Không còn narrative placeholder GKT 0.810→0.860 (+0.05); nguồn: collect_injection_auc + audit/2026-07-23-A1-injection-verified-results.md.",
             "Nhấn mạnh AUC alone không đáng tin làm leakage alarm khi ECR_flag = 0.",
         ],
     )

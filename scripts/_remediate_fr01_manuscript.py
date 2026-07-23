@@ -1,6 +1,10 @@
 """One-shot authorized remediation patches for paper/main_APIN.tex (2026-07-17).
 
 Does not touch historical fold-result CSVs. Idempotent where possible.
+
+NOTE (2026-07-23): Injection patches below (+0.05 GKT / +0.008 simpleKT) are
+superseded by verified S18 decoupling (audit/2026-07-23-A1-injection-verified-results.md).
+Do not re-run against submission_APIN/main_APIN.tex without review.
 """
 
 from __future__ import annotations

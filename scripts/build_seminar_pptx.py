@@ -400,8 +400,8 @@ gtbl.columns[2].width = Inches(4.0)
 data = [
     ["", "Low reliance (simpleKT)", "High reliance (GKT, GIKT)"],
     ["Low throughput\n(train-only vs. full-log)", "\u2248 0", "\u2264 0.003  (full-log ablation)"],
-    ["High throughput\n(20% test-fold injection)", "\u2248 0  (0.850\u21920.858)",
-     "+0.05 GKT, +0.03 GIKT"],
+    ["High throughput\n(20% test-fold injection)", "\u2248 0 (+0.0004)",
+     "\u2248 0 (GKT \u22120.010; GIKT +0.0002)"],
 ]
 for r in range(rows):
     for c in range(cols):
@@ -418,18 +418,15 @@ for r in range(rows):
             cell.fill.solid(); cell.fill.fore_color.rgb = DARK
         else:
             cell.fill.solid()
-            if r == 2 and c == 2:
-                cell.fill.fore_color.rgb = RGBColor(0xF7, 0xD9, 0xC4)  # highlight harm cell
-                run.font.color.rgb = RED; run.font.bold = True
-            else:
-                cell.fill.fore_color.rgb = LIGHT
-                run.font.color.rgb = GRAY
+            cell.fill.fore_color.rgb = LIGHT
+            run.font.color.rgb = GRAY
         cell.vertical_anchor = MSO_ANCHOR.MIDDLE
 tb, tf = textbox(s, Inches(0.85), Inches(6.15), Inches(11.7), Inches(0.8))
 p = tf.paragraphs[0]
 set_run(p.add_run(), "Takeaway: ", 15, ACCENT, bold=True)
-set_run(p.add_run(), "harm \u2248 throughput \u00d7 reliance. AUC is silent in 3/4 "
-        "regimes \u2192 the audit measures throughput directly instead.", 15, DARK)
+set_run(p.add_run(), "S17 builder metrics rise under injection, but fold-0 AUC stays "
+        "flat (S18 decoupling; verified GPU 2026-07-23). Read throughput before AUC.",
+        15, DARK)
 footer(s)
 
 # 12. Conditional harm / downstream
