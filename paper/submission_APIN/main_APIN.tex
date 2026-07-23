@@ -368,9 +368,9 @@ than deferred to the Discussion alone.
   operators at the structural level rather than restating edge counts alone.
   \emph{Downstream evidence:} under an anchored multi-seed retraining sweep, \DDR{}
   predicts accuracy loss on a graph-reliant backbone that passes a
-  manipulation check (GKT on XES3G5M: Pearson $r{\approx}0.93$ on the
-  $p{\le}0.3$ core, $n{=}81$; $r{\approx}0.99$ with anchors, $n{=}99$;
-  Spearman $\rho{\approx}0.93$ on the same full pool;
+  manipulation check (GKT on XES3G5M: Pearson $r{\approx}0.95$ on the
+  $p{\le}0.3$ core, $n{=}54$; $r{\approx}0.99$ with anchors, $n{=}66$;
+  Spearman $\rho{\approx}0.96$ on the same full pool;
   \texttt{prereq\_preserve}
   costs the least AUC at matched budget), while remaining a purely structural
   audit on graph-inert backbones (DGEKT, and GKT on ASSISTments), where total
@@ -1643,7 +1643,7 @@ changes stay near zero and pooled \DDR{}--AUC-drop correlations are weak
 ($r{=}0.13$--$0.15$). GKT on ASSISTments behaves the same way
 (Table~\ref{tab:ddr-downstream-gkt}, second block): destroying the graph
 entirely at the manipulation-check anchor (\texttt{node\_drop} $p{=}0.90$,
-\DDR{}${=}0.986$) moves AUC by only $0.0021$ ($0.9630{\to}0.9607$). These cells
+\DDR{}${=}0.995$) moves AUC by only $0.0021$ ($0.9630{\to}0.9610$). These cells
 \emph{fail} the manipulation check; we read them as \emph{low-reliance anchors}
 (reliance ${\approx}0$), not as evidence about \DDR{}. This is exactly the
 low-reliance column of the two-factor account (Table~\ref{tab:two-factor}):
@@ -1654,16 +1654,16 @@ accuracy, and \DDR{}'s value is confined to structure and reproducibility.
 The same protocol on GKT/XES3G5M (Table~\ref{tab:ddr-downstream-gkt}, first
 block; seeds $\{42,17,1234\}$, nine folds) tells the opposite story. GKT \emph{passes} the
 manipulation check decisively: near-total destruction drops AUC from the
-pooled baseline $0.8354$ to $0.7637$ (\texttt{edge\_drop} $p{=}0.90$, ${-}0.072$) and
-$0.7469$ (\texttt{node\_drop} $p{=}0.90$, ${-}0.089$), so this backbone
+pooled baseline $0.8346$ to $0.7636$ (\texttt{edge\_drop} $p{=}0.90$, ${-}0.071$) and
+$0.7468$ (\texttt{node\_drop} $p{=}0.90$, ${-}0.088$), so this backbone
 demonstrably reads the prerequisite graph. Within the interpretable regime,
 \DDR{} tracks the AUC drop almost perfectly: the two rise monotonically together
-(Pearson $r{=}0.93$ over the $p{\le}0.3$ core, $n{=}81$; Pearson $r{=}0.99$
-including anchors, $n{=}99$; Spearman $\rho{=}0.93$ on the same full pool,
-$n{=}99$). Moreover, at a \emph{matched} perturbation budget the
+(Pearson $r{=}0.95$ over the $p{\le}0.3$ core, $n{=}54$; Pearson $r{=}0.99$
+including anchors, $n{=}66$; Spearman $\rho{=}0.96$ on the same full pool,
+$n{=}66$). Moreover, at a \emph{matched} perturbation budget the
 operator ordering carries through to accuracy: at $p{=}0.30$,
-\texttt{prereq\_preserve} costs $0.0104$ AUC, \texttt{edge\_drop} $0.0133$, and
-\texttt{node\_drop} $0.0426$, and the same
+\texttt{prereq\_preserve} costs $0.0098$ AUC, \texttt{edge\_drop} $0.0118$, and
+\texttt{node\_drop} $0.0423$, and the same
 $\texttt{prereq\_preserve}<\texttt{edge\_drop}<\texttt{node\_drop}$ ordering
 holds at $p{=}0.10$ and $p{=}0.20$. The structure-preserving operator that is
 least disruptive by \DDR{} (Section~\ref{sec:exp-ddr}) is also the one that
@@ -1927,8 +1927,8 @@ perturbation budget. The anchored downstream stress test in
 Section~\ref{sec:exp-ddr-downstream} sharpens this into a \emph{conditional}
 result. Where a manipulation check confirms the backbone reads the graph
 (GKT on XES3G5M: destroying the graph costs $0.07$--$0.09$ AUC across three seeds), \DDR{}
-predicts the accuracy loss (Pearson $r{\approx}0.93$ on $p{\le}0.3$, $n{=}81$;
-$r{\approx}0.99$ with anchors, $n{=}99$) and \texttt{prereq\_preserve} costs the
+predicts the accuracy loss (Pearson $r{\approx}0.95$ on $p{\le}0.3$, $n{=}54$;
+$r{\approx}0.99$ with anchors, $n{=}66$) and \texttt{prereq\_preserve} costs the
 least AUC at matched budget---structural damage translates into predictive
 damage. Where the manipulation check fails (DGEKT, and GKT on ASSISTments:
 total destruction moves AUC by ${\le}0.003$), the same graph is effectively
@@ -2009,7 +2009,7 @@ Manipulation check ($p{=}0.90$ anchor) & AUC unmoved under near-total graph
 destruction & Backbone is graph-inert; report \DDR{} as reproducibility scaffolding,
 not a design target \\
 \DDR{} vs.\ AUC (graph-reliant backbone) & Monotone on GKT/XES3G5M
-(Pearson $r{\approx}0.93$, $n{=}81$ core; $r{\approx}0.99$, $n{=}99$ with anchors)
+(Pearson $r{\approx}0.95$, $n{=}54$ core; $r{\approx}0.99$, $n{=}66$ with anchors)
 & Prefer \texttt{prereq\_preserve}; \DDR{} is a valid design target here \\
 Similarity-edge feasibility & $|E_{\mathrm{sim}}|{=}0$ under single-skill Q-matrix
 & Do not deploy a model \emph{requiring} $\Esim$ without a new co-occurrence rule \\
@@ -2223,7 +2223,7 @@ at a matched budget, confirming that \DDR{} separates structure-aware from
 structure-agnostic operators at the graph level. An anchored downstream
 retraining test makes the predictive reading conditional: on a graph-reliant
 backbone that passes a manipulation check (GKT on XES3G5M; three seeds) \DDR{} predicts AUC
-loss (Pearson $r{\approx}0.93$ on $p{\le}0.3$, $n{=}81$; $r{\approx}0.99$ with anchors, $n{=}99$)
+loss (Pearson $r{\approx}0.95$ on $p{\le}0.3$, $n{=}54$; $r{\approx}0.99$ with anchors, $n{=}66$)
 and \texttt{prereq\_preserve} costs the least accuracy at
 matched budget, whereas on graph-inert cells (DGEKT; GKT on ASSISTments) total
 graph destruction moves AUC by ${\le}0.003$ and \DDR{} stays a purely
@@ -2394,7 +2394,7 @@ The main text summarises both in a single table.
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.88\linewidth]{fig_ddr_downstream.pdf}
-\caption{Supplementary Figure~S3. Downstream graph-KT sensitivity to prerequisite-graph disruption on ASSISTments~2012 and XES3G5M (DGEKT and GKT cells). Each point is one fold/operator/strength run; the vertical axis is AUC drop relative to the unperturbed train-only graph. The burned-in annotation $r{\approx}0.75$ is the \emph{global pooled} Pearson correlation across both datasets and both models ($n{=}186$), not the XES3G5M/GKT-only correlation ($r{\approx}0.99$ with anchors, $n{=}99$; $r{\approx}0.93$ on the $p{\le}0.3$ core, $n{=}81$).}
+\caption{Supplementary Figure~S3. Downstream graph-KT sensitivity to prerequisite-graph disruption on ASSISTments~2012 and XES3G5M (DGEKT and GKT cells). Each point is one fold/operator/strength run; the vertical axis is AUC drop relative to the unperturbed train-only graph. The burned-in annotation $r{\approx}0.75$ is the \emph{global pooled} Pearson correlation across both datasets and both models ($n{=}186$), not the XES3G5M/GKT-only correlation ($r{\approx}0.99$ with anchors, $n{=}66$; $r{\approx}0.95$ on the $p{\le}0.3$ core, $n{=}54$).}
 \label{fig:supp-ddr-downstream}
 \end{figure}
 
