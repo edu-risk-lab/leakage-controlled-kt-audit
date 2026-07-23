@@ -72,7 +72,7 @@
 - [x] **A1.0b** Cột clean S18 → fold-0 thật (`scripts/collect_injection_auc.py`); 5%/20% = `---` pending.
 - [x] **A1.1** GPU: 9 run inject00/05/20 × 3 model (fold 0, hp Table S15) — Server A batch 2026-07-23; cache in `results/cache/*inject*`.
 - [x] **A1.2** Cập nhật S18, §4.3, bảng 2×2 — **decoupling** (GKT −0.010 @20%, không còn placeholder +0.05).
-- [ ] **A1.3** Lập bảng đối chiếu số liệu chéo (script `scripts/crossref_auc_numbers.py` — tạo mới).
+- [x] **A1.3** Lập bảng đối chiếu số liệu chéo (script `scripts/crossref_auc_numbers.py` — tạo mới).
 
 **Giảm nhẹ (nếu không kịp GPU):**
 - [ ] Ghi rõ trong §4.3 + caption S18: reduced budget; câu mẫu giáo sư (qualitative contrast không phụ thuộc baseline tuyệt đối).
@@ -96,7 +96,7 @@
 - [x] **A2.0** Đồng bộ tài liệu theo Server A: `AUTHOR_ATTESTATION.md`, `xes3g5m_gkt_epochs30.yaml` → batch **32**; S21/S15 footnote; `DDR_DOWNSTREAM_GKT.md`; `main_APIN.tex` batch 32.
 - [x] **A2.1** Sửa Abstract / Limitations / Future work: batch **32**, disclosure pooled Δ≈−0.038, không claim compute-matched.
 - [x] **A2.2** Xác minh AUC trùng: **placeholder** `eval_existing.py` — xóa hardcode; audit `audit/2026-07-22-A2-DDR-GKT30-duplicate-auc.md`.
-- [ ] **A2.2b** Rerun DDR GKT seed 17 fold 0 `none` (10ep batch 8) và merge lại CSV.
+- [ ] **A2.2b** Rerun DDR GKT seed 17 fold 0 `none` (10ep batch 8) và merge lại CSV — **script sẵn:** `scripts/run_a2_2b_ddr_seed17_baseline.{sh,ps1}`, runbook `audit/2026-07-23-GPU-server-runbook.md`.
 - [ ] **A2.3** (Tùy chọn GPU) Rerun GKT@30 **batch 4** nếu giáo sư yêu cầu compute-matched thật sự (~1 tuần RTX 3090).
 
 **Hành động đã có sẵn — không cần rerun cho gap −0.038:**
@@ -117,9 +117,9 @@
 
 **Hành động:**
 - [x] **A3.1** Sửa pipeline: suppress AUC khi discordant pairs < 10 (`src/cold_start_report.py`).
-- [x] **A3.2** Cập nhật generator bảng: hiển thị `---` + footnote (`generate_cold_start_comparison.py`).
+- [x] **A3.2** Cập nhật generator bảng: hiển thị `---` + footnote (`generate_cold_start_comparison.py`, `generate_phase_c_tables.py` summary).
 - [ ] **A3.3** Kiểm chứng tay fold 0 (in 19 interaction + prediction từng model) — cần cache preds / chạy lại baseline không cap.
-- [ ] **A3.4** Hạ giọng §4.8, §5.1 H2 liên quan Junyi very_cold.
+- [x] **A3.4** Hạ giọng §4.8, §5.1 H2 liên quan Junyi very_cold; sync `cold_start_summary.tex`.
 - [ ] **A3.5** Chạy lại cold-start với full predictions (`prediction_cap=None`, không skip cold cho pykt).
 
 **DoD:** Mọi ô AUC cold-start có giải thích hoặc bị suppress; không còn “5 model trùng nhau” không giải thích.
@@ -215,9 +215,9 @@ Không cắt nhầm: định vị trung thực, manipulation check DDR/GKT, prer
 | Mục | Trạng thái |
 |---|---|
 | B4 code + bảng | **Đã sửa** |
-| A3 suppress + bảng | **Đã sửa generator**; cần rerun metrics đầy đủ |
-| B5, B6 text | **Đã sửa** `main_APIN.tex` |
-| A1 injection disclosure | **Đã thêm** cảnh báo tạm trong §4.3 |
+| A1 injection disclosure | **Verified** S18 GPU (2026-07-23); decoupling narrative |
+| A1.3 crossref | **Done** `scripts/crossref_auc_numbers.py` → `audit/crossref_auc_report.md` |
+| A3 suppress + bảng | **Done** summary `---` Junyi very_cold; §4.8/H2 updated |
 | A2 abstract qualifier | **Đã siết** wording budget |
 | **Server A GKT report** | **Đã pull** `docs/GKT_Hyperparams_Review_Report.md`; audit batch history |
 | **A2.1 wording** | **Đã sửa** Abstract + Limitations + Future work |

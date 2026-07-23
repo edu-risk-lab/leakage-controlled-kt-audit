@@ -1685,10 +1685,13 @@ follow-up (Section~\ref{sec:future-work}).
 \input{cold_start_summary.tex}
 Table~\ref{tab:cold-start-summary} shows that aggregate AUC can hide
 per-stratum variation: on real benchmarks the best graph-aware family
-leads only in \emph{very\_cold} ($\Delta_{\max}{=}0.002$ on ASSISTments,
-$+0.005$ on XES3G5M) and is tied or worse in \emph{warm}/\emph{hot}
-(mean $\Delta_{\max}{\approx}{-}0.005$). Tiny very-cold counts ($n{<}200$
-on Junyi/ASSIST) should not be over-interpreted. Synthetic C2/C5 route
+leads only in \emph{very\_cold} on ASSISTments ($\Delta_{\max}{=}{-}0.007$)
+and XES3G5M ($+0.006$), and is tied or worse in \emph{warm}/\emph{hot}
+(mean $\Delta_{\max}{\approx}{-}0.005$). Junyi \emph{very\_cold} is
+suppressed ($n{=}19$; fold~0 AUC is degenerate at $1.0$ for every model,
+so the three-fold mean is not reported). Tiny very-cold counts
+($n{<}200$ on ASSISTments) should not be over-interpreted without
+fold-level dispersion. Synthetic C2/C5 route
 all test mass to \emph{hot}; their positive $\Delta_{\max}$ values
 reflect clean generator structure, not cold-start relief. GKT underperforms
 sequence leaders on synthetic hot rows, reinforcing model-specific graph benefit.
@@ -1849,9 +1852,11 @@ cross-split pooling more aggressively might show larger shifts.
 \paragraph{H2 -- Aggregate-metric masking.}
 The cold-start diagnostic (Section~\ref{sec:exp-coldstart}) shows that
 per-stratum behaviour can differ from aggregate behaviour.
-Table~\ref{tab:cold-start-summary} makes this concrete: on real data, the
-best graph-aware model is slightly better in the \emph{very\_cold} stratum,
-essentially tied in \emph{cold}, and worse in \emph{warm}/\emph{hot}. On
+Table~\ref{tab:cold-start-summary} makes this concrete: on ASSISTments and
+XES3G5M, the best graph-aware model is slightly better in the \emph{very\_cold}
+stratum, essentially tied in \emph{cold}, and worse in \emph{warm}/\emph{hot}.
+Junyi \emph{very\_cold} is omitted because fold~0 stratum counts are too small
+and stratum AUC is undefined/degenerate (Supplementary Tables~S12--S13). On
 Synthetic~C2/C5, where all test interactions are hot, GIKT/DGEKT improve over
 sequence-only baselines, but this reflects clean synthetic structure rather
 than cold-start relief.
@@ -1946,15 +1951,17 @@ class imbalance rather than genuine modelling improvement. Reporting
 per-stratum metrics gives reviewers a clearer view of whether a method
 is robust across the KC frequency distribution. In our results,
 graph-aware models show their narrowest real-data advantage in the
-very-cold stratum, while synthetic hot-stratum gains reflect clean
+\emph{very\_cold} stratum on ASSISTments and XES3G5M (Junyi \emph{very\_cold}
+suppressed), while synthetic hot-stratum gains reflect clean
 concept structure rather than cold-start relief.
 Figure~\ref{fig:kt-graph-junyi} links this diagnostic to concrete graph
 topology on the densest benchmark; Figure~\ref{fig:coldstart-viz} plots a
 fold~0 XES3G5M ego-graph and learner timeline from released exports; sparser
 $\Epre$ on ASSISTments and XES3G5M (Supplementary Figure~S1) still exhibit
-cold strata. Very-cold counts remain small ($n{=}19$--$161$ per dataset in
-Table~\ref{tab:cold-start-summary}); stratum-level AUC therefore carries high
-variance and should be read alongside $n$ and fold-level dispersion.
+cold strata. Very-cold counts remain small ($n{=}49$--$161$ on the reported
+real-data strata in Table~\ref{tab:cold-start-summary}); stratum-level AUC
+therefore carries high variance and should be read alongside $n$ and
+fold-level dispersion.
 
 \paragraph{Leakage risk concentrates at cold-start KCs.}
 Leakage control and cold-start stratification are usually treated as separate
@@ -2245,8 +2252,9 @@ throughput indicators (builder mass, $\mathrm{TBMR}$) fire regardless of
 backbone reliance, giving practitioners a leading indicator before a
 contaminated graph is mistaken for a SOTA improvement. Ground-truth
 cross-validation on Junyi shows high node overlap but weak edge agreement.
-Cold-start strata reveal a narrow graph-aware advantage only in very-cold
-\KCs{} on real data, with small $n$ and high variance. Practitioners can apply
+Cold-start strata reveal a narrow graph-aware advantage in \emph{very\_cold}
+\KCs{} on ASSISTments and XES3G5M (Junyi \emph{very\_cold} suppressed), with
+small $n$ and high variance. Practitioners can apply
 the five-item checklist in Section~\ref{sec:disc-implications} before
 reporting new graph-augmented KT results. Section~\ref{sec:future-work}
 outlines continuous graph updating and feedback-aware construction as next

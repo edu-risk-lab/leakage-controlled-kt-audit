@@ -29,7 +29,7 @@ DDR seed 17 fold 0 `none` **không phải** run GKT 10ep batch 8 hợp lệ; gi�
 | Mức | Việc | Trạng thái |
 |---|---|---|
 | Code | Xóa hardcode `eval_existing.py` | **Done** |
-| GPU | Rerun DDR GKT seed 17 fold 0 `operator=none` (10ep, batch 8) | **Pending** |
+| GPU | Rerun DDR GKT seed 17 fold 0 `operator=none` (10ep, batch 8) | **Script ready** — `scripts/run_a2_2b_ddr_seed17_baseline.{sh,ps1}` |
 | Data | Cập nhật `ddr_downstream_gkt_seed17.csv` + merge | **Pending rerun** |
 | Paper | Không cite fold-0 none seed 17 làm DDR baseline cho đến khi rerun | **Note for authors** |
 

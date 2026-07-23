@@ -611,18 +611,20 @@ see `paper/submission_APIN/main_APIN.tex`).
 Realises the dangerous cell of the two-factor model (paper §4.3): on XES3G5M
 fold 0 it deliberately injects test-fold transitions to raise contamination
 **throughput**, then shows that the structural audit fires first (builder mass /
-TBMR rise monotonically while the learner-disjoint flag stays 0) and that only
-graph-reliant backbones inflate AUC downstream.
+TBMR rise monotonically while the learner-disjoint flag stays 0) while downstream
+AUC stays near flat for sequence-only backbones and can dip slightly for GKT
+(verified Server A GPU run, 2026-07-23).
 
 ```bash
 python -m scripts.run_leak_injection   # CPU: |E_pre|, builder mass, TBMR vs injection rate
 python -m scripts.run_injection_auc    # GPU (pyKT): downstream AUC per backbone on injected graphs
+python -m scripts.collect_injection_auc  # regenerate Table S18 from cache
 ```
 
 Outputs: `results/tables/leak_injection.{csv,tex}` (structural indicators,
 Table S17) and `results/tables/downstream_auc_injection.tex`
-(`tab:downstream-injection-auc`, Table S18: GKT `0.810→0.860`, GIKT
-`0.852→0.880`, sequence-only `simpleKT` unmoved).
+(Table S18 verified @20%: \textit{simpleKT} ${+}0.0004$, GKT ${-}0.010$,
+GIKT ${+}0.0002$ AUC vs clean fold~0).
 
 ### 4.10 Inferential summaries (ΔAUC CIs, ANOVA, epoch/parity)
 
