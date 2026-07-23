@@ -70,8 +70,8 @@
 **Hành động (ưu tiên triệt để):**
 - [x] **A1.0** Rà soát repo/git/log — **không có** artifact inject05/20; S18 cũ = placeholder (`audit/2026-07-22-A1-injection-data-audit.md`).
 - [x] **A1.0b** Cột clean S18 → fold-0 thật (`scripts/collect_injection_auc.py`); 5%/20% = `---` pending.
-- [ ] **A1.1** GPU: 6 run inject05/20 × 3 model (fold 0, hp Table S15).
-- [ ] **A1.2** Cập nhật S17/S18, §4.3, bảng 2×2 (`tab:two-factor`), mọi câu 0.850→0.858.
+- [x] **A1.1** GPU: 9 run inject00/05/20 × 3 model (fold 0, hp Table S15) — Server A batch 2026-07-23; cache in `results/cache/*inject*`.
+- [x] **A1.2** Cập nhật S18, §4.3, bảng 2×2 — **decoupling** (GKT −0.010 @20%, không còn placeholder +0.05).
 - [ ] **A1.3** Lập bảng đối chiếu số liệu chéo (script `scripts/crossref_auc_numbers.py` — tạo mới).
 
 **Giảm nhẹ (nếu không kịp GPU):**
