@@ -222,6 +222,7 @@ Không cắt nhầm: định vị trung thực, manipulation check DDR/GKT, prer
 | A2 abstract qualifier | **Đã siết** wording budget |
 | **Server A GKT report** | **Đã pull** `docs/GKT_Hyperparams_Review_Report.md`; audit batch history |
 | **A2.1 wording** | **Đã sửa** Abstract + Limitations + Future work |
-| **A2.2 DDR duplicate AUC** | **Root cause found** — hardcode removed; **rerun pending** |
+| **A2.2 DDR duplicate AUC** | **Done** — A2.2b verified + §4.6 prose aligned to Table DDR-GKT ($n{=}54/66$) |
+| **crossref pre-submit** | **Done** `audit/crossref_auc_report.md` — 12/12 pass (2026-07-23) |
 | **scan-placeholder** | **Done** — seminar scripts + deprecate `create_fake_tables.py`; `audit/2026-07-23-placeholder-injection-scan.md` |
 | Kế hoạch này | **Cập nhật 23/07** với Server A |
