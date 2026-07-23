@@ -657,45 +657,16 @@ $\Esim^f\subseteq\mathcal{C}\times\mathcal{C}$, edge weights
 $w_{ij}\ge 0$, and pruning decisions on cyclic subsets of $\Epre^f$.
 
 \paragraph{Design intent (not a deployed solver).}
-Eq.~\eqref{eq:graph-objective} states a \emph{conceptual} objective---maximise
-retained prerequisite and similarity mass subject to sparsity and acyclicity---but
-the released code does \emph{not} solve it as a joint numerical programme.
+The released code does \emph{not} solve a joint numerical graph programme.
 Prerequisite and similarity edges are inferred in separate greedy pipelines with
 $\lambda{=}0$ in practice; sparsity enters through support quantiles, top-$k$
 per-node caps, and a global edge budget~$K$ (Section~\ref{sec:graph}), followed
-by deterministic cycle pruning. Treat Eq.~\eqref{eq:graph-objective} as design
-documentation for constraints~(C3)--(C4), not as an optimiser that is executed
-end-to-end.
-\begin{equation}
-\max_{\Epre^f,\Esim^f}\;
-\sum_{(i,j)\in\Epre^f} w_{ij}
-\;+\;
-\lambda \sum_{(i,j)\in\Esim^f} \mathrm{sim}(c_i,c_j)
-\label{eq:graph-objective}
-\end{equation}
-where $\mathrm{sim}$ is Jaccard or PMI (Section~\ref{sec:graph-sim-theory})
-and $\lambda\ge 0$ would trade prerequisite mass against similarity mass if the
-two pipelines were merged (they are not in the released implementation).
+by deterministic cycle pruning. The conceptual objective
+(Eq.~\eqref{eq:graph-objective}) and feasibility constraints~(C1)--(C4) are
+stated formally in Supplementary Section~\ref{sec:supp-graph-objective}; treat
+them as design documentation, not as an optimiser executed end-to-end.
 
-\paragraph{Constraints.}
-\begin{align}
-\text{(C1)} \;& \forall e\in\mathcal{E}_f,\;
-  S_{\mathrm{hi}}(e)=\emptyset;
-  \label{eq:c1}\\
-\text{(C2)} \;& \mathcal{U}^{\mathrm{tr}}_f \cap \mathcal{U}^{\mathrm{va}}_f
-  = \emptyset,\notag\\
-&\; \mathcal{U}^{\mathrm{tr}}_f \cap \mathcal{U}^{\mathrm{te}}_f
-  = \emptyset,\notag\\
-&\; \mathcal{U}^{\mathrm{va}}_f \cap \mathcal{U}^{\mathrm{te}}_f
-  = \emptyset;
-  \label{eq:c2}\\
-\text{(C3)} \;& \Epre^f \text{ is acyclic after pruning};
-  \label{eq:c3}\\
-\text{(C4)} \;& |\Epre^f|\le K,\;
-  |\mathrm{Out}_{\Epre^f}(i)|\le k;\notag\\
-&\; \mathrm{sim}(c_i,c_j)\ge\tau \ \forall (i,j)\in\Esim^f.
-  \label{eq:c4}
-\end{align}
+\paragraph{Constraints (summary).}
 C1--C2 block cross-fold and cross-learner contamination; C3--C4 encode
 the DAG audit and top-$K$/top-$k$ filters of Section~\ref{sec:graph}.
 We deliberately do \emph{not} impose $\mathrm{TBMR}_f{=}0$
@@ -1325,20 +1296,10 @@ ASSISTments and XES3G5M retain $261$ and $701$ edges respectively after pruning
 (Table~\ref{tab:dag-audit}). Even train-only inference can induce cycles; the
 audit makes the pruning rule explicit rather than silently fixing the graph.
 
-\begin{figure}[!t]
-\centering
-\includegraphics[width=0.88\linewidth]{fig_kt_graph_junyi.pdf}
-\caption{Schematic visualisation of a high-support prerequisite chain in
-train-only $\Epre$ on Junyi Academy after DAG audit (representative subgraph;
-the full graph contains hundreds to thousands of edges).
-Directed prerequisite edges ($c_i\!\to\!c_j$) are drawn as arrows.
-ASSISTments~2012 and XES3G5M panels appear in Supplementary Figure~S1.}
-\label{fig:kt-graph-junyi}
-\end{figure}
-
-Figure~\ref{fig:kt-graph-junyi} illustrates the \emph{shape} of retained
-prerequisite structure on the densest public benchmark. These plots are not
-used for inference; they help reviewers compare graph density with \DDR{} and
+Supplementary Figure~S1 (Figure~\ref{fig:supp-kt-graph-all}) illustrates the
+\emph{shape} of retained prerequisite structure on all three public benchmarks,
+including a high-support Junyi chain after DAG audit. These plots are not used
+for inference; they help reviewers compare graph density with \DDR{} and
 baseline behaviour in later sections.
 
 \subsection{Controlled test-fold edge injection}
@@ -1357,11 +1318,13 @@ because learner-id sets stay disjoint: flag-level checks alone cannot detect
 this contamination channel, which motivates the tiered audit.
 $\mathrm{ECR}^{\mathrm{overlap}}_f$ is already saturated at $1.0$ on this
 transition-dense corpus (Section~\ref{sec:formal-problem}), so it carries no
-additional signal here. Retraining on the injected graphs under the primary
-budgets in Table~S15 (Supplementary Table~S18) shows a deliberate
-\emph{decoupling}: builder-side indicators move while fold-0 test AUC stays
-near flat for all three backbones ($|\Delta\text{AUC}|{\leq}0.010$ at
-$20\%$ injection). \textit{simpleKT} moves by ${+}0.0004$ ($0.8744{\to}0.8748$);
+additional signal here. Retraining on the injected graphs uses the \emph{reduced}
+graph-backbone budgets in Table~S15 (10 epochs, smaller batches; Supplementary
+Table~S18), not the 30-epoch sequence cap---so absolute AUC levels are not
+directly comparable to headline Table~\ref{tab:baseline-summary} rows. The
+qualitative pattern we emphasise is \emph{decoupling}: builder-side indicators
+move while fold-0 test AUC stays near flat for all three backbones
+($|\Delta\text{AUC}|{\leq}0.010$ at $20\%$ injection). \textit{simpleKT} moves by ${+}0.0004$ ($0.8744{\to}0.8748$);
 GIKT by ${+}0.0002$ ($0.8776{\to}0.8778$); GKT \emph{dips} slightly by
 ${-}0.010$ ($0.8346{\to}0.8243$). The sequence-only baseline and the two
 graph consumers therefore remain on the same headline scale despite a
@@ -1948,8 +1911,8 @@ graph-aware models show their narrowest real-data advantage in the
 \emph{very\_cold} stratum on ASSISTments and XES3G5M (Junyi \emph{very\_cold}
 suppressed), while synthetic hot-stratum gains reflect clean
 concept structure rather than cold-start relief.
-Figure~\ref{fig:kt-graph-junyi} links this diagnostic to concrete graph
-topology on the densest benchmark; Figure~\ref{fig:coldstart-viz} plots a
+Supplementary Figure~S1 links this diagnostic to concrete graph topology on
+the public benchmarks; Figure~\ref{fig:coldstart-viz} plots a
 fold~0 XES3G5M ego-graph and learner timeline from released exports; sparser
 $\Epre$ on ASSISTments and XES3G5M (Supplementary Figure~S1) still exhibit
 cold strata. Very-cold counts remain small ($n{=}49$--$161$ on the reported
@@ -2292,6 +2255,41 @@ Figure~S3: \DDR{} downstream scatter plot
 (Figure~\ref{fig:supp-ddr-downstream}).
 Cold-start panels in the main text (Figure~\ref{fig:coldstart-viz}) are
 generated from fold~0 exports by \path{scripts/plot\_kt\_graph\_figures.py}.
+Section~S2: formal graph-construction objective (Section~\ref{sec:supp-graph-objective}).
+
+\section{Formal graph-construction objective}
+\label{sec:supp-graph-objective}
+\noindent This section states the conceptual graph objective referenced in
+Section~\ref{sec:formal-problem}. Prerequisite and similarity edges are inferred
+in separate greedy pipelines with $\lambda{=}0$ in practice; $\mathrm{sim}$ is
+Jaccard or PMI (Section~\ref{sec:graph-sim-theory}).
+\begin{equation}
+\max_{\Epre^f,\Esim^f}\;
+\sum_{(i,j)\in\Epre^f} w_{ij}
+\;+\;
+\lambda \sum_{(i,j)\in\Esim^f} \mathrm{sim}(c_i,c_j)
+\label{eq:graph-objective}
+\end{equation}
+where $\lambda\ge 0$ would trade prerequisite mass against similarity mass if the
+two pipelines were merged (they are not in the released implementation).
+\begin{align}
+\text{(C1)} \;& \forall e\in\mathcal{E}_f,\;
+  S_{\mathrm{hi}}(e)=\emptyset;
+  \label{eq:c1}\\
+\text{(C2)} \;& \mathcal{U}^{\mathrm{tr}}_f \cap \mathcal{U}^{\mathrm{va}}_f
+  = \emptyset,\notag\\
+&\; \mathcal{U}^{\mathrm{tr}}_f \cap \mathcal{U}^{\mathrm{te}}_f
+  = \emptyset,\notag\\
+&\; \mathcal{U}^{\mathrm{va}}_f \cap \mathcal{U}^{\mathrm{te}}_f
+  = \emptyset;
+  \label{eq:c2}\\
+\text{(C3)} \;& \Epre^f \text{ is acyclic after pruning};
+  \label{eq:c3}\\
+\text{(C4)} \;& |\Epre^f|\le K,\;
+  |\mathrm{Out}_{\Epre^f}(i)|\le k;\notag\\
+&\; \mathrm{sim}(c_i,c_j)\ge\tau \ \forall (i,j)\in\Esim^f.
+  \label{eq:c4}
+\end{align}
 
 \section{Per-dataset baseline diagnostics}
 \label{sec:supp-baseline}
@@ -2562,7 +2560,7 @@ precede AUC-only leakage conclusions, not as proof that contamination always
 lowers or raises accuracy.
 \begin{table}[h!]
 \centering
-\caption{Downstream test AUC under controlled leak injection, XES3G5M fold~0 (Table S18)}
+\caption{Downstream test AUC under controlled leak injection, XES3G5M fold~0 (Table~S18). Models retrained under reduced graph-backbone budgets (Table~S15: 10 epochs, smaller batches); qualitative decoupling (builder mass vs.\ flat AUC) is the intended reading, not cross-table absolute AUC ranking.}
 \label{tab:downstream-injection-auc}
 \input{downstream_auc_injection.tex}
 \end{table}

@@ -128,8 +128,7 @@ In: \bbtitle{International Conference on Learning Representations (ICLR)}
 In: \bbtitle{Proceedings of the 12th International Conference on Educational Data Mining (EDM)},
 pp. \bfpage{384}--\blpage{389}
 (\byear{2019}).
-\doiurl{10.48550/arXiv.1907.06837} .
-\burl{https://drive.google.com/file/d/18d_X6AXkPMhiHFQ2POarstVbX_7oMdFM}
+\doiurl{10.48550/arXiv.1907.06837}
 \end{bchapter}
 \endbibitem
 
@@ -499,18 +498,19 @@ pp. \bfpage{1447}--\blpage{1456}
 
 %%% 29
 \bibitem[\protect\citeauthoryear{Bai et~al.}{2025}]{bai2025survey}
-\begin{botherref}
-\oauthor{\bsnm{Bai}, \binits{Y.}},
-\oauthor{\bsnm{Liu}, \binits{Z.}},
-\oauthor{\bsnm{Guo}, \binits{T.}},
-\oauthor{\bsnm{Hou}, \binits{M.}},
-\oauthor{\bsnm{Xiao}, \binits{K.}}:
-Prerequisite relation learning: A survey and outlook.
-ACM Computing Surveys
-\textbf{57}
-(2025)
+\begin{barticle}
+\bauthor{\bsnm{Bai}, \binits{Y.}},
+\bauthor{\bsnm{Liu}, \binits{Z.}},
+\bauthor{\bsnm{Guo}, \binits{T.}},
+\bauthor{\bsnm{Hou}, \binits{M.}},
+\bauthor{\bsnm{Xiao}, \binits{K.}}:
+\batitle{Prerequisite relation learning: A survey and outlook}.
+\bjtitle{ACM Computing Surveys}
+\bvolume{57}(\bissue{9}),
+\bfpage{1}--\blpage{36}
+(\byear{2025})
 \doiurl{10.1145/3733593}
-\end{botherref}
+\end{barticle}
 \endbibitem
 
 %%% 30

@@ -157,7 +157,7 @@
 
 - [x] **C8.1** Gom caveat seed-42/S21 về Limitations (`\label{sec:limitations}`); rút gọn lặp ở Abstract/Intro/C5/§4/Discussion/Conclusion.
 - [x] **C8.2** Bỏ “Applied Intelligence readers” → “applied practitioners” (Conclusion).
-- [ ] Cân nhắc Eq.(1), Fig.5 xuống supplementary.
+- [x] **C8.3** Eq.(1) + Fig.5 → supplementary (Section~S2; Fig.~S1 only in main refs).
 
 ### C9. Trích dẫn + rà 2025–2026
 

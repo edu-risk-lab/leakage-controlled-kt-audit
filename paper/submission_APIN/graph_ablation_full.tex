@@ -2,7 +2,7 @@
 
 \begin{table}[t]
 \centering
-\caption{Train-only vs.\ full-log graph ablation on Junyi Academy (fold~0). Graph-augmented rows are pyKT checkpoints consuming exported adjacency from the leakage-controlled builder. Columns report AUC/ACC under train-only (\emph{to}) and full-log (\emph{fl}) graphs; $\Delta$ is full-log minus train-only.}
+\caption{Ablation contrasting \emph{train-only} graph smoothing (protocol) with a \emph{full-log} graph built from all learners before splitting (leaky construction). Graph-augmented rows are pyKT checkpoints consuming exported adjacency from P0. $\Delta$ is fold~0 full-log minus train-only. \emph{to}: train-only graph; \emph{fl}: full-log graph.}
 \label{tab:graph-ablation-junyi}
 \footnotesize
 \setlength{\tabcolsep}{3pt}
@@ -20,7 +20,7 @@ DGEKT & 0.981 & 0.981 & -0.000 & 0.943 & 0.943 & -0.000 \\
 
 \begin{table}[t]
 \centering
-\caption{Train-only vs.\ full-log graph ablation on ASSISTments~2012 (fold~0). Columns report AUC/ACC under train-only (\emph{to}) and full-log (\emph{fl}) graphs for pyKT graph-augmented models; $\Delta$ is full-log minus train-only.}
+\caption{Train-only vs.\ full-log graph ablation: ASSISTments 2012.}
 \label{tab:graph-ablation-assist2012}
 \footnotesize
 \setlength{\tabcolsep}{3pt}
@@ -39,7 +39,7 @@ DGEKT & 0.960 & 0.960 & 0.000 & 0.907 & 0.907 & 0.000 \\
 
 \begin{table}[t]
 \centering
-\caption{Train-only vs.\ full-log graph ablation on XES3G5M (fold~0). Columns report AUC/ACC under train-only (\emph{to}) and full-log (\emph{fl}) graphs for pyKT graph-augmented models; $\Delta$ is full-log minus train-only.}
+\caption{Train-only vs.\ full-log graph ablation: XES3G5M.}
 \label{tab:graph-ablation-xes3g5m}
 \footnotesize
 \setlength{\tabcolsep}{3pt}
@@ -58,7 +58,7 @@ DGEKT & 0.841 & 0.841 & -0.000 & 0.844 & 0.844 & -0.001 \\
 
 \begin{table}[t]
 \centering
-\caption{Train-only vs.\ full-log graph ablation on Synthetic~C2 (fold~0). Columns report AUC/ACC under train-only (\emph{to}) and full-log (\emph{fl}) graphs for pyKT graph-augmented models; $\Delta$ is full-log minus train-only.}
+\caption{Train-only vs.\ full-log graph ablation: Synthetic C2.}
 \label{tab:graph-ablation-synthetic-c2}
 \footnotesize
 \setlength{\tabcolsep}{3pt}
@@ -77,7 +77,7 @@ DGEKT & 0.710 & 0.711 & 0.001 & 0.724 & 0.725 & 0.001 \\
 
 \begin{table}[t]
 \centering
-\caption{Train-only vs.\ full-log graph ablation on Synthetic~C5 (fold~0). Columns report AUC/ACC under train-only (\emph{to}) and full-log (\emph{fl}) graphs for pyKT graph-augmented models; $\Delta$ is full-log minus train-only.}
+\caption{Train-only vs.\ full-log graph ablation: Synthetic C5.}
 \label{tab:graph-ablation-synthetic-c5}
 \footnotesize
 \setlength{\tabcolsep}{3pt}
