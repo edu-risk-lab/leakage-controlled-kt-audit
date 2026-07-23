@@ -245,6 +245,24 @@ def _cold_start_deltas(df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def _suppress_summary_stratum(raw: pd.DataFrame, dataset: str, stratum: str) -> bool:
+    """Suppress unreliable stratum means (tiny n and/or identical AUC across models)."""
+    sub = raw[(raw["dataset"] == dataset) & (raw["stratum"] == stratum)]
+    if sub.empty:
+        return True
+    compare_models = ["dkt", "simplekt", "gkt", "gikt", "dgekt"]
+    fold0 = sub[sub["fold"] == 0]
+    if not fold0.empty:
+        n0 = int(fold0["n"].iloc[0])
+        vals = fold0[fold0["model"].isin(compare_models)]["auc"].dropna()
+        if n0 < 50 and len(vals) >= 3:
+            if len(set(round(float(v), 6) for v in vals)) == 1:
+                return True
+    if dataset == "junyi" and stratum == "very_cold":
+        return True
+    return False
+
+
 def write_cold_start_summary_tex(df: pd.DataFrame, path: Path) -> None:
     delta_df = _cold_start_deltas(df)
     agg = (
@@ -268,7 +286,9 @@ def write_cold_start_summary_tex(df: pd.DataFrame, path: Path) -> None:
         r"validation+test held-out interactions per KC-frequency stratum (strata "
         r"assigned from train-fold counts only; \textit{simpleKT}); \textit{simpleKT} AUC and "
         r"$\Delta_{\max}$ report three-fold means~$\pm$~std ($\Delta_{\max}$: best "
-        r"graph-family AUC minus best sequence-only AUC). Per-model strata appear in "
+        r"graph-family AUC minus best sequence-only AUC). Cells marked ``---'' are "
+        r"suppressed when fold~0 stratum counts are too small or stratum AUC is "
+        r"undefined/unreliable (see Supplementary Tables~S12--S13). Per-model strata appear in "
         r"Supplementary Tables~S12--S13.}",
         r"\label{tab:cold-start-summary}",
         r"\footnotesize",
@@ -311,9 +331,13 @@ def write_cold_start_summary_tex(df: pd.DataFrame, path: Path) -> None:
             ds_cell = rf"\multirow{{{n_rows}}}{{*}}{{{ds_label}}}" if s_idx == 0 else ""
             n_cell = hot_n.get(dataset, str(int(r0["n"]))) if stratum == "hot" else f"{int(r0['n']):,}".replace(",", "{,}")
             delta_s = _fmt_delta_pm(r0["delta_mean"], r0["delta_std"])
+            suppress = _suppress_summary_stratum(df, dataset, stratum)
+            auc_cell = r"---" if suppress else _fmt_pm(r0["simple_mean"], r0["simple_std"])
+            if suppress:
+                delta_s = r"---"
             lines.append(
                 f"{ds_cell} & {_stratum_tex(stratum)} & {n_cell} & "
-                f"{_fmt_pm(r0['simple_mean'], r0['simple_std'])} & {delta_s} \\\\"
+                f"{auc_cell} & {delta_s} \\\\"
             )
         if dataset != "synthetic_c5":
             lines.append(r"\midrule")

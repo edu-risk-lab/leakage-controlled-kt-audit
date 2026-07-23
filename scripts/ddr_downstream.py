@@ -100,6 +100,17 @@ def main() -> int:
     )
     parser.add_argument("--operators", nargs="+", default=["edge_drop", "node_drop", "prereq_preserve"])
     parser.add_argument("--ps", nargs="+", type=float, default=[0.10, 0.20, 0.30])
+    parser.add_argument(
+        "--baseline-only",
+        action="store_true",
+        help="Train only the unperturbed graph (operator=none, p=0). Skips augmentation grid.",
+    )
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=None,
+        help="Override GKT batch size from config (DDR multiseed attested batch=8 on XES3G5M).",
+    )
     parser.add_argument("--perturb-seed", type=int, default=42, help="Seed for the augmentation operator.")
     parser.add_argument("--experiment-seed", type=int, default=42, help="Base seed for fold splitting and GKT fit.")
     parser.add_argument("--out", type=Path, default=ROOT / "results/tables/ddr_downstream.csv")
@@ -135,12 +146,15 @@ def main() -> int:
             break
     epochs = int(hp.get("epochs", py_all.get("epochs", 30)))
     batch_size = int(hp.get("batch_size", py_all.get("batch_size", 64)))
+    if args.batch_size is not None:
+        batch_size = int(args.batch_size)
     lr = float(hp.get("lr", py_all.get("lr", 1e-3)))
 
     done = _load_done(args.out)
     # ("none", 0.0) is the DDR=0 baseline graph; the rest are perturbations.
     variants: list[tuple[str, float]] = [("none", 0.0)]
-    variants += [(op, round(float(pp), 4)) for op in args.operators for pp in args.ps]
+    if not args.baseline_only:
+        variants += [(op, round(float(pp), 4)) for op in args.operators for pp in args.ps]
 
     for fold, split_seed, splits in learner_based_folds(df, ratios, cfg.get("split", {}), default_seed=args.experiment_seed):
         if args.max_folds is not None and int(fold) >= int(args.max_folds):
