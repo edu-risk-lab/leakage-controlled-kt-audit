@@ -21,6 +21,8 @@
 
 **Không dùng** `python -m scripts.run_injection_auc` cho bước train — script đó gọi `baseline_runner` **không** có `--models` → sẽ chạy **mọi** baseline enabled (lãng GPU).
 
+**Batch (khuyến nghị):** `scripts/run_injection_downstream_batch.ps1` (Windows) hoặc `scripts/run_injection_downstream_batch.sh` (Linux) — đã khớp thứ tự job, preflight config, và `python -m scripts.collect_injection_auc`.
+
 ---
 
 ## 2. Hyperparameters bắt buộc (Table S15 / commit `619c02cf`)
