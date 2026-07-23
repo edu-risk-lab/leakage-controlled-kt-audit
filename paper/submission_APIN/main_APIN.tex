@@ -1347,35 +1347,28 @@ because learner-id sets stay disjoint: flag-level checks alone cannot detect
 this contamination channel, which motivates the tiered audit.
 $\mathrm{ECR}^{\mathrm{overlap}}_f$ is already saturated at $1.0$ on this
 transition-dense corpus (Section~\ref{sec:formal-problem}), so it carries no
-additional signal here. Retraining on the injected graphs (Supplementary
-Table~S18) shows that headline AUC need not move in lockstep with the
-structural audit, and that the lift is confined to graph-reliant backbones:
-GKT AUC rises from $0.810$ (clean fold~0) to $0.860$ at $20\%$ injection and
-GIKT from $0.852$ to $0.880$, while \textit{simpleKT}---which does not consume
-the graph---changed only modestly, by ${+}0.008$ AUC ($0.850{\to}0.858$) under
-the specified injection setting (Table~S18). The two graph consumers move together
-($+0.05$ and $+0.03$) while the sequence-only baseline moves far less, which is exactly
-the reliance contrast the two-factor model predicts. On this transition-dense corpus,
-injected test transitions disproportionately \emph{densify} $\Epre$ with
-high-support curriculum edges ($|\Epre|$ rises $1162{\to}1417$ before pruning;
-Table~S17) that GKT's graph convolution can exploit as additional relational
-context, whereas the sequence-only baseline remains comparatively stable. The lift is therefore
-consistent with \emph{graph-channel enrichment} rather than with improved
-split hygiene---and it illustrates why AUC alone is an unreliable leakage alarm:
-a contaminated graph can act as an accidental structural regulariser even when
-learner ids remain fold-disjoint ($\mathrm{ECR}^{\mathrm{flag}}_f{=}0$).
-Metric-level contamination is detectable in builder mass and $\mathrm{TBMR}_f$
-before practitioners would infer leakage from AUC alone, and tiered reporting
-remains necessary on real data where $\mathrm{ECR}^{\mathrm{overlap}}_f$ is
-already saturated at $1.0$.
-
-\paragraph{Configuration note (Table~S18).}
-The injection retraining sweep in Supplementary Table~S18 reports fold~0 AUC under the
-graph arms \texttt{inject00/05/20}; absolute clean baselines there (e.g.\
-\textit{simpleKT} $0.850$ vs.\ $0.875$ in Table~\ref{tab:baseline-summary}) must be
-read against the exact training budget logged for that sweep. Until a rerun under the
-primary Table~S15 configuration is complete, we treat the \emph{relative} graph-reliant
-vs.\ sequence-only contrast as the supported claim, not the absolute clean levels.
+additional signal here. Retraining on the injected graphs under the primary
+budgets in Table~S15 (Supplementary Table~S18) shows a deliberate
+\emph{decoupling}: builder-side indicators move while fold-0 test AUC stays
+near flat for all three backbones ($|\Delta\text{AUC}|{\leq}0.010$ at
+$20\%$ injection). \textit{simpleKT} moves by ${+}0.0004$ ($0.8744{\to}0.8748$);
+GIKT by ${+}0.0002$ ($0.8776{\to}0.8778$); GKT \emph{dips} slightly by
+${-}0.010$ ($0.8346{\to}0.8243$). The sequence-only baseline and the two
+graph consumers therefore remain on the same headline scale despite a
+${+}21.9\%$ candidate-edge inflation---the opposite of a large
+graph-reliant lift. We read this as evidence that metric-tier reporting must
+precede AUC-only leakage conclusions: $\mathrm{TBMR}_f$ and $|\Epre|$ respond
+to injection even when retrained AUC does not reward the extra graph mass under
+these budgets. On this transition-dense corpus, injected test transitions
+disproportionately \emph{densify} $\Epre$ with high-support curriculum edges
+($|\Epre|$ rises $1162{\to}1417$ before pruning; Table~S17), yet that
+structural enrichment does not translate into a consistent downstream gain at
+fold~0 under Table~S15---illustrating why AUC alone is an unreliable leakage
+alarm even when learner ids remain fold-disjoint
+($\mathrm{ECR}^{\mathrm{flag}}_f{=}0$). Metric-level contamination is
+detectable in builder mass and $\mathrm{TBMR}_f$ before practitioners would
+infer leakage from AUC alone, and tiered reporting remains necessary on real
+data where $\mathrm{ECR}^{\mathrm{overlap}}_f$ is already saturated at $1.0$.
 
 \paragraph{Worked example: reading injection as throughput.}
 Walking the $20\%$ row of Tables~S17--S18 makes the throughput notion concrete.
@@ -1385,12 +1378,11 @@ $\mathrm{TBMR}_f$ from $0.754$ to $0.779$, while $\mathrm{ECR}^{\mathrm{flag}}_f
 stays at $0$ throughout because learner-id sets remain disjoint. A practitioner
 watching only the learner-disjoint flag would see nothing; a practitioner
 watching builder mass would see a $21.9\%$ inflation \emph{before} any accuracy
-number is computed. Downstream, that extra mass is what a graph-reliant
-backbone converts into a spurious lift (GKT $0.810\!\to\!0.860$), whereas the
-sequence-only baseline---blind to the graph---barely moves ($0.850\!\to\!0.858$).
-The example shows the two audit roles working in sequence: throughput rises
-first and is measured directly, and only then, and only for graph-reliant
-backbones, does AUC inflate.
+number is computed. Downstream retraining (Table~S18) then shows that this
+extra mass does \emph{not} move \textit{simpleKT} or GIKT materially and can
+even \emph{reduce} GKT AUC slightly ($0.8346{\to}0.8243$), so the audit's
+leading indicators fire even when headline accuracy stays flat---the decoupling
+the two-factor model warns about in deployment.
 
 \begin{table}[t]
 \centering
@@ -1413,8 +1405,8 @@ low throughput\newline (train-only vs.\ full-log pooling) &
   ${\approx}0$ &
   ${\leq}0.003$ (Table~\ref{tab:graph-ablation}) \\
 high throughput\newline ($20\%$ test-fold injection) &
-  ${\approx}0$ ($0.850{\to}0.858$) &
-  $+0.05$ GKT, $+0.03$ GIKT (Tables~S17--S18) \\
+  ${\approx}0$ ($0.8744{\to}0.8748$) &
+  ${\approx}0$ (GKT $-0.010$; GIKT $+0.0002$; Table~S18) \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -1422,11 +1414,13 @@ high throughput\newline ($20\%$ test-fold injection) &
 Table~\ref{tab:two-factor} assembles the interaction from evidence already in
 the paper. The decisive point is that the \emph{same} GKT backbone yields
 ${\approx}0$ under realistic full-log pooling (Table~\ref{tab:graph-ablation})
-but $+0.05$ under injection: throughput is a genuine knob, and the operating
-point on these corpora happens to fall in the low-throughput row \emph{because
-the support filter throttles the channel} (Section~\ref{sec:exp-graph-ablation}),
-not because leakage is harmless as a rule. Harm therefore behaves
-multiplicatively---approximately throughput\,$\times$\,reliance---so AUC is a
+and again ${\approx}0$ under deliberate injection at fold~0 (Table~S18), while
+builder-side throughput indicators \emph{do} rise (Table~S17): throughput is a
+genuine knob for audit metrics, and the operating point on these corpora
+happens to fall in the low-throughput row \emph{because the support filter
+throttles the channel} (Section~\ref{sec:exp-graph-ablation}), not because
+leakage is harmless as a rule. Harm therefore behaves multiplicatively---approximately
+throughput\,$\times$\,reliance---so AUC is a
 late and unreliable alarm that fires only when both factors are high, whereas
 the throughput indicators (builder mass, $\mathrm{TBMR}_f$) rise with
 contamination regardless of backbone reliance. The \emph{reliance} axis is
@@ -1536,8 +1530,9 @@ survive train-only construction, held-out mass has low \emph{throughput} into
 the consumed edge set. The ${\leq}0.003$ shift therefore places these three
 benchmarks in the low-throughput row of Table~\ref{tab:two-factor}; it is the
 aggressive filter that throttles the channel here, not a general property of
-leakage. The same channel carries ${\approx}0.05$ AUC once throughput is raised
-by injection (Section~\ref{sec:exp-injection}). Train-only construction is
+leakage. Deliberate injection raises builder throughput (Table~S17) without a
+matching fold-0 AUC shift under Table~S15 budgets (Table~S18;
+Section~\ref{sec:exp-injection}). Train-only construction is
 thus \emph{not} penalising headline metrics relative to this deliberate
 full-log variant on those corpora; reporting which regime a corpus occupies,
 with evidence, is itself a useful audit output, and absence of a headline
@@ -1683,8 +1678,7 @@ backbone- and dataset-specific (GKT is graph-reliant on XES3G5M yet inert on
 ASSISTments), \DDR{}'s downstream relevance is likewise conditional: it becomes
 a design target precisely in the high-reliance regime that the manipulation
 check identifies. Extending the same anchored protocol to further graph-reliant
-backbones (e.g.\ GIKT, which the injection study in
-Section~\ref{sec:exp-injection} shows is also graph-reliant) is the natural
+backbones (e.g.\ GIKT under the same \DDR{}$\to$AUC protocol) is the natural
 follow-up (Section~\ref{sec:future-work}).
 \subsection{Cold-start KC Diagnostic}
 \label{sec:exp-coldstart}
@@ -2242,9 +2236,10 @@ ${+}0.003$, with an uncertainty interval including zero. Train-only versus
 full-log ablation moves headline AUC by at most $0.003$ and ACC by at most
 $0.008$. These results cohere
 under a two-factor reading: graph-mediated leakage shifts AUC only when
-contamination throughput and backbone reliance are jointly high, and even then
-it inflates ($0.810{\to}0.860$ under injection) rather than distinguishing
-inflation from genuine gain. Leakage control is therefore a deployment
+contamination throughput and backbone reliance are jointly high; under the
+verified injection sweep, fold-0 AUC nonetheless stays near flat (Table~S18)
+even while builder mass rises (Table~S17), so practitioners must read
+throughput indicators before trusting headline accuracy. Leakage control is therefore a deployment
 precondition precisely because AUC is an unreliable alarm; the audit's
 throughput indicators (builder mass, $\mathrm{TBMR}$) fire regardless of
 backbone reliance, giving practitioners a leading indicator before a
@@ -2557,11 +2552,13 @@ in the main text.
 
 Table~S18 (Table~\ref{tab:downstream-injection-auc}) reports fold-0 test AUC
 after retraining \textit{simpleKT}, GKT, and GIKT on the clean and injected
-graphs. Headline AUC does not track the structural audit monotonically: GKT
-and GIKT AUC \emph{rise} at $20\%$ injection on this dense log, whereas
-\textit{simpleKT} remains near $0.850$--$0.858$. We therefore treat S18 as
-evidence that metric-tier reporting must precede AUC-only leakage
-conclusions, not as proof that contamination always lowers accuracy.
+graphs under Table~S15 budgets (GPU-verified batch run, Server~A, 2026-07-23).
+Headline AUC does not track the structural audit monotonically: at $20\%$
+injection, \textit{simpleKT} and GIKT move by ${\leq}0.0004$ AUC while GKT
+dips by ${\approx}0.010$, despite a ${+}21.9\%$ candidate-edge increase in
+Table~S17. We therefore treat S18 as evidence that metric-tier reporting must
+precede AUC-only leakage conclusions, not as proof that contamination always
+lowers or raises accuracy.
 \begin{table}[h!]
 \centering
 \caption{Downstream test AUC under controlled leak injection, XES3G5M fold~0 (Table S18)}
