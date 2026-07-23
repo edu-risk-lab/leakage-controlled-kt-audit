@@ -110,21 +110,29 @@ def _model_forward_loss(model, batch: dict, model_name: str) -> torch.Tensor:
     raise ValueError(f"Unsupported model_name={model_name}")
 
 
-def _evaluate_detailed(model, loader, model_name: str, te_path: str = None) -> tuple[float, float, np.ndarray, np.ndarray, np.ndarray]:
+def _evaluate_detailed(
+    model,
+    loader,
+    model_name: str,
+    uid_path: str | None = None,
+    *,
+    uid_fold: int = -1,
+) -> tuple[float, float, np.ndarray, np.ndarray, np.ndarray | None, np.ndarray]:
     model.eval()
     y_trues, y_scores = [], []
     uids_out = []
+    kcs_out = []
     
     pt_device = "cpu" if (os.environ.get("FORCE_CPU", "0") == "1" or not torch.cuda.is_available()) else "cuda"
     dev = torch.device(pt_device)
     from torch.nn.functional import one_hot
     
     uids = None
-    if te_path is not None:
+    if uid_path is not None:
         import pandas as pd
-        df_test = pd.read_csv(te_path)
-        df_test = df_test[df_test["fold"] == -1]
-        uids = df_test["uid"].values
+        df_uid = pd.read_csv(uid_path)
+        df_uid = df_uid[df_uid["fold"] == uid_fold]
+        uids = df_uid["uid"].values
         
     batch_idx = 0
 
@@ -162,8 +170,10 @@ def _evaluate_detailed(model, loader, model_name: str, te_path: str = None) -> t
 
             y = torch.masked_select(y, sm).detach().cpu()
             t = torch.masked_select(rshft, sm).detach().cpu()
+            c_sel = torch.masked_select(cshft, sm).detach().cpu()
             y_trues.append(t.numpy())
             y_scores.append(y.numpy())
+            kcs_out.append(c_sel.numpy())
             
             if uids is not None:
                 batch_size = y.shape[0] if y.dim() > 0 else 1 # Not quite right for masked_select
@@ -177,6 +187,7 @@ def _evaluate_detailed(model, loader, model_name: str, te_path: str = None) -> t
 
     ts = np.concatenate(y_trues, axis=0)
     ps = np.concatenate(y_scores, axis=0)
+    cs = np.concatenate(kcs_out, axis=0)
     us = np.concatenate(uids_out, axis=0) if uids_out else None
     
     if len(np.unique(ts)) < 2:
@@ -184,7 +195,7 @@ def _evaluate_detailed(model, loader, model_name: str, te_path: str = None) -> t
     else:
         auc = float(metrics.roc_auc_score(ts, ps))
     acc = float(metrics.accuracy_score(ts, (ps >= 0.5).astype(int)))
-    return auc, acc, ts, ps, us
+    return auc, acc, ts, ps, us, cs
 
 
 def _train_loop(model, train_loader, valid_loader, epochs: int, lr: float, patience: int = 3) -> None:
@@ -215,7 +226,7 @@ def _train_loop(model, train_loader, valid_loader, epochs: int, lr: float, patie
             scaler.update()
             losses.append(float(loss.detach().cpu()))
         tr_loss = float(np.mean(losses)) if losses else 0.0
-        auc, acc, _, _, _ = _evaluate_detailed(model, valid_loader, model.model_name)
+        auc, acc, _, _, _, _ = _evaluate_detailed(model, valid_loader, model.model_name)
         logger.info("pyKT epoch %s train_loss=%.5f valid_auc=%.5f valid_acc=%.5f", ep, tr_loss, auc, acc)
         if auc > best_auc + 1e-4:
             best_auc = auc
@@ -244,7 +255,8 @@ def run_pykt_fold(
     lr: float,
     seed: int,
     max_seq_len: int,
-) -> tuple[float, float, float, str, np.ndarray, np.ndarray, np.ndarray]:
+    include_valid_predictions: bool = False,
+) -> tuple[float, float, float, str, np.ndarray, np.ndarray, np.ndarray | None, np.ndarray]:
     """Train on fold 0 / validate on fold 1 rows inside ``train_valid_sequences.csv``; eval fold -1 test file."""
     import shutil
 
@@ -429,7 +441,18 @@ def run_pykt_fold(
         torch.save(model.state_dict(), ckpt_path)
         logger.info(f"Saved PyKT checkpoint to {ckpt_path}")
         
-    auc, acc, ts, ps, us = _evaluate_detailed(model, eval_loader, model.model_name, te_path=te_path)
+    auc, acc, ts, ps, us, cs = _evaluate_detailed(
+        model, eval_loader, model.model_name, uid_path=te_path, uid_fold=-1
+    )
+    if include_valid_predictions:
+        _, _, ts_v, ps_v, us_v, cs_v = _evaluate_detailed(
+            model, valid_loader, model.model_name, uid_path=tv_path, uid_fold=1
+        )
+        ts = np.concatenate([ts_v, ts])
+        ps = np.concatenate([ps_v, ps])
+        cs = np.concatenate([cs_v, cs])
+        if us is not None and us_v is not None:
+            us = np.concatenate([us_v, us])
     nll = _mean_nll(ts, ps)
 
     # Explicitly release GPU memory to prevent Out of Memory in sequential baseline runs
@@ -443,4 +466,4 @@ def run_pykt_fold(
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
 
-    return auc, acc, nll, note, ts, ps, us
+    return auc, acc, nll, note, ts, ps, us, cs

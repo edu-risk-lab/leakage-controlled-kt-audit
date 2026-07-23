@@ -696,6 +696,11 @@ def _run_backend_fold(
         )
 
     y_prob_eval: np.ndarray | None = None
+    cs_eval: np.ndarray | None = None
+    ts_eval: np.ndarray | None = None
+    ps_eval: np.ndarray | None = None
+    us_eval: np.ndarray | None = None
+    c_map: dict[int, int] = {}
     if model == "bkt":
         from src.classical_bkt import ClassicalBKTMultiSkill
 
@@ -766,7 +771,8 @@ def _run_backend_fold(
             graph_npz_path = shared
 
         fit_seed = int(experiment_seed) + int(fold) * 97 + (3 if graph_construction == "full_log" else 0)
-        auc, acc, nll, note, ts_eval, ps_eval, us_eval = run_pykt_fold(
+        include_valid = bool(getattr(args, "force_cold_start", False))
+        auc, acc, nll, note, ts_eval, ps_eval, us_eval, cs_eval = run_pykt_fold(
             display_model=model,
             pykt_name=pykt_name,
             work_dir=work_dir,
@@ -780,6 +786,7 @@ def _run_backend_fold(
             lr=lr,
             seed=fit_seed,
             max_seq_len=max_seq_len,
+            include_valid_predictions=include_valid,
         )
         result = {
             "dataset": dataset,
@@ -797,18 +804,28 @@ def _run_backend_fold(
         }
 
     if backend == "pykt":
-        # Create perfect alignment dataframe from pykt outputs
-        predictions = pd.DataFrame({
-            "user_id": us_eval if us_eval is not None else np.zeros_like(ts_eval),
-            "y_true": ts_eval,
-            "y_prob": ps_eval,
-            "fold": fold,
-            "model": model
-        })
+        if model == "bkt":
+            cap = len(eval_df) if prediction_cap is None else min(int(prediction_cap), len(eval_df))
+            tail = eval_df.iloc[:cap]
+            predictions = tail[["user_id", "item_id", "kc_id", "correct"]].rename(columns={"correct": "y_true"}).copy()
+            predictions["fold"] = fold
+            predictions["model"] = model
+            predictions["y_prob"] = y_prob_eval[:cap] if y_prob_eval is not None else np.full(cap, np.nan)
+        else:
+            inv_c_map = {v: k for k, v in c_map.items()}
+            kc_ids = np.array([inv_c_map.get(int(c), np.nan) for c in cs_eval], dtype=float)
+            predictions = pd.DataFrame({
+                "user_id": us_eval if us_eval is not None else np.zeros_like(ts_eval),
+                "kc_id": kc_ids,
+                "y_true": ts_eval,
+                "y_prob": ps_eval,
+                "fold": fold,
+                "model": model,
+            })
         out_dir = Path("results/predictions") / dataset / f"fold_{fold}"
         out_dir.mkdir(parents=True, exist_ok=True)
-        # Also keep npz for backwards compatibility
-        np.savez(out_dir / f"{model}_tensors.npz", ts=ts_eval, ps=ps_eval, us=us_eval)
+        if model != "bkt":
+            np.savez(out_dir / f"{model}_tensors.npz", ts=ts_eval, ps=ps_eval, us=us_eval)
     else:
         cap = len(eval_df) if prediction_cap is None else min(int(prediction_cap), len(eval_df))
         tail = eval_df.iloc[:cap]
@@ -837,6 +854,18 @@ def main() -> None:
         "--skip-cold-start",
         action="store_true",
         help="Skip per-stratum cold-start metrics (saves RAM on very large val+test folds).",
+    )
+    parser.add_argument(
+        "--force-cold-start",
+        action="store_true",
+        help="Compute cold-start strata with full predictions even when baseline_backend=pykt "
+        "(disables 5000-row prediction cap; re-runs folds instead of loading cached preds).",
+    )
+    parser.add_argument(
+        "--cold-start-only",
+        action="store_true",
+        help="Only refresh results/tables/cold_start_metrics.csv (skip baseline_results merges). "
+        "Implies --force-cold-start.",
     )
     parser.add_argument(
         "--ablation-trained-head",
@@ -900,6 +929,8 @@ def main() -> None:
         help="Write results under results/q1/<tag>/ only; do not merge main tables.",
     )
     args = parser.parse_args()
+    if args.cold_start_only:
+        args.force_cold_start = True
     logging.basicConfig(level=getattr(logging, args.log_level.upper()))
 
     if args.clear_cache:
@@ -940,8 +971,8 @@ def main() -> None:
         trained_head_cfg["enabled"] = False
     full_log_ready = _full_log_graph_paths(dataset)[0].exists()
     ablation_models = [m for m in graph_ablation_cfg.get("models", ["gkt", "gikt", "skt", "dygkt", "dgekt"]) if m in MODEL_WEIGHTS]
-    effective_skip_cold = bool(args.skip_cold_start) or backend == "pykt"
-    base_pred_cap = 5000 if effective_skip_cold else None
+    effective_skip_cold = bool(args.skip_cold_start) or (backend == "pykt" and not args.force_cold_start)
+    base_pred_cap = None if args.force_cold_start else (5000 if effective_skip_cold else None)
     export_models = [m.strip() for m in args.export_full_predictions.split(",") if m.strip()]
 
     fold_seed_list = fold_seeds(split_cfg, default_seed=args.seed)
@@ -977,7 +1008,7 @@ def main() -> None:
 
                 current_pred_cap = None if model in export_models else base_pred_cap
 
-                if cache_res_path.exists() and cache_pred_path.exists() and not args.clear_cache:
+                if cache_res_path.exists() and cache_pred_path.exists() and not args.clear_cache and not args.force_cold_start:
                     logger.info("Loading cached result for fold=%s model=%s graph_construction=%s", fold, model, gc_name)
                     with open(cache_res_path, "r") as f:
                         result = json.load(f)
@@ -1017,7 +1048,7 @@ def main() -> None:
             cache_pred_path = cache_dir / f"{dataset}_fold_{fold}_{model}_s{split_base_seed}_train_only_preds.csv"
 
             current_pred_cap = None if model in export_models else base_pred_cap
-            if cache_res_path.exists() and cache_pred_path.exists():
+            if cache_res_path.exists() and cache_pred_path.exists() and not args.force_cold_start:
                 logger.info("Loading cached result for fold=%s model=%s graph_construction=train_only", fold, model)
                 with open(cache_res_path, "r") as f:
                     result = json.load(f)
@@ -1042,13 +1073,12 @@ def main() -> None:
                     json.dump(result, f, indent=4)
                 predictions.head(5000).to_csv(cache_pred_path, index=False)
                 
-            if model in export_models:
-                # We already exported npz in _run_backend_fold for pykt, we also export the dataframe.
+            if model in export_models or args.force_cold_start:
                 out_dir = Path(f"results/predictions/{dataset}/fold_{fold}")
                 out_dir.mkdir(parents=True, exist_ok=True)
                 out_file = out_dir / f"{model}.parquet"
-                if not out_file.exists():
-                    predictions.to_parquet(out_file, index=False)
+                predictions.to_parquet(out_file, index=False)
+                logger.info("Exported %s predictions to %s", len(predictions), out_file)
 
             rows.append(result)
             if not effective_skip_cold:
@@ -1058,6 +1088,9 @@ def main() -> None:
             prediction_samples.append(predictions.head(5000))
 
         if args.graph_construction is not None:
+            continue
+
+        if args.cold_start_only:
             continue
 
         if ablation_enabled and full_log_ready:
@@ -1131,16 +1164,22 @@ def main() -> None:
         dump_csv(results, q1_dir / "baseline_results.csv")
         logger.info("Wrote isolated Q1 results to %s", q1_dir)
     else:
-        _merge_csv(Path("results/tables/baseline_fold_results.csv"), fold_results, dataset)
-        _merge_csv(Path("results/tables/baseline_results.csv"), results, dataset)
-        ab_summary = _summarize_graph_ablation(fold_results)
-        if not ab_summary.empty:
-            _merge_csv(Path("results/tables/graph_ablation_summary.csv"), ab_summary, dataset)
+        if not args.cold_start_only:
+            _merge_csv(Path("results/tables/baseline_fold_results.csv"), fold_results, dataset)
+            _merge_csv(Path("results/tables/baseline_results.csv"), results, dataset)
+            ab_summary = _summarize_graph_ablation(fold_results)
+            if not ab_summary.empty:
+                _merge_csv(Path("results/tables/graph_ablation_summary.csv"), ab_summary, dataset)
         if not effective_skip_cold:
             cold_rows = pd.concat(cold_frames, ignore_index=True) if cold_frames else pd.DataFrame()
             _merge_csv(Path("results/tables/cold_start_metrics.csv"), cold_rows, dataset)
+            logger.info(
+                "Merged %s cold-start rows for dataset=%s into cold_start_metrics.csv",
+                len(cold_rows),
+                dataset,
+            )
         else:
-            logger.info("Cold-start CSV merge skipped (--skip-cold-start or baseline_backend=pykt)")
+            logger.info("Cold-start CSV merge skipped (--skip-cold-start or baseline_backend=pykt without --force-cold-start)")
     if not args.isolated_results and prediction_samples:
         predictions_sample = pd.concat(prediction_samples, ignore_index=True)
         dump_csv(predictions_sample, Path("results/predictions") / f"{dataset}_diagnostic_predictions_sample.csv")
