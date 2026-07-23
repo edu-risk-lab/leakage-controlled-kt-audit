@@ -1141,7 +1141,7 @@ def main() -> None:
             _merge_csv(Path("results/tables/cold_start_metrics.csv"), cold_rows, dataset)
         else:
             logger.info("Cold-start CSV merge skipped (--skip-cold-start or baseline_backend=pykt)")
-    if not args.isolated_results:
+    if not args.isolated_results and prediction_samples:
         predictions_sample = pd.concat(prediction_samples, ignore_index=True)
         dump_csv(predictions_sample, Path("results/predictions") / f"{dataset}_diagnostic_predictions_sample.csv")
 
