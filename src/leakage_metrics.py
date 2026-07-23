@@ -1,8 +1,11 @@
-"""Direct leakage diagnostics (ECR_flag, ECR_overlap, EOC, TBVR) for P0 graph construction.
+"""Direct leakage diagnostics (ECR_flag, ECR_overlap, |rho|, TBVR) for P0 graph construction.
 
 ECR_overlap counts edges whose retained patterns align with held-out interaction mass.
 ECR_flag is a structural indicator: whether any learner appears in more than one split.
-EOC summarises Pearson alignment between edge weights and test-fold KC outcomes.
+The legacy CSV column ``eoc`` stores |rho| (Pearson edge-weight vs test-outcome correlation;
+Eq. rho-edge-outcome). Older exports may hold sqrt(2+2rho^2); migrate with
+``python -m scripts.regenerate_leakage_metrics`` or the legacy converter in
+``generate_phase_c_tables._legacy_eoc_to_rho_abs``.
 TBVR measures within-train temporal leakage: fraction of post-cutoff train
 interactions that participate in prerequisite transitions supporting retained edges,
 using an inner cutoff aligned to the protocol train ratio (default 0.7).
@@ -120,6 +123,77 @@ def compute_ecr_overlap(
     return contaminated / n_edges
 
 
+def _pair_count_map(df: pd.DataFrame) -> dict[tuple[int, int], int]:
+    """Directed KC transition counts (src, dst) -> multiplicity."""
+    pairs = _transition_pairs(df)
+    if pairs.empty:
+        return {}
+    grouped = pairs.groupby(["src_kc", "dst_kc"]).size()
+    return {(int(s), int(d)): int(c) for (s, d), c in grouped.items()}
+
+
+def compute_edge_heldout_shares(
+    pre_df: pd.DataFrame,
+    sim_df: pd.DataFrame,
+    train_df: pd.DataFrame,
+    held_df: pd.DataFrame,
+    q_train: pd.DataFrame,
+) -> list[float]:
+    """Per-edge held-out evidence share: n_held / (n_train + n_held).
+
+    Uses held-out transition counts when available; if overlap is item-based only
+    (same logic as ``compute_ecr_overlap``), assigns n_held=1.
+    """
+    if held_df.empty:
+        return []
+    train_counts = _pair_count_map(train_df)
+    held_counts = _pair_count_map(held_df)
+    hi_items = _held_item_sets_by_kc(held_df)
+    train_items = (
+        q_train.groupby("kc_id")["item_id"].apply(lambda s: set(s.astype(int))).to_dict()
+        if not q_train.empty
+        else {}
+    )
+
+    shares: list[float] = []
+    for df in (pre_df, sim_df):
+        if df is None or df.empty:
+            continue
+        for row in df.itertuples(index=False):
+            s = int(getattr(row, "src_kc"))
+            d = int(getattr(row, "dst_kc"))
+            n_train = int(train_counts.get((s, d), 0))
+            n_held = int(held_counts.get((s, d), 0))
+            if n_held == 0:
+                ts = train_items.get(s, set())
+                td = train_items.get(d, set())
+                hi_s = hi_items.get(s, set())
+                hi_d = hi_items.get(d, set())
+                if hi_s and hi_d and (hi_s & hi_d):
+                    n_held = 1
+            denom = n_train + n_held
+            shares.append(float(n_held / denom) if denom > 0 else 0.0)
+    return shares
+
+
+def summarize_edge_heldout_shares(shares: list[float]) -> dict[str, float | int]:
+    """Distribution summary for edge-level held-out throughput shares."""
+    if not shares:
+        return {
+            "n_edges": 0,
+            "frac_share_gt_50": 0.0,
+            "share_median": 0.0,
+            "share_p90": 0.0,
+        }
+    arr = np.asarray(shares, dtype=np.float64)
+    return {
+        "n_edges": int(len(arr)),
+        "frac_share_gt_50": float(np.mean(arr > 0.5)),
+        "share_median": float(np.median(arr)),
+        "share_p90": float(np.quantile(arr, 0.9)),
+    }
+
+
 def compute_rho_edge_outcome(
     pre_df: pd.DataFrame, sim_df: pd.DataFrame, test_df: pd.DataFrame
 ) -> float:
@@ -220,7 +294,7 @@ def compute_leakage_row(
     eoc = compute_eoc(pre_df, sim_df, test_df)
     tbvr = compute_tbvr(train_df, pre_df, train_ratio=train_ratio)
     logger.info(
-        "Leakage metrics dataset=%s fold=%s ECR_flag=%.1f ECR_overlap=%.6f EOC=%.6f TBVR=%.6f",
+        "Leakage metrics dataset=%s fold=%s ECR_flag=%.1f ECR_overlap=%.6f |rho|=%.6f TBVR=%.6f",
         dataset,
         fold,
         ecr_flag,

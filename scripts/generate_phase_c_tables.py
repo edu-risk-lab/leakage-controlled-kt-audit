@@ -103,10 +103,31 @@ def _legacy_eoc_to_rho_abs(value: float) -> float:
 
 
 def write_leakage_metrics_tex(df: pd.DataFrame, path: Path) -> None:
+    share_path = path.parent / "edge_share_summary.csv"
+    share_by_ds: dict[str, pd.DataFrame] = {}
+    if share_path.exists():
+        share_df = pd.read_csv(share_path)
+        for dataset, part in share_df.groupby("dataset"):
+            share_by_ds[str(dataset)] = part
+
     rows = []
     for dataset, part in df.groupby("dataset"):
         label = DATASET_LABELS.get(dataset, dataset)
         rho_series = part["eoc"].map(_legacy_eoc_to_rho_abs)
+        share_part = share_by_ds.get(str(dataset))
+        if share_part is not None and not share_part.empty:
+            gt50 = _fmt_pm(
+                share_part["frac_share_gt_50"].mean(),
+                share_part["frac_share_gt_50"].std(ddof=0),
+                3,
+            )
+            p90 = _fmt_pm(
+                share_part["share_p90"].mean(),
+                share_part["share_p90"].std(ddof=0),
+                3,
+            )
+        else:
+            gt50 = p90 = "---"
         rows.append(
             (
                 label,
@@ -114,8 +135,18 @@ def write_leakage_metrics_tex(df: pd.DataFrame, path: Path) -> None:
                 _fmt_pm(part["ecr_overlap"].mean(), part["ecr_overlap"].std(ddof=0), 3),
                 _fmt_pm(rho_series.mean(), rho_series.std(ddof=0), 3),
                 _fmt_pm(part["tbvr"].mean(), part["tbvr"].std(ddof=0), 3),
+                gt50,
+                p90,
             )
         )
+
+    share_note = (
+        r" Edge share $>50\%$: fraction of retained edges whose held-out transition "
+        r"share exceeds $0.5$; share p90: 90th percentile of per-edge held-out shares "
+        r"(Supplementary artefact \path{edge\_share\_summary.csv})."
+        if share_by_ds
+        else ""
+    )
 
     lines = [
         r"\begin{table}[t]",
@@ -125,17 +156,19 @@ def write_leakage_metrics_tex(df: pd.DataFrame, path: Path) -> None:
         r"\textsc{ECR}\textsubscript{overlap}: held-out pattern overlap (Eq.~\ref{eq:ecr-overlap}). "
         r"$|\rho|$: edge--outcome Pearson correlation magnitude (Eq.~\ref{eq:rho-edge-outcome}). "
         r"\textsc{TBMR}: within-train temporal mixing "
-        r"(Eq.~\ref{eq:tbvr}), not a train/test violation.}",
+        r"(Eq.~\ref{eq:tbvr}), not a train/test violation."
+        + share_note
+        + r"}",
         r"\label{tab:leakage-metrics}",
         r"\footnotesize",
-        r"\setlength{\tabcolsep}{3pt}",
-        r"\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}X *{4}{>{\centering\arraybackslash}X} @{}}",
+        r"\setlength{\tabcolsep}{2pt}",
+        r"\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.17\linewidth} *{6}{>{\centering\arraybackslash}X} @{}}",
         r"\toprule",
-        r"Dataset & \textsc{ECR}\textsubscript{flag} & \textsc{ECR}\textsubscript{overlap} & $|\rho|$ & \textsc{TBMR} \\",
+        r"Dataset & \textsc{ECR}\textsubscript{flag} & \textsc{ECR}\textsubscript{overlap} & $|\rho|$ & \textsc{TBMR} & $>50\%$ & p90 \\",
         r"\midrule",
     ]
-    for label, ecr_f, ecr_o, rho, tbvr in rows:
-        lines.append(f"{label} & {ecr_f} & {ecr_o} & {rho} & {tbvr} \\\\")
+    for label, ecr_f, ecr_o, rho, tbvr, gt50, p90 in rows:
+        lines.append(f"{label} & {ecr_f} & {ecr_o} & {rho} & {tbvr} & {gt50} & {p90} \\\\")
     lines.extend([r"\bottomrule", r"\end{tabularx}", r"\end{table}", ""])
     path.write_text("\n".join(lines), encoding="utf-8")
 

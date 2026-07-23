@@ -75,7 +75,7 @@
 \newcommand{\GKTepochgain}{+0.003}
 \newcommand{\GKTconfigsensci}{[$-0.004$, $+0.011$]}% overwritten by macros file if present
 \newcommand{\GIKTdeltavec}{$+0.003$}
-\newcommand{\GIKTdeltaci}{[$+0.003$, $+0.003$]}
+\newcommand{\GIKTdeltaci}{[$+0.0031$, $+0.0032$]}
 \IfFileExists{bootstrap_ci_macros.tex}{%
   \input{bootstrap_ci_macros.tex}%
 }{}
@@ -127,8 +127,8 @@ effects conditional on backbone reliance (strong \DDR{}--AUC coupling for GKT
 on XES3G5M; near-zero AUC movement on graph-inert cells). On XES3G5M, under
 the released primary budgets (GKT: max 10 epochs, batch 4; sequence checkpoints:
 max 30 epochs, batch 64; Table~S15), stock pyKT GKT trails \textit{simpleKT} by about
-$0.041$~AUC (observational; Table~S21 reports an exploratory extended-training
-configuration-sensitivity check that is not compute-matched).
+$0.041$~AUC (observational; extended-training sensitivity in
+Section~\ref{sec:limitations}/Table~S21 is not compute-matched).
 Graph-mediated leakage shifts headline AUC only when contamination
 throughput and graph reliance are both high; otherwise AUC is an unreliable
 leakage alarm. We position the protocol as a decision-support and leakage
@@ -172,7 +172,8 @@ claims~\cite{kaufman2012leakage,kapoor2023leakage}; within KT,
 \texttt{pyKT} and follow-on work address \emph{sequence-level} label
 leakage~\cite{liu2022pykt,badran2024labelleakage}, but fold-specific
 audit of \emph{graph provenance}---including bounded train-only sampling
-when logs are very large---remains under-specified. Second, generic graph
+when logs are very large---remains under-specified relative to sequence-level
+label-leakage remedies~\cite{badran2024labelleakage}. Second, generic graph
 augmentations designed for undirected graphs can disturb directional
 prerequisite structure without measurement~\cite{you2020graphcl,zhu2021gca}.
 Third, ``cold-start'' is used inconsistently in KT reporting, so
@@ -318,8 +319,8 @@ evaluation separates graph backbones more clearly than on repetition-heavy
 corpora: under train-only $\Epre$ and three-fold learner CV, the
 \textbf{primary} backbone trio is \textit{simpleKT} (${\approx}0.875$),
 stock pyKT GKT (${\approx}0.834$; mean $\Delta{\approx}{-}0.041$, 95\% CI
-\GKTdeltaci{} in Table~S16; Table~S21 reports an exploratory seed-42
-three-fold extended-training configuration-sensitivity check for GKT),
+\GKTdeltaci{} in Table~S16; extended-training sensitivity in
+Section~\ref{sec:limitations}/Table~S21),
 and native GIKT (${\approx}0.878$). The gap is
 \emph{observational} under fixed maximum epoch caps (30 for sequence checkpoints
 vs.\ 10 for graph backbones; Table~S15), not a causal attribution of graph
@@ -395,13 +396,9 @@ than deferred to the Discussion alone.
   leakage-controlled graphs is \emph{model-specific} within the primary trio
   (\textit{simpleKT}, pyKT GKT, native GIKT): GKT trails \textit{simpleKT} by
   mean $\Delta$AUC ${\approx}{-}0.041$ (95\% CI \GKTdeltaci{}; Table~S16) under
-  the primary GKT maximum-10-epoch budget (batch~4), while GIKT remains competitive. A
-  targeted seed-42 three-fold extended-training check (Table~S21; maximum 30~epochs,
-  batch~32) produced an observed mean AUC that was $0.003451$ higher under the
-  extended-training configuration; however, the approximate 95\% CI
-  $[-0.004,0.011]$ included zero. Because the maximum epoch budget, batch
-  size, hidden dimension, and sequence length all changed, this exploratory
-  comparison does not isolate the effect of epochs.
+  the primary GKT maximum-10-epoch budget (batch~4), while GIKT remains competitive.
+  A targeted extended-training check (Table~S21; Section~\ref{sec:limitations})
+  did not isolate epoch effects under attested budgets.
   The trio ordering on XES3G5M remains invariant in direction (GKT trails).
   Train-only versus full-log
   ablation ($|\Delta\text{AUC}|{\leq}0.003$ and $|\Delta\text{ACC}|{\leq}0.008$
@@ -420,8 +417,8 @@ structure-preserving versus damaging perturbation sensitivity).
 Supplementary Table~S11 reports fold-level tests for transparency; fold-level
 $\Delta$AUC magnitudes in Table~\ref{tab:baseline-cv}---an order larger than
 fold-to-fold variation---together with Table~S16 intervals characterise the
-primary XES3G5M trio under audit, with Table~S21 reporting an exploratory
-seed-42 three-fold extended-training configuration-sensitivity check.
+primary XES3G5M trio under audit, with extended-training sensitivity consolidated
+in Section~\ref{sec:limitations} and Table~S21.
 
 We assign explicit roles to the public corpora studied here.
 XES3G5M is \textbf{primary} (low KC-repeat, non-saturated AUC, clearest
@@ -724,7 +721,14 @@ $\Delta$AUC/ACC and cold-start strata; \textbf{sanity/stress}---
 $\mathrm{ECR}^{\mathrm{overlap}}_f$, $|\rho_f|$, and $\mathrm{TBMR}_f$.
 Under learner-disjoint splits, $\mathrm{ECR}^{\mathrm{flag}}_f{=}0$ is
 expected and does not by itself certify graph quality; near-unity overlap
-can occur when curricula repeat across disjoint learners. $\mathrm{TBMR}_f$
+can occur when curricula repeat across disjoint learners---a binary indicator
+that masks how \emph{concentrated} held-out mass is on each edge. We therefore
+also report the distribution of per-edge held-out shares $\pi_e=n_{\mathrm{hi}}(e)/(n_{\mathrm{tr}}(e)+n_{\mathrm{hi}}(e))$
+(Table~\ref{tab:leakage-metrics}, columns $>50\%$ and p90): even when
+$\mathrm{ECR}^{\mathrm{overlap}}_f{\approx}1$, most edges keep $\pi_e\ll1$ on
+dense logs, whereas tail-\KC{} neighbourhoods---the same locus as the cold-start
+strata in Section~\ref{sec:cold-start}---are where a few edges can reach
+$\pi_e>0.5$. $\mathrm{TBMR}_f$
 quantifies \emph{within-train} temporal mixing (Section~\ref{sec:leakage}),
 not cross-split leakage. High AUC does not certify absence of leakage; the
 tiered diagnostics complement discrimination scores.
@@ -813,7 +817,7 @@ The held-out pattern overlap rate is
 \chi_{\mathrm{ECR}^{\mathrm{overlap}}}(e)\,.
 \label{eq:ecr-overlap}
 \end{equation}
-For Edge--Outcome Correlation, stack normalized edge weights into
+For the edge--outcome diagnostic, stack normalized edge weights into
 $\mathbf{w}_f\in\mathbb{R}^{|\mathcal{E}_f|}$ (for ties, use the order
 exported by the audit log). Let $\mathbf{y}_f\in\mathbb{R}^{|\mathcal{E}_f|}$
 carry test-fold outcome summaries aligned to each edge---for example,
@@ -825,9 +829,12 @@ The primary edge--outcome diagnostic is the Pearson correlation
 \rho_f \;=\; \mathrm{Corr}(\mathbf{w}_f,\mathbf{y}_f)\,,
 \label{eq:rho-edge-outcome}
 \end{equation}
-computed over edges with defined variance; $|\rho_f|\!\approx\!0$ indicates
-that retained edge mass is statistically unrelated to test-fold outcome
-summaries.
+computed over edges with defined variance; we report the magnitude
+$|\rho_f|$ in Table~\ref{tab:leakage-metrics}. Values
+$|\rho_f|\!\approx\!0$ indicate that retained edge mass is statistically
+unrelated to test-fold outcome summaries; on the public benchmarks in
+Table~\ref{tab:leakage-metrics}, $|\rho|$ ranges from ${\approx}0.09$
+(XES3G5M) to ${\approx}0.22$ (Junyi Academy).
 
 Let $t_{u,i}$ be the timestamp of interaction $i$ for learner $u$ and
 let $\tau_u$ be $u$'s temporal split cutoff for fold $f$. Write
@@ -866,13 +873,13 @@ with outcomes ($|\rho_f|$), none of which reduces to predictive accuracy.
 \Require learner sets $\mathcal{U}^{\mathrm{tr}}_f,\mathcal{U}^{\mathrm{va}}_f,\mathcal{U}^{\mathrm{te}}_f$;
   consumed edges $\mathcal{E}_f$; held-out interactions $\mathcal{H}_f$;
   edge weights $\mathbf{w}_f$; outcome summaries $\mathbf{y}_f$
-\Ensure $\mathrm{ECR}^{\mathrm{flag}}_f,\ \mathrm{ECR}^{\mathrm{overlap}}_f,\ \rho_f,\ \mathrm{TBMR}_f$
+\Ensure $\mathrm{ECR}^{\mathrm{flag}}_f,\ \mathrm{ECR}^{\mathrm{overlap}}_f,\ |\rho_f|,\ \mathrm{TBMR}_f$
 \State $\mathrm{ECR}^{\mathrm{flag}}_f \gets \mathbb{1}\big[(\mathcal{U}^{\mathrm{tr}}_f\cap\mathcal{U}^{\mathrm{va}}_f)\cup(\mathcal{U}^{\mathrm{tr}}_f\cap\mathcal{U}^{\mathrm{te}}_f)\cup(\mathcal{U}^{\mathrm{va}}_f\cap\mathcal{U}^{\mathrm{te}}_f)\neq\emptyset\big]$
 \If{$\mathrm{ECR}^{\mathrm{flag}}_f = 1$} \State \textbf{halt}: structural leakage \EndIf
 \State $\mathrm{ECR}^{\mathrm{overlap}}_f \gets \dfrac{1}{|\mathcal{E}_f|}\sum_{e\in\mathcal{E}_f}\mathbb{1}\big[|S_{\text{hi}}(e)|>0\big]$ \Comment{held-out tokens supporting $e$}
-\State $\rho_f \gets \mathrm{Corr}(\mathbf{w}_f,\mathbf{y}_f)$ \Comment{outcomes used only for this diagnostic}
+\State $\rho_f \gets \mathrm{Corr}(\mathbf{w}_f,\mathbf{y}_f)$ \Comment{report $|\rho_f|$ in tables}
 \State $\mathrm{TBMR}_f \gets \dfrac{\sum_u |\mathcal{V}_{u,f}|}{\sum_u |\mathcal{I}^{>}_{u,f}|}$ \Comment{within-train $70\%$ chronological cutoff}
-\State \Return $(\mathrm{ECR}^{\mathrm{flag}}_f,\ \mathrm{ECR}^{\mathrm{overlap}}_f,\ \rho_f,\ \mathrm{TBMR}_f)$
+\State \Return $(\mathrm{ECR}^{\mathrm{flag}}_f,\ \mathrm{ECR}^{\mathrm{overlap}}_f,\ |\rho_f|,\ \mathrm{TBMR}_f)$
 \end{algorithmic}
 \end{algorithm}
 
@@ -1290,14 +1297,16 @@ claims on XES3G5M rather than on Junyi/ASSIST headline AUC.
 \input{dag_audit_summary.tex}
 Table~\ref{tab:leakage-metrics} summarises the direct leakage metrics on
 the released runs (mean~$\pm$~std over three folds). $\mathrm{ECR}^{\mathrm{flag}}$ is identically zero on every dataset (fold means), confirming learner-disjoint splits and structural leakage freedom at the evaluation protocol level; $\mathrm{ECR}^{\mathrm{overlap}}$ stays near unity because recurrent transition patterns reappear among held-out learners even though edges are inferred strictly from train folds.
-The edge--outcome correlation is weak on all three public corpora
-($|\rho|\approx0.09$--$0.22$), so retained edge mass is only weakly aligned
-with test-fold outcome summaries; $\rho$ is undefined on degenerate synthetic
-graphs where edge-weight variance vanishes. $\mathrm{TBMR}$
+Per-edge held-out shares remain mostly modest (p90 typically ${\ll}1$ on XES3G5M despite overlap ${\approx}0.99$; Table~\ref{tab:leakage-metrics}), so the saturated overlap column should be read together with the share-distribution columns rather than as proof that every edge is dominated by held-out mass.
+The edge--outcome correlation magnitude is weak on all three public corpora
+($|\rho|{\approx}0.09$--$0.22$; Table~\ref{tab:leakage-metrics}), so retained
+edge mass is only weakly aligned with test-fold outcome summaries; $\rho$ is
+undefined on degenerate synthetic graphs where edge-weight variance vanishes. $\mathrm{TBMR}$
 is reported as the within-train temporal stress statistic of
 Section~\ref{sec:leakage} (the share of edge evidence drawn from the
 late, post-$\tau_u$ tail of each learner's train sequence); it ranges from
-$0.18$ on Junyi to $0.75$ on XES3G5M. Because folds are learner-disjoint
+${\approx}0.18$--$0.20$ on Junyi and ASSISTments to ${\approx}0.76$ on
+XES3G5M (Table~\ref{tab:leakage-metrics}). Because folds are learner-disjoint
 ($\mathrm{ECR}^{\mathrm{flag}}{=}0$), these values quantify reliance on
 late train transitions rather than any cross-split contamination. We read
 $\mathrm{ECR}^{\mathrm{flag}}{=}0$ and provenance logs as \textbf{primary}
@@ -1322,6 +1331,7 @@ audit makes the pruning rule explicit rather than silently fixing the graph.
 \caption{Schematic visualisation of a high-support prerequisite chain in
 train-only $\Epre$ on Junyi Academy after DAG audit (representative subgraph;
 the full graph contains hundreds to thousands of edges).
+Directed prerequisite edges ($c_i\!\to\!c_j$) are drawn as arrows.
 ASSISTments~2012 and XES3G5M panels appear in Supplementary Figure~S1.}
 \label{fig:kt-graph-junyi}
 \end{figure}
@@ -1440,14 +1450,9 @@ On the \emph{primary} benchmark XES3G5M we report three \textbf{primary
 comparison backbones}: sequence-only \textit{simpleKT}/AKT (${\approx}0.875$),
 stock pyKT GKT (${\approx}0.834$), and native GIKT (${\approx}0.878$).
 GKT trails \textit{simpleKT} by ${\approx}0.041$ mean fold AUC on XES3G5M
-(95\% CI \GKTdeltaci{}; Table~S16). In a targeted exploratory check on
-experiment seed~$42$ and three folds (Table~S21), the observed mean AUC under the
-extended-training GKT configuration (maximum 30~epochs, batch size~32) was
-$0.003451$ higher than under the primary GKT configuration (maximum 10~epochs,
-batch size~4); however, the approximate 95\% CI $[-0.004,0.011]$ included zero.
-Because the maximum epoch budget, batch size, hidden dimension, and sequence
-length all changed, this exploratory comparison does not isolate the effect of
-epochs. GIKT slightly exceeds the sequence leader
+(95\% CI \GKTdeltaci{}; Table~S16). Extended-training configuration
+sensitivity for GKT is consolidated in Section~\ref{sec:limitations}
+(Table~S21). GIKT slightly exceeds the sequence leader
 ($0.878$ vs.\ $0.875$; paired interval \GIKTdeltaci{}, identical at three
 decimals on all three folds in Table~\ref{tab:baseline-cv}---we report
 magnitudes rather than over-interpreting the degenerate interval width).
@@ -1477,14 +1482,8 @@ Table~\ref{tab:baseline-cv} (Section~\ref{sec:threats-validity}). No family
 receives a hyperparameter search. Maximum epoch caps differ in the primary release:
 sequence checkpoints train up to a maximum of 30~epochs (batch~64) while graph backbones
 use maximum 10-epoch budgets with smaller batches (Table~S15), reflecting higher
-per-epoch cost. Table~S21 reports a targeted seed-42 three-fold
-extended-training configuration-sensitivity check for GKT (maximum 30~epochs,
-batch~32 versus primary maximum 10~epochs, batch~4): the observed mean AUC was
-$0.003451$ higher under the extended-training configuration; however, the
-approximate 95\% CI $[-0.004,+0.011]$ included zero.
-Because the maximum epoch budget, batch size, hidden dimension, and sequence
-length all changed, this exploratory comparison does not isolate the effect of
-epochs and is not a fully compute-matched comparison.
+per-epoch cost; see Section~\ref{sec:limitations} and Table~S21 for the
+exploratory extended-training check.
 The residual deficit remains an \emph{observational} benchmarking boundary on
 XES3G5M under this protocol, not a causal claim that graph structure is
 uninformative. Relative to the literature default of pooling transition statistics before
@@ -1719,7 +1718,8 @@ fold exports (\protect\path{e\_pre\_train\_only.csv},
 \protect\path{e\_sim\_train\_only.csv}) and the preprocessed interaction log
 by \protect\path{scripts/plot\_kt\_graph\_figures.py}.
 \textbf{(a)}~Ego-graph around a very-cold KC (red): neighbours combine
-$\Epre$, $\Esim$ where present, and train-only temporal transitions.
+directed edges from $\Epre$, $\Esim$ where present, and train-only temporal transitions
+(arrows denote prerequisite/similarity direction).
 \textbf{(b)}~A test-sequence window for one held-out learner with repeated
 very-cold steps; stratum labels derive from train-fold counts only
 (Section~\ref{sec:cold-start}).}
@@ -1806,12 +1806,9 @@ explicit concept-graph benefit is \emph{model-specific} within the
 \textbf{primary trio} (\textit{simpleKT}, pyKT GKT, native GIKT) rather than
 uniform. On XES3G5M, \textit{simpleKT} averages $0.875$ AUC while GKT averages
 $0.834$ under the released budget (mean $\Delta{\approx}{-}0.041$; 95\% CI
-\GKTdeltaci{}, Table~S16; fold stds in Table~\ref{tab:baseline-cv}). In a
-targeted seed-42 three-fold check (Table~S21), extended-training GKT reached
-mean AUC ${\approx}0.837$ (observed mean AUC $0.003451$ higher than primary GKT;
-however, the approximate 95\% CI $[-0.004,0.011]$ included zero).
-Because both the maximum epoch budget and batch size changed, this exploratory
-comparison does not isolate the effect of epochs. GIKT ($0.878$) slightly \emph{exceeds}
+\GKTdeltaci{}, Table~S16; fold stds in Table~\ref{tab:baseline-cv};
+extended-training sensitivity in Section~\ref{sec:limitations}/Table~S21).
+GIKT ($0.878$) slightly \emph{exceeds}
 the sequence leader ($+0.003$ mean AUC; interval \GIKTdeltaci{}, tied at
 three decimals on all folds). Native SKT ($0.625$)
 and DyGKT ($0.752$) are reported as \emph{fork wiring diagnostics} only: their
@@ -1895,11 +1892,8 @@ refer to fold~0 exports by default. GKT, AKT, DKT, and \textit{simpleKT} are
 stock pyKT~\cite{liu2022pykt} checkpoints; GIKT, SKT, DyGKT, and DGEKT are
 native implementations in our fork (\path{src/models/}). Epoch caps differ in
 the primary release (30 for sequence checkpoints vs.\ 10 for graph backbones;
-Table~S15). Table~S21 reports an exploratory seed-42 three-fold
-extended-training configuration-sensitivity check in which the observed mean AUC
-was $0.003451$ higher under the extended-training configuration; however, the
-approximate 95\% CI $[-0.004,0.011]$ included zero, and both maximum epochs and
-batch size changed relative to primary GKT.
+Table~S15). Extended-training configuration sensitivity for GKT is consolidated
+in Section~\ref{sec:limitations} (Table~S21).
 The GKT--\textit{simpleKT} gap on XES3G5M remains \emph{observational} under
 attested budgets, not proof that graph signal is useless after exhaustive tuning.
 The severe SKT/DyGKT deficits in Tables~\ref{tab:baseline-summary}
@@ -2129,9 +2123,10 @@ The audit also caught a one-step label misalignment in an early GIKT head
 (\path{src/models/gikt.py}), flagged by inconsistent fold AUCs and corrected
 before reporting Table~\ref{tab:baseline-cv}.
 
-\paragraph{Limitations.}
+\paragraph{Limitations.}\label{sec:limitations}
 Three-fold CV limits inferential power of fold-level tests ($p_{\min}{=}0.25$ for
-Wilcoxon). Primary XES3G5M ranking claims rely on fold-level $\Delta$AUC
+Wilcoxon\footnote{With three learner-disjoint folds, the two-sided Wilcoxon signed-rank test has minimum attainable $p{=}0.250$.}).
+Primary XES3G5M ranking claims rely on fold-level $\Delta$AUC
 magnitudes (Table~\ref{tab:baseline-cv}) and Table~S16 intervals
 (\path{scripts/bootstrap_auc_ci.py}; paired-$t$ over three folds by default,
 matching fold-level $\Delta$AUC; optional \texttt{--learner-bootstrap} on
@@ -2214,8 +2209,8 @@ that it consumes one.
 \section{Conclusion}
 \label{sec:concl}
 We presented a leakage-controlled audit protocol for constructing and
-evaluating concept graphs in graph-enhanced KT. The contribution targets
-\textit{Applied Intelligence} as a \emph{decision-support and risk-scoring
+evaluating concept graphs in graph-enhanced KT. The contribution is framed for
+\emph{applied practitioners} as a \emph{decision-support and risk-scoring
 layer} for trustworthy deployment: a
 practitioner checklist, provenance artefacts, tiered leakage diagnostics,
 \DDR{} augmentation metrics, ground-truth cross-validation where expert graphs
@@ -2238,8 +2233,8 @@ Under fixed training budgets on XES3G5M, the primary trio shows a
 \emph{model-specific} pattern: GKT trails \textit{simpleKT} by
 ${\approx}0.041$ mean AUC (95\% CI \GKTdeltaci{}; Table~S16) while GIKT
 remains competitive. A targeted three-fold configuration-sensitivity check
-(Table~S21) produced an observed mean AUC difference of approximately
-${+}0.003$, with an uncertainty interval including zero. Train-only versus
+(Table~S21; Section~\ref{sec:limitations}) produced an observed mean AUC
+difference of approximately ${+}0.003$, with an uncertainty interval including zero. Train-only versus
 full-log ablation moves headline AUC by at most $0.003$ and ACC by at most
 $0.008$. These results cohere
 under a two-factor reading: graph-mediated leakage shifts AUC only when
@@ -2430,7 +2425,7 @@ The main text summarises both in a single table.
   \caption{XES3G5M}
   \label{fig:supp-ktgraph-xes}
 \end{subfigure}
-\caption{Supplementary Figure~S1. High-weight samples from train-only $\Epre$ after DAG audit (fold~0 exports). The main text shows the Junyi panel only.}
+\caption{Supplementary Figure~S1. High-weight samples from train-only $\Epre$ after DAG audit (fold~0 exports). Directed prerequisite edges are drawn as arrows. The main text shows the Junyi panel only.}
 \label{fig:supp-kt-graph-all}
 \end{figure}
 
@@ -2476,9 +2471,8 @@ AUC with early stopping (BKT is fit by L-BFGS on NLL without early
 stopping). Epoch caps and batch sizes differ across families (maximum 30
 epochs for sequence checkpoints vs.\ maximum 10 for graph backbones in the
 primary release; primary GKT batch~4, \textit{simpleKT} batch~64),
-reflecting per-epoch cost. Table~S21 reports a targeted seed-42 three-fold
-extended-training configuration-sensitivity check (maximum 30~epochs, batch~32;
-same fold seeds $42$--$44$).
+reflecting per-epoch cost. The exploratory extended-training check is detailed in
+Section~\ref{sec:limitations} and Table~\ref{tab:gkt-epoch-ablation}.
 ``Native'' denotes
 our re-implementations in \texttt{src/models}; graph models consume the
 exported $\Epre$ and, where available, $\Esim$ edges.
@@ -2499,10 +2493,9 @@ $\Delta$AUC). Optional row-level learner bootstrap:
 \path{scripts/bootstrap_auc_ci.py --learner-bootstrap}.
 The GKT deficit under the released 10-epoch budget ($-0.041$; CI $[-0.044,-0.038]$) is more than an order of
 magnitude larger than the interval half-width, so the model-specific conclusion
-does not hinge on fragile three-fold $t$-tests. Table~S21 reports an exploratory
-seed-42 three-fold configuration-sensitivity check in which the observed mean AUC
-was $0.003451$ higher under the extended-training configuration; however, the
-approximate 95\% CI $[-0.004,0.011]$ included zero. Reproducers may optionally run
+does not hinge on fragile three-fold $t$-tests. Extended-training sensitivity
+for GKT is consolidated in Section~\ref{sec:limitations}
+(Table~\ref{tab:gkt-epoch-ablation}). Reproducers may optionally run
 \texttt{python scripts/bootstrap\_auc\_ci.py --learner-bootstrap} on exported
 prediction parquets for row-level learner resampling (slower; fold-level
 paired-$t$ is the default).

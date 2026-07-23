@@ -81,6 +81,33 @@ def test_eoc_reports_abs_rho_when_weights_align_with_test_means():
     assert compute_eoc(pre_df, sim_df, test_df) == pytest.approx(1.0)
 
 
+def test_edge_heldout_share_transition_counts():
+    train_df = pd.DataFrame({
+        "user_id": [1, 1, 1],
+        "item_id": [1, 2, 3],
+        "kc_id": [10, 20, 10],
+        "timestamp": [1, 2, 3],
+        "correct": [1, 1, 1],
+    })
+    held_df = pd.DataFrame({
+        "user_id": [2, 2],
+        "item_id": [4, 5],
+        "kc_id": [10, 20],
+        "timestamp": [1, 2],
+        "correct": [0, 1],
+    })
+    pre_df = pd.DataFrame({"src_kc": [10], "dst_kc": [20], "weight": [1.0], "source": ["t"]})
+    sim_df = pd.DataFrame(columns=["src_kc", "dst_kc", "weight", "source"])
+    q_train = pd.DataFrame({"item_id": [1, 2, 3], "kc_id": [10, 20, 10]})
+    from src.leakage_metrics import compute_edge_heldout_shares, summarize_edge_heldout_shares
+
+    shares = compute_edge_heldout_shares(pre_df, sim_df, train_df, held_df, q_train)
+    assert len(shares) == 1
+    assert shares[0] == pytest.approx(1 / 2)
+    summary = summarize_edge_heldout_shares(shares)
+    assert summary["frac_share_gt_50"] == pytest.approx(0.0)
+
+
 def test_compute_leakage_row_shapes_splits():
     train_df = pd.DataFrame({
         "user_id": [1, 1],
