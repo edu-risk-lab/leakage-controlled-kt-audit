@@ -4,6 +4,7 @@
 # Usage:
 #   bash scripts/run_gpu_server_pending.sh              # list jobs
 #   bash scripts/run_gpu_server_pending.sh a2_2b        # DDR seed-17 baseline rerun
+#   bash scripts/run_gpu_server_pending.sh a3_coldstart # A3.5 cold-start full preds (Junyi)
 #   bash scripts/run_gpu_server_pending.sh injection    # Table S18 (if cache missing)
 #   bash scripts/run_gpu_server_pending.sh crossref     # CPU: verify AUC consistency
 #   bash scripts/run_gpu_server_pending.sh all          # a2_2b then crossref (injection skipped if done)
@@ -54,24 +55,35 @@ job_crossref() {
   "$PYTHON" -m scripts.crossref_auc_numbers
 }
 
+job_a3_coldstart() {
+  log "=== Job A3.5: cold-start rerun (full predictions, Junyi default) ==="
+  bash scripts/run_a3_cold_start_rerun.sh --dataset junyi
+}
+
 case "$JOB" in
   help|-h|--help)
     cat <<'EOF'
 GPU server pending jobs (APIN revision):
 
   a2_2b       Rerun DDR GKT baseline fold-0 seed-17 (fixes placeholder AUC)
+  a3_coldstart  A3.5 cold-start rerun with full pyKT preds (Junyi; optional GPU)
   injection   Run/collect Table S18 injection downstream AUC
   crossref    Verify baseline vs S18 vs cache (CPU)
   all         a2_2b + crossref (injection only if caches missing)
 
 Examples:
   bash scripts/run_gpu_server_pending.sh a2_2b
-  nohup bash scripts/run_gpu_server_pending.sh a2_2b > logs/q1/nohup_a2_2b.log 2>&1 &
+  nohup bash scripts/run_gpu_server_pending.sh a3_coldstart > logs/q1/nohup_a3_coldstart.log 2>&1 &
 EOF
     ;;
   a2_2b)
     preflight
     job_a2_2b
+    ;;
+  a3_coldstart|a3)
+    preflight
+    test -f data/processed/junyi.parquet || { echo "Missing junyi.parquet — see README §3"; exit 1; }
+    job_a3_coldstart
     ;;
   injection)
     preflight
@@ -86,7 +98,7 @@ EOF
     job_crossref
     ;;
   *)
-    echo "Unknown job: $JOB (try: help, a2_2b, injection, crossref, all)"
+    echo "Unknown job: $JOB (try: help, a2_2b, a3_coldstart, injection, crossref, all)"
     exit 1
     ;;
 esac

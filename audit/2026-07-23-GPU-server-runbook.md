@@ -117,10 +117,36 @@ Copy-Item results/tables/ddr_downstream*.tex paper/submission_APIN/
 
 ---
 
+## A3.5 — Cold-start rerun (optional GPU)
+
+**Mục tiêu:** Rerun cold-start strata với **full predictions** (không cap 5000); pyKT backend + `kc_id` cho per-stratum AUC.
+
+**Script:** `scripts/run_a3_cold_start_rerun.sh` (Linux) / `run_a3_cold_start_rerun.ps1` (Windows)
+
+```bash
+# Junyi only (default — artefact very_cold)
+bash scripts/run_a3_cold_start_rerun.sh
+
+# Hoặc qua dispatcher
+bash scripts/run_gpu_server_pending.sh a3_coldstart
+
+# Debug fold 0
+bash scripts/run_a3_cold_start_rerun.sh --fold-idx 0
+
+# Tất cả dataset (nặng — Junyi ~ nhiều giờ GPU)
+bash scripts/run_a3_cold_start_rerun.sh --dataset all
+```
+
+**Flags pipeline:** `--cold-start-only --force-cold-start` → chỉ cập nhật `cold_start_metrics.csv`, không đụng `baseline_results.csv`.
+
+**Sau khi chạy:** sync `results/tables/cold_start_*` → `paper/submission_APIN/`; kiểm tra verify in cuối log (very_cold không còn AUC trùng mọi model khi n_discordant ≥ 10).
+
+---
+
 ## Không chạy trên GPU (đã xong / CPU only)
 
 | Mục | Trạng thái |
 |-----|------------|
 | A1 injection S18 | ✅ Server A verified 2026-07-23 |
 | A1.3 crossref | ✅ `scripts/crossref_auc_numbers.py` |
-| A3 Junyi very_cold | ✅ Suppress `---` trong bảng; không cần GPU trừ khi A3.5 full preds |
+| A3 Junyi very_cold | ✅ Suppress `---` trong bảng; **A3.5 optional GPU**: `bash scripts/run_a3_cold_start_rerun.sh` |
