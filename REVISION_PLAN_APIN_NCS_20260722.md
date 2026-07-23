@@ -132,7 +132,7 @@
 
 - [x] **B4.1** Sửa `compute_eoc` → trả `|ρ|` thô (khớp Eq. 8).
 - [x] **B4.2** Regenerate `leakage_metrics.tex`; đổi cột thành `$|\rho|$`.
-- [ ] **B4.3** Rà §4.2 số \|ρ\| sau regenerate.
+- [x] **B4.3** Rà §4.2 số \|ρ\| sau regenerate — CSV migrated; §4.2 + Algorithm + exp-audit cross-ref Table; `regenerate_leakage_metrics.py`.
 
 ### B5. Hai khái niệm |C|
 
@@ -142,12 +142,12 @@
 ### B6. Stratum / out of range / thuật ngữ
 
 - [x] **B6.1** Bổ sung §3.7: KC n_f=0; out_of_range = held-out KC không map được bin train; cold-start theo tần suất ≠ zero-shot luận án.
-- [ ] **B6.2** Ghi chú nội bộ C2/C4: không trích very_cold P0 như zero-interaction split.
+- [x] **B6.2** Ghi chú nội bộ C2/C4: `docs/internal/C2_C4_terminology_note.md`.
 
 ### B7. ECR-overlap bão hòa
 
-- [ ] **B7.1** Tính từ artefact: tỷ lệ cạnh share held-out > 50%; median/p90 share — thêm cột Table 5 hoặc bảng nhỏ.
-- [ ] **B7.2** 2–3 câu §3.2 liên hệ cold-start × throughput cục bộ.
+- [x] **B7.1** Tính từ artefact: tỷ lệ cạnh share held-out > 50%; median/p90 share — cột Table leakage (`scripts/compute_edge_share_distribution.py`).
+- [x] **B7.2** 2–3 câu §3.2 liên hệ cold-start × throughput cục bộ.
 
 ---
 
@@ -155,22 +155,23 @@
 
 ### C8. Rút gọn (41 → 32–35 trang)
 
-- [ ] Gom caveat seed-42 về một chỗ (cuối §4.4 hoặc Limitations).
-- [ ] Bỏ “Applied Intelligence readers” → “applied practitioners”.
+- [x] **C8.1** Gom caveat seed-42/S21 về Limitations (`\label{sec:limitations}`); rút gọn lặp ở Abstract/Intro/C5/§4/Discussion/Conclusion.
+- [x] **C8.2** Bỏ “Applied Intelligence readers” → “applied practitioners” (Conclusion).
 - [ ] Cân nhắc Eq.(1), Fig.5 xuống supplementary.
 
 ### C9. Trích dẫn + rà 2025–2026
 
-- [ ] Verify [6][11][13][18][29]; xóa Google Drive [6].
-- [ ] Scholar search: “knowledge tracing graph leakage”, “concept graph provenance”, …
-- [ ] Điều chỉnh claim “under-specified” nếu có prior art.
+- [x] Verify [6][11][13][18][29]; xóa Google Drive [6].
+- [x] Scholar search: log in `audit/2026-07-23-C9-refs-scholar-scan.md`.
+- [x] Điều chỉnh claim “under-specified” — scoped vs. sequence-level remedies [18].
 
 ### C10. Trình bày
 
-- [ ] Fig. 5/7/11: mũi tên directed.
-- [ ] CI `[+0.003,+0.003]` → thêm chữ số thập phân.
-- [ ] Data availability: `python -m src.graph_builder`.
-- [ ] Email utehy.edu.vn; đơn vị công tác; AI statement; footnote p=0.250 underpowered.
+- [x] Fig. 5/7/11 (S1): caption directed arrows; PDFs already use `arrows=True` in `plot_kt_graph_figures.py`.
+- [x] **C10.1** CI `[+0.003,+0.003]` → `[+0.0031,+0.0032]` (GIKT vs simpleKT XES).
+- [x] **C10.2** Data availability: `python -m src.graph_builder` (đã có §Data availability).
+- [x] **C10.3** Email utehy.edu.vn (author block).
+- [x] AI statement (`Declaration of generative AI-assisted work`); footnote Wilcoxon $p_{\min}=0.25$ under Limitations.
 
 ---
 

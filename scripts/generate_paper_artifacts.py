@@ -442,65 +442,12 @@ def _write_leakage_metrics_tex(path: Path) -> None:
     csv_path = Path("results/tables/leakage_metrics.csv")
     if not csv_path.exists():
         return
+    from scripts.generate_phase_c_tables import write_leakage_metrics_tex
+
     df = pd.read_csv(csv_path)
-    required = {"dataset", "eoc", "tbvr"}
-    if df.empty or not required.issubset(df.columns):
+    if df.empty or "eoc" not in df.columns:
         return
-    if "ecr_overlap" not in df.columns and "ecr" in df.columns:
-        df = df.copy()
-        df["ecr_overlap"] = df["ecr"]
-    if "ecr_flag" not in df.columns:
-        df = df.copy()
-        df["ecr_flag"] = 0.0
-    if "ecr_overlap" not in df.columns:
-        return
-    df = df[df["dataset"].notna() & (df["dataset"].astype(str).str.strip() != "")]
-    if df.empty:
-        return
-    if "fold" in df.columns:
-        df = df.groupby("dataset", as_index=False).agg(
-            ecr_flag=("ecr_flag", "mean"),
-            ecr_overlap=("ecr_overlap", "mean"),
-            eoc=("eoc", "mean"),
-            tbvr=("tbvr", "mean"),
-        )
-    lines = [
-        r"\begin{table}[t]",
-        r"\centering",
-        r"\caption{Direct leakage diagnostics per dataset (fold mean where multiple folds are present). "
-        r"\textsc{ECR}\textsubscript{flag}: learner-overlap structural indicator (Eq.~\ref{eq:ecr-flag}; "
-        r"$0$ confirms disjoint learners across train/validation/test under each fold). "
-        r"\textsc{ECR}\textsubscript{overlap}: held-out pattern overlap rate over retained edges (Eq.~\ref{eq:ecr-overlap}). "
-        r"\textsc{EOC}: Edge--Outcome Correlation Frobenius norm (Eq.~\ref{eq:eoc}); "
-        r"\textsc{TBVR}: Temporal Boundary Violation Rate within train timelines (Eq.~\ref{eq:tbvr}, indexed boundary). "
-        r"Values are exported by \texttt{p0-graph-build} into \texttt{results/tables/leakage\_metrics.csv}. "
-        r"Under learner-disjoint folds, $\textsc{ECR}\textsubscript{flag}{=}0$ on every run---confirming structural leakage freedom "
-        r"at the split level; "
-        r"\textsc{ECR}\textsubscript{overlap} can remain near~$1$ on dense logs because recurrent transition patterns "
-        r"reappear across disjoint held-out learners (diagnostic overlap, not \texttt{train\_only\_flag} violation).}",
-        r"\label{tab:leakage-metrics}",
-        r"\footnotesize",
-        r"\setlength{\tabcolsep}{3pt}",
-        r"\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}X *{4}{>{\centering\arraybackslash}X} @{}}",
-        r"\toprule",
-        r"Dataset & \textsc{ECR}\textsubscript{flag} & \textsc{ECR}\textsubscript{overlap} & \textsc{EOC} & \textsc{TBVR} \\",
-        r"\midrule",
-    ]
-    label_map = {
-        "junyi": "Junyi Academy",
-        "assist2012": "ASSISTments 2012",
-        "xes3g5m": "XES3G5M",
-        "synthetic_c2": "Synthetic C2",
-        "synthetic_c5": "Synthetic C5",
-    }
-    for row in df.sort_values("dataset").itertuples(index=False):
-        ds = str(row.dataset).strip()
-        lines.append(
-            f"{label_map.get(ds, ds)} & {_fmt_float(row.ecr_flag)} & {_fmt_float(row.ecr_overlap)} & {_fmt_float(row.eoc)} & {_fmt_float(row.tbvr)} "
-            + r"\\"
-        )
-    lines.extend([r"\bottomrule", r"\end{tabularx}", r"\end{table}", ""])
-    path.write_text("\n".join(lines), encoding="utf-8")
+    write_leakage_metrics_tex(df, path)
 
 
 def _write_graph_ablation_tex(path: Path) -> None:
