@@ -68,11 +68,22 @@ else:
 "@
 }
 
+function Invoke-PythonModuleLogged {
+    param(
+        [string[]]$PythonArgs,
+        [string]$LogPath
+    )
+    $argStr = ($PythonArgs | ForEach-Object { if ($_ -match '\s') { """$_""" } else { $_ } }) -join ' '
+    $cmd = """$PYTHON"" $argStr 2>&1"
+    cmd /c $cmd | Tee-Object -Append -FilePath $LogPath
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+}
+
 function Rebuild-Graph {
     Log "=== Rebuild train-only graphs for split seed $SEED ==="
     if ($DryRun) { Log "DryRun: graph_builder $CONFIG_SPLIT"; return }
-    & $PYTHON -m src.graph_builder --config $CONFIG_SPLIT 2>&1 |
-        Tee-Object -FilePath (Join-Path $LOG_DIR "a2_2b_graph_builder_seed${SEED}.log") -Append
+    Invoke-PythonModuleLogged -PythonArgs @('-m', 'src.graph_builder', '--config', $CONFIG_SPLIT) `
+        -LogPath (Join-Path $LOG_DIR "a2_2b_graph_builder_seed${SEED}.log")
 }
 
 function Clear-Workdir {
@@ -86,7 +97,7 @@ function Clear-Workdir {
 
 function Run-Baseline {
     Log "=== Train GKT baseline only: fold=$FOLD seed=$SEED batch=$BATCH_SIZE ==="
-    $args = @(
+    $PythonArgs = @(
         '-m', 'scripts.ddr_downstream',
         '--config', $CONFIG_DDR,
         '--model', 'gkt',
@@ -98,8 +109,8 @@ function Run-Baseline {
         '--out', $OUT,
         '--log-level', 'INFO'
     )
-    if ($DryRun) { Log ("DryRun: $PYTHON " + ($args -join ' ')); return }
-    & $PYTHON @args 2>&1 | Tee-Object -FilePath $LOG -Append
+    if ($DryRun) { Log ("DryRun: $PYTHON " + ($PythonArgs -join ' ')); return }
+    Invoke-PythonModuleLogged -PythonArgs $PythonArgs -LogPath $LOG
 }
 
 function Verify-Result {
