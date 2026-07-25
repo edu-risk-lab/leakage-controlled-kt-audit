@@ -224,6 +224,7 @@ Không cắt nhầm: định vị trung thực, manipulation check DDR/GKT, prer
 | **Server A GKT report** | **Đã pull** `docs/GKT_Hyperparams_Review_Report.md`; audit batch history |
 | **A2.1 wording** | **Đã sửa** Abstract + Limitations + Future work |
 | **A2.2 DDR duplicate AUC** | **Done** — A2.2b verified + §4.6 prose aligned to Table DDR-GKT ($n{=}54/66$) |
-| **crossref pre-submit** | **Done** `audit/crossref_auc_report.md` — 12/12 pass (2026-07-23) |
+| **A3.5 GPU cold-start** | **Done** Junyi verified (`bc9ea715`); §4.8/H2 + tables synced |
+| **C8.4 page cut** | **Done** main 36 pp (`8a1bc891`); mục tiêu 32–35 còn ~1 trang |
 | **scan-placeholder** | **Done** — seminar scripts + deprecate `create_fake_tables.py`; `audit/2026-07-23-placeholder-injection-scan.md` |
 | Kế hoạch này | **Cập nhật 23/07** với Server A |

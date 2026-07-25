@@ -1,10 +1,10 @@
 # M. Tổng hợp lỗi và quyết định gửi GS hướng dẫn
 
-**Thời điểm:** 2026-07-18 23:14  
+**Thời điểm:** 2026-07-25  
 **PDF đề xuất:** `paper/submission_APIN/main_APIN.pdf`  
-**Trang:** 61  
-**SHA-256:** `ea0e2d8a427c18cf0a20c11baf167e8d5006b019ffd1d0fe89482fc6f81998e8`  
-**ModDate:** 2026-07-19 05:28:38 +07
+**Trang:** 61 (main body §1–§6: **36**; appendix từ §A)  
+**SHA-256:** `6e8750f81fd8005fdc5ce1f3c00bdbe99d596e7ba4ac91399378d9918a156820`  
+**Git:** `main` @ `8a1bc891` (C8.4: Fig. pipelines / kc-construction / Junyi DDR → Supp)
 
 ## Kết luận đề xuất
 
