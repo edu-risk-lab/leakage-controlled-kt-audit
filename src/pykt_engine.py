@@ -55,8 +55,16 @@ def _dataloader_kwargs(batch_size: int, force_cpu: bool = False) -> dict:
     return kw
 
 
+def _bce_loss(pred: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+    """BCE must run in full precision — unsafe under autocast (PyTorch 2.11+)."""
+    from torch.nn.functional import binary_cross_entropy
+
+    with torch.amp.autocast("cuda", enabled=False):
+        return binary_cross_entropy(pred.float(), target.float())
+
+
 def _model_forward_loss(model, batch: dict, model_name: str) -> torch.Tensor:
-    from torch.nn.functional import binary_cross_entropy, one_hot
+    from torch.nn.functional import one_hot
 
     device = next(model.parameters()).device
     dcur = _batch_to_device(batch, device)
@@ -72,41 +80,41 @@ def _model_forward_loss(model, batch: dict, model_name: str) -> torch.Tensor:
         y = (y * one_hot(cshft.long(), model.num_c)).sum(-1)
         pred = torch.masked_select(y, sm)
         target = torch.masked_select(rshft, sm)
-        return binary_cross_entropy(pred, target)
+        return _bce_loss(pred, target)
     if model_name == "akt":
         y, reg = model(cc.long(), cr.long(), cq.long())
         y = y[:, 1:]
         pred = torch.masked_select(y, sm)
         pred = torch.clamp(pred, 1e-6, 1.0 - 1e-6)
         target = torch.masked_select(rshft, sm)
-        return binary_cross_entropy(pred, target) + reg
+        return _bce_loss(pred, target) + reg
     if model_name == "gkt":
         y = model(cc.long(), cr.long())
         pred = torch.masked_select(y, sm)
         target = torch.masked_select(rshft, sm)
-        return binary_cross_entropy(pred, target)
+        return _bce_loss(pred, target)
     if model_name == "simplekt":
         y, _y2, _y3 = model(dcur, train=True)
         y = y[:, 1:]
         pred = torch.masked_select(y, sm)
         target = torch.masked_select(rshft, sm)
-        return binary_cross_entropy(pred, target)
+        return _bce_loss(pred, target)
     if model_name == "gikt":
         y = model(cq.long(), cc.long(), cr.long())
         y = y[:, 1:]
         pred = torch.masked_select(y, sm)
         target = torch.masked_select(rshft, sm)
-        return binary_cross_entropy(pred, target)
+        return _bce_loss(pred, target)
     if model_name == "sakt":
         y = model(c.long(), r.long(), cshft.long())
         pred = torch.masked_select(y, sm)
         target = torch.masked_select(rshft, sm)
-        return binary_cross_entropy(pred, target)
+        return _bce_loss(pred, target)
     if model_name in ("skt", "dygkt", "dgekt"):
         y = model(c.long(), r.long(), cshft.long())
         pred = torch.masked_select(y, sm)
         target = torch.masked_select(rshft, sm)
-        return binary_cross_entropy(pred, target)
+        return _bce_loss(pred, target)
     raise ValueError(f"Unsupported model_name={model_name}")
 
 
@@ -204,9 +212,9 @@ def _train_loop(model, train_loader, valid_loader, epochs: int, lr: float, patie
     _force_cpu = os.environ.get("FORCE_CPU", "0") == "1"
     # Models excluded from AMP due to float16 overflow/dtype issues:
     # - gkt: float32/float16 conflict in _agg_neighbors scatter
-    # - simplekt: masked_fill_(-1e32) overflows float16
-    # - gikt: similar attention masking issues
-    _NO_AMP_MODELS = {'gkt', 'simplekt', 'gikt'}
+    # - simplekt/gikt/akt: masked_fill(-1e32) overflows float16
+    # - dygkt/dgekt: in-place index_put dtype mismatch under autocast
+    _NO_AMP_MODELS = {'gkt', 'simplekt', 'gikt', 'akt', 'dygkt', 'dgekt'}
     use_amp = torch.cuda.is_available() and not _force_cpu and getattr(model, 'model_name', '') not in _NO_AMP_MODELS
     scaler = torch.amp.GradScaler('cuda', enabled=use_amp)
     torch.backends.cudnn.benchmark = True  # autotuning for faster kernels
