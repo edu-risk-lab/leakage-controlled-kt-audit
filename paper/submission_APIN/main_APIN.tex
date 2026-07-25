@@ -506,9 +506,9 @@ Let $\mathcal{D}$ be a KT interaction log, $\mathcal{C}$ the set of
 \mathcal{F}_{\text{val}},\mathcal{F}_{\text{test}})$ a learner-based
 temporal split. The protocol constructs a fold-specific graph
 $G_f=(\mathcal{C},\Epre^f\cup\Esim^f)$ using only
-$\mathcal{F}_{\text{train}}^f$. Figures~\ref{fig:framework} and
-\ref{fig:pipelines} summarise module dependencies and artefact-level data
-flow; Figure~\ref{fig:kc-construction} details prerequisite-edge construction.
+$\mathcal{F}_{\text{train}}^f$. Figure~\ref{fig:framework} summarises module
+dependencies; Supplementary Figures~S4--S5 give artefact-level data flow and
+prerequisite-edge construction (Section~\ref{sec:supp-protocol-figures}).
 
 \begin{figure}[!t]
 \centering
@@ -552,94 +552,8 @@ must be logged before any graph-augmented KT run. Leakage metrics,
 \emph{parallel} audits---they do not retrain models---which keeps the
 protocol lightweight but means it cannot certify every possible leakage
 path (e.g.\ hidden features in proprietary pipelines).
-
-\begin{figure}[!t]
-\centering
-% Shared vertical span 0..-5.2cm so (a)--(c) match in height.
-% Wider (a)/(c) boxes reduce wrapping and leave longer arrow shafts.
-\begin{subfigure}[t]{0.30\linewidth}
-\centering
-\begin{tikzpicture}[
-  font=\scriptsize,
-  box/.style={draw, rounded corners=2pt, align=center, minimum height=0.42cm,
-    text width=2.45cm, inner sep=2pt},
-  arr/.style={-{Stealth[length=2mm]}, thick}
-]
-\node[box] (raw) at (0,0) {Raw log $\mathcal{D}$};
-\node[box] (prep) at (0,-1.30) {Preprocess (Q-matrix, IDs)};
-\node[box] (split) at (0,-2.60) {Learner split $\mathcal{F}^f$};
-\node[box] (samp) at (0,-3.90) {Train-only sample $\tilde{\mathcal{I}}^f_{\text{tr}}$ (opt.)};
-\node[box] (graph) at (0,-5.20) {Graph $G_f$ + DAG audit};
-\draw[arr] (raw.south) -- (prep.north);
-\draw[arr] (prep.south) -- (split.north);
-\draw[arr] (split.south) -- (samp.north);
-\draw[arr] (samp.south) -- (graph.north);
-\end{tikzpicture}
-\caption{Data pipeline from raw log to audited $G_f$.}
-\label{fig:pipe-data}
-\end{subfigure}\hfill
-\begin{subfigure}[t]{0.36\linewidth}
-\centering
-\begin{tikzpicture}[
-  font=\scriptsize,
-  box/.style={draw, fill=white, rounded corners=2pt, align=center,
-    minimum height=0.50cm, text width=1.55cm, inner sep=2pt},
-  vbox/.style={draw, fill=white, rounded corners=2pt, align=center,
-    minimum height=0.50cm, text width=1.55cm, inner sep=2pt},
-  arr/.style={-{Stealth[length=2mm]}, thick},
-  arrd/.style={-{Stealth[length=2mm]}, thick, dashed}
-]
-% Main training branch (same top/bottom as panels a and c)
-\node[box] (seq) at (0,0) {Train sequences\\$\mathcal{F}^f_{\text{train}}$};
-\node[box] (g) at (0,-1.73) {Train-only graph\\$G_f$};
-\node[box] (model) at (0,-3.47) {KT backbone};
-\node[box] (loss) at (0,-5.20) {Optimise NLL};
-% Validation branch: clear gap from train-only graph edge
-\node[vbox,right=0.40cm of g] (ckpt) {Checkpoint /\\early stopping};
-\node[vbox] (val) at (ckpt |- seq) {Val fold};
-\draw[arr] (seq.south) -- (g.north);
-\draw[arr] (g.south) -- (model.north);
-\draw[arr] (model.south) -- (loss.north);
-\draw[arr] (val.south) -- (ckpt.north);
-% Dashed control link only (never into the train-only graph)
-\draw[arrd] (ckpt.south) -- (ckpt.south|-model.east) -- (model.east);
-\end{tikzpicture}
-\caption{Training inputs and validation-based\\
-checkpoint selection.}
-\label{fig:pipe-train}
-\end{subfigure}\hfill
-\begin{subfigure}[t]{0.28\linewidth}
-\centering
-\begin{tikzpicture}[
-  font=\scriptsize,
-  box/.style={draw, rounded corners=2pt, align=center, minimum height=0.42cm,
-    text width=2.35cm, inner sep=2pt},
-  arr/.style={-{Stealth[length=2mm]}, thick}
-]
-\node[box] (newkc) at (0,0) {Cold-start KC ($S_1$--$S_4$)};
-\node[box] (msg) at (0,-1.73) {Graph messages from neighbours};
-\node[box] (pred) at (0,-3.47) {Predict $p(y{=}1)$ on test steps};
-\node[box] (report) at (0,-5.20) {Report AUC by stratum};
-\draw[arr] (newkc.south) -- (msg.north);
-\draw[arr] (msg.south) -- (pred.north);
-\draw[arr] (pred.south) -- (report.north);
-\end{tikzpicture}
-\caption{Cold-start inference and stratum reporting.}
-\label{fig:pipe-infer}
-\end{subfigure}
-\caption{End-to-end protocol plumbing: (a)~data preparation and fold-conditioned
-graph construction, (b)~training with a train-only graph and validation-based
-checkpoint selection, and (c)~cold-start knowledge-component evaluation with
-\mbox{stratum-specific} reporting (Section~\ref{sec:exp-coldstart}).}
-\label{fig:pipelines}
-\end{figure}
-
-Figure~\ref{fig:pipelines} complements the module map of
-Figure~\ref{fig:framework} with artefact-level data flow. Panel~(a) shows
-where optional within-train sampling sits relative to preprocessing and DAG
-audit; panel~(b) shows that graph and sequence inputs are consumed jointly
-during optimisation; panel~(c) shows that test rows inherit KC strata defined
-from train-fold counts only.
+Supplementary Figure~S4 (Figure~\ref{fig:pipelines}) gives artefact-level data
+flow from raw logs through cold-start stratum reporting.
 
 \subsection{Formal Problem Statement and Leakage Audit}
 \label{sec:formal-problem}
@@ -958,41 +872,9 @@ support weight $w_{ij} = s(c_i, c_j) / s_{\max}$ used by the cycle
 pruning step in Section~\ref{sec:dag-audit}. This candidate edge set
 is then passed unchanged to the DAG audit; cycle pruning operates only
 on the candidates returned by stages (i)--(iii).
-
-\begin{figure}[!t]
-\centering
-% Compact left-to-right pipeline; three filter stages share one block.
-\resizebox{\linewidth}{!}{%
-\begin{tikzpicture}[
-  font=\scriptsize,
-  box/.style={draw, rounded corners=2pt, align=center, minimum height=0.85cm,
-    text width=1.85cm, inner sep=2pt},
-  filt/.style={box, fill=blue!8, text width=2.35cm},
-  arr/.style={-{Stealth[length=2mm]}, thick}
-]
-\node[box] (seq) {Train sequences\\$\mathcal{F}^f_{\text{train}}$};
-\node[box,right=0.32cm of seq] (trans) {Extract transitions\\$c_t\!\to\!c_{t+1}$};
-\node[box,right=0.32cm of trans] (count) {Count support\\$s(i,j)$};
-\node[filt,right=0.32cm of count] (filt) {Filter (i)--(iii)\\
-  $q{=}0.95$;\ $k{=}5$;\\$K{=}5000$};
-\node[box,right=0.32cm of filt] (dag) {DAG audit\\+ prune};
-\node[box,right=0.32cm of dag] (csv) {Export $G_f$\\+ provenance};
-\draw[arr] (seq.east) -- (trans.west);
-\draw[arr] (trans.east) -- (count.west);
-\draw[arr] (count.east) -- (filt.west);
-\draw[arr] (filt.east) -- (dag.west);
-\draw[arr] (dag.east) -- (csv.west);
-\end{tikzpicture}}
-\caption{Train-only prerequisite construction pipeline: temporal transitions
-are counted on $\mathcal{F}^f_{\text{train}}$ (or optional sample
-$\tilde{\mathcal{I}}^f_{\text{tr}}$), filtered, cycle-pruned, and exported
-with provenance fields (Section~\ref{sec:dag-audit}).}
-\label{fig:kc-construction}
-\end{figure}
-
-Figure~\ref{fig:kc-construction} makes the construction stages explicit;
-Figure~\ref{fig:pipelines}(a) situates this block inside the wider data
-pipeline.
+Supplementary Figure~S5 (Figure~\ref{fig:kc-construction}) diagrams these
+stages; Figure~\ref{fig:pipelines}(a) situates the block inside the wider
+data pipeline (Section~\ref{sec:supp-protocol-figures}).
 
 \paragraph{Similarity edges $\Esim$ and theoretical properties.}
 \label{sec:graph-sim-theory}
@@ -1502,24 +1384,12 @@ shift here does not prove absence of leakage in general.
 
 \subsection{DAG Disruption Rate}
 \label{sec:exp-ddr}
-\begin{figure}[!t]
-\centering
-\includegraphics[width=0.85\linewidth]{fig_ddr_junyi.pdf}
-\caption{\DDR{} as a function of perturbation strength $p$ on Junyi Academy for
-five graph augmentation families: four label-agnostic operators
-(\texttt{attr\_mask}, \texttt{subgraph}, \texttt{edge\_drop}, \texttt{node\_drop})
-and one prerequisite-preserving operator (\texttt{prereq\_preserve}). Each
-marker plots the mean \DDR{} averaged across nine stochastic runs (three
-random seeds on each of three train folds). The same ordering holds on
-ASSISTments~2012 and XES3G5M (Supplementary Figure~S2):
-$\DDR(\text{attr\_mask})=0 < \DDR(\text{subgraph}) \lesssim
-\DDR(\text{prereq\_preserve}) < \DDR(\text{edge\_drop}) \approx p <
-\DDR(\text{node\_drop})$.}
-\label{fig:ddr-junyi}
-\end{figure}
+Supplementary Figure~S2 (Figure~\ref{fig:supp-ddr-all}) plots \DDR{} versus
+perturbation strength $p$ on all three benchmarks; the main text retains the
+tabular summary only.
 
 \input{ddr_raw.tex}
-Figure~\ref{fig:ddr-junyi} and Table~\ref{tab:ddr-raw} show five
+Figure~\ref{fig:supp-ddr-all} and Table~\ref{tab:ddr-raw} show five
 consistent regimes across the three benchmarks. First, attribute
 masking leaves $\Epre$ structurally unchanged and therefore gives
 $\DDR{}=0$ across perturbation strengths by construction. Second,
@@ -2257,10 +2127,14 @@ Figure~S1: multi-benchmark train-only $\Epre$ samples
 (Figure~\ref{fig:supp-kt-graph-all});
 Figure~S2: multi-benchmark \DDR{} curves (Figure~\ref{fig:supp-ddr-all});
 Figure~S3: \DDR{} downstream scatter plot
-(Figure~\ref{fig:supp-ddr-downstream}).
+(Figure~\ref{fig:supp-ddr-downstream});
+Figure~S4: end-to-end protocol plumbing (Figure~\ref{fig:pipelines});
+Figure~S5: train-only prerequisite construction pipeline
+(Figure~\ref{fig:kc-construction}).
 Cold-start panels in the main text (Figure~\ref{fig:coldstart-viz}) are
 generated from fold~0 exports by \path{scripts/plot\_kt\_graph\_figures.py}.
-Section~S2: formal graph-construction objective (Section~\ref{sec:supp-graph-objective}).
+Section~S2: formal graph-construction objective (Section~\ref{sec:supp-graph-objective});
+protocol plumbing figures (Section~\ref{sec:supp-protocol-figures}).
 
 \section{Formal graph-construction objective}
 \label{sec:supp-graph-objective}
@@ -2295,6 +2169,122 @@ two pipelines were merged (they are not in the released implementation).
 &\; \mathrm{sim}(c_i,c_j)\ge\tau \ \forall (i,j)\in\Esim^f.
   \label{eq:c4}
 \end{align}
+
+\section{Protocol plumbing figures}
+\label{sec:supp-protocol-figures}
+
+\begin{figure}[!t]
+\centering
+% Shared vertical span 0..-5.2cm so (a)--(c) match in height.
+% Wider (a)/(c) boxes reduce wrapping and leave longer arrow shafts.
+\begin{subfigure}[t]{0.30\linewidth}
+\centering
+\begin{tikzpicture}[
+  font=\scriptsize,
+  box/.style={draw, rounded corners=2pt, align=center, minimum height=0.42cm,
+    text width=2.45cm, inner sep=2pt},
+  arr/.style={-{Stealth[length=2mm]}, thick}
+]
+\node[box] (raw) at (0,0) {Raw log $\mathcal{D}$};
+\node[box] (prep) at (0,-1.30) {Preprocess (Q-matrix, IDs)};
+\node[box] (split) at (0,-2.60) {Learner split $\mathcal{F}^f$};
+\node[box] (samp) at (0,-3.90) {Train-only sample $\tilde{\mathcal{I}}^f_{\text{tr}}$ (opt.)};
+\node[box] (graph) at (0,-5.20) {Graph $G_f$ + DAG audit};
+\draw[arr] (raw.south) -- (prep.north);
+\draw[arr] (prep.south) -- (split.north);
+\draw[arr] (split.south) -- (samp.north);
+\draw[arr] (samp.south) -- (graph.north);
+\end{tikzpicture}
+\caption{Data pipeline from raw log to audited $G_f$.}
+\label{fig:pipe-data}
+\end{subfigure}\hfill
+\begin{subfigure}[t]{0.36\linewidth}
+\centering
+\begin{tikzpicture}[
+  font=\scriptsize,
+  box/.style={draw, fill=white, rounded corners=2pt, align=center,
+    minimum height=0.50cm, text width=1.55cm, inner sep=2pt},
+  vbox/.style={draw, fill=white, rounded corners=2pt, align=center,
+    minimum height=0.50cm, text width=1.55cm, inner sep=2pt},
+  arr/.style={-{Stealth[length=2mm]}, thick},
+  arrd/.style={-{Stealth[length=2mm]}, thick, dashed}
+]
+% Main training branch (same top/bottom as panels a and c)
+\node[box] (seq) at (0,0) {Train sequences\\$\mathcal{F}^f_{\text{train}}$};
+\node[box] (g) at (0,-1.73) {Train-only graph\\$G_f$};
+\node[box] (model) at (0,-3.47) {KT backbone};
+\node[box] (loss) at (0,-5.20) {Optimise NLL};
+% Validation branch: clear gap from train-only graph edge
+\node[vbox,right=0.40cm of g] (ckpt) {Checkpoint /\\early stopping};
+\node[vbox] (val) at (ckpt |- seq) {Val fold};
+\draw[arr] (seq.south) -- (g.north);
+\draw[arr] (g.south) -- (model.north);
+\draw[arr] (model.south) -- (loss.north);
+\draw[arr] (val.south) -- (ckpt.north);
+% Dashed control link only (never into the train-only graph)
+\draw[arrd] (ckpt.south) -- (ckpt.south|-model.east) -- (model.east);
+\end{tikzpicture}
+\caption{Training inputs and validation-based\\
+checkpoint selection.}
+\label{fig:pipe-train}
+\end{subfigure}\hfill
+\begin{subfigure}[t]{0.28\linewidth}
+\centering
+\begin{tikzpicture}[
+  font=\scriptsize,
+  box/.style={draw, rounded corners=2pt, align=center, minimum height=0.42cm,
+    text width=2.35cm, inner sep=2pt},
+  arr/.style={-{Stealth[length=2mm]}, thick}
+]
+\node[box] (newkc) at (0,0) {Cold-start KC ($S_1$--$S_4$)};
+\node[box] (msg) at (0,-1.73) {Graph messages from neighbours};
+\node[box] (pred) at (0,-3.47) {Predict $p(y{=}1)$ on test steps};
+\node[box] (report) at (0,-5.20) {Report AUC by stratum};
+\draw[arr] (newkc.south) -- (msg.north);
+\draw[arr] (msg.south) -- (pred.north);
+\draw[arr] (pred.south) -- (report.north);
+\end{tikzpicture}
+\caption{Cold-start inference and stratum reporting.}
+\label{fig:pipe-infer}
+\end{subfigure}
+\caption{Supplementary Figure~S4. End-to-end protocol plumbing: (a)~data
+preparation and fold-conditioned graph construction, (b)~training with a
+train-only graph and validation-based checkpoint selection, and
+(c)~cold-start knowledge-component evaluation with \mbox{stratum-specific}
+reporting (Section~\ref{sec:exp-coldstart}).}
+\label{fig:pipelines}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+% Compact left-to-right pipeline; three filter stages share one block.
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[
+  font=\scriptsize,
+  box/.style={draw, rounded corners=2pt, align=center, minimum height=0.85cm,
+    text width=1.85cm, inner sep=2pt},
+  filt/.style={box, fill=blue!8, text width=2.35cm},
+  arr/.style={-{Stealth[length=2mm]}, thick}
+]
+\node[box] (seq) {Train sequences\\$\mathcal{F}^f_{\text{train}}$};
+\node[box,right=0.32cm of seq] (trans) {Extract transitions\\$c_t\!\to\!c_{t+1}$};
+\node[box,right=0.32cm of trans] (count) {Count support\\$s(i,j)$};
+\node[filt,right=0.32cm of count] (filt) {Filter (i)--(iii)\\
+  $q{=}0.95$;\ $k{=}5$;\\$K{=}5000$};
+\node[box,right=0.32cm of filt] (dag) {DAG audit\\+ prune};
+\node[box,right=0.32cm of dag] (csv) {Export $G_f$\\+ provenance};
+\draw[arr] (seq.east) -- (trans.west);
+\draw[arr] (trans.east) -- (count.west);
+\draw[arr] (count.east) -- (filt.west);
+\draw[arr] (filt.east) -- (dag.west);
+\draw[arr] (dag.east) -- (csv.west);
+\end{tikzpicture}}
+\caption{Supplementary Figure~S5. Train-only prerequisite construction
+pipeline: temporal transitions are counted on $\mathcal{F}^f_{\text{train}}$
+(or optional sample $\tilde{\mathcal{I}}^f_{\text{tr}}$), filtered,
+cycle-pruned, and exported with provenance fields (Section~\ref{sec:dag-audit}).}
+\label{fig:kc-construction}
+\end{figure}
 
 \section{Per-dataset baseline diagnostics}
 \label{sec:supp-baseline}
