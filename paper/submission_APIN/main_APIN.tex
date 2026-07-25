@@ -1208,36 +1208,9 @@ qualitative pattern we emphasise is \emph{decoupling}: builder-side indicators
 move while fold-0 test AUC stays near flat for all three backbones
 ($|\Delta\text{AUC}|{\leq}0.010$ at $20\%$ injection). \textit{simpleKT} moves by ${+}0.0004$ ($0.8744{\to}0.8748$);
 GIKT by ${+}0.0002$ ($0.8776{\to}0.8778$); GKT \emph{dips} slightly by
-${-}0.010$ ($0.8346{\to}0.8243$). The sequence-only baseline and the two
-graph consumers therefore remain on the same headline scale despite a
-${+}21.9\%$ candidate-edge inflation---the opposite of a large
-graph-reliant lift. We read this as evidence that metric-tier reporting must
-precede AUC-only leakage conclusions: $\mathrm{TBMR}_f$ and $|\Epre|$ respond
-to injection even when retrained AUC does not reward the extra graph mass under
-these budgets. On this transition-dense corpus, injected test transitions
-disproportionately \emph{densify} $\Epre$ with high-support curriculum edges
-($|\Epre|$ rises $1162{\to}1417$ before pruning; Table~S17), yet that
-structural enrichment does not translate into a consistent downstream gain at
-fold~0 under Table~S15---illustrating why AUC alone is an unreliable leakage
-alarm even when learner ids remain fold-disjoint
-($\mathrm{ECR}^{\mathrm{flag}}_f{=}0$). Metric-level contamination is
-detectable in builder mass and $\mathrm{TBMR}_f$ before practitioners would
-infer leakage from AUC alone, and tiered reporting remains necessary on real
-data where $\mathrm{ECR}^{\mathrm{overlap}}_f$ is already saturated at $1.0$.
-
-\paragraph{Worked example: reading injection as throughput.}
-Walking the $20\%$ row of Tables~S17--S18 makes the throughput notion concrete.
-Injecting test-fold transitions grows the candidate builder mass from
-$|\Epre|{=}1162$ to $1417$ (a ${+}255$-edge, ${+}21.9\%$ increase) and lifts
-$\mathrm{TBMR}_f$ from $0.754$ to $0.779$, while $\mathrm{ECR}^{\mathrm{flag}}_f$
-stays at $0$ throughout because learner-id sets remain disjoint. A practitioner
-watching only the learner-disjoint flag would see nothing; a practitioner
-watching builder mass would see a $21.9\%$ inflation \emph{before} any accuracy
-number is computed. Downstream retraining (Table~S18) then shows that this
-extra mass does \emph{not} move \textit{simpleKT} or GIKT materially and can
-even \emph{reduce} GKT AUC slightly ($0.8346{\to}0.8243$), so the audit's
-leading indicators fire even when headline accuracy stays flat---the decoupling
-the two-factor model warns about in deployment.
+${-}0.010$ ($0.8346{\to}0.8243$). Metric-level contamination is detectable in
+builder mass and $\mathrm{TBMR}_f$ before practitioners would infer leakage
+from AUC alone.
 
 \begin{table}[t]
 \centering
@@ -1267,23 +1240,14 @@ high throughput\newline ($20\%$ test-fold injection) &
 \end{table}
 
 Table~\ref{tab:two-factor} assembles the interaction from evidence already in
-the paper. The decisive point is that the \emph{same} GKT backbone yields
-${\approx}0$ under realistic full-log pooling (Table~\ref{tab:graph-ablation})
-and again ${\approx}0$ under deliberate injection at fold~0 (Table~S18), while
-builder-side throughput indicators \emph{do} rise (Table~S17): throughput is a
-genuine knob for audit metrics, and the operating point on these corpora
-happens to fall in the low-throughput row \emph{because the support filter
-throttles the channel} (Section~\ref{sec:exp-graph-ablation}), not because
-leakage is harmless as a rule. Harm therefore behaves multiplicatively---approximately
-throughput\,$\times$\,reliance---so AUC is a
-late and unreliable alarm that fires only when both factors are high, whereas
-the throughput indicators (builder mass, $\mathrm{TBMR}_f$) rise with
-contamination regardless of backbone reliance. The \emph{reliance} axis is
-corroborated independently of injection by the manipulation check in
-Section~\ref{sec:exp-ddr-downstream}: near-total graph destruction moves GKT by
-$0.07$--$0.09$ AUC on XES3G5M (high reliance; three seeds) but by ${\le}0.003$ on
-ASSISTments and for DGEKT (low reliance), a direct, accuracy-free measurement of
-the column variable in Table~\ref{tab:two-factor}.
+the paper: GKT shows ${\approx}0$ under both full-log pooling
+(Table~\ref{tab:graph-ablation}) and deliberate injection (Table~S18) while
+builder-side throughput indicators rise (Table~S17), so harm behaves
+multiplicatively (throughput\,$\times$\,reliance) and AUC is a late alarm.
+Section~\ref{sec:exp-ddr-downstream} corroborates the reliance axis
+independently: near-total graph destruction moves GKT by $0.07$--$0.09$ AUC on
+XES3G5M but ${\le}0.003$ on ASSISTments and for DGEKT
+(Table~\ref{tab:two-factor}).
 
 \subsection{Baseline Diagnostic}
 \label{sec:exp-baseline}
@@ -1531,42 +1495,9 @@ fold-level dispersion. Synthetic C2/C5 route
 all test mass to \emph{hot}; their positive $\Delta_{\max}$ values
 reflect clean generator structure, not cold-start relief. GKT underperforms
 sequence leaders on synthetic hot rows, reinforcing model-specific graph benefit.
-
-\begin{figure}[!t]
-\centering
-\begin{subfigure}[t]{0.92\linewidth}
-\centering
-\includegraphics[width=\linewidth]{fig_cold_kc_ego_xes3g5m.pdf}
-\caption{Cold-start KC ego-graph (fold~0 export).}
-\label{fig:cold-ego}
-\end{subfigure}
-
-\vspace{0.6em}
-\begin{subfigure}[t]{0.92\linewidth}
-\centering
-\includegraphics[width=\linewidth]{fig_learner_timeline_xes3g5m.pdf}
-\caption{Learner KC timeline with cold steps.}
-\label{fig:learner-timeline}
-\end{subfigure}
-\caption{Cold-start visualisation on XES3G5M (fold~0; very-cold stratum
-$n{=}161$ validation+test held-out interactions for \textit{simpleKT} in
-Table~\ref{tab:cold-start-summary}). Panels are generated from released
-fold exports (\protect\path{e\_pre\_train\_only.csv},
-\protect\path{e\_sim\_train\_only.csv}) and the preprocessed interaction log
-by \protect\path{scripts/plot\_kt\_graph\_figures.py}.
-\textbf{(a)}~Ego-graph around a very-cold KC (red): neighbours combine
-directed edges from $\Epre$, $\Esim$ where present, and train-only temporal transitions
-(arrows denote prerequisite/similarity direction).
-\textbf{(b)}~A test-sequence window for one held-out learner with repeated
-very-cold steps; stratum labels derive from train-fold counts only
-(Section~\ref{sec:cold-start}).}
-\label{fig:coldstart-viz}
-\end{figure}
-
-Figure~\ref{fig:coldstart-viz} links Table~\ref{tab:cold-start-summary} to
-concrete topology and sequence views. The ego-graph shows why rare \KCs{}
-depend on neighbour structure; the timeline shows why aggregate AUC can obscure
-per-stratum behaviour when cold steps are sparse.
+Supplementary Figure~S6 (Figure~\ref{fig:coldstart-viz}) links
+Table~\ref{tab:cold-start-summary} to fold~0 XES3G5M ego-graph and
+learner-timeline panels (Section~\ref{sec:supp-coldstart}).
 
 \paragraph{Similarity edges and dataset properties.}
 The similarity-edge rule of Section~\ref{sec:graph} is sensitive to the
@@ -1604,28 +1535,18 @@ pruning yields $1{,}139$ retained acyclic edges).
 
 \input{gt_validation_table}
 
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=0.82\linewidth]{fig_pr_curve.pdf}
-\caption{Edge-level precision and recall of train-only inferred
-$\Epre$ versus the expert prerequisite annotation on Junyi, across
-top-$K$ cutoffs $K \in \{200, 500, 800, 1131, 1200, 1800, 2500, 3500,
-5000\}$. The curve plateaus at $K \geq 2{,}500$ because the inferred
-edge pool tops out at $2{,}152$ after DAG audit.}
-\label{fig:gt-pr-curve}
-\end{figure}
-
-Table~\ref{tab:gt-validation} and Figure~\ref{fig:gt-pr-curve} show low
-edge-level overlap (F1 $\approx 0.18$ at $K{=}|\text{expert}|$) that plateaus as
-$K$ grows, modest direction agreement ($\approx 0.26$--$0.29$ on shared pairs),
-but comparatively high node Jaccard ($0.632$ at $K{=}|\text{expert}|$;
-Supplementary Table~S14 reports the full top-$K$ sweep). Reachability F1 rises
-to $0.339$ at large $K$, indicating recovery of indirect chains despite edge
-disagreement. Behavioural inference therefore encodes co-occurrence more than
-pedagogical ordering; it is not a low-cost substitute for expert curation and
-should be combined as a separate relation when both sources exist. Qualitative
-disagreement examples appear in Supplementary Section~S5. The audit uses
-$\theta{=}0.5$ on a single seed and was not swept over stricter thresholds.
+Table~\ref{tab:gt-validation} and Supplementary Figure~S7
+(Figure~\ref{fig:gt-pr-curve}) show low edge-level overlap (F1 $\approx 0.18$ at
+$K{=}|\text{expert}|$) that plateaus as $K$ grows, modest direction agreement
+($\approx 0.26$--$0.29$ on shared pairs), but comparatively high node Jaccard
+($0.632$ at $K{=}|\text{expert}|$; Supplementary Table~S14 reports the full
+top-$K$ sweep). Reachability F1 rises to $0.339$ at large $K$, indicating
+recovery of indirect chains despite edge disagreement. Behavioural inference
+therefore encodes co-occurrence more than pedagogical ordering; it is not a
+low-cost substitute for expert curation and should be combined as a separate
+relation when both sources exist. Qualitative disagreement examples appear in
+Supplementary Section~S5. The audit uses $\theta{=}0.5$ on a single seed and
+was not swept over stricter thresholds.
 %-----------------------------------------------------------------------------
 \section{Discussion}
 \label{sec:disc}
@@ -1787,10 +1708,9 @@ graph-aware models show their narrowest real-data advantage in the
 suppressed), while synthetic hot-stratum gains reflect clean
 concept structure rather than cold-start relief.
 Supplementary Figure~S1 links this diagnostic to concrete graph topology on
-the public benchmarks; Figure~\ref{fig:coldstart-viz} plots a
-fold~0 XES3G5M ego-graph and learner timeline from released exports; sparser
-$\Epre$ on ASSISTments and XES3G5M (Supplementary Figure~S1) still exhibit
-cold strata. Very-cold counts remain small ($n{=}49$--$161$ on the reported
+the public benchmarks; Supplementary Figure~S6 gives a fold~0 XES3G5M ego-graph
+and learner timeline; sparser $\Epre$ on ASSISTments and XES3G5M
+(Supplementary Figure~S1) still exhibit cold strata. Very-cold counts remain small ($n{=}49$--$161$ on the reported
 real-data strata in Table~\ref{tab:cold-start-summary}); stratum-level AUC
 therefore carries high variance and should be read alongside $n$ and
 fold-level dispersion.
@@ -2054,42 +1974,23 @@ practitioner checklist, provenance artefacts, tiered leakage diagnostics,
 \DDR{} augmentation metrics, ground-truth cross-validation where expert graphs
 exist, and cold-start KC stratification. On XES3G5M (primary), ASSISTments (secondary), and Junyi (saturated sanity),
 the audit produces acyclic train-only prerequisite graphs after transparent
-cycle pruning. The \DDR{} sweep separates augmentation families into
-consistent structural regimes across all three public corpora. The
-prerequisite-preserving operator is strictly less disruptive than edge dropping
-at a matched budget, confirming that \DDR{} separates structure-aware from
-structure-agnostic operators at the graph level. An anchored downstream
-retraining test makes the predictive reading conditional: on a graph-reliant
-backbone that passes a manipulation check (GKT on XES3G5M; three seeds) \DDR{} predicts AUC
-loss (Pearson $r{\approx}0.95$ on $p{\le}0.3$, $n{=}54$; $r{\approx}0.99$ with anchors, $n{=}66$)
-and \texttt{prereq\_preserve} costs the least accuracy at
-matched budget, whereas on graph-inert cells (DGEKT; GKT on ASSISTments) total
-graph destruction moves AUC by ${\le}0.003$ and \DDR{} stays a purely
-structural audit.
+cycle pruning. An anchored downstream retraining test makes the predictive
+reading conditional: on a graph-reliant backbone that passes a manipulation
+check (GKT on XES3G5M; three seeds) \DDR{} predicts AUC loss (Pearson
+$r{\approx}0.95$ on $p{\le}0.3$, $n{=}54$) and \texttt{prereq\_preserve} costs
+the least accuracy at matched budget, whereas on graph-inert cells (DGEKT; GKT
+on ASSISTments) total graph destruction moves AUC by ${\le}0.003$.
 
 Under fixed training budgets on XES3G5M, the primary trio shows a
 \emph{model-specific} pattern: GKT trails \textit{simpleKT} by
 ${\approx}0.041$ mean AUC (95\% CI \GKTdeltaci{}; Table~S16) while GIKT
-remains competitive. A targeted three-fold configuration-sensitivity check
-(Table~S21; Section~\ref{sec:limitations}) produced an observed mean AUC
-difference of approximately ${+}0.003$, with an uncertainty interval including zero. Train-only versus
-full-log ablation moves headline AUC by at most $0.003$ and ACC by at most
-$0.008$. These results cohere
-under a two-factor reading: graph-mediated leakage shifts AUC only when
-contamination throughput and backbone reliance are jointly high; under the
-verified injection sweep, fold-0 AUC nonetheless stays near flat (Table~S18)
-even while builder mass rises (Table~S17), so practitioners must read
-throughput indicators before trusting headline accuracy. Leakage control is therefore a deployment
-precondition precisely because AUC is an unreliable alarm; the audit's
-throughput indicators (builder mass, $\mathrm{TBMR}$) fire regardless of
-backbone reliance, giving practitioners a leading indicator before a
-contaminated graph is mistaken for a SOTA improvement. Ground-truth
-cross-validation on Junyi shows high node overlap but weak edge agreement.
-Cold-start strata reveal a narrow graph-aware advantage in \emph{very\_cold}
-\KCs{} on ASSISTments and XES3G5M (Junyi \emph{very\_cold} suppressed), with
-small $n$ and high variance. Practitioners can apply
-the five-item checklist in Section~\ref{sec:disc-implications} before
-reporting new graph-augmented KT results. Section~\ref{sec:future-work}
+remains competitive. Train-only versus full-log ablation moves headline AUC by
+at most $0.003$. These results cohere under a two-factor reading: graph-mediated
+leakage shifts AUC only when contamination throughput and backbone reliance are
+jointly high; under the verified injection sweep, fold-0 AUC nonetheless stays
+near flat (Table~S18) even while builder mass rises (Table~S17). Practitioners
+can apply the five-item checklist in Section~\ref{sec:disc-implications}
+before reporting new graph-augmented KT results. Section~\ref{sec:future-work}
 outlines continuous graph updating and feedback-aware construction as next
 steps.
 Reproduction artefacts are at
@@ -2130,9 +2031,13 @@ Figure~S3: \DDR{} downstream scatter plot
 (Figure~\ref{fig:supp-ddr-downstream});
 Figure~S4: end-to-end protocol plumbing (Figure~\ref{fig:pipelines});
 Figure~S5: train-only prerequisite construction pipeline
-(Figure~\ref{fig:kc-construction}).
-Cold-start panels in the main text (Figure~\ref{fig:coldstart-viz}) are
-generated from fold~0 exports by \path{scripts/plot\_kt\_graph\_figures.py}.
+(Figure~\ref{fig:kc-construction});
+Figure~S6: cold-start ego-graph and learner timeline
+(Figure~\ref{fig:coldstart-viz});
+Figure~S7: Junyi ground-truth precision--recall curve
+(Figure~\ref{fig:gt-pr-curve}).
+Cold-start and GT panels are generated from fold~0 exports by
+\path{scripts/plot\_kt\_graph\_figures.py}.
 Section~S2: formal graph-construction objective (Section~\ref{sec:supp-graph-objective});
 protocol plumbing figures (Section~\ref{sec:supp-protocol-figures}).
 
@@ -2371,6 +2276,17 @@ ground-truth table with node Jaccard across the same top-$K$ cutoffs.
 
 \input{gt_validation_extended.tex}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.82\linewidth]{fig_pr_curve.pdf}
+\caption{Supplementary Figure~S7. Edge-level precision and recall of train-only
+inferred $\Epre$ versus the expert prerequisite annotation on Junyi, across
+top-$K$ cutoffs $K \in \{200, 500, 800, 1131, 1200, 1800, 2500, 3500,
+5000\}$. The curve plateaus at $K \geq 2{,}500$ because the inferred edge pool
+tops out at $2{,}152$ after DAG audit.}
+\label{fig:gt-pr-curve}
+\end{figure}
+
 \section{Cold-start tables (full)}
 \label{sec:supp-coldstart}
 Table~S12 (Table~\ref{tab:cold-start-strata}) reports fold~0 \textit{simpleKT}
@@ -2380,6 +2296,35 @@ The main text summarises both in a single table.
 
 \input{cold_start_by_stratum.tex}
 \input{cold_start_comparison.tex}
+
+\begin{figure}[t]
+\centering
+\begin{subfigure}[t]{0.92\linewidth}
+\centering
+\includegraphics[width=\linewidth]{fig_cold_kc_ego_xes3g5m.pdf}
+\caption{Cold-start KC ego-graph (fold~0 export).}
+\label{fig:cold-ego}
+\end{subfigure}
+
+\vspace{0.6em}
+\begin{subfigure}[t]{0.92\linewidth}
+\centering
+\includegraphics[width=\linewidth]{fig_learner_timeline_xes3g5m.pdf}
+\caption{Learner KC timeline with cold steps.}
+\label{fig:learner-timeline}
+\end{subfigure}
+\caption{Supplementary Figure~S6. Cold-start visualisation on XES3G5M (fold~0;
+very-cold stratum $n{=}161$ validation+test held-out interactions for
+\textit{simpleKT} in Table~\ref{tab:cold-start-summary}). Panels are generated
+from released fold exports and the preprocessed interaction log by
+\protect\path{scripts/plot\_kt\_graph\_figures.py}.
+\textbf{(a)}~Ego-graph around a very-cold KC (red): neighbours combine directed
+edges from $\Epre$, $\Esim$ where present, and train-only temporal transitions.
+\textbf{(b)}~A test-sequence window for one held-out learner with repeated
+very-cold steps; stratum labels derive from train-fold counts only
+(Section~\ref{sec:cold-start}).}
+\label{fig:coldstart-viz}
+\end{figure}
 
 \section{DDR downstream scatter plot}
 \label{sec:supp-ddr-downstream}
@@ -2666,7 +2611,9 @@ for baselines and the GKT multi-seed \DDR{}$\to$downstream sweep
 Section~S3: sequence-autocorrelation statistics; Sections~S4--S5:
 augmentation-operator definitions and ground-truth disagreement examples.
 Figures~S1--S2: multi-benchmark train-only $\Epre$ samples and \DDR{} curves;
-Figure~S3: \DDR{} downstream scatter plot. Cold-start panels in the main text (Figure~\ref{fig:coldstart-viz}) are generated from fold~0 exports.
+Figure~S3: \DDR{} downstream scatter plot;
+Figures~S6--S7: cold-start panels and Junyi ground-truth PR curve.
+Cold-start and GT panels are generated from fold~0 exports.
 
 \medskip\noindent\textbf{Author contributions.}
 T.~Dao Minh conceived the protocol, implemented the leakage-controlled pipeline,

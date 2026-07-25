@@ -291,7 +291,7 @@ def _suppress_summary_stratum(raw: pd.DataFrame, dataset: str, stratum: str) -> 
         if n0 < 50 and len(vals) >= 3:
             if len(set(round(float(v), 6) for v in vals)) == 1:
                 return True
-    if dataset == "junyi" and stratum == "very_cold":
+    if dataset == "junyi" and stratum in ("very_cold", "cold"):
         return True
     return False
 
