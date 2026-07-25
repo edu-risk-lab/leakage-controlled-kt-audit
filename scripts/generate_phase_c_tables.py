@@ -365,6 +365,8 @@ def write_cold_start_summary_tex(df: pd.DataFrame, path: Path) -> None:
             n_cell = hot_n.get(dataset, str(int(r0["n"]))) if stratum == "hot" else f"{int(r0['n']):,}".replace(",", "{,}")
             delta_s = _fmt_delta_pm(r0["delta_mean"], r0["delta_std"])
             suppress = _suppress_summary_stratum(df, dataset, stratum)
+            if pd.isna(r0["simple_mean"]) or pd.isna(r0["delta_mean"]):
+                suppress = True
             auc_cell = r"---" if suppress else _fmt_pm(r0["simple_mean"], r0["simple_std"])
             if suppress:
                 delta_s = r"---"
