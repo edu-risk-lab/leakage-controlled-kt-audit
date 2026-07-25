@@ -2,9 +2,9 @@
 
 **Thời điểm:** 2026-07-25  
 **PDF đề xuất:** `paper/submission_APIN/main_APIN.pdf`  
-**Trang:** 61 (main body §1–§6: **36**; appendix từ §A)  
-**SHA-256:** `6e8750f81fd8005fdc5ce1f3c00bdbe99d596e7ba4ac91399378d9918a156820`  
-**Git:** `main` @ `8a1bc891` (C8.4: Fig. pipelines / kc-construction / Junyi DDR → Supp)
+**Trang:** 60 (main body §1–§6: **34**; appendix từ §A p.35)  
+**SHA-256:** `35b771c0327a791bae3c341ba10ab683cd9429d42dc0e49f28097f2a31ced398`  
+**Git:** `main` (C8.5: Supp S6–S7; main 34 pp; Junyi cold NaN audit)
 
 ## Kết luận đề xuất
 

@@ -158,7 +158,8 @@
 - [x] **C8.1** Gom caveat seed-42/S21 về Limitations (`\label{sec:limitations}`); rút gọn lặp ở Abstract/Intro/C5/§4/Discussion/Conclusion.
 - [x] **C8.2** Bỏ “Applied Intelligence readers” → “applied practitioners” (Conclusion).
 - [x] **C8.3** Eq.(1) + Fig.5 → supplementary (Section~S2; Fig.~S1 only in main refs).
-- [x] **C8.4** Fig. pipelines / kc-construction / Junyi DDR → Supp S4–S5 + S2; main body **36 pp** (mục tiêu 32–35, còn ~1 trang).
+- [x] **C8.4** Fig. pipelines / kc-construction / Junyi DDR → Supp S4–S5 + S2; main body **34 pp** (mục tiêu 32–35 đạt).
+- [x] **C8.5** Fig. cold-start + GT PR → Supp S6–S7; rút §4.3 injection + §6 Conclusion.
 
 ### C9. Trích dẫn + rà 2025–2026
 
@@ -225,6 +226,7 @@ Không cắt nhầm: định vị trung thực, manipulation check DDR/GKT, prer
 | **A2.1 wording** | **Đã sửa** Abstract + Limitations + Future work |
 | **A2.2 DDR duplicate AUC** | **Done** — A2.2b verified + §4.6 prose aligned to Table DDR-GKT ($n{=}54/66$) |
 | **A3.5 GPU cold-start** | **Done** Junyi verified (`bc9ea715`); §4.8/H2 + tables synced |
-| **C8.4 page cut** | **Done** main 36 pp (`8a1bc891`); mục tiêu 32–35 còn ~1 trang |
+| **C8.4 page cut** | **Done** main 34 pp (`5500ae51`+); mục tiêu 32–35 đạt |
+| **A3 Junyi cold NaN** | **Debugged** — degeneracy expected; hard-suppress `cold`+`very_cold`; `audit/2026-07-25-junyi-cold-stratum-nan-debug.md` |
 | **scan-placeholder** | **Done** — seminar scripts + deprecate `create_fake_tables.py`; `audit/2026-07-23-placeholder-injection-scan.md` |
 | Kế hoạch này | **Cập nhật 23/07** với Server A |
