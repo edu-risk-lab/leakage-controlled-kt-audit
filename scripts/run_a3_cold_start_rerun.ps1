@@ -48,6 +48,17 @@ function Get-ParquetFor([string]$ds) {
     return "data/processed/${ds}.parquet"
 }
 
+function Invoke-PythonModuleLogged {
+    param(
+        [string[]]$PythonArgs,
+        [string]$LogPath
+    )
+    $argStr = ($PythonArgs | ForEach-Object { if ($_ -match '\s') { """$_""" } else { $_ } }) -join ' '
+    $cmd = """$PYTHON"" $argStr 2>&1"
+    cmd /c $cmd | Tee-Object -Append -FilePath $LogPath
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+}
+
 function Test-Preflight {
     Log "=== Preflight (dataset=$Dataset) ==="
     & $PYTHON -c "import torch; print('torch', torch.__version__, 'cuda', torch.cuda.is_available())"
@@ -80,22 +91,22 @@ function Invoke-DatasetRun([string]$ds) {
     $cfg = Get-ConfigFor $ds
     Clear-PredCache $ds
 
-    $args = @(
+    $PythonArgs = @(
         '-m', 'src.baseline_runner',
         '--config', $cfg,
         '--cold-start-only',
         '--force-cold-start',
         '--log-level', 'INFO'
     )
-    if ($FoldIdx -ge 0) { $args += @('--fold-idx', "$FoldIdx") }
-    if ($Models) { $args += @('--models', $Models) }
+    if ($FoldIdx -ge 0) { $PythonArgs += @('--fold-idx', "$FoldIdx") }
+    if ($Models) { $PythonArgs += @('--models', $Models) }
 
     Log "=== Run cold-start rerun: dataset=$ds ==="
     if ($DryRun) {
-        Log "DryRun: $PYTHON $($args -join ' ')"
+        Log "DryRun: $PYTHON $($PythonArgs -join ' ')"
         return
     }
-    & $PYTHON @args 2>&1 | Tee-Object -FilePath (Join-Path $LOG_DIR "a3_cold_start_${ds}.log") -Append
+    Invoke-PythonModuleLogged -PythonArgs $PythonArgs -LogPath (Join-Path $LOG_DIR "a3_cold_start_${ds}.log")
 }
 
 function Invoke-RegenerateTables {
@@ -104,9 +115,12 @@ function Invoke-RegenerateTables {
         Log 'DryRun: generate_phase_c_tables + generate_cold_start_comparison + cold-start TeX'
         return
     }
-    & $PYTHON -m scripts.generate_phase_c_tables
-    & $PYTHON -m scripts.generate_cold_start_comparison
-    & $PYTHON -c "from scripts.generate_paper_artifacts import _write_cold_start_tex, _write_cold_start_by_stratum_tex; from pathlib import Path; _write_cold_start_by_stratum_tex(Path('results/tables/cold_start_by_stratum.tex')); _write_cold_start_tex(Path('results/tables/cold_start_metrics.tex'))"
+    Invoke-PythonModuleLogged -PythonArgs @('-m', 'scripts.generate_phase_c_tables') -LogPath $LOG
+    Invoke-PythonModuleLogged -PythonArgs @('-m', 'scripts.generate_cold_start_comparison') -LogPath $LOG
+    Invoke-PythonModuleLogged -PythonArgs @(
+        '-c',
+        "from scripts.generate_paper_artifacts import _write_cold_start_tex, _write_cold_start_by_stratum_tex; from pathlib import Path; _write_cold_start_by_stratum_tex(Path('results/tables/cold_start_by_stratum.tex')); _write_cold_start_tex(Path('results/tables/cold_start_metrics.tex'))"
+    ) -LogPath $LOG
 }
 
 function Invoke-Verify([string]$ds) {
