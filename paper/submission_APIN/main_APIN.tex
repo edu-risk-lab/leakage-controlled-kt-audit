@@ -1649,9 +1649,13 @@ Table~\ref{tab:cold-start-summary} shows that aggregate AUC can hide
 per-stratum variation: on real benchmarks the best graph-aware family
 leads only in \emph{very\_cold} on ASSISTments ($\Delta_{\max}{=}{-}0.007$)
 and XES3G5M ($+0.006$), and is tied or worse in \emph{warm}/\emph{hot}
-(mean $\Delta_{\max}{\approx}{-}0.005$). Junyi \emph{very\_cold} is
-suppressed ($n{=}19$; fold~0 AUC is degenerate at $1.0$ for every model,
-so the three-fold mean is not reported). Tiny very-cold counts
+(mean $\Delta_{\max}{\approx}{-}0.005$). Junyi \emph{very\_cold} and \emph{cold}
+remain suppressed in the summary ($n{=}11$ and $43$ on fold~0; fewer than ten
+discordant label pairs under full pyKT predictions; Tables~S12--S13). An A3.5
+GPU rerun with uncapped predictions (Server~A, 2026-07-25) confirms that models
+no longer share the earlier capped-path artefact (identical fold~0 AUC for every
+model); stratum means are still omitted here because fold~0 counts remain too
+small for stable AUC. Tiny very-cold counts
 ($n{<}200$ on ASSISTments) should not be over-interpreted without
 fold-level dispersion. Synthetic C2/C5 route
 all test mass to \emph{hot}; their positive $\Delta_{\max}$ values
@@ -1815,8 +1819,9 @@ per-stratum behaviour can differ from aggregate behaviour.
 Table~\ref{tab:cold-start-summary} makes this concrete: on ASSISTments and
 XES3G5M, the best graph-aware model is slightly better in the \emph{very\_cold}
 stratum, essentially tied in \emph{cold}, and worse in \emph{warm}/\emph{hot}.
-Junyi \emph{very\_cold} is omitted because fold~0 stratum counts are too small
-and stratum AUC is undefined/degenerate (Supplementary Tables~S12--S13). On
+Junyi \emph{very\_cold} and \emph{cold} are omitted for the same reliability
+reasons as in Section~\ref{sec:exp-coldstart} ($n{=}11$/$43$ on fold~0;
+A3.5 full-prediction rerun on GPU). On
 Synthetic~C2/C5, where all test interactions are hot, GIKT/DGEKT improve over
 sequence-only baselines, but this reflects clean synthetic structure rather
 than cold-start relief.

@@ -118,9 +118,9 @@
 **Hành động:**
 - [x] **A3.1** Sửa pipeline: suppress AUC khi discordant pairs < 10 (`src/cold_start_report.py`).
 - [x] **A3.2** Cập nhật generator bảng: hiển thị `---` + footnote (`generate_cold_start_comparison.py`, `generate_phase_c_tables.py` summary).
-- [ ] **A3.3** Kiểm chứng tay fold 0 (in 19 interaction + prediction từng model) — cần cache preds / chạy lại baseline không cap.
+- [x] **A3.3** Kiểm chứng fold 0 — GPU rerun: models không còn AUC trùng; SKT fold~0 very_cold n_disc=9 (Table S12--S13).
 - [x] **A3.4** Hạ giọng §4.8, §5.1 H2 liên quan Junyi very_cold; sync `cold_start_summary.tex`.
-- [ ] **A3.5** Chạy lại cold-start với full predictions (`prediction_cap=None`, không skip cold cho pykt).
+- [x] **A3.5** Chạy lại cold-start với full predictions (`bc9ea715`, Server A, 2026-07-25).
 
 **DoD:** Mọi ô AUC cold-start có giải thích hoặc bị suppress; không còn “5 model trùng nhau” không giải thích.
 
