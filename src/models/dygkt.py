@@ -42,8 +42,8 @@ class DyGKTPyTorch(nn.Module):
         row_norm = torch.clamp(row_sums, min=1.0)
         self.register_buffer("A_norm", self.A / row_norm)
 
-        # Precompute the propagation matrix W = I + gamma * A_norm
-        W_matrix = torch.eye(num_c).float() + gamma * (self.A / row_norm)
+        # Precompute the propagation matrix W = I + gamma * A_norm (same device as A)
+        W_matrix = torch.eye(num_c, device=self.A.device, dtype=self.A.dtype) + gamma * self.A_norm
         self.register_buffer("W", W_matrix)
 
         # Predictor mapping joint student-concept state to correctness probability
