@@ -158,6 +158,7 @@
 - [x] **C8.1** Gom caveat seed-42/S21 về Limitations (`\label{sec:limitations}`); rút gọn lặp ở Abstract/Intro/C5/§4/Discussion/Conclusion.
 - [x] **C8.2** Bỏ “Applied Intelligence readers” → “applied practitioners” (Conclusion).
 - [x] **C8.3** Eq.(1) + Fig.5 → supplementary (Section~S2; Fig.~S1 only in main refs).
+- [x] **C8.4** Fig. pipelines / kc-construction / Junyi DDR → Supp S4–S5 + S2; main body **36 pp** (mục tiêu 32–35, còn ~1 trang).
 
 ### C9. Trích dẫn + rà 2025–2026
 
