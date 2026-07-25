@@ -39,10 +39,15 @@
 
 ## Gói gửi GS
 
-1. `paper/submission_APIN/main_APIN.pdf`
-2. `paper/submission_APIN/` (gói LaTeX phẳng)
-3. `paper/cover_letter_APIN.md`
-4. `Checklist/checklist_APIN.docx` + `Checklist/Log_CheckList.docx`
+**Zip sẵn sàng:** `paper/gui_GS_package_APIN_20260725.zip` (1.78 MB)
+
+1. `main_APIN.pdf` (+ bản trong `submission_APIN/`)
+2. `submission_APIN/` (gói LaTeX, đã loại `.aux/.log/.out/.blg`)
+3. `cover_letter_APIN.md`
+4. `Checklist/checklist_APIN.docx` + `Log_CheckList.docx`
+5. `audit/crossref_auc_report.md` (12/12 pass, 25/07/2026)
+6. `submission_APIN/APIN_Review_Report.docx` — phản biện nội bộ mô phỏng + mapping PGS
+7. `PACKAGE_INFO.txt` + `M_QUYET_DINH_GUI_GS.md`
 
 ---
 *Checklist hỗ trợ QA; không thay phản biện khoa học của GS hay hướng dẫn nộp bài hiện hành của APIN.*
