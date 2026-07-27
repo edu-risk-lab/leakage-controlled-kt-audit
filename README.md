@@ -992,9 +992,9 @@ Bibliography source used in the paper: `paper/submission_APIN/refs_APIN.bib`
 
 ### 10.3 Contact and contributions
 
-- **Corresponding author:** Van-Hau Nguyen — `nvhau666@gmail.com`
+- **Corresponding author:** Van-Hau Nguyen — `nvhau66@gmail.com`
 - **Technical contact:** Tuan Dao Minh — `tuanymc@utehy.edu.vn`
-- Repository: https://github.com/tuanymc/p0_project
+- Repository: https://github.com/edu-risk-lab/leakage-controlled-kt-audit
 
 Bug reports and reproducibility issues are welcome via GitHub Issues. For
 substantial scientific changes, open an issue before a large pull request.
