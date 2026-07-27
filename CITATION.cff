@@ -37,15 +37,15 @@ authors:
   - family-names: Nguyen
     given-names: Van-Hau
     orcid: https://orcid.org/0000-0002-3256-5626
-    email: nvhau666@gmail.com
+    email: nvhau66@gmail.com
     affiliation: Hung Yen University of Technology and Education
   - family-names: Le
     given-names: Hoang Son
     orcid: https://orcid.org/0000-0001-6356-0046
     email: sonlh@vnu.edu.vn
     affiliation: Vietnam National University
-repository-code: https://github.com/tuanymc/p0_project
-url: https://github.com/tuanymc/p0_project
+repository-code: https://github.com/edu-risk-lab/leakage-controlled-kt-audit
+url: https://github.com/edu-risk-lab/leakage-controlled-kt-audit
 license: MIT
 version: 0.1.0
 date-released: "2026-07-19"

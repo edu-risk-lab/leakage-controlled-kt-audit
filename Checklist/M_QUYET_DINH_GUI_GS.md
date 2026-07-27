@@ -3,8 +3,9 @@
 **Thời điểm:** 2026-07-25  
 **PDF đề xuất:** `paper/submission_APIN/main_APIN.pdf`  
 **Trang:** 60 (main body §1–§6: **34**; appendix từ §A p.35)  
-**SHA-256:** `35b771c0327a791bae3c341ba10ab683cd9429d42dc0e49f28097f2a31ced398`  
-**Git:** `main` (C8.5: Supp S6–S7; main 34 pp; Junyi cold NaN audit)
+**SHA-256:** `a705c463278d91f75ec0e937aad73bb6b050f4302266ba070d59c7f3385260c1`  
+**Repo (sau transfer):** `https://github.com/edu-risk-lab/leakage-controlled-kt-audit`  
+**PDF nộp EM:** `paper/submission_APIN/DaoMinh_2026_LeakageControlledKT_APIN.pdf`
 
 ## Kết luận đề xuất
 
@@ -28,7 +29,7 @@
 
 ## CXM — cần thao tác khi nộp (không chặn gửi GS)
 
-1. **L05** — Nhập metadata EM khớp title page (corresponding: Van-Hau Nguyen / `nvhau666@gmail.com`).
+1. **L05** — Nhập metadata EM khớp title page (corresponding: Van-Hau Nguyen / `nvhau66@gmail.com`).
 2. **L06** — Chỉ blind nếu EM yêu cầu; guidelines APIN hiện không bắt buộc double-blind PDF.
 
 ## Soft (thông tin, không fail checklist)

@@ -556,7 +556,7 @@ p = tf.paragraphs[0]
 set_run(p.add_run(), "Leakage-Controlled Concept-Graph Audit for Knowledge Tracing",
         17, RGBColor(0xD8, 0xE0, 0xEC))
 p2 = tf.add_paragraph(); p2.space_before = Pt(8)
-set_run(p2.add_run(), "Corresponding author: Nguyen Van Hau \u2014 nvhau666@gmail.com",
+set_run(p2.add_run(), "Corresponding author: Nguyen Van Hau \u2014 nvhau66@gmail.com",
         14, RGBColor(0xB9, 0xC6, 0xD8))
 p3 = tf.add_paragraph()
 set_run(p3.add_run(), "Code & artefacts: github.com/tuanymc/p0_project",

@@ -514,7 +514,7 @@ set_run(tf.paragraphs[0].add_run(),
         "Kiểm soát rò rỉ khi xây dựng đồ thị khái niệm cho Knowledge Tracing",
         17, RGBColor(0xD8, 0xE0, 0xEC))
 p2 = tf.add_paragraph(); p2.space_before = Pt(8)
-set_run(p2.add_run(), "Tác giả liên hệ: Nguyen Van Hau — nvhau666@gmail.com",
+set_run(p2.add_run(), "Tác giả liên hệ: Nguyen Van Hau — nvhau66@gmail.com",
         14, RGBColor(0xB9, 0xC6, 0xD8))
 p3 = tf.add_paragraph()
 set_run(p3.add_run(), "Mã nguồn & dữ liệu: github.com/tuanymc/p0_project",

@@ -1,47 +1,30 @@
 # Cover Letter — Applied Intelligence (APIN)
 
-**Manuscript title:** Leakage-Controlled Concept Graph Construction and Cold-Start Diagnostic Protocol for Knowledge Tracing
-
-**Corresponding author:** Van-Hau Nguyen (`nvhau666@gmail.com`)
-
-**Co-authors:** Tuan Dao Minh; Khanh-Trinh Nguyen; Duong Nguyen Tien; Quoc Khanh Ngo; Le Hoang Son
+**Date:** 27 July 2026  
+**To:** Professor Hamido Fujita, Editor-in-Chief, *Applied Intelligence*  
+**Re:** Submission of the manuscript “Leakage-Controlled Concept Graph Construction and Cold-Start Diagnostic Protocol for Knowledge Tracing”
 
 ---
 
-Dear Editor,
+Dear Professor Fujita,
 
-We respectfully submit the enclosed manuscript for consideration in *Applied Intelligence* (APIN).
+On behalf of my co-authors, I am pleased to submit the above manuscript for consideration as an original research article in *Applied Intelligence*. The manuscript has not been published previously and is not under consideration by any other journal.
 
-## Originality and exclusivity
+Knowledge tracing models are increasingly deployed in intelligent tutoring systems to drive scheduling and gating decisions, and graph-enhanced variants depend on an auxiliary concept graph that is, in common practice, inferred from the very interaction logs used for training and evaluation. When edges are pooled before the train/test split, held-out information can reach the model through the graph even though the sequence-level split appears clean. Our manuscript addresses this problem at the level of protocol rather than model design: we propose a leakage-controlled audit procedure for knowledge-component graph construction, comprising learner-based temporal splits, fold-specific train-only edge inference with exported per-edge provenance, DAG validation with logged cycle pruning, a structural diagnostic (the DAG Disruption Rate) for graph augmentations, cold-start stratification at the knowledge-component level, and a ground-truth cross-validation procedure against expert prerequisite annotations where such annotations exist.
 
-This manuscript is original, has not been published previously (including in conference proceedings or as a journal article), and is not under consideration for publication elsewhere. All co-authors have approved the submission. We confirm that we will not submit this work to another venue while it is under review at APIN.
+We evaluate the protocol on three public benchmarks (XES3G5M, ASSISTments 2012, and Junyi Academy) and two synthetic sanity logs, with nine knowledge-tracing baselines. Two findings shape the contribution. First, graph-mediated leakage shifts headline accuracy only when contamination throughput and the backbone’s reliance on the graph are simultaneously high; under realistic settings on these corpora the train-only versus full-log ablation moves AUC by at most 0.003, which means aggregate accuracy alone is an unreliable leakage alarm and independent throughput indicators are needed. Second, a controlled injection experiment shows that a contaminated graph can inflate the accuracy of graph-reliant backbones while structural flags remain silent. We therefore present the protocol as a decision-support and risk-scoring layer for trustworthy deployment — with a practitioner checklist and a decision map — rather than as a route to higher headline numbers, and we are deliberate throughout the manuscript in separating measured results from bounded observations.
 
-## Contribution and fit to APIN
+We believe the work fits the journal’s focus on intelligent systems for real-life problems: the protocol is aimed directly at practitioners who must decide whether and how to deploy graph-augmented knowledge tracing in tutoring platforms, MOOC pipelines, and corporate training, and every audit signal is mapped to a concrete deployment action. All datasets used are publicly available, and the complete pipeline, configurations, and result artefacts are released in a public repository (`https://github.com/edu-risk-lab/leakage-controlled-kt-audit`) to support reproduction.
 
-The paper presents a **leakage-controlled audit protocol** for knowledge-component (KC) graph construction in graph-enhanced knowledge tracing (KT). It is intentionally **not** a new KT backbone and does not claim state-of-the-art accuracy gains. The deliverable is a reproducible decision-support and leakage risk-scoring layer for practitioners who consume inferred concept graphs—aligned with APIN’s emphasis on trustworthy applied intelligent systems rather than offline score chasing alone.
+All authors have read and approved the manuscript and agree to its submission. We have no conflicts of interest to declare, and the work received no external funding. The study uses only publicly available, de-identified benchmark datasets, so no ethics approval was required. In line with the journal’s editorial policies, the manuscript includes a declaration describing the use of generative AI tools for language refinement and consistency checking; all scientific content and final decisions are the authors’ own.
 
-Core elements include:
+Thank you for considering our manuscript. I am happy to provide any further information the editorial office may require.
 
-- learner-based temporal splits and train-only prerequisite graph construction (with DAG validation / cycle pruning);
-- tiered leakage diagnostics and a DAG Disruption Rate (**DDR**) for structure-aware augmentation;
-- KC-level cold-start stratification and a practitioner checklist;
-- open code and provenance artefacts (`https://github.com/tuanymc/p0_project`).
+Yours sincerely,
 
-We instantiate the protocol on XES3G5M (primary model-comparison benchmark), ASSISTments 2012, Junyi Academy, and two synthetic logs. Key empirical messages matched to the submitted PDF include: acyclic train-only graphs; DDR–AUC coupling that is **conditional** on backbone reliance; and, on XES3G5M under primary training budgets (Table S15), stock pyKT GKT trailing *simpleKT* by about 0.041 AUC (Table S16). A targeted seed-42 three-fold extended-training check (Table S21) is reported as exploratory configuration sensitivity (observed mean difference ≈ +0.003; uncertainty interval includes zero)—not as a compute-matched recovery claim. Graph-mediated leakage shifts headline AUC only when contamination **throughput** and graph **reliance** are both high; otherwise AUC is an unreliable leakage alarm.
+**Tuan Dao Minh**  
+Hung Yen University of Technology and Education
 
-## Declarations (summary)
+**Co-authors:** Tuan Dao Minh, Khanh-Trinh Nguyen, Duong Nguyen Tien, Quoc Khanh Ngo, Van-Hau Nguyen, and Le Hoang Son
 
-- Funding: none.
-- Competing interests: none.
-- Data: public de-identified KT benchmarks (licences/terms stated in the manuscript).
-- Ethics: no human-subjects experiments; ethics approval not required.
-- Generative AI: ChatGPT and Cursor used for language refinement / consistency auditing; authors take full responsibility (declared in the manuscript).
-
-Thank you for considering our submission.
-
-Sincerely,
-
-Van-Hau Nguyen  
-Corresponding author, on behalf of all authors  
-Hung Yen University of Technology and Education  
-Email: nvhau666@gmail.com
+**Corresponding author (manuscript):** Van-Hau Nguyen — `nvhau66@gmail.com`
