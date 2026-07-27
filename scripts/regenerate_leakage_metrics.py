@@ -118,10 +118,7 @@ def main() -> int:
         write_leakage_metrics_tex(df, tex_path)
         print(f"Wrote {tex_path}")
 
-        for mirror in (
-            ROOT / "paper/submission_APIN/leakage_metrics.tex",
-            ROOT / "paper/results/tables/leakage_metrics.tex",
-        ):
+        for mirror in (ROOT / "paper/submission_APIN/leakage_metrics.tex",):
             mirror.parent.mkdir(parents=True, exist_ok=True)
             mirror.write_text(tex_path.read_text(encoding="utf-8"), encoding="utf-8")
             print(f"Synced {mirror}")

@@ -33,8 +33,8 @@ Mục tiêu reviewer **M4**: bổ sung ít nhất **một backbone graph-KT th�
 Giống [Q1_GPU_EXPERIMENTS.md](Q1_GPU_EXPERIMENTS.md) §0:
 
 ```bash
-git clone https://github.com/tuanymc/p0_project.git
-cd p0_project && git pull
+git clone https://github.com/edu-risk-lab/leakage-controlled-kt-audit.git
+cd leakage-controlled-kt-audit && git pull
 git submodule update --init --recursive
 
 python -m venv .venv && source .venv/bin/activate
