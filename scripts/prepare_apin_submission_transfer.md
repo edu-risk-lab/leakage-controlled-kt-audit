@@ -5,11 +5,15 @@
 
 ## 1. Transfer on GitHub (browser — required once)
 
+**Done (27 Jul 2026).** Repo: https://github.com/edu-risk-lab/leakage-controlled-kt-audit
+
+<!--
 1. Open https://github.com/tuanymc/p0_project → **Settings**
 2. **Danger Zone** → **Transfer ownership**
 3. New owner: **edu-risk-lab**
 4. New repository name: **leakage-controlled-kt-audit**
 5. Confirm transfer
+-->
 
 ## 2. Local git (after transfer succeeds)
 
