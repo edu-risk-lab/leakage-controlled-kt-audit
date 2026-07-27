@@ -124,7 +124,7 @@ def main() -> None:
 
     fails = [r for r in rows if r.get("summary_ok") is False or r.get("inject_clean_ok") is False or r.get("ok") is False or r.get("status") == "MISSING"]
     lines += ["", f"**Failures:** {len(fails)}", ""]
-    OUT.write_text("\n".join(lines), encoding="utf-8")
+    OUT.write_text("\n".join(lines), encoding="utf-8", newline="\n")
     print(f"Wrote {OUT}")
     if fails:
         print(f"WARNING: {len(fails)} check(s) failed")
