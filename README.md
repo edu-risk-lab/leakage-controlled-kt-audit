@@ -10,7 +10,7 @@ Graph Construction and Cold-Start Diagnostic Protocol for Knowledge Tracing*
 reproducible audit experiments and paper artefact generation; it is **not** a
 new SOTA knowledge-tracing backbone.
 
-**Canonical manuscript package:** `paper/submission_APIN/` (`main_APIN.tex`,
+**Canonical submission-ready manuscript package:** `paper/submission_APIN/` (`main_APIN.tex`,
 Springer Nature `sn-jnl`, `sn-mathphys-num`, `refs_APIN.bib`).
 
 **How to cite:** see [§10](#10-citation-licence-and-contact) and `CITATION.cff`.
@@ -744,6 +744,7 @@ See `tests/test_graph_builder_train_only.py` for examples.
 | `results/tables/cold_start_metrics.csv` (+ `.tex`) | `cold_start_report` + artefacts script | Stratum summaries |
 | `results/tables/cold_start_by_stratum.tex` | `generate_paper_artifacts.py` | Paper table from `cold_start_metrics.csv` (default: fold~0 \textit{simpleKT}) |
 | `results/reports/cold_start_report.md` | `cold_start_report` | Narrative cold-start report |
+| `results/provenance/*inject*_result.json` | Verified GPU runs | Curated fold-0 injection evidence used by the cross-reference audit |
 | `results/reports/paper_artifact_index.md` | `generate_paper_artifacts.py` | Index of tables/figures/reports |
 | `results/reports/p0_diagnostic_report.md` | `report_generator` | Aggregated diagnostic markdown |
 | `results/gt_validation/junyi/*` | `run_gt_cross_validation_junyi.py` | GT overlap metrics, PR curve, TeX snippet |
@@ -754,9 +755,8 @@ See `tests/test_graph_builder_train_only.py` for examples.
 
 ## 7. Paper artefacts, reproduction map, and LaTeX build
 
-- **Manuscript (canonical / submitted):** `paper/submission_APIN/main_APIN.tex`
-  with bibliography `paper/submission_APIN/refs_APIN.bib` (and a mirror at
-  `paper/refs_APIN.bib` if present). Class: Springer Nature `sn-jnl.cls` with
+- **Manuscript (canonical / submission-ready):** `paper/submission_APIN/main_APIN.tex`
+  with bibliography `paper/submission_APIN/refs_APIN.bib`. Class: Springer Nature `sn-jnl.cls` with
   option `sn-mathphys-num` only (**no** `referee`); the `.cls`/`.bst` files
   live beside the manuscript in `paper/submission_APIN/`.
 - **Locked scope (2026-07-18):** Table **S22 / pooled nine-fold GKT30 removed**
@@ -877,7 +877,7 @@ If you hit OOM on Bash/WSL, rerun only that stage:
 ## 9. Project structure
 
 ```
-p0_project/
+leakage-controlled-kt-audit/
 ├── README.md
 ├── LICENSE                 # MIT (code); datasets remain under provider ToU
 ├── CITATION.cff            # machine-readable citation metadata
@@ -886,11 +886,10 @@ p0_project/
 ├── configs/
 │   ├── junyi.yaml
 │   ├── assist2012.yaml
-│   └── xes3g5m.yaml
+│   ├── xes3g5m.yaml
+│   └── synthetic_c{2,5}.yaml
 ├── paper/
-│   ├── submission_APIN/        # CANONICAL camera-ready package (main_APIN.tex + assets)
-│   ├── refs_APIN.bib           # bibliography mirror (prefer submission_APIN/refs_APIN.bib)
-│   └── cover_letter_APIN.md    # optional cover letter
+│   └── submission_APIN/        # CANONICAL submission-ready package (main_APIN.tex + assets)
 ├── docs/
 │   ├── DDR_DOWNSTREAM_GKT.md   # GPU playbook: anchored DDR->downstream (GKT)
 │   └── Q1_GPU_EXPERIMENTS.md   # GPU experiment tracking / wall-clock notes

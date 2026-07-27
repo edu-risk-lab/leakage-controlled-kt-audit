@@ -21,22 +21,29 @@ dist/
 build/
 
 # ---------------------------------------------------------------------------
-# Experiment caches / large local artefacts (keep tables/figures for paper)
+# Experiment caches / large local artefacts (keep verified tables/figures)
 # ---------------------------------------------------------------------------
 results/pykt_work/
 results/cache/
 results/predictions/
-results/q1/
 logs/
+paper/results/
 
 # ---------------------------------------------------------------------------
-# Local tooling
+# Local tooling and private working documents
 # ---------------------------------------------------------------------------
 tools/basic-miktex-25.12-x64.exe
 tools/miktex/
+Checklist/
+docs/internal/
+paper/TAI LIEU THAM KHAO_APIN/
+paper/*GS*
+paper/*Review*
+audit/20*/
+*.zip
 
 # ---------------------------------------------------------------------------
-# LaTeX build by-products (keep .tex/.pdf/.bib/.bbl intended for submission)
+# LaTeX build by-products (keep named release PDF, source, bibliography, and BBL)
 # ---------------------------------------------------------------------------
 *.aux
 *.log
@@ -48,6 +55,7 @@ tools/miktex/
 *.toc
 *.lof
 *.lot
+paper/submission_APIN/main_APIN.pdf
 
 # ---------------------------------------------------------------------------
 # OS / IDE
@@ -59,12 +67,8 @@ Thumbs.db
 .cursor/
 
 # ---------------------------------------------------------------------------
-# Transient checklist / audit helpers (keep committed reports if tracked)
+# Transient audit helpers (keep curated public reports if tracked)
 # ---------------------------------------------------------------------------
-Checklist/_*.py
-Checklist/_*.png
-Checklist/_*.txt
-Checklist/_*.json
 audit/**/_*.txt
 audit/**/_*.png
 audit/**/*_page*.png

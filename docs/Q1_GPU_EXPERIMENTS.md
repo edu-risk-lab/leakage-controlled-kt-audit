@@ -7,8 +7,8 @@ Tài liệu này mô tả **thứ tự chạy**, **ước lượng thời gian**
 ## 0. Chuẩn bị server
 
 ```bash
-git clone https://github.com/tuanymc/p0_project.git
-cd p0_project
+git clone https://github.com/edu-risk-lab/leakage-controlled-kt-audit.git
+cd leakage-controlled-kt-audit
 git submodule update --init --recursive
 
 python -m venv .venv
@@ -209,7 +209,6 @@ python -m src.baseline_runner \
 | Table S21 epoch ablation (`generate_gkt_epoch_ablation.py`) | ✅ |
 | Abstract / C5 / §4.2 / Discussion / Conclusion | ✅ |
 | Supplementary index + §S21 | ✅ |
-| Cover letter (`paper/cover_letter_APIN.md`) | ✅ |
 | Bootstrap S16 (vẫn 10ep primary −0.041) | ✅ giữ nguyên — S21 bổ sung 30ep |
 
 Khi có **multi-seed hợp lệ** (9 fold × seed 42/17/1234):

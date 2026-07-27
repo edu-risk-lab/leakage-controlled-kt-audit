@@ -8,8 +8,6 @@
 #   bash scripts/run_gpu_server_pending.sh injection    # Table S18 (if cache missing)
 #   bash scripts/run_gpu_server_pending.sh crossref     # CPU: verify AUC consistency
 #   bash scripts/run_gpu_server_pending.sh all          # a2_2b then crossref (injection skipped if done)
-#
-# Runbook: audit/2026-07-23-GPU-server-runbook.md
 
 set -euo pipefail
 cd "$(dirname "$0")/.."
