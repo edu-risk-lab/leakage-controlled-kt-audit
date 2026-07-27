@@ -1,0 +1,39 @@
+Source of order: paper/submission_APIN/main_APIN.bbl
+(= References section in main_APIN.pdf — citation order, NOT refs_APIN.bib file order)
+
+Kept/renamed: 31 / 32
+Missing: 1 / 32
+
+=== FULL CATALOG (PDF display order) ===
+01 [OK     ] corbett1995bkt | Corbett & Anderson — Knowledge Tracing (1995)
+02 [OK     ] piech2015dkt | Piech et al. — Deep Knowledge Tracing (2015)
+03 [OK     ] zhang2017dkvmn | Zhang et al. — DKVMN (2017)
+04 [OK     ] ghosh2020akt | Ghosh et al. — AKT (2020)
+05 [OK     ] liu2023simplekt | Liu et al. — simpleKT (2023)
+06 [OK     ] pandey2019rkt | Pandey & Karypis — Self-Attentive KT (2019)
+07 [OK     ] shen2021saint | Shen et al. — Convolutional Knowledge Tracing (2020)
+08 [OK     ] nakagawa2019gkt | Nakagawa et al. — GKT (2019)
+09 [OK     ] tong2020skt | Tong et al. — SKT (2020)
+10 [OK     ] yang2021gikt | Yang et al. — GIKT (2021)
+11 [OK     ] dygkt2024 | Cheng et al. — DyGKT (2024)
+12 [OK     ] dgekt2024 | Cui et al. — DGEKT (2024)
+13 [OK     ] chen2023hgkt | Tong et al. — HGKT (2022)
+14 [OK     ] kaufman2012leakage | Kaufman et al. — Leakage in Data Mining (2012)
+15 [OK     ] kapoor2023leakage | Kapoor & Narayanan — Leakage / Reproducibility (2023)
+16 [OK     ] schein2002coldstart | Schein et al. — Cold-start Recommendations (2002)
+17 [OK     ] liu2022pykt | Liu et al. — pyKT (2022)
+18 [OK     ] badran2024labelleakage | Badran & Preisach — Label Leakage in KT (2024)
+19 [OK     ] you2020graphcl | You et al. — GraphCL (2020)
+20 [OK     ] zhu2021gca | Zhu et al. — GCA (2021)
+21 [OK     ] heffernan2006assist | Heffernan & Heffernan — ASSISTments Ecosystem (2014)
+22 [MISSING] junyi_dataset | Junyi Academy Online Learning Activity Dataset (2015)
+23 [OK     ] choi2020ednet | Choi et al. — EdNet (2020)
+24 [OK     ] xes3g5m2023 | Liu et al. — XES3G5M (2023)
+25 [OK     ] chang2015junyi | Chang et al. — Modeling Exercise Relationships (2015)
+26 [OK     ] abdelrahman2023kt_survey | Abdelrahman et al. — Knowledge Tracing: A Survey (2023)  [restored from arXiv:2201.06953 after rename bug]
+27 [OK     ] lee2022cl4kt | Lee et al. — CL4KT (2022)
+28 [OK     ] lin2016moocprereq | Pan et al. — Prerequisite Relation Learning in MOOCs (2017)
+29 [OK     ] bai2025survey | Bai et al. — Prerequisite Relation Learning Survey (2025)
+30 [OK     ] kipf2017gcn | Kipf & Welling — GCN (2017)
+31 [OK     ] hamilton2017graphsage | Hamilton et al. — GraphSAGE (2017)
+32 [OK     ] johnson1975finding | Johnson — Finding Elementary Circuits (1975)
