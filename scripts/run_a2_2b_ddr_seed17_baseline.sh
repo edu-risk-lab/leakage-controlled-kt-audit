@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 # A2.2b — Rerun DDR GKT baseline (operator=none) for XES3G5M fold 0, experiment seed 17.
 #
-# Replaces placeholder AUC 0.842217… copied from GKT30 in eval_existing.py (removed).
-# Canonical audit: audit/2026-07-22-A2-DDR-GKT30-duplicate-auc.md
+# Replaces the invalid legacy placeholder copied from a GKT30 run.
 #
 # Usage (GPU server, repo root):
 #   bash scripts/run_a2_2b_ddr_seed17_baseline.sh
@@ -186,7 +185,6 @@ merge_tables() {
 }
 
 log "=== A2.2b DDR seed-17 baseline rerun start ==="
-log "Audit: audit/2026-07-22-A2-DDR-GKT30-duplicate-auc.md"
 
 if [[ "$MERGE_ONLY" -eq 1 ]]; then
   merge_tables

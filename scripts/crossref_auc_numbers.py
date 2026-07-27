@@ -1,4 +1,4 @@
-"""Cross-check headline AUC numbers across tables and cache JSON.
+"""Cross-check headline AUC numbers across tables and verified provenance JSON.
 
 Usage:
     python -m scripts.crossref_auc_numbers
@@ -30,8 +30,7 @@ def main() -> None:
     fold = pd.read_csv(ROOT / "results/tables/baseline_fold_results.csv")
     summary = pd.read_csv(ROOT / "results/tables/baseline_results.csv")
     inject = pd.read_csv(ROOT / "results/tables/downstream_auc_injection.csv")
-    cache = ROOT / "results/cache"
-    paper_cache = ROOT / "paper/results/cache"
+    provenance = ROOT / "results/provenance"
 
     trio = ("simplekt", "gkt", "gikt")
     for model in trio:
@@ -50,9 +49,7 @@ def main() -> None:
         fold0 = float(fsub[fsub["fold"] == 0]["auc"].iloc[0]) if not fsub[fsub["fold"] == 0].empty else float("nan")
         inj_row = inject[inject["Model"] == model]
         clean_inject = float(inj_row["Clean AUC"].iloc[0]) if not inj_row.empty else float("nan")
-        cache00 = _load_json(cache / f"xes3g5m_fold_0_{model}_s42_inject00_result.json")
-        if cache00 is None:
-            cache00 = _load_json(paper_cache / f"xes3g5m_fold_0_{model}_s42_inject00_result.json")
+        cache00 = _load_json(provenance / f"xes3g5m_fold_0_{model}_s42_inject00_result.json")
         ok_summary = abs(mean_fold - mean_summary) <= TOL if pd.notna(mean_fold) and pd.notna(mean_summary) else False
         ok_inject = abs(fold0 - clean_inject) <= TOL if pd.notna(fold0) and pd.notna(clean_inject) else False
         rows.append(
@@ -77,9 +74,7 @@ def main() -> None:
             if pd.isna(val):
                 rows.append({"check": f"S18/{model}/{arm}", "status": "MISSING"})
                 continue
-            cached = _load_json(cache / f"xes3g5m_fold_0_{model}_s42_{arm}_result.json")
-            if cached is None:
-                cached = _load_json(paper_cache / f"xes3g5m_fold_0_{model}_s42_{arm}_result.json")
+            cached = _load_json(provenance / f"xes3g5m_fold_0_{model}_s42_{arm}_result.json")
             ok = cached is not None and abs(float(val) - cached) <= 1e-9
             rows.append(
                 {
@@ -97,7 +92,7 @@ def main() -> None:
         "",
         "## Primary XES3G5M trio (train_only)",
         "",
-        "| Check | fold mean | baseline_results | fold0 | S18 clean | inject00 cache | summary OK | clean OK |",
+        "| Check | fold mean | baseline_results | fold0 | S18 clean | inject00 provenance | summary OK | clean OK |",
         "|---|---:|---:|---:|---:|---:|---|---|",
     ]
     for r in rows:
@@ -110,7 +105,13 @@ def main() -> None:
             f"{'✓' if r['summary_ok'] else '✗'} | {'✓' if r['inject_clean_ok'] else '✗'} |"
         )
 
-    lines += ["", "## S18 leak arms vs cache", "", "| Check | table | cache | OK |", "|---|---:|---:|---|"]
+    lines += [
+        "",
+        "## S18 leak arms vs provenance",
+        "",
+        "| Check | table | provenance | OK |",
+        "|---|---:|---:|---|",
+    ]
     for r in rows:
         if "fold_mean" in r:
             continue

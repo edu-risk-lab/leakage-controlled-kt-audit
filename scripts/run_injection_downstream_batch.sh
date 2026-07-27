@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 # Injection downstream AUC batch — XES3G5M fold 0, split seed 42 (Table S18).
-#
-# Canonical runbook: audit/2026-07-22-A1-injection-rerun-runbook.md
-#
 # Usage:
 #   bash scripts/run_injection_downstream_batch.sh
 #   bash scripts/run_injection_downstream_batch.sh --skip-graphs
@@ -48,7 +45,7 @@ log() {
 check_config() {
   log "=== Config preflight (Table S15 / 619c02cf) ==="
   grep -A3 'name: gikt' "$CONFIG" | grep -q 'batch_size: 8' || {
-    echo "ERROR: baselines.gikt.hyperparams.batch_size must be 8. See audit/2026-07-22-A1-injection-rerun-runbook.md §2"
+    echo "ERROR: baselines.gikt.hyperparams.batch_size must be 8"
     exit 1
   }
   grep -A3 'name: gkt' "$CONFIG" | grep -q 'batch_size: 4' || {
@@ -152,7 +149,6 @@ collect_table() {
 }
 
 log "=== Injection downstream batch start ==="
-log "Runbook: audit/2026-07-22-A1-injection-rerun-runbook.md"
 check_config
 check_env
 

@@ -143,7 +143,7 @@ def write_leakage_metrics_tex(df: pd.DataFrame, path: Path) -> None:
     share_note = (
         r" Edge share $>50\%$: fraction of retained edges whose held-out transition "
         r"share exceeds $0.5$; share p90: 90th percentile of per-edge held-out shares "
-        r"(Supplementary artefact \path{edge\_share\_summary.csv})."
+        r"(Supplementary artefact \texttt{edge\_share\_summary.csv})."
         if share_by_ds
         else ""
     )

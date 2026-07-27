@@ -1,7 +1,4 @@
 # Injection downstream AUC batch — XES3G5M fold 0, split seed 42 (Table S18).
-#
-# Canonical runbook: audit/2026-07-22-A1-injection-rerun-runbook.md
-#
 # Runs 6 GPU jobs (inject05/inject20 × simpleKT, GKT, GIKT).
 # Column 0% uses fold-0 train_only via scripts/collect_injection_auc.py (no inject00 GPU job).
 #
@@ -39,7 +36,7 @@ $SPLIT_SEED = 42
 $LOG_DIR = 'logs/q1'
 $CACHE_DIR = 'results/cache'
 
-# Order: simpleKT → GIKT → GKT (GKT slowest per runbook §5)
+# Order: simpleKT → GIKT → GKT (GKT is slowest)
 $JOBS = @(
     @{ Arm = 'inject05'; Model = 'simplekt' },
     @{ Arm = 'inject20'; Model = 'simplekt' },
@@ -82,7 +79,7 @@ function Test-ConfigHyperparams {
     $gktBlock = Select-String -Path $CONFIG -Pattern 'name: gkt' -Context 0,5 | Select-Object -First 1
     $fail = $false
     if (-not ($giktBlock -and ($giktBlock.Context.PostContext -join "`n") -match 'batch_size:\s*8\b')) {
-        Write-Error 'configs/xes3g5m.yaml: baselines.gikt.hyperparams.batch_size must be 8 (not 16). See audit/2026-07-22-A1-injection-rerun-runbook.md §2'
+        Write-Error 'configs/xes3g5m.yaml: baselines.gikt.hyperparams.batch_size must be 8 (not 16)'
         $fail = $true
     }
     if (-not ($gktBlock -and ($gktBlock.Context.PostContext -join "`n") -match 'batch_size:\s*4\b')) {
@@ -242,7 +239,6 @@ Enter-BatchLock
 try {
 Write-Log '=== Injection downstream batch start ==='
 Write-Log "Jobs: $($JOBS.Count) | fold=$FOLD split_seed=$SPLIT_SEED"
-Write-Log 'Runbook: audit/2026-07-22-A1-injection-rerun-runbook.md'
 
 Test-ConfigHyperparams
 Test-CudaEnv

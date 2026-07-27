@@ -109,10 +109,7 @@ def main() -> int:
         if not leak_path.exists():
             raise SystemExit(f"Missing {leak_path}")
         write_leakage_metrics_tex(pd.read_csv(leak_path), ROOT / "results/tables/leakage_metrics.tex")
-        for mirror in (
-            ROOT / "paper/submission_APIN/leakage_metrics.tex",
-            ROOT / "paper/results/tables/leakage_metrics.tex",
-        ):
+        for mirror in (ROOT / "paper/submission_APIN/leakage_metrics.tex",):
             mirror.parent.mkdir(parents=True, exist_ok=True)
             mirror.write_text(
                 (ROOT / "results/tables/leakage_metrics.tex").read_text(encoding="utf-8"),
