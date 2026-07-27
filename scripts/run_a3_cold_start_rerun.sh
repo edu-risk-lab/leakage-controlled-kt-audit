@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # A3.5 — Optional GPU rerun: cold-start strata with full pyKT predictions (no 5000 cap).
 #
-# Fixes Junyi very_cold degenerate AUC (identical across models from capped preds).
-# Revision: REVISION_PLAN_APIN_NCS_20260722.md §A3.5; audit/2026-07-22-A1-A3-trace.md
+# Regenerates uncapped prediction inputs for cold-start diagnostics.
+# Degenerate Junyi strata can still have undefined AUC when class support is insufficient.
 #
 # Usage (GPU server, repo root):
 #   bash scripts/run_a3_cold_start_rerun.sh                    # Junyi (default)

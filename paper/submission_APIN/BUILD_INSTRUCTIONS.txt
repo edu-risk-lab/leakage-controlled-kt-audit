@@ -1,4 +1,4 @@
-APIN flat submission package — CANONICAL camera-ready (2026-07-18)
+APIN flat submission package — CANONICAL submission-ready source (2026-07-27)
 
 Scope decisions locked in this package:
   - Base: Leakage_Controlled_Graph_Protocol_for_KT flat bundle
