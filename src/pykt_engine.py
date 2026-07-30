@@ -24,7 +24,24 @@ def _patch_pykt_cpu_tensors() -> None:
 
     dl.LongTensor = torch.LongTensor
     dl.FloatTensor = torch.FloatTensor
+    _patch_pykt_smasks(dl)
     _PYKT_CPU_PATCHED = True
+
+
+def _patch_pykt_smasks(dl) -> None:
+    """Ensure selectmasks==1 is the eval mask (padding must not count as valid steps)."""
+    if getattr(dl.KTDataset, "_p1_smasks_patched", False):
+        return
+    _orig = dl.KTDataset.__load_data__
+
+    def __load_data__(self, sequence_path, folds, pad_val=-1):
+        dori = _orig(self, sequence_path, folds, pad_val)
+        if isinstance(dori, dict) and "smasks" in dori:
+            dori["smasks"] = dori["smasks"] == 1
+        return dori
+
+    dl.KTDataset.__load_data__ = __load_data__
+    dl.KTDataset._p1_smasks_patched = True
 
 
 def _mean_nll(y_true: np.ndarray, y_prob: np.ndarray, eps: float = 1e-4) -> float:

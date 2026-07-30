@@ -54,7 +54,8 @@ def _build_rows(df: pd.DataFrame, fold_val: int, q_map: dict[int, int], c_map: d
         questions = [str(x) for x in q_list] + ["-1"] * pad_n
         concepts = [str(x) for x in c_list] + ["-1"] * pad_n
         responses = [str(int(x)) for x in correct_list] + ["0"] * pad_n
-        smasks = ["1"] * L + ["0"] * pad_n
+        # Pad with -1 to match pyKT pad_val; 0 would be treated as valid by (smasks != -1).
+        smasks = ["1"] * L + ["-1"] * pad_n
         timestamps = [str(t) for t in range(L)] + ["-1"] * pad_n
         
         rows.append(
