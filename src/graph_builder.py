@@ -11,6 +11,7 @@ import csv
 import gc
 import itertools
 import logging
+from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Literal, Sequence
 
@@ -22,6 +23,133 @@ from src.leakage_metrics import compute_leakage_row, merge_leakage_metrics_csv
 from src.split_checker import learner_based_folds
 
 logger = logging.getLogger(__name__)
+
+# Sentinel for an inactive global / per-source cap (never pass 0 — that yields an empty graph).
+UNLIMITED_CAP = 10**9
+
+
+@dataclass(frozen=True)
+class PrerequisiteFilterStages:
+    """How many unique transitions survive each of Algorithm 1 stages (i)--(iii)."""
+
+    n_raw: int
+    n_after_q: int
+    n_after_k: int
+    n_after_K: int
+    min_support: int
+    used_quantile_fallback: bool
+    q_binds: bool
+    k_binds: bool
+    K_binds: bool
+    primary_bind: str
+
+    def as_dict(self, suffix: str = "") -> dict[str, int | bool | str]:
+        raw = asdict(self)
+        if not suffix:
+            return raw
+        return {f"{key}{suffix}": value for key, value in raw.items()}
+
+
+def count_kc_transitions(interactions: pd.DataFrame) -> pd.DataFrame:
+    """Count consecutive distinct-KC transitions (support) on an interaction frame."""
+    transitions = []
+    for _user_id, part in interactions.groupby("user_id", sort=False):
+        ordered_part = part.sort_values("timestamp")
+        kcs = ordered_part["kc_id"].to_numpy()
+        if len(kcs) < 2:
+            continue
+        src = kcs[:-1]
+        dst = kcs[1:]
+        mask = src != dst
+        if mask.any():
+            transitions.append(pd.DataFrame({"src_kc": src[mask], "dst_kc": dst[mask]}))
+    if not transitions:
+        return pd.DataFrame(columns=["src_kc", "dst_kc", "support"])
+    return (
+        pd.concat(transitions, ignore_index=True)
+        .value_counts(["src_kc", "dst_kc"])
+        .rename("support")
+        .reset_index()
+    )
+
+
+def filter_prerequisite_counts(
+    counts: pd.DataFrame,
+    max_edges: int = 5000,
+    top_k_per_node: int = 10,
+    support_quantile: float = 0.90,
+    *,
+    source_tag: str = "temporal_precedence",
+) -> tuple[pd.DataFrame, PrerequisiteFilterStages]:
+    """Apply support-quantile, per-source top-k, and global top-K to transition counts."""
+    if max_edges <= 0 or top_k_per_node <= 0:
+        raise ValueError("max_edges and top_k_per_node must be positive (use UNLIMITED_CAP for no cap)")
+    empty = pd.DataFrame(columns=["src_kc", "dst_kc", "weight", "source"])
+    if counts is None or counts.empty:
+        stages = PrerequisiteFilterStages(
+            n_raw=0,
+            n_after_q=0,
+            n_after_k=0,
+            n_after_K=0,
+            min_support=0,
+            used_quantile_fallback=False,
+            q_binds=False,
+            k_binds=False,
+            K_binds=False,
+            primary_bind="none",
+        )
+        return empty, stages
+
+    n_raw = int(len(counts))
+    min_support = (
+        max(2, int(np.ceil(counts["support"].quantile(support_quantile))))
+        if n_raw > 10
+        else 1
+    )
+    after_q = counts[counts["support"] >= min_support].copy()
+    used_fallback = False
+    if after_q.empty:
+        after_q = counts.nlargest(min(200, n_raw), "support").copy()
+        used_fallback = True
+    n_after_q = int(len(after_q))
+    after_k = after_q.sort_values(["src_kc", "support"], ascending=[True, False])
+    after_k = after_k.groupby("src_kc", group_keys=False).head(top_k_per_node)
+    n_after_k = int(len(after_k))
+    after_K = after_k.nlargest(min(max_edges, n_after_k), "support").copy()
+    n_after_K = int(len(after_K))
+    q_binds = n_after_q < n_raw and not used_fallback
+    k_binds = n_after_k < n_after_q
+    K_binds = n_after_K < n_after_k
+    if K_binds:
+        primary_bind = "K"
+    elif k_binds:
+        primary_bind = "k"
+    elif q_binds:
+        primary_bind = "q"
+    else:
+        primary_bind = "none"
+    stages = PrerequisiteFilterStages(
+        n_raw=n_raw,
+        n_after_q=n_after_q,
+        n_after_k=n_after_k,
+        n_after_K=n_after_K,
+        min_support=int(min_support),
+        used_quantile_fallback=used_fallback,
+        q_binds=q_binds,
+        k_binds=k_binds,
+        K_binds=K_binds,
+        primary_bind=primary_bind,
+    )
+    max_support = max(1, int(after_K["support"].max()))
+    after_K = after_K.copy()
+    after_K["weight"] = after_K["support"] / max_support
+    after_K["source"] = source_tag
+    result = (
+        after_K[["src_kc", "dst_kc", "weight", "source"]]
+        .sort_values(["src_kc", "dst_kc"])
+        .reset_index(drop=True)
+    )
+    return result, stages
 
 
 def _assert_train_only(train: pd.DataFrame) -> None:
@@ -114,32 +242,20 @@ def infer_prerequisites_from_interactions(
         q_matrix.shape,
         source_tag,
     )
-    transitions = []
-    for _user_id, part in interactions.groupby("user_id", sort=False):
-        ordered_part = part.sort_values("timestamp")
-        kcs = ordered_part["kc_id"].to_numpy()
-        if len(kcs) < 2:
-            continue
-        src = kcs[:-1]
-        dst = kcs[1:]
-        mask = src != dst
-        if mask.any():
-            transitions.append(pd.DataFrame({"src_kc": src[mask], "dst_kc": dst[mask]}))
-    if not transitions:
-        return pd.DataFrame(columns=["src_kc", "dst_kc", "weight", "source"])
-    counts = pd.concat(transitions, ignore_index=True).value_counts(["src_kc", "dst_kc"]).rename("support").reset_index()
-    min_support = max(2, int(np.ceil(counts["support"].quantile(support_quantile)))) if len(counts) > 10 else 1
-    edges = counts[counts["support"] >= min_support].copy()
-    if edges.empty:
-        edges = counts.nlargest(min(200, len(counts)), "support").copy()
-    edges = edges.sort_values(["src_kc", "support"], ascending=[True, False])
-    edges = edges.groupby("src_kc", group_keys=False).head(top_k_per_node)
-    edges = edges.nlargest(min(max_edges, len(edges)), "support").copy()
-    max_support = max(1, edges["support"].max())
-    edges["weight"] = edges["support"] / max_support
-    edges["source"] = source_tag
-    result = edges[["src_kc", "dst_kc", "weight", "source"]].sort_values(["src_kc", "dst_kc"]).reset_index(drop=True)
-    logger.info("Inferred prerequisite edges shape=%s min_support=%s", result.shape, min_support)
+    counts = count_kc_transitions(interactions)
+    result, stages = filter_prerequisite_counts(
+        counts,
+        max_edges=max_edges,
+        top_k_per_node=top_k_per_node,
+        support_quantile=support_quantile,
+        source_tag=source_tag,
+    )
+    logger.info(
+        "Inferred prerequisite edges shape=%s min_support=%s primary_bind=%s",
+        result.shape,
+        stages.min_support,
+        stages.primary_bind,
+    )
     return result
 
 

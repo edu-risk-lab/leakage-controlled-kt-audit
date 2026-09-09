@@ -28,6 +28,7 @@ import json
 import logging
 import random
 import shutil
+from contextvars import ContextVar
 from pathlib import Path
 
 import numpy as np
@@ -39,6 +40,8 @@ from src.io_utils import dump_csv, load_interactions, load_yaml
 from src.split_checker import fold_seeds, learner_based_folds
 
 logger = logging.getLogger(__name__)
+# Isolated graph tree (M4 cells). None → data/processed/<dataset>/.
+_GRAPH_ROOT: ContextVar[Path | None] = ContextVar("p0_graph_root", default=None)
 MODEL_WEIGHTS = {
     "bkt": {"global": 0.15, "kc": 0.85},
     "dkt": {"global": 0.20, "kc": 0.35, "user": 0.25, "item": 0.20},
@@ -76,20 +79,28 @@ def _hyperparams_for_baseline(cfg: dict, model_name: str) -> dict:
     return {}
 
 
+def _graph_data_root(dataset: str) -> Path:
+    override = _GRAPH_ROOT.get()
+    if override is not None:
+        return Path(override)
+    return Path("data/processed") / dataset
+
+
 def _protocol_edge_csvs(dataset: str, fold: int, graph_construction: str) -> list[Path]:
+    root = _graph_data_root(dataset)
     if graph_construction == "full_log":
         return [
-            Path("data/processed") / dataset / "full_log" / "e_pre.csv",
-            Path("data/processed") / dataset / "full_log" / "e_sim.csv",
+            root / "full_log" / "e_pre.csv",
+            root / "full_log" / "e_sim.csv",
         ]
     elif graph_construction.startswith("inject"):
         return [
-            Path("data/processed") / dataset / f"fold_{fold}" / f"e_pre_{graph_construction}.csv",
-            Path("data/processed") / dataset / f"fold_{fold}" / f"e_sim_{graph_construction}.csv",
+            root / f"fold_{fold}" / f"e_pre_{graph_construction}.csv",
+            root / f"fold_{fold}" / f"e_sim_{graph_construction}.csv",
         ]
     return [
-        Path("data/processed") / dataset / f"fold_{fold}" / "e_pre_train_only.csv",
-        Path("data/processed") / dataset / f"fold_{fold}" / "e_sim_train_only.csv",
+        root / f"fold_{fold}" / "e_pre_train_only.csv",
+        root / f"fold_{fold}" / "e_sim_train_only.csv",
     ]
 
 
@@ -245,9 +256,10 @@ def _rate_map(train: pd.DataFrame, key: str, alpha: float = 5.0) -> tuple[dict, 
 
 
 def _full_log_graph_paths(dataset: str) -> list[Path]:
+    root = _graph_data_root(dataset)
     return [
-        Path("data/processed") / dataset / "full_log" / "e_pre.csv",
-        Path("data/processed") / dataset / "full_log" / "e_sim.csv",
+        root / "full_log" / "e_pre.csv",
+        root / "full_log" / "e_sim.csv",
     ]
 
 
@@ -277,8 +289,8 @@ def _graph_kc_rates(
             )
     else:
         paths = [
-            Path("data/processed") / dataset / f"fold_{fold}" / "e_pre_train_only.csv",
-            Path("data/processed") / dataset / f"fold_{fold}" / "e_sim_train_only.csv",
+            _graph_data_root(dataset) / f"fold_{fold}" / "e_pre_train_only.csv",
+            _graph_data_root(dataset) / f"fold_{fold}" / "e_sim_train_only.csv",
         ]
         stats_df = train
 
@@ -741,8 +753,15 @@ def _run_backend_fold(
         lr = float(hp.get("lr", py_all.get("lr", 1e-3)))
 
         q_map, c_map = build_dense_maps(train)
+        isolate = str(getattr(args, "isolated_results", "") or "")
+        graph_root = _GRAPH_ROOT.get()
+        work_root = Path("results/pykt_work")
+        if isolate:
+            work_root = work_root / isolate
+        elif graph_root is not None:
+            work_root = work_root / Path(graph_root).name
         base = (
-            Path("results/pykt_work")
+            work_root
             / dataset
             / f"fold_{fold}_seed_{split_seed}"
             / graph_construction
@@ -928,16 +947,33 @@ def main() -> None:
         default=None,
         help="Write results under results/q1/<tag>/ only; do not merge main tables.",
     )
+    parser.add_argument(
+        "--graph-root",
+        type=Path,
+        default=None,
+        help="Override data/processed/<dataset> for edge CSVs (M4 isolated cell trees).",
+    )
     args = parser.parse_args()
     if args.cold_start_only:
         args.force_cold_start = True
     logging.basicConfig(level=getattr(logging, args.log_level.upper()))
 
+    if args.graph_root is not None:
+        graph_root = Path(args.graph_root).resolve()
+        if not graph_root.exists():
+            raise SystemExit(f"--graph-root does not exist: {graph_root}")
+        _GRAPH_ROOT.set(graph_root)
+        logger.info("Using isolated graph root %s", graph_root)
+
+    cache_dir = (
+        Path("results/q1") / args.isolated_results / "cache"
+        if args.isolated_results
+        else Path("results/cache")
+    )
     if args.clear_cache:
-        cache_dir = Path("results/cache")
         if cache_dir.exists():
             shutil.rmtree(cache_dir)
-            logger.info("Cleared baseline runner cache directory.")
+            logger.info("Cleared baseline runner cache directory %s", cache_dir)
     random.seed(args.seed)
     np.random.seed(args.seed)
     cfg = load_yaml(args.config) if args.config else {"dataset": "default", "processed_path": "data/processed/junyi.parquet"}
@@ -984,7 +1020,6 @@ def main() -> None:
     rows = []
     cold_frames = []
     prediction_samples = []
-    cache_dir = Path("results/cache")
     cache_dir.mkdir(parents=True, exist_ok=True)
 
     for fold, split_seed, splits in learner_based_folds(df, ratios, split_cfg, default_seed=args.seed):

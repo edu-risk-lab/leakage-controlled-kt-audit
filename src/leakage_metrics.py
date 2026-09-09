@@ -138,16 +138,22 @@ def compute_edge_heldout_shares(
     train_df: pd.DataFrame,
     held_df: pd.DataFrame,
     q_train: pd.DataFrame,
+    *,
+    train_counts: dict[tuple[int, int], int] | None = None,
+    held_counts: dict[tuple[int, int], int] | None = None,
 ) -> list[float]:
     """Per-edge held-out evidence share: n_held / (n_train + n_held).
 
     Uses held-out transition counts when available; if overlap is item-based only
     (same logic as ``compute_ecr_overlap``), assigns n_held=1.
+    Optional ``train_counts`` / ``held_counts`` reuse a per-fold pair map.
     """
     if held_df.empty:
         return []
-    train_counts = _pair_count_map(train_df)
-    held_counts = _pair_count_map(held_df)
+    if train_counts is None:
+        train_counts = _pair_count_map(train_df)
+    if held_counts is None:
+        held_counts = _pair_count_map(held_df)
     hi_items = _held_item_sets_by_kc(held_df)
     train_items = (
         q_train.groupby("kc_id")["item_id"].apply(lambda s: set(s.astype(int))).to_dict()
