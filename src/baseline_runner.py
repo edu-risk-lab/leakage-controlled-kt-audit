@@ -1145,6 +1145,8 @@ def main() -> None:
                 cache_res_path = cache_dir / f"{dataset}_fold_{fold}_{model}_s{split_base_seed}_full_log_result.json"
                 cache_pred_path = cache_dir / f"{dataset}_fold_{fold}_{model}_s{split_base_seed}_full_log_preds.csv"
 
+                current_pred_cap = None if model in export_models else base_pred_cap
+
                 if cache_res_path.exists() and cache_pred_path.exists():
                     logger.info("Loading cached result for fold=%s model=%s graph_construction=full_log", fold, model)
                     with open(cache_res_path, "r") as f:
@@ -1159,7 +1161,7 @@ def main() -> None:
                         fold=fold,
                         split_seed=split_seed,
                         graph_construction="full_log",
-                        prediction_cap=pred_cap,
+                        prediction_cap=current_pred_cap,
                         trained_head_cfg=trained_head_cfg,
                         experiment_seed=args.seed,
                         backend=backend,
