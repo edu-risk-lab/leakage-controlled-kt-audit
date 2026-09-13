@@ -1,0 +1,14 @@
+{
+    "dataset": "xes3g5m",
+    "fold": 0,
+    "split_seed": 42,
+    "model": "gkt",
+    "graph_construction": "full_log",
+    "eval_split": "valid+test",
+    "auc": 0.8509978161808647,
+    "acc": 0.8483382601997258,
+    "nll": 0.3487429938627717,
+    "n_eval": 1922840,
+    "status": "pykt_checkpoint",
+    "note": "pyKT `gkt` trained on learner-split train users; metrics on valid+test sequence positions. GKT adjacency from P0 exported graphs."
+}
