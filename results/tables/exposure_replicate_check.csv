@@ -1,0 +1,2 @@
+dataset,model,fold,train_only_isolated,train_only_primary,train_only_gap,full_log_isolated,full_log_primary,full_log_gap,delta_isolated,delta_primary
+xes3g5m,gkt,0,0.8335910934504894,0.833644346950711,5.325350022156172e-05,0.8342056988717668,0.8353824246639929,0.0011767257922261631,0.0006146054212773366,0.0017380777132818

@@ -1,0 +1,6 @@
+left,right,n_left,n_right,n_only_left,n_only_right,jaccard,identical,digest_left,digest_right
+rebuilt_from_config,primary_on_disk,1260,1260,0,0,1.0,True,b0c8a9eea5c7df99,b0c8a9eea5c7df99
+rebuilt_from_config,isolated_m4,1260,1260,0,0,1.0,True,b0c8a9eea5c7df99,b0c8a9eea5c7df99
+primary_on_disk,isolated_m4,1260,1260,0,0,1.0,True,b0c8a9eea5c7df99,b0c8a9eea5c7df99
+train_only_primary,train_only_isolated,1162,1162,0,0,1.0,True,75d09a279e2f833a,75d09a279e2f833a
+rebuilt_sim_from_config,primary_sim_on_disk,360,360,0,0,1.0,True,5a0282339181a74a,5a0282339181a74a
