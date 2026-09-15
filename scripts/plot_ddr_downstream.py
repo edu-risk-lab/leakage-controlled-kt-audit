@@ -168,6 +168,27 @@ def main() -> int:
         f"{ds}: Pearson $r$={r:.2f} ($n$={n}), Spearman $\\rho$={rho:.2f}"
         for ds, r, pr, rho, _, n in corr_lines
     )
+    slope_path = ROOT / "results/tables/ddr_slope_ci.csv"
+    slope_str = ""
+    if slope_path.exists():
+        sl = pd.read_csv(slope_path)
+        bits = []
+        for _, r in sl.iterrows():
+            if r["scope"] != "core":
+                continue
+            bits.append(
+                f"{r['dataset']}/{r['model']}: slope ${float(r['slope']):.4f}$ "
+                f"(cluster-bootstrap 95\\% CI "
+                f"$[{float(r['slope_ci_lo']):+.4f}, {float(r['slope_ci_hi']):+.4f}]$, "
+                f"$n$={int(r['n'])})"
+            )
+        if bits:
+            slope_str = (
+                " OLS slope of AUC-drop on DDR (fold$\\times$seed cluster bootstrap) is the "
+                "primary estimand because Pearson $r$ is scale-free: "
+                + "; ".join(bits)
+                + "."
+            )
     xg = pert["ddr"].to_numpy(dtype=float)
     yg = pert["auc_drop"].to_numpy(dtype=float)
     n_global = int((np.isfinite(xg) & np.isfinite(yg)).sum())
@@ -179,8 +200,12 @@ def main() -> int:
         "decrease in test AUC relative to the unperturbed (DDR$=0$) baseline graph across folds. "
         "Per-(dataset, model) correlations are distinct estimands"
         + (": " + corr_str if corr_str else ".")
-        + f" The global pooled Pearson across both datasets $\\times$ both models is annotated on "
-        f"Fig.~S3 ($n$={n_global}) and must not be conflated with XES3G5M/GKT-only figures.}}\n"
+        + slope_str
+        + f" The $n$=99 XES3G5M/GKT pool in this table is a coarser seed$\\times$fold$\\times$setting "
+        f"aggregation; the primary estimands in the main text are $n$=54 ($p{{\\le}}0.3$ core) "
+        f"and $n$=66 (core plus $p{{=}}0.90$ anchors). The global pooled Pearson across both datasets "
+        f"$\\times$ both models is annotated on Fig.~S3 ($n$={n_global}) and must not be conflated "
+        f"with XES3G5M/GKT-only figures.}}\n"
         "\\label{tab:ddr-downstream}\n"
         "\\footnotesize\n\\setlength{\\tabcolsep}{3pt}\n"
         "\\begin{tabularx}{\\linewidth}{@{} >{\\RaggedRight\\arraybackslash}p{0.13\\linewidth} "

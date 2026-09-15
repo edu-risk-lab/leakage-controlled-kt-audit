@@ -1,4 +1,4 @@
-"""Write compact LaTeX tables from results/m4/builder_census.csv (Phase A only)."""
+"""Write compact LaTeX tables from M4 census (Phase A) and GKT fold-0 CSVs (Phase B)."""
 
 from __future__ import annotations
 
@@ -55,7 +55,8 @@ At the published $(q,k,K)=(0.95,5,5000)$, $k$ binds and $K{=}5000$ is slack
 ($K{=}\infty$ is identical). Opening $q$ with $k{=}5$ kept does not open the
 channel; lifting $k$ does. Jaccard $\tau$ changes $|E_{\mathrm{sim}}|$
 ($618/354/198$ at $\tau{=}0.05/0.10/0.20$ on fold~0) but not $E_{\mathrm{pre}}$ leak.
-Downstream $\Delta$AUC for opened cells is not reported here.}
+Downstream $\Delta$AUC for the three GKT fold-0 cells is in
+Table~\ref{tab:m4-phase-b-auc}.}
 \label{tab:m4-qk-census}
 \footnotesize
 \setlength{\tabcolsep}{3pt}
@@ -74,25 +75,92 @@ Cell & $q$ & $k$ & $K$ & $|E_{\mathrm{pre}}^{\mathrm{to}}|$ & Leak (f0) & Leak (
     path.write_text(tex, encoding="utf-8")
 
 
+def write_phase_b_table(census: pd.DataFrame, path: Path) -> None:
+    cells = [
+        ("q0.95_k5_K5000_tau0.1", "Published default"),
+        ("q0.5_k5_Kinf_tau0.1", "Open $q$, $k{=}5$"),
+        ("q0.5_k20_Kinf_tau0.1", "$k{=}20$ lift"),
+    ]
+    rows = []
+    deltas: list[float] = []
+    for tag, label in cells:
+        csv_path = ROOT / "results" / "q1" / f"m4_{tag}" / "baseline_results.csv"
+        if not csv_path.exists():
+            raise SystemExit(f"Missing Phase B CSV: {csv_path}")
+        df = pd.read_csv(csv_path)
+        to = float(df.loc[df["graph_construction"] == "train_only", "auc"].iloc[0])
+        fl = float(df.loc[df["graph_construction"] == "full_log", "auc"].iloc[0])
+        delta = fl - to
+        deltas.append(delta)
+        leak = int(_fold0(census, tag)["n_pre_fl_minus_to"])
+        sign = "+" if delta >= 0 else ""
+        rows.append(
+            f"{label} & {leak} & {to:.4f} & {fl:.4f} & ${sign}{delta:.4f}$ \\\\"
+        )
+    max_abs = max(abs(x) for x in deltas)
+    tex = (
+        "\\begin{table}[t]\n"
+        "\\centering\n"
+        "\\caption{Train-only versus full-log GKT AUC on XES3G5M fold~0 (primary "
+        "budget: 10 epochs, batch 4, seed 42). $\\Delta$AUC $=$ full-log $-$ train-only. "
+        "The open-$q$ cell keeps $k{=}5$; the $k{=}20$ cell is the opened-channel "
+        "landmark. Absolute AUC rises with denser graphs, but "
+        f"$|\\Delta\\text{{AUC}}|{{\\le}}{max_abs:.4f}$ on all three cells. Not a three-fold "
+        "result; $k{=}\\infty$ was not trained (stop rule).}\n"
+        "\\label{tab:m4-phase-b-auc}\n"
+        "\\footnotesize\n"
+        "\\setlength{\\tabcolsep}{4pt}\n"
+        "\\begin{tabularx}{\\linewidth}{@{} >{\\RaggedRight\\arraybackslash}X c c c c @{}}\n"
+        "\\toprule\n"
+        "Cell & Leak (f0) & Train-only AUC & Full-log AUC & $\\Delta$AUC \\\\\n"
+        "\\midrule\n"
+    )
+    tex += "\n".join(rows) + "\n"
+    tex += r"""\bottomrule
+\end{tabularx}
+\end{table}
+"""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(tex, encoding="utf-8")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--census", type=Path, default=ROOT / "results" / "m4" / "builder_census.csv")
     parser.add_argument("--out", type=Path, default=ROOT / "results" / "tables" / "m4_qk_census.tex")
     parser.add_argument(
+        "--out-phase-b",
+        type=Path,
+        default=ROOT / "results" / "tables" / "m4_phase_b_auc.tex",
+    )
+    parser.add_argument(
         "--copy-to",
         action="append",
         default=[],
-        help="Extra destinations (e.g. paper/submission_EAAI/m4_qk_census.tex)",
+        help="Extra destinations for the census table",
+    )
+    parser.add_argument(
+        "--copy-phase-b-to",
+        action="append",
+        default=[],
+        help="Extra destinations for the Phase B AUC table",
     )
     args = parser.parse_args()
     census = pd.read_csv(args.census)
     write_main_table(census, args.out)
+    write_phase_b_table(census, args.out_phase_b)
     text = args.out.read_text(encoding="utf-8")
     for dest in args.copy_to:
         p = Path(dest)
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(text, encoding="utf-8")
+    pb = args.out_phase_b.read_text(encoding="utf-8")
+    for dest in args.copy_phase_b_to:
+        p = Path(dest)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(pb, encoding="utf-8")
     print(f"Wrote {args.out}")
+    print(f"Wrote {args.out_phase_b}")
     return 0
 
 

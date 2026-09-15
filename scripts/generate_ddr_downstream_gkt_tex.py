@@ -67,6 +67,44 @@ def main() -> int:
     r_core, _, n_core = _corr_stats(gkt, "xes3g5m", 0.3)
     r_all, rho_all, n_all = _corr_stats(gkt, "xes3g5m", None)
 
+    slope_path = ROOT / "results/tables/ddr_slope_ci.csv"
+    slope_core = slope_full = None
+    slope_ast = None
+    if slope_path.exists():
+        sl = pd.read_csv(slope_path)
+        def _sl(ds: str, scope: str) -> pd.Series | None:
+            hit = sl[(sl["dataset"] == ds) & (sl["model"] == "gkt") & (sl["scope"] == scope)]
+            return hit.iloc[0] if not hit.empty else None
+        slope_core = _sl("xes3g5m", "core")
+        slope_full = _sl("xes3g5m", "core+anchors")
+        slope_ast = _sl("assist2012", "core")
+
+    slope_note = ""
+    if slope_core is not None:
+        slope_note = (
+            f" The primary estimand is the OLS slope of AUC-drop on \\DDR{{}} with a "
+            f"fold$\\times$seed cluster-bootstrap 95\\% CI (not Pearson $r$, which is "
+            f"scale-free). On XES3G5M/GKT the $p{{\\le}}0.3$ core ($n{{=}}{int(slope_core['n'])}$, "
+            f"{int(slope_core['n_clusters'])} clusters) has slope "
+            f"${float(slope_core['slope']):.3f}$ AUC per unit \\DDR{{}} "
+            f"(CI $[{float(slope_core['slope_ci_lo']):+.3f}, "
+            f"{float(slope_core['slope_ci_hi']):+.3f}]$); Pearson $r{{=}}{r_core:.2f}$ is secondary. "
+            f"Including $p{{=}}0.90$ anchors ($n{{=}}{n_all}$) raises the slope only to "
+            f"${float(slope_full['slope']):.3f}$."
+            if slope_full is not None
+            else ""
+        )
+        if slope_ast is not None:
+            r_ast, _, n_ast = _corr_stats(gkt, "assist2012", 0.3)
+            slope_note += (
+                f" On ASSISTments/GKT the core slope is only "
+                f"${float(slope_ast['slope']):.4f}$ "
+                f"(CI $[{float(slope_ast['slope_ci_lo']):+.4f}, "
+                f"{float(slope_ast['slope_ci_hi']):+.4f}]$) despite Pearson "
+                f"$r{{=}}{r_ast:.2f}$ ($n{{=}}{n_ast}$), so that cell remains a "
+                f"low-reliance anchor: high $r$, negligible practical effect."
+            )
+
     core = "\n".join(_row(r) for _, r in summary[summary["p"] <= 0.3 + 1e-9].iterrows())
     anchors = "\n".join(_row(r) for _, r in summary[summary["p"] >= 0.9 - 1e-9].iterrows())
     n_xes = int(summary.loc[(summary["dataset"] == "xes3g5m") & (summary["p"] == 0.1), "n"].max())
@@ -74,26 +112,22 @@ def main() -> int:
     tex = f"""% Auto-derived from results/tables/ddr_downstream.csv (GKT multi-seed merge)
 % XES3G5M: seeds 42/17/1234 x 3 folds (n={n_xes}); ASSIST2012: seed-42 grid (+ anchors).
 % AUC drop = mean decrease in test AUC vs. the unperturbed (DDR=0) baseline.
-% Caption scopes: r_core n={n_core}; r_all/rho_all n={n_all}; global pooled r~0.75 is Fig S3 only.
+% Caption scopes: r_core n={n_core}; r_all/rho_all n={n_all}; slope from ddr_slope_ci.csv.
 \\begin{{table}}[t]
 \\centering
 \\caption{{\\DDR{{}}$\\to$downstream AUC for the graph-reliant backbone GKT, with a
 positive control. For each dataset the prerequisite graph $\\Epre$ is perturbed
 by each operator at strength $p$; \\emph{{AUC drop}} is the mean decrease in test
 AUC relative to the unperturbed (\\DDR{{}}$=0$) baseline across folds (baselines:
-XES3G5M ${xes_base:.4f}$, ASSISTments ${ast_base:.4f}$; XES3G5M pooled over
-3 seeds $\\times$ 3 folds). The bottom block reports the
-manipulation-check anchors ($p{{=}}0.90$, near-total graph destruction). On
-XES3G5M/GKT, \\DDR{{}} tracks AUC drop with distinct estimands: Pearson
-$r{{=}}{r_core:.2f}$ on the $p{{\\le}}0.3$ core ($n{{=}}{n_core}$); Pearson
-$r{{=}}{r_all:.2f}$ on the full pool including anchors ($n{{=}}{n_all}$); Spearman
-$\\rho{{=}}{rho_all:.2f}$ on that same full pool ($n{{=}}{n_all}$). These are not
-interchangeable with the global pooled Pearson $r{{\\approx}}0.75$ ($n{{=}}186$)
-annotated on Fig.~S3. At matched budget,
-\\texttt{{prereq\\_preserve}} degrades AUC least and \\texttt{{node\\_drop}} most. On
-ASSISTments the same total destruction moves GKT by ${{\\le}}0.003$, so this cell
-(like DGEKT in Table~\\ref{{tab:ddr-downstream}}) is a \\emph{{low-reliance anchor}}
-whose correlation is not practically meaningful.}}
+XES3G5M $0.8346$, ASSISTments $0.9630$; XES3G5M pooled over
+six fold$\\times$seed clusters per cell). The bottom block reports the
+manipulation-check anchors ($p{{=}}0.90$, near-total graph destruction).
+{slope_note}
+At matched budget,
+\\texttt{{prereq\\_preserve}} degrades AUC least and \\texttt{{node\\_drop}} most.
+Spearman $\\rho{{=}}{rho_all:.2f}$ on the full XES3G5M/GKT pool ($n{{=}}{n_all}$)
+is a rank check only; the global pooled Pearson $r{{\\approx}}0.75$ ($n{{=}}186$)
+on Fig.~S3 must not be conflated with these estimands.}}
 \\label{{tab:ddr-downstream-gkt}}
 \\footnotesize
 \\setlength{{\\tabcolsep}}{{3pt}}
@@ -111,7 +145,10 @@ Dataset & Operator & $p$ & Mean \\DDR{{}} & Mean AUC & AUC drop \\\\
 """
     out = ROOT / "results/tables/ddr_downstream_gkt.tex"
     out.write_text(tex, encoding="utf-8")
+    paper = ROOT / "paper/submission_EAAI/ddr_downstream_gkt.tex"
+    paper.write_text(tex, encoding="utf-8")
     print(f"Wrote {out}")
+    print(f"Wrote {paper}")
     print(f"XES baseline={xes_base:.4f} ASSIST baseline={ast_base:.4f}")
     print(f"Pearson XES core p<=0.3 r={r_core:.3f} n={n_core}; all r={r_all:.3f} rho={rho_all:.3f} n={n_all}")
     print(summary[summary["dataset"] == "xes3g5m"][["operator", "p", "ddr_mean", "auc_mean", "auc_drop_mean", "n"]].to_string(index=False))

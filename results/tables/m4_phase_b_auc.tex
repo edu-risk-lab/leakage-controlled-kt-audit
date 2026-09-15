@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\caption{Train-only versus full-log GKT AUC on XES3G5M fold~0 (primary budget: 10 epochs, batch 4, seed 42). $\Delta$AUC $=$ full-log $-$ train-only. The open-$q$ cell keeps $k{=}5$; the $k{=}20$ cell is the opened-channel landmark. Absolute AUC rises with denser graphs, but $|\Delta\text{AUC}|{\le}0.0015$ on all three cells. Not a three-fold result; $k{=}\infty$ was not trained (stop rule).}
+\label{tab:m4-phase-b-auc}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}X c c c c @{}}
+\toprule
+Cell & Leak (f0) & Train-only AUC & Full-log AUC & $\Delta$AUC \\
+\midrule
+Published default & 103 & 0.8336 & 0.8342 & $+0.0006$ \\
+Open $q$, $k{=}5$ & 136 & 0.8411 & 0.8396 & $-0.0015$ \\
+$k{=}20$ lift & 634 & 0.8515 & 0.8510 & $-0.0005$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
