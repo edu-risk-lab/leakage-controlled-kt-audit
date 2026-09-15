@@ -1,0 +1,2 @@
+dataset,model,n_groups,n_replicates_min,sigma_range_max,sigma_range_median,sigma_std_max
+assist2012,gkt,36,2,0.000998875979603242,0.00025403971534998515,0.0005242760411328176

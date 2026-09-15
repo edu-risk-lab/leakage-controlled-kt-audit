@@ -213,17 +213,48 @@ chết, và bản sửa pred_cap. Ứng viên còn lại, chưa phân định đ
 | Nguyên nhân khác chưa nghĩ ra | — |
 
 Chú ý: khoảng lệch train-only **không bằng 0** (5.3e-5), nên hai lần chạy vốn đã
-không bit-identical. Với đúng **một** cặp quan sát thì không thể tách "bất đối
-xứng thật" khỏi "may rủi". **Chỉ ô lặp ở Pha 2 việc 2.0b mới phân định được** —
-nó đo thẳng `σ`. Nếu `σ ≈ 1e-3` thì cả hai khoảng lệch đều nằm trong nhiễu và
-không có gì bất thường; nếu `σ ≈ 5e-5` thì khoảng lệch full-log là thật và phải
-truy tiếp.
+không bit-identical.
+
+### 2.5b Sàn nhiễu đo được từ dữ liệu đã có (không tốn GPU)
+
+Không cần chờ ô lặp 2.0b mới có `σ`. Đợt quét DDR ba seed đã chứa sẵn **bản lặp
+thật** mà trước đây ta bỏ sót: với ASSIST2012, cả ba file seed dùng **cùng**
+`split_seed` (42/43/44) và **cùng** số cạnh (413/416/416), tức cùng split và cùng
+đồ thị, chỉ khác seed huấn luyện (`fit_seed = experiment_seed + fold*97`).
+`scripts/noise_floor.py` trích ra **36 nhóm lặp, 96 cặp chỉ-khác-seed**:
+
+| Đại lượng | Giá trị |
+|---|---|
+| Hiệu cặp chỉ-khác-seed, trung vị | 1.59e-4 |
+| Hiệu cặp chỉ-khác-seed, p90 | 4.32e-4 |
+| Hiệu cặp chỉ-khác-seed, tối đa | 9.99e-4 |
+
+Phải dùng **hiệu từng cặp**, không dùng biên độ ba seed: biên độ của 3 rút thăm
+rộng hơn hiệu của 2 một cách hệ thống, nên so vintage với biên độ sẽ dễ dãi sai
+hướng.
+
+Đối chiếu hai nhánh của cùng hai bản mã, cùng fold, cùng corpus:
+
+| Nhánh | Khoảng lệch vintage | Phân vị đuôi trong null chỉ-khác-seed |
+|---|---|---|
+| train-only | 5.33e-5 | 0.854 — hoàn toàn bình thường |
+| full-log | 1.177e-3 | **0.000** — vượt cả 96/96 cặp |
+
+Nhánh train-only nằm giữa phân phối nhiễu, nhánh full-log vượt mọi cặp quan sát
+được (p < 1/96 ≈ 0.01). Nhiễu huấn luyện đơn thuần sẽ đặt hai nhánh vào cùng một
+vùng của null. Vậy **giả thuyết "nhiễu huấn luyện" ở bảng §2.5 bị loại**, và
+khoảng lệch khu trú ở nhánh full-log — trỏ về ứng viên `2490798c`.
+
+Hai điểm dè dặt phải giữ: (i) `σ` này đo trên ASSIST2012 ở mức AUC 0.96, còn
+XES3G5M ở mức 0.83, nơi dao động thường lớn hơn; (ii) không có bản lặp nào cho
+XES3G5M vì ba file seed dùng split 42/43/44, 17/18/19, 1234/1235/1236 và số cạnh
+1162/1163/1408 — khác nhau cả split lẫn đồ thị.
 
 **Hệ quả cho bản thảo.** Bản thảo trích cả hai vintage cho **cùng một ô bộ lọc**:
 bảng graph-ablation (ΔAUC = +0.0017, tháng 6) và bảng M4 Phase B (ΔAUC = +0.0006,
-tháng 9). Chênh 2.8×. Chưa có bằng chứng nào nói bên nào sai — nhưng cũng chưa có
-bằng chứng nói chúng so sánh được với nhau. Phải xử lý, và thứ tự đúng là **đo `σ`
-trước, rồi mới quyết**, chứ không vứt dữ liệu dựa trên nghi ngờ.
+tháng 9). Chênh 2.8×. Kết quả trên nói hai con số này **không so sánh được với
+nhau**, nên phương án đúng là chạy lại XES3G5M/GKT ở HEAD (việc 2.0), và việc đó
+**không còn phải chờ 2.0b**.
 
 ---
 
@@ -285,14 +316,17 @@ gánh phần lớn giá trị mới.
 | 1.3 | Bảng đối chiếu cận vs quan sát trên 3 ô đã chạy | bảng mới thay `tab:m4-phase-b-auc` | M-1 (một phần) |
 | 1.4 | Census + cận cho cấu hình mặc định của GKT/SKT gốc | bảng "published pipelines" | **M-4** |
 | 1.5 | Ghi dự báo `k=∞` **trước khi chạy**, đóng dấu thời gian vào repo | mục pre-registration | M-2 |
-| 1.6 | **Chẩn đoán lệch full-log (§2.5)** | loại được 4 giả thuyết; cần 2.0b để chốt | **tái lập** |
+| 1.6 | **Chẩn đoán lệch full-log (§2.5)** | loại được 5 giả thuyết kể cả nhiễu | **tái lập** |
+| 1.7 | **Sàn nhiễu từ bản lặp có sẵn (§2.5b)** | `scripts/noise_floor.py`, 96 cặp | **M-1**, §2.5 |
 
-**Trạng thái: 1.1, 1.2, 1.3, 1.6 đã xong.** Artefact sinh ra:
+**Trạng thái: 1.1, 1.2, 1.3, 1.6, 1.7 đã xong.** Artefact sinh ra:
 
 - `scripts/leakage_exposure.py` + `tests/test_leakage_exposure.py` (11 test pass)
+- `scripts/noise_floor.py` + `tests/test_noise_floor.py` (11 test pass)
 - `scripts/diagnose_full_log_artefact.py`
 - `results/tables/leakage_exposure.{csv,tex}`, `exposure_replicate_check.csv`,
-  `full_log_artefact_diag.csv`
+  `full_log_artefact_diag.csv`, `noise_floor.csv`, `noise_floor_groups.csv`,
+  `noise_floor_macros.tex`
 
 Ghi chú: `data/processed/` **có sẵn ở máy viết bài** (6.4M tương tác XES3G5M), nên
 các việc tôi từng xếp "chỉ chạy được trên server" thực ra chạy tại chỗ được. Chỉ
@@ -317,8 +351,8 @@ Ghi chú 1.5: viết dự báo ra file có commit **trước** khi có kết qu�
 
 | # | Việc | Chi phí | Gỡ được | Bắt buộc? |
 |---|---|---|---|---|
-| **2.0b** | **Ô lặp `q0.95_k5_Kinf_tau0.1`** — đồ thị giống hệt ô default, đo thẳng sàn nhiễu `σ` | 4–8 h | **M-1**, §2.3b, §2.5 | **Có, trước tiên** |
-| 2.0 | Chạy lại XES3G5M/GKT graph-ablation ở HEAD — **chỉ khi 2.0b cho `σ` nhỏ** | 8–16 h | tái lập | Tuỳ kết quả 2.0b |
+| 2.0 | Chạy lại XES3G5M/GKT graph-ablation ở HEAD | 8–16 h | tái lập, §2.5 | **Có** |
+| 2.0b | Ô lặp `q0.95_k5_Kinf_tau0.1` — `σ` **trên corpus chính** XES3G5M | 4–8 h | **M-1**, §2.3b | **Có** |
 | 2.1 | Ô `k=∞`, fold 0 — phép thử phân định `δ` vs `δ_w` | 4–8 h | **M-2**, novelty | **Có** |
 | 2.2 | Slope cộng cạnh `s⁺`: thêm cạnh ngẫu nhiên ở 4 tỉ lệ, fold 0 | 16–32 h | §2.4, nền móng của cận | **Có** |
 | 2.3 | Default + `k=20`, fold 1–2 (seed 42) → CI 3 fold | 16–32 h | **M-1** | **Có** |
@@ -329,9 +363,12 @@ Ghi chú 1.5: viết dự báo ra file có commit **trước** khi có kết qu�
 Tổng bắt buộc (gồm 2.0): **44–88 giờ GPU** (~2–4 ngày chạy liên tục).
 Tổng gồm "nên": **60–120 giờ** (~3–5 ngày).
 
-Thứ tự bắt buộc: **2.0b trước mọi thứ**. Không có `σ` thì không diễn giải được
-bất kỳ ΔAUC nào ở mức 1e-3, kể cả ô `k=∞` — mà đó chính là mức mà cả hai dự báo
-ở §2.3 đang tranh nhau. Đo `σ` cũng là điều kiện để biết có cần việc 2.0 hay không.
+Thứ tự: 2.0b **không còn chặn** phần còn lại, vì §2.5b đã cho một `σ` đo được từ
+dữ liệu cũ và đã chốt được rằng việc 2.0 là cần thiết. Nhưng vẫn phải chạy 2.0b,
+vì `σ` hiện có là của ASSIST2012 còn cận C3 và M-1 cần `σ` trên **corpus chính**
+XES3G5M ở mức AUC 0.83 — nơi dao động nhiều khả năng lớn hơn. Chừng nào chưa có
+nó, mọi ΔAUC mức 1e-3 trên XES3G5M, kể cả ô `k=∞` ở §2.3, chỉ diễn giải được với
+một sàn mượn từ corpus khác.
 
 Về 2.6: nếu thiếu tài nguyên, giữ M-3 ở mục Limitations nhưng **bỏ hẳn** việc
 dùng khoảng cách GKT–simpleKT để biện minh cho việc chọn XES3G5M làm primary.
@@ -346,10 +383,48 @@ Thay bằng lý do độc lập với budget: tỉ lệ KC-repeat thấp (21%) v
 | 3.2 | Viết lại abstract: đưa công cụ dự báo lên trước, con số null xuống sau | ấn tượng biên tập |
 | 3.3 | Đổi tiêu đề (xem §6) | ấn tượng biên tập |
 | 3.4 | Viết lại 5 highlights, bỏ câu tự hạ thấp | minor |
-| 3.5 | Cắt 8–10 trang: gộp rào đón về một mục, chuyển bảng 2×2 xuống phụ lục | 47 → ~38 trang |
+| 3.5 | ~~Cắt trang~~ — **xong một phần**, 49 → 47 trang (xem ghi chú dưới) | |
 | 3.6 | Đưa 2 hình từ phụ lục lên main (DDR-vs-p; scatter cận-vs-quan sát) | cân đối hình/bảng |
-| 3.7 | Thống nhất thuật ngữ: bỏ hẳn TBMR (18 lần) chỉ giữ LTES; giải nghĩa ECR | minor |
-| 3.8 | Mở rộng Related Work lên ~50–60 tài liệu, bổ sung EDM/LAK + graph-KT 2024–2025 | minor |
+| 3.7 | ~~Thống nhất thuật ngữ: bỏ hẳn TBMR chỉ giữ LTES; giải nghĩa ECR~~ — **xong** | minor |
+| 3.8 | Mở rộng Related Work — **xong một phần**, 32 → 36 tài liệu đã xác minh | minor |
+
+### Ghi chú 3.5 — mục tiêu 38 trang có thể đặt sai
+
+Cắt 133 dòng văn bản chỉ đổi được 2 trang. Bài có 22 float (9 bảng/hình/thuật
+toán nội tuyến + 13 bảng `\input`), ước tính ~14 trong 47 trang là bảng và hình.
+Muốn xuống 40 phải **chuyển bảng**, không phải viết ngắn lại.
+
+Quan trọng hơn: header `main_EAAI.tex` ghi ràng buộc thật là **ngưỡng
+desk-reject 50 trang của EAAI**, và bài đã hạ 12pt → 10pt để lọt ngưỡng. Vậy 47
+là đạt; 38 là mục tiêu tự đặt. Đã quyết định dừng ở 47.
+
+Đã làm: bảng 2×2 → phụ lục (Table S22, 5 tham chiếu đã trỏ lại); Broader
+implications 218 → 156 dòng (bỏ khối "deployment vignettes" trùng với bảng
+quyết định ngay trên nó); Introduction 321 → 289 (gỡ số liệu baseline trio khỏi
+phần mở đầu); gom các lần lặp `≤0.003` trong Discussion.
+
+Sửa kèm: bảng 2×2 có một dòng tự tham chiếu chính nó; phần vai trò corpus vẫn
+còn khẳng định "clearest graph-backbone separation" mà lần gỡ M-3 bỏ sót.
+
+### Ghi chú 3.8 — không nên nhồi cho đủ 50–60
+
+Header `refs_EAAI.bib` ghi rõ **bốn mục bịa** đã từng bị gỡ khỏi file này
+(GrapKT, CoreKT, GraceKT, wan2021contrastive). Nhồi số lượng tài liệu là đúng
+cơ chế đã tạo ra sự cố đó. Tôi thêm 4 mục đã xác minh chéo nhiều nguồn thay vì
+20 mục tra vội:
+
+- `zhou2024psikt` — PSI-KT, ICLR 2024. Suy luận đồ thị tiên quyết bằng Bayes.
+- `annabi2023prereq` — ICDL 2023, DOI. Coi cấu trúc tri thức là tham số học được.
+- `xu2026gbktsurvey` — survey graph-KT, JEDM, 19/07/2026.
+- `abdelrahman2023dgmn` — IEEE TKDE 35(8), DOI.
+
+Hai mục đầu cho phép dựng một lập luận định vị mà bài trước đây thiếu: nhánh đó
+hỏi đồ thị suy luận có **chính xác** không, bài này hỏi trước đó một bước là nó
+có **hợp lệ** không. Hai câu hỏi độc lập.
+
+`REFERENCES_AUDIT.md` mà bib nhắc tới **không tồn tại** trong kho; tôi dùng chú
+thích `% VERIFIED <ngày>: <nguồn>` nội tuyến. Nếu muốn khôi phục file audit thì
+đó là việc riêng.
 
 Đã làm ở 3.1:
 
@@ -362,9 +437,11 @@ Thay bằng lý do độc lập với budget: tỉ lệ KC-repeat thấp (21%) v
 - Biên dịch sạch cả main lẫn supplementary, không warning tham chiếu. **49 trang**
   (tăng 2; việc cắt trang là 3.5, chưa làm).
 
-Chưa làm, **cố ý chờ `σ`**: chưa gắn bảng `leakage_exposure.tex` vào bài, vì cột
-ΔAUC quan sát chỉ diễn giải được khi biết sàn nhiễu. Phần phương pháp đã viết
-sao cho không phụ thuộc kết quả đó.
+Chưa làm, vẫn chờ `σ` **trên XES3G5M**: chưa gắn bảng `leakage_exposure.tex` vào
+bài, vì cột ΔAUC quan sát chỉ diễn giải được khi biết sàn nhiễu của chính corpus
+đó. §2.5b đã cho một sàn đo được nhưng là của ASSIST2012, chỉ đủ để loại giả
+thuyết nhiễu ở §2.5, chưa đủ để đóng số vào `eq:exposure-bound`. Phần phương pháp
+đã viết sao cho không phụ thuộc kết quả đó.
 
 ---
 
@@ -426,15 +503,20 @@ nhưng lần này có công thức đỡ lưng.
 
 1. ~~`scripts/leakage_exposure.py` + test~~ — **xong**, cận `δ` đúng 3/3.
 2. ~~Tính `δ_eff`~~ — **xong**, bị bác bỏ; `δ_w` thay thế (§2.3).
-3. ~~Chẩn đoán lệch full-log §2.5~~ — loại được đồ thị, seed, config chết và bản
-   sửa `pred_cap`; chốt được nguyên nhân chỉ sau khi đo `σ` (việc 2.0b).
+3. ~~Chẩn đoán lệch full-log §2.5~~ — loại được đồ thị, seed, config chết, bản
+   sửa `pred_cap`, và (qua §2.5b) cả **nhiễu huấn luyện**. Ứng viên còn lại:
+   `2490798c`.
+3b. ~~Đo sàn nhiễu từ bản lặp có sẵn~~ — **xong**, `scripts/noise_floor.py`:
+   96 cặp chỉ-khác-seed trên ASSIST2012, trung vị 1.59e-4, tối đa 9.99e-4.
 4. ~~Ghi pre-registration~~ — **xong**, `docs/EAAI_PREREGISTRATION.md`.
 5. ~~Mở rộng cận sang ASSIST2012 và Junyi~~ — **xong** (`--primary`), phát hiện
    giới hạn sàn nhiễu ở §2.3b.
 6. ~~Gỡ liên kết "chọn XES3G5M vì GKT–simpleKT tách xa"~~ — **xong**, đã sửa hai
    chỗ trong `main_EAAI.tex` (§Introduction và §Datasets).
 7. Quyết định cách xử lý §2.5 trong bản thảo trước khi viết lại bất kỳ bảng nào.
-   Đây là việc duy nhất còn chặn, và nó cần bạn quyết, không phải tôi.
+   §2.5b đã gỡ phần lớn thế bí: hai vintage **không so sánh được**, nên hướng đi
+   là việc 2.0 (chạy lại XES3G5M/GKT ở HEAD). Còn lại là bạn chốt cách trình bày
+   trong lúc chờ: rút bảng tháng 6, hay giữ kèm chú thích cảnh báo.
 
 Lưu ý môi trường: `py -3 -m pytest` cần cờ `-p no:typeguard` (plugin typeguard hỏng
 trên Python 3.14). `tests/test_optimized_gkt.py` segfault sẵn từ trước, không liên

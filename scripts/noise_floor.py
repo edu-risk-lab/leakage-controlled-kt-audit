@@ -1,0 +1,204 @@
+"""Training noise floor (sigma) from replicate runs already on disk.
+
+A replicate group is a set of runs that share dataset, model, fold, split_seed,
+operator, strength, and graph size, but were produced under different
+experiment seeds. Such runs consume an identical graph and an identical split,
+so their AUC spread isolates training nondeterminism.
+
+Only the ASSISTments cells of the multi-seed GKT sweep satisfy this: the
+XES3G5M cells vary split_seed and edge count across seed files, so they are not
+replicates and are reported separately as a diagnostic.
+
+Usage:
+    python scripts/noise_floor.py
+    python scripts/noise_floor.py --sync-tex
+"""
+
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+
+import pandas as pd
+
+ROOT = Path(__file__).resolve().parents[1]
+SWEEP_DIR = ROOT / "results" / "q1" / "ddr_downstream_gkt"
+
+# Columns that must agree for two runs to consume the same graph and split.
+GROUP_KEYS = ("dataset", "model", "fold", "split_seed", "operator", "p", "n_edges_orig", "num_c")
+
+
+def load_sweep(sweep_dir: Path) -> pd.DataFrame:
+    """Concatenate per-seed sweep CSVs, tagging each row with its source file."""
+    frames = []
+    for path in sorted(sweep_dir.glob("ddr_downstream_gkt_seed*.csv")):
+        part = pd.read_csv(path)
+        part["source"] = path.name
+        frames.append(part)
+    if not frames:
+        raise FileNotFoundError(f"no sweep CSVs under {sweep_dir}")
+    df = pd.concat(frames, ignore_index=True)
+    return df.drop_duplicates(subset=[*GROUP_KEYS, "auc"]).reset_index(drop=True)
+
+
+def replicate_groups(df: pd.DataFrame, *, min_size: int = 2) -> pd.DataFrame:
+    """One row per replicate group with the AUC spread across experiment seeds."""
+    rows = []
+    for key, part in df.groupby(list(GROUP_KEYS), sort=False):
+        auc = part["auc"].astype(float)
+        if auc.size < min_size:
+            continue
+        rows.append(
+            {
+                **dict(zip(GROUP_KEYS, key, strict=True)),
+                "n_replicates": int(auc.size),
+                "auc_mean": float(auc.mean()),
+                "auc_range": float(auc.max() - auc.min()),
+                "auc_std": float(auc.std(ddof=1)),
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def pairwise_null(df: pd.DataFrame, *, min_size: int = 2) -> pd.Series:
+    """Absolute AUC differences between run pairs that differ only by seed.
+
+    This is the null distribution the vintage gap must be judged against: a
+    two-run difference, not the range of a three-seed group, which is
+    systematically wider and would make the comparison anti-conservative.
+    """
+    diffs: list[float] = []
+    for _key, part in df.groupby(list(GROUP_KEYS), sort=False):
+        auc = part["auc"].astype(float).to_numpy()
+        if auc.size < min_size:
+            continue
+        for i in range(auc.size):
+            for j in range(i + 1, auc.size):
+                diffs.append(abs(float(auc[i] - auc[j])))
+    return pd.Series(diffs, dtype=float, name="abs_diff")
+
+
+def tail_fraction(null: pd.Series, observed: float) -> float:
+    """Fraction of seed-only pairs at least as extreme as the observed gap."""
+    if null.empty:
+        return float("nan")
+    return float((null >= observed).mean())
+
+
+def summarise(groups: pd.DataFrame) -> pd.DataFrame:
+    """Per-dataset noise floor, taking the worst replicate group as sigma."""
+    rows = []
+    for (dataset, model), part in groups.groupby(["dataset", "model"], sort=False):
+        rows.append(
+            {
+                "dataset": dataset,
+                "model": model,
+                "n_groups": int(len(part)),
+                "n_replicates_min": int(part["n_replicates"].min()),
+                "sigma_range_max": float(part["auc_range"].max()),
+                "sigma_range_median": float(part["auc_range"].median()),
+                "sigma_std_max": float(part["auc_std"].max()),
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def vintage_comparison(path: Path) -> pd.DataFrame | None:
+    """Per-arm vintage gaps, for comparison against the measured noise floor.
+
+    The asymmetry matters more than either gap alone: generic training
+    nondeterminism would move both arms by a similar amount.
+    """
+    if not path.exists():
+        return None
+    df = pd.read_csv(path)
+    rows = []
+    for _, r in df.iterrows():
+        train_gap = abs(float(r["train_only_gap"]))
+        full_gap = abs(float(r["full_log_gap"]))
+        rows.append(
+            {
+                "dataset": r["dataset"],
+                "model": r["model"],
+                "fold": int(r["fold"]),
+                "train_only_gap": train_gap,
+                "full_log_gap": full_gap,
+                "asymmetry": full_gap / train_gap if train_gap > 0 else float("inf"),
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def write_macros(summary: pd.DataFrame, path: Path) -> None:
+    by = {r["dataset"]: r for _, r in summary.iterrows()}
+    lines = [r"% Auto-generated by scripts/noise_floor.py — do not edit."]
+    if "assist2012" in by:
+        row = by["assist2012"]
+        lines += [
+            rf"\newcommand{{\NoiseFloorASSIST}}{{{row['sigma_range_max']:.1e}}}",
+            rf"\newcommand{{\NoiseFloorASSISTgroups}}{{{int(row['n_groups'])}}}",
+            rf"\newcommand{{\NoiseFloorASSISTseeds}}{{{int(row['n_replicates_min'])}}}",
+        ]
+    lines.append("")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(lines), encoding="utf-8")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--sweep-dir", type=Path, default=SWEEP_DIR)
+    parser.add_argument(
+        "--replicate-csv", type=Path, default=ROOT / "results" / "tables" / "exposure_replicate_check.csv"
+    )
+    parser.add_argument("--out-csv", type=Path, default=ROOT / "results" / "tables" / "noise_floor.csv")
+    parser.add_argument("--out-groups", type=Path, default=ROOT / "results" / "tables" / "noise_floor_groups.csv")
+    parser.add_argument("--out-macros", type=Path, default=ROOT / "results" / "tables" / "noise_floor_macros.tex")
+    parser.add_argument("--sync-tex", action="store_true")
+    args = parser.parse_args()
+
+    df = load_sweep(args.sweep_dir)
+    groups = replicate_groups(df)
+    if groups.empty:
+        print("No replicate groups found: every cell was run under a single experiment seed.")
+        return 1
+
+    summary = summarise(groups)
+    args.out_csv.parent.mkdir(parents=True, exist_ok=True)
+    groups.to_csv(args.out_groups, index=False)
+    summary.to_csv(args.out_csv, index=False)
+    write_macros(summary, args.out_macros)
+
+    print("Replicate groups (identical graph + split, differing experiment seed):")
+    print(summary.to_string(index=False))
+
+    singles = sorted(set(df["dataset"]) - set(summary["dataset"]))
+    if singles:
+        print(f"\nNo replicates available for: {', '.join(singles)}")
+        print("  (seed files use different split_seed and edge counts, so runs are not comparable)")
+
+    null = pairwise_null(df)
+    print(f"\nSeed-only pair differences (n={len(null)}): "
+          f"median {null.median():.3e}, p90 {null.quantile(0.9):.3e}, max {null.max():.3e}")
+
+    vintage = vintage_comparison(args.replicate_csv)
+    if vintage is not None:
+        vintage["full_log_tail"] = [tail_fraction(null, v) for v in vintage["full_log_gap"]]
+        vintage["train_only_tail"] = [tail_fraction(null, v) for v in vintage["train_only_gap"]]
+        print("\nVintage gaps by arm, against the seed-only null:")
+        print(vintage.to_string(index=False, float_format=lambda v: f"{v:.3e}"))
+        print("\nA small full-log tail with a large train-only tail localises the")
+        print("discrepancy to the full-log branch; generic training noise would")
+        print("place both arms in comparable parts of the null.")
+
+    print(f"\nWrote {args.out_csv}")
+    print(f"Wrote {args.out_groups}")
+    print(f"Wrote {args.out_macros}")
+    if args.sync_tex:
+        dest = ROOT / "paper" / "submission_EAAI" / "noise_floor_macros.tex"
+        dest.write_text(args.out_macros.read_text(encoding="utf-8"), encoding="utf-8")
+        print(f"Synced {dest}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

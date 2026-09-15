@@ -83,6 +83,22 @@ the M4 table needs either replicates or an explicit "below noise floor" statemen
 This is the cheapest available answer to the reviewer complaint that the bounded
 null has no confidence interval: one cell, 4–8 GPU-hours, no new code.
 
+**Prior from an already-measured corpus.** The multi-seed DDR sweep contains true
+replicates on ASSIST2012: all three seed files share `split_seed` 42/43/44 and
+edge counts 413/416/416, so the runs differ only in training seed.
+`scripts/noise_floor.py` extracts 36 such groups and 96 seed-only pairs, giving a
+median absolute difference of 1.59e-4, a p90 of 4.32e-4, and a maximum of 9.99e-4.
+
+That is a prior, not a substitute. It is measured at AUC 0.96 on ASSIST2012 while
+the cell above sits at AUC 0.83 on XES3G5M, where dispersion is typically larger,
+so we register the directional expectation:
+
+> `σ` on XES3G5M/GKT will be **at least** the ASSISTments median of 1.59e-4, and
+> we will not treat any XES3G5M ΔAUC below that as resolved by a single run.
+
+Registering this now prevents the failure mode where a large measured `σ` is later
+explained away as corpus-specific after the fact.
+
 ---
 
 ## 4. Full prediction table (all untrained fold-0 cells)
@@ -112,10 +128,12 @@ two ends of the sweep carry the discriminating information.
 
 ## 5. Rules of engagement
 
-1. Run the replicate cell (§3) **first**. Without the noise floor `σ`, no ΔAUC at
-   the 1e-3 scale can be interpreted — and that is exactly the scale at which the
-   two predictors in §2 disagree. The unexplained vintage gap in revision plan
-   §2.5 also hinges on `σ`.
+1. Run the replicate cell (§3) early, though it no longer gates the rest. The
+   ASSISTments replicates in §3 already settled the vintage gap of revision plan
+   §2.5: the train-only arm sits at the 85th percentile of the seed-only null
+   while the full-log arm exceeds all 96 pairs, so training noise is excluded.
+   What remains is `σ` on the **primary** corpus, which the C3 bound and the
+   confidence-interval complaint both need, and which no existing run supplies.
 2. Do not adjust `s`, the δ definitions, or the CI convention after seeing any
    outcome. If a definition must change, that is a new pre-registration with a new
    freeze commit, and the old one stays in the repo.
