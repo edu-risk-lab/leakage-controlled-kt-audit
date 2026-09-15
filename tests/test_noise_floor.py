@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 import pandas as pd
+import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -28,6 +29,7 @@ vintage_comparison = _noise.vintage_comparison
 load_sweep = _noise.load_sweep
 pairwise_null = _noise.pairwise_null
 tail_fraction = _noise.tail_fraction
+_sci = _noise._sci
 
 
 def _row(*, dataset="assist2012", split_seed=42, n_edges=413, auc=0.96, source="a.csv") -> dict:
@@ -155,3 +157,56 @@ def test_tail_fraction_brackets_the_null() -> None:
 
 def test_tail_fraction_on_empty_null_is_nan() -> None:
     assert pd.isna(tail_fraction(pd.Series([], dtype=float), 1e-3))
+
+
+def _disp_frame() -> pd.DataFrame:
+    """Source corpus with replicated splits, target corpus without."""
+    rows = []
+    for split, base in ((42, 0.9600), (43, 0.9640)):
+        for offset, src in ((0.0, "a.csv"), (1e-4, "b.csv"), (2e-4, "c.csv")):
+            rows.append({**_row(split_seed=split, n_edges=413, auc=base + offset, source=src), "fold": split - 42})
+    for split, auc in ((17, 0.8340), (18, 0.8360), (19, 0.8380)):
+        rows.append({**_row(dataset="xes3g5m", split_seed=split, n_edges=1162, auc=auc), "fold": split - 17})
+    return pd.DataFrame(rows)
+
+
+def test_dispersion_separates_seed_from_total() -> None:
+    out = _noise.dispersion(_disp_frame(), "assist2012")
+    assert out["n_replicated_splits"] == 2
+    assert out["seed_sd"] < out["total_sd"]
+    assert 0.0 < out["seed_share"] < 1.0
+
+
+def test_dispersion_without_replicates_has_no_seed_component() -> None:
+    out = _noise.dispersion(_disp_frame(), "xes3g5m")
+    assert out["n_replicated_splits"] == 0
+    assert pd.isna(out["seed_sd"])
+    assert out["total_sd"] > 0.0
+
+
+def test_dispersion_edge_filter_drops_odd_vintage_graphs() -> None:
+    df = _disp_frame()
+    df.loc[len(df)] = {**_row(dataset="xes3g5m", split_seed=99, n_edges=1408, auc=0.90), "fold": 9}
+    wide = _noise.dispersion(df, "xes3g5m")
+    narrow = _noise.dispersion(df, "xes3g5m", max_edges=1300)
+    assert narrow["n_cells"] == wide["n_cells"] - 1
+    assert narrow["total_sd"] < wide["total_sd"]
+
+
+def test_transfer_scales_target_dispersion_by_source_share() -> None:
+    df = _disp_frame()
+    out = _noise.transfer_sigma(df, source="assist2012", target="xes3g5m")
+    src = _noise.dispersion(df, "assist2012")
+    tgt = _noise.dispersion(df, "xes3g5m")
+    assert out["seed_sd_target_est"] == pytest.approx(src["seed_share"] * tgt["total_sd"])
+    assert out["sigma_target_est"] > out["seed_sd_target_est"]  # tail factor exceeds one
+
+
+def test_sci_formats_latex_scientific_notation() -> None:
+    assert _sci(1.586e-4) == r"1.6\times10^{-4}"
+    assert _sci(4.317e-4) == r"4.3\times10^{-4}"
+    assert _sci(0.0) == "0"
+
+
+def test_sci_renormalises_a_mantissa_that_rounds_to_ten() -> None:
+    assert _sci(9.989e-4) == r"1.0\times10^{-3}"

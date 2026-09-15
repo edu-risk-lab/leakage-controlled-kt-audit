@@ -240,21 +240,59 @@ hướng.
 | train-only | 5.33e-5 | 0.854 — hoàn toàn bình thường |
 | full-log | 1.177e-3 | **0.000** — vượt cả 96/96 cặp |
 
-Nhánh train-only nằm giữa phân phối nhiễu, nhánh full-log vượt mọi cặp quan sát
-được (p < 1/96 ≈ 0.01). Nhiễu huấn luyện đơn thuần sẽ đặt hai nhánh vào cùng một
-vùng của null. Vậy **giả thuyết "nhiễu huấn luyện" ở bảng §2.5 bị loại**, và
-khoảng lệch khu trú ở nhánh full-log — trỏ về ứng viên `2490798c`.
+Đọc theo null của ASSIST2012 thì nhánh train-only nằm giữa phân phối còn nhánh
+full-log vượt cả 96/96 cặp. Nhưng **đây là null của corpus sai**, và §2.5c dưới
+đây cho thấy đọc như vậy là overclaim.
 
-Hai điểm dè dặt phải giữ: (i) `σ` này đo trên ASSIST2012 ở mức AUC 0.96, còn
-XES3G5M ở mức 0.83, nơi dao động thường lớn hơn; (ii) không có bản lặp nào cho
-XES3G5M vì ba file seed dùng split 42/43/44, 17/18/19, 1234/1235/1236 và số cạnh
-1162/1163/1408 — khác nhau cả split lẫn đồ thị.
+Hai điểm dè dặt: (i) `σ` này đo trên ASSIST2012 ở mức AUC 0.96, còn XES3G5M ở mức
+0.83; (ii) không có bản lặp nào cho XES3G5M vì ba file seed dùng split 42/43/44,
+17/18/19, 1234/1235/1236 và số cạnh 1162/1163/1408 — khác cả split lẫn đồ thị.
+
+### 2.5c Chuyển tỉ lệ phương sai: `σ` cho XES3G5M mà không cần GPU
+
+Chuyển **số tuyệt đối** từ ASSIST sang XES là sai vì hai corpus ở hai mức AUC.
+Thay vào đó chuyển một **tỉ lệ không đơn vị**: phần dao động do seed gây ra.
+
+Trên ASSIST2012 đo được cả hai thành phần (vì có bản lặp trong từng split):
+
+| Thành phần | Giá trị |
+|---|---|
+| sd do seed (gộp trong split) | 1.346e-4 |
+| sd tổng (split + đồ thị + seed) | 6.166e-4 |
+| **tỉ lệ seed** `ρ` | **0.218** |
+
+Trên XES3G5M **đo được sd tổng** từ 9 ô không nhiễu loạn (không cần huấn luyện
+thêm), rồi nhân với `ρ`. Cuối cùng đổi từ sd sang hiệu hai lần chạy xấu nhất bằng
+hệ số đuôi mà chính ASSIST thể hiện (max/sd = 7.4):
+
+| Tập ô XES3G5M | sd tổng | sd seed ước lượng | **`σ` ước lượng** |
+|---|---|---|---|
+| Cả 9 ô | 1.099e-3 | 2.40e-4 | **1.78e-3** |
+| Bỏ ô vintage lạ (1403–1408 cạnh) | 5.77e-4 | 1.26e-4 | **9.35e-4** |
+
+Bản bỏ ô vintage lạ đáng tin hơn: các ô seed1234 có ~1408 cạnh so với ~1162 của
+seed 42/17, tức đồ thị dựng khác cấu hình, đưa vào sẽ thổi phồng sd tổng. Vậy
+**`σ` trên corpus chính vào khoảng 1e-3**, và trùng với ước lượng thô bằng cách
+lấy max của ASSIST — hai lộ trình độc lập cho cùng một bậc.
+
+**Hệ quả, và nó nghiêm trọng.** Với `σ ≈ 1e-3`:
+
+1. Cả ba ΔAUC đã đo (+0.0006, −0.0015, −0.0005) **nằm ở hoặc dưới sàn nhiễu**.
+   Bảng M4 Phase B không phải "null chặt" mà là "chưa phân giải được ở ngân sách
+   này". Mọi câu trong bản thảo nói `|ΔAUC| ≤ 0.003` như một khẳng định đo được
+   phải đổi thành khẳng định có kèm sàn.
+2. Kết luận §2.5b phải hạ cấp. Khoảng lệch full-log 1.177e-3 so với sd hiệu cặp
+   của XES (≈ √2 × 2.4e-4 = 3.4e-4) chỉ là **~3.5σ**, không phải "vượt mọi cặp".
+   Vẫn đáng ngờ, nhưng **không loại được** nhiễu huấn luyện một cách dứt khoát.
+   Bất đối xứng 22× giữa hai nhánh vẫn là quan sát thật và vẫn trỏ về `2490798c`.
+3. Việc 2.0b từ "nên đo" trở lại **bắt buộc**, vì cả C3 lẫn M-1 đều đứng trên con
+   số này và ước lượng chuyển tỉ lệ có khoảng rộng 0.9e-3–1.8e-3.
 
 **Hệ quả cho bản thảo.** Bản thảo trích cả hai vintage cho **cùng một ô bộ lọc**:
 bảng graph-ablation (ΔAUC = +0.0017, tháng 6) và bảng M4 Phase B (ΔAUC = +0.0006,
-tháng 9). Chênh 2.8×. Kết quả trên nói hai con số này **không so sánh được với
-nhau**, nên phương án đúng là chạy lại XES3G5M/GKT ở HEAD (việc 2.0), và việc đó
-**không còn phải chờ 2.0b**.
+tháng 9). Chênh 2.8×, nhưng cả hai đều dưới `σ`, nên không thể nói bên nào đúng.
+Phương án đúng vẫn là chạy lại ở HEAD (việc 2.0), và khi viết thì trình bày kèm
+sàn nhiễu thay vì so hai con số với nhau.
 
 ---
 
