@@ -92,7 +92,7 @@ numbers match the S-series cited in the main manuscript.}
 
 \appendix
 \section*{Appendix overview}
-\label{sec:appendix-index}
+\label{sec:supp-overview}
 \noindent\textbf{Tables.}
 S1--S5: per-dataset baseline diagnostics (Section~\ref{sec:supp-baseline});
 S6--S10: per-dataset graph ablation (Section~\ref{sec:supp-ablation});
@@ -108,7 +108,11 @@ S17--S18: controlled leak injection and downstream AUC
 S19--S20: exploratory ANOVA on backbone and DGEKT downstream AUC
 (Section~\ref{sec:supp-anova}; Tables~\ref{tab:anova-baseline}--\ref{tab:anova-ddr-downstream});
 S21: targeted three-fold extended-training configuration-sensitivity check,
-seed~$42$ (Section~\ref{sec:supp-gkt-epoch}).
+seed~$42$ (Section~\ref{sec:supp-gkt-epoch});
+S22: descriptive $2{\times}2$ contamination-by-reliance grid
+(Section~\ref{sec:supp-leak-injection});
+S23--S24: cell-level \DDR{}$\to$AUC sweeps for DGEKT and GKT
+(Section~\ref{sec:supp-ddr-downstream}).
 
 \medskip\noindent\textbf{Sections and figures.}
 Section~S3: sequence-autocorrelation analysis
@@ -421,6 +425,14 @@ very-cold steps; stratum labels derive from train-fold counts only
 
 \section{DDR downstream scatter plot}
 \label{sec:supp-ddr-downstream}
+Table~S23 (Table~\ref{tab:ddr-downstream}) is the DGEKT cell-level sweep;
+Table~S24 (Table~\ref{tab:ddr-downstream-gkt}) is the GKT anchored sweep,
+including the $p{=}0.90$ manipulation-check block. Both are cited from
+Section~\ref{sec:exp-ddr-downstream} of the main text. Figure~S3 is the
+corresponding scatter.
+
+\input{ddr_downstream.tex}
+\input{ddr_downstream_gkt.tex}
 
 \begin{figure}[t]
 \centering

@@ -421,7 +421,7 @@ Thay bằng lý do độc lập với budget: tỉ lệ KC-repeat thấp (21%) v
 | 3.2 | ~~Viết lại abstract: đưa công cụ dự báo lên trước~~ — **xong** | ấn tượng biên tập |
 | 3.3 | ~~Đổi tiêu đề (phương án 1)~~ — **xong**, đồng bộ 5 chỗ | ấn tượng biên tập |
 | 3.4 | ~~Viết lại 5 highlights, bỏ câu tự hạ thấp~~ — **xong** | minor |
-| 3.5 | ~~Cắt trang~~ — **xong một phần**, 49 → 47 trang (xem ghi chú dưới) | |
+| 3.5 | ~~Cắt trang~~ — **xong**: chuyển DDR→AUC (S23–S24), main **46 trang** | |
 | 3.6 | Đưa 2 hình từ phụ lục lên main (DDR-vs-p; scatter cận-vs-quan sát) | cân đối hình/bảng |
 | 3.7 | ~~Thống nhất thuật ngữ: bỏ hẳn TBMR chỉ giữ LTES; giải nghĩa ECR~~ — **xong** | minor |
 | 3.8 | Mở rộng Related Work — **xong một phần**, 32 → 36 tài liệu đã xác minh | minor |
@@ -518,11 +518,14 @@ measure), và chữ "bounding" giữ được tính trung thực của kết qu�
 - **Sửa lỗi có từ trước**: `supplementary_EAAI.tex` tham chiếu 21 nhãn nằm trong
   `main_EAAI.tex` nhưng không nạp `xr`, nên bản in ra có 21 dấu "??". Đã thêm
   `\usepackage{xr}` + `\externaldocument{main_EAAI}`; giờ 0 cảnh báo.
-- Build: main **49 trang**, supplementary 21 trang, không warning tham chiếu.
+- Build: main **46 trang**, supplementary 23 trang, không warning tham chiếu.
 
-**Cảnh báo số trang.** 49/50 chỉ còn một trang dự phòng. Nội dung sàn nhiễu là
-bắt buộc nên không cắt được ở đó; muốn lấy lại biên thì phải chuyển tiếp một
-float sang supplement (việc 3.5, cần bạn quyết chọn bảng/hình nào).
+**Số trang.** Chuyển hai bảng DDR→AUC (`tab:ddr-downstream`,
+`tab:ddr-downstream-gkt`) sang phụ lục (Tables S23–S24) đã lấy lại 3 trang và
+hết hiện tượng bảng nằm sau References. Bảng 13–16 trong main giờ là
+cold-start, GT cross-validation, decision map, và audit cost, đều đặt sát chỗ
+trích dẫn (trang 29–36); References bắt đầu sau Conclusion (trang 38). Còn 4
+trang dự phòng dưới ngưỡng desk-reject 50.
 
 ---
 

@@ -113,10 +113,10 @@ def main() -> int:
 % XES3G5M: seeds 42/17/1234 x 3 folds (n={n_xes}); ASSIST2012: seed-42 grid (+ anchors).
 % AUC drop = mean decrease in test AUC vs. the unperturbed (DDR=0) baseline.
 % Caption scopes: r_core n={n_core}; r_all/rho_all n={n_all}; slope from ddr_slope_ci.csv.
-\\begin{{table}}[t]
+\\begin{{table}}[h!]
 \\centering
 \\caption{{\\DDR{{}}$\\to$downstream AUC for the graph-reliant backbone GKT, with a
-positive control. For each dataset the prerequisite graph $\\Epre$ is perturbed
+positive control (Table S24). For each dataset the prerequisite graph $\\Epre$ is perturbed
 by each operator at strength $p$; \\emph{{AUC drop}} is the mean decrease in test
 AUC relative to the unperturbed (\\DDR{{}}$=0$) baseline across folds (baselines:
 XES3G5M $0.8346$, ASSISTments $0.9630$; XES3G5M pooled over

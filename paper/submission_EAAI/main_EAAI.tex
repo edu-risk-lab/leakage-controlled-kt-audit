@@ -1565,8 +1565,6 @@ structure-preserving regime.
 
 \subsection{\DDR{} Downstream Stress Test}
 \label{sec:exp-ddr-downstream}
-\input{ddr_downstream.tex}
-\input{ddr_downstream_gkt.tex}
 We retrain graph-consuming backbones on perturbed graphs and ask whether
 structural disruption (\DDR{}) predicts accuracy loss. Because a null
 \DDR{}$\to$AUC relationship is ambiguous---it can mean either ``\DDR{} does not
@@ -1577,12 +1575,12 @@ AUC does not move even under total destruction is graph-inert, and its
 \DDR{}$\to$AUC correlation carries no downstream meaning.
 
 \paragraph{Low-reliance anchors (DGEKT everywhere; GKT on ASSISTments).}
-Table~\ref{tab:ddr-downstream} reports the original DGEKT sweep on
+Supplementary Table~S23 reports the original DGEKT sweep on
 ASSISTments~2012 and XES3G5M. Despite large structural disruption
 (\texttt{node\_drop} mean \DDR{} $0.493$--$0.555$ at $p{=}0.30$), DGEKT AUC
 changes stay near zero and pooled \DDR{}--AUC-drop correlations are weak
 ($r{=}0.13$--$0.15$). GKT on ASSISTments behaves the same way
-(Table~\ref{tab:ddr-downstream-gkt}, second block): destroying the graph
+(Supplementary Table~S24, second block): destroying the graph
 entirely at the manipulation-check anchor (\texttt{node\_drop} $p{=}0.90$,
 \DDR{}${=}0.995$) moves AUC by only $0.0021$ ($0.9630{\to}0.9610$). These cells
 \emph{fail} the manipulation check; we read them as \emph{low-reliance anchors}
@@ -1592,7 +1590,7 @@ where the backbone does not consume the graph, no structural metric can shift
 accuracy, and \DDR{}'s value is confined to structure and reproducibility.
 
 \paragraph{Graph-reliant backbone (GKT on XES3G5M): \DDR{} slope, not Pearson $r$.}
-The same protocol on GKT/XES3G5M (Table~\ref{tab:ddr-downstream-gkt}, first
+The same protocol on GKT/XES3G5M (Supplementary Table~S24, first
 block; seeds $\{42,17,1234\}$, six fold$\times$seed clusters) tells the opposite story. GKT \emph{passes} the
 manipulation check decisively: near-total destruction drops AUC from the
 pooled baseline $0.8346$ to $0.7636$ (\texttt{edge\_drop} $p{=}0.90$, ${-}0.071$) and
@@ -2136,13 +2134,13 @@ archive for review.
 
 \section*{Supplementary material}
 \label{sec:appendix-index}
-Additional tables and figures (Tables~S1--S21 and Figures~S1--S7) are
+Additional tables and figures (Tables~S1--S24 and Figures~S1--S7) are
 provided in a separate supplementary PDF. They cover per-dataset
 baseline diagnostics, train-only versus full-log ablation, significance
 tests, cold-start strata, ground-truth metrics, training-configuration
 disclosure, $\Delta$AUC intervals, leak-injection results, ANOVA
-summaries, sequence-autocorrelation statistics, and operator
-definitions. The main claims can be read without the supplement;
+summaries, sequence-autocorrelation statistics, operator definitions,
+and the cell-level \DDR{}$\to$AUC sweeps. The main claims can be read without the supplement;
 the supplement is included for reproducibility.
 
 \section*{Declaration of generative AI and AI-assisted
