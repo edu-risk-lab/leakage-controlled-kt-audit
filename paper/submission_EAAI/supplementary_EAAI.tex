@@ -562,7 +562,7 @@ audit metrics by deliberately injecting $5\%$ and $20\%$ of test-fold
 interactions into the train-only prerequisite builder on XES3G5M (fold~0).
 Edge counts $|\Epre|$ are \emph{candidate} edges before DAG pruning (the
 main text DAG audit reports 701 retained edges after pruning on the clean
-fold). Candidate-edge count and $\mathrm{TBMR}_f$ increase monotonically with the
+fold). Candidate-edge count and $\mathrm{LTES}_f$ increase monotonically with the
 injection rate, while $\mathrm{ECR}^{\mathrm{flag}}_f$ remains $0$ (learner-id
 sets stay disjoint) and $\mathrm{ECR}^{\mathrm{overlap}}_f$ is already
 saturated at $1.0$ on this transition-dense corpus. Flag-level checks alone
@@ -589,6 +589,33 @@ lowers or raises accuracy.
 \caption{Downstream test AUC under controlled leak injection, XES3G5M fold~0 (Table~S18). Models retrained under reduced graph-backbone budgets (Table~S15: 10 epochs, smaller batches); qualitative decoupling (builder mass vs.\ flat AUC) is the intended reading, not cross-table absolute AUC ranking.}
 \label{tab:downstream-injection-auc}
 \input{downstream_auc_injection.tex}
+\end{table}
+
+\begin{table}[h!]
+\centering
+\caption{Descriptive $2{\times}2$ grid of observed $\Delta$AUC on XES3G5M
+(Table~S22). Rows are contamination \emph{throughput} into the consumed edge
+set; columns are backbone \emph{reliance} on the graph (manipulation check).
+No cell exceeds $|\Delta\text{AUC}|{\approx}0.010$. The realistic operating
+point (full-log pooling under our filter) sits in the low-throughput row. The
+table organises measurements already reported in the main text; it is not
+evidence that harm concentrates in one cell.}
+\label{tab:two-factor}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.34\linewidth}
+  >{\centering\arraybackslash}X >{\centering\arraybackslash}X @{}}
+\toprule
+ & low reliance (\textit{simpleKT}) & high reliance (GKT, GIKT) \\
+\midrule
+low throughput\newline (train-only vs.\ full-log pooling) &
+  ${\approx}0$ &
+  ${\leq}0.003$ \\
+high throughput\newline ($20\%$ test-fold injection) &
+  ${\approx}0$ ($0.8744{\to}0.8748$) &
+  ${\approx}0$ (GKT $-0.010$; GIKT $+0.0002$; Table~S18) \\
+\bottomrule
+\end{tabularx}
 \end{table}
 
 \section{Exploratory ANOVA summaries}

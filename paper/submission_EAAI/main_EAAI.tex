@@ -191,7 +191,9 @@ dropped, while the pooled count clears it and the edge is retained: the graph
 then encodes a transition carried mainly by held-out learners never seen by the
 optimiser. The fraction of an edge's support that comes from held-out
 tokens---here $20/60$---is exactly the \emph{throughput} our audit measures
-($\mathrm{ECR}^{\mathrm{overlap}}$, $\mathrm{TBMR}$), and it is invisible to a
+through evaluation-cohort reachability
+($\mathrm{ECR}^{\mathrm{overlap}}$) and the late-train evidence share
+($\mathrm{LTES}$), and it is invisible to a
 learner-disjoint split flag. (2)~\textbf{KC cold-start.} If a KC appears only a
 handful of times in $\mathcal{F}_{\text{train}}^f$ but frequently in
 $\mathcal{F}_{\text{test}}^f$, graph propagation may rely on unstable
@@ -226,7 +228,7 @@ measures graph provenance independently of accuracy is required. We
 still report contamination \emph{throughput} (held-out mass in the
 consumed edge set) and backbone \emph{reliance} (AUC movement under
 near-total graph destruction) as descriptive coordinates; the $2{\times}2$
-grid in Table~\ref{tab:two-factor} organises those measurements and is
+grid in Supplementary Table~S22 organises those measurements and is
 not offered as evidence of a multiplicative interaction.
 
 \paragraph{Implications for reporting and deployment.}
@@ -235,7 +237,7 @@ graph-augmented KT model. (1)~\emph{Build the graph fold-clean:}
 infer $\Epre$/$\Esim$ only from $\mathcal{F}^f_{\text{train}}$ and export
 per-edge provenance, so a reported gain cannot be silently carried by held-out
 mass. (2)~\emph{Read the throughput indicators, not the accuracy:} inspect
-builder mass and $\mathrm{TBMR}$ (Section~\ref{sec:leakage}) to locate
+builder mass and $\mathrm{LTES}$ (Section~\ref{sec:leakage}) to locate
 the corpus in the throughput$\times$reliance grid; a high-throughput reading is
 a warning even when the learner-disjoint flag remains zero. (3)~\emph{Gate any
 downstream claim on a manipulation check:} before attributing accuracy to graph
@@ -305,11 +307,10 @@ leakage control; reported benchmarks use the full train fold.}
 \label{fig:intro-leakage}
 \end{figure}
 
-Figure~\ref{fig:intro-leakage} contrasts the two workflows. In
-workflow~(a), prerequisite or similarity edges may be supported by
-validation/test interactions; the KT module then appears to generalise
-while part of the structural input already encodes future behaviour.
-Workflow~(b) closes this channel by making graph construction a
+In workflow~(a) of Figure~\ref{fig:intro-leakage}, prerequisite or similarity
+edges may be supported by validation/test interactions, so the KT module
+appears to generalise while part of its structural input already encodes future
+behaviour; workflow~(b) closes this channel by making graph construction a
 first-class, fold-conditioned step.
 
 Leakage-controlled concept graphs matter wherever KT systems drive
@@ -319,28 +320,17 @@ Without fold-specific audits, reported AUC improvements are difficult to
 attribute to modelling versus preprocessing. The protocol supplies provenance
 artefacts, DAG validity checks, cold-start strata, and tiered diagnostics that
 inform whether and how graph-augmented KT should be deployed, including cases
-in which headline accuracy does not change. On our primary benchmark XES3G5M,
-headline accuracy sits well below ceiling, so backbone differences are not
-compressed by saturation as they are on repetition-heavy
-corpora: under train-only $\Epre$ and three-fold learner CV, the
-\textbf{primary} backbone trio is \textit{simpleKT} (${\approx}0.875$),
-stock pyKT GKT (${\approx}0.834$; mean $\Delta{\approx}{-}0.041$, 95\% CI
-\GKTdeltaci{} in Table~S16; extended-training sensitivity in
-Section~\ref{sec:limitations}/Table~S21),
-and native GIKT (${\approx}0.878$). The gap is
-\emph{observational} under fixed maximum epoch caps (30 for sequence checkpoints
-vs.\ 10 for graph backbones; Table~S15), not a causal attribution of graph
-failure on XES3G5M under this protocol. SKT and DyGKT rows in
-Tables~\ref{tab:baseline-summary} and~\ref{tab:baseline-cv} are fork wiring
-sanity checks only (Supplementary Tables~S1--S5 for ACC/NLL) and are excluded
-from primary ranking claims. A team that
-constructs graphs from pooled full logs (the default in original GKT/SKT pipelines
+in which headline accuracy does not change. That last case is the common one
+here, and it is the point: a team that constructs graphs from pooled full logs
+(the default in the original GKT/SKT pipelines
 \cite{nakagawa2019gkt,tong2020skt}) without provenance logs, similarity-edge
-feasibility checks, or cold-start strata may reach different reporting
-and risk conclusions than one that runs this protocol first---even when
-train-only versus full-log ablation moves headline AUC by at most $0.003$
-(Section~\ref{sec:exp-graph-ablation}), including the opened $k{=}20$ GKT
-cell on XES3G5M fold~0 (Table~\ref{tab:m4-phase-b-auc}).
+feasibility checks, or cold-start strata can reach different reporting and risk
+conclusions than one that runs this protocol first, even when the ablation
+barely moves headline accuracy
+(Section~\ref{sec:exp-graph-ablation}). Backbone-level diagnostic scores on
+XES3G5M are reported in Section~\ref{sec:exp-baseline} under attested and
+unmatched epoch caps; they are observational and are not used to support any
+claim in this paper.
 
 We address the gaps above with an audit protocol rather than a new sequential
 tracer. The artificial-intelligence contribution is a leakage-controlled graph
@@ -420,42 +410,22 @@ than deferred to the Discussion alone.
   \emph{Residual risk:} GT cross-validation is Junyi-only at a single
   expert threshold ($\theta{=}0.5$).
 \end{itemize}
-Diagnostic backbone scores under the attested, unmatched training budgets
-of Table~S15 are reported in Section~\ref{sec:exp-baseline} and
-Section~\ref{sec:limitations}; they are observational and are not listed
-as a contribution.
+Section~\ref{sec:disc-implications} distills five reporting items for
+graph-augmented KT papers: fold provenance, cold-start strata, matched sequence
+baselines, ground-truth cross-validation when available, and
+structure-preserving versus damaging perturbation sensitivity.
 
-We distill five reporting items for graph-augmented KT papers in
-Section~\ref{sec:disc-implications} (fold provenance, cold-start strata,
-matched sequence baselines, ground-truth cross-validation when available, and
-structure-preserving versus damaging perturbation sensitivity).
-Supplementary Table~S11 reports fold-level tests for transparency; fold-level
-$\Delta$AUC magnitudes in Table~\ref{tab:baseline-cv}---an order larger than
-fold-to-fold variation---together with Table~S16 intervals characterise the
-primary XES3G5M trio under audit, with extended-training sensitivity consolidated
-in Section~\ref{sec:limitations} and Table~S21.
-
-We assign explicit roles to the public corpora studied here.
-XES3G5M is \textbf{primary} (low KC-repeat, non-saturated AUC, clearest
-graph-backbone separation); ASSISTments~2012 is \textbf{secondary}
-(leakage ablation and cold-start); Junyi Academy is a \textbf{saturated
-sanity} corpus (ground-truth cross-validation and DAG density, not headline
-model ranking). Synthetic C2/C5 exercise tiny-graph audit modules.
-Diagnostic backbone scores in Section~\ref{sec:disc-model-specific}
-are anchored on XES3G5M unless noted. Table~\ref{tab:baseline-summary}
-reports cross-dataset diagnostic AUC; per-dataset ACC/NLL tables with 95\%
-bootstrap confidence intervals are in Supplementary Tables~S1--S5. All
-baselines use train-only exported graphs and valid+test sequence positions
-under three-fold learner CV. Protocol metrics (\DDR{}, leakage tables, DAG
-audit) use the same split configuration; DAG audit and ground-truth
-cross-validation results refer to fold~0 unless noted. Similarity edges are
-empty on ASSISTments (single-skill Q-matrix) and sparse on XES3G5M; Junyi
-is the only corpus where both $\Epre$ and $\Esim$ are populated under the
-default rule. On the three public benchmarks studied here,
-controlling the graph-leakage channel does not by itself yield large
-accuracy corrections (Section~\ref{sec:exp-graph-ablation}): the train-only
-versus full-log ablation moves headline metrics by at most $0.003$ AUC
-and $0.008$ ACC.
+The public corpora carry explicit roles. XES3G5M is \textbf{primary} (low
+KC-repeat and non-saturated AUC, so backbone differences are not compressed by
+ceiling effects); ASSISTments~2012 is \textbf{secondary} (leakage ablation and
+cold-start); Junyi Academy is a \textbf{saturated sanity} corpus (ground-truth
+cross-validation and DAG density, not headline model ranking). Synthetic C2/C5
+exercise tiny-graph audit modules. All baselines use train-only exported graphs
+and valid+test sequence positions under three-fold learner CV; protocol metrics
+use the same split configuration, and DAG audit and ground-truth
+cross-validation refer to fold~0 unless noted. Similarity edges are empty on
+ASSISTments (single-skill Q-matrix) and sparse on XES3G5M, so Junyi is the only
+corpus where both $\Epre$ and $\Esim$ are populated under the default rule.
 We therefore present leakage control as an engineering verification
 contribution together with a measured boundary result, not as a route to
 higher headline scores. We do not claim that the protocol eliminates
@@ -497,11 +467,26 @@ than replace---\texttt{pyKT}-style label audits by auditing the auxiliary graph
 channel those audits omit.
 
 Graph-KT models (GKT, SKT, GIKT, DyGKT, DGEKT)~\cite{nakagawa2019gkt,tong2020skt,yang2021gikt,dygkt2024,dgekt2024}
-propagate mastery over KC graphs, while prerequisite-learning work infers
-directed relations from logs, content, or experts~\cite{lin2016moocprereq,bai2025survey,chang2015junyi}.
-Graph-KT papers typically treat the graph as given and optimise predictive
-loss. Original GKT and SKT pipelines pool transition statistics over the full
-log before learner splitting~\cite{nakagawa2019gkt,tong2020skt}; our protocol
+propagate mastery over KC graphs, and recent surveys organise the family by
+graph form and propagation
+mechanism~\cite{xu2026gbktsurvey,abdelrahman2023kt_survey}; memory-augmented
+graph variants extend it to forgetting dynamics~\cite{abdelrahman2023dgmn}.
+Prerequisite-learning work infers directed relations from logs, content, or
+experts~\cite{lin2016moocprereq,bai2025survey,chang2015junyi}, and a growing
+line treats the prerequisite structure itself as a latent object to be
+recovered rather than supplied: PSI-KT infers a shared prerequisite graph
+jointly with learner traits under a Bayesian
+formulation~\cite{zhou2024psikt}, and prerequisite structure discovery makes
+the knowledge structure a learnable parameter evaluated by how well it drives
+content recommendation~\cite{annabi2023prereq}.
+This literature is our closest neighbour and also the sharpest contrast. It
+asks whether an inferred graph is \emph{accurate}; we ask, prior to that,
+whether it is \emph{admissible}---which interactions were allowed to support
+each edge. The two questions are independent: a graph can recover the expert
+structure well and still have been built from held-out learners. Graph-KT
+papers typically treat the graph as given and optimise predictive loss, and
+the original GKT and SKT pipelines pool transition statistics over the full log
+before learner splitting~\cite{nakagawa2019gkt,tong2020skt}; our protocol
 isolates that provenance choice. Expert annotations (e.g.\ Junyi) and
 behavioural inference capture related but non-identical structure; we quantify
 disagreement rather than treating one as a proxy for the other.
@@ -600,11 +585,11 @@ F1--F2 block cross-fold and cross-learner contamination; F3--F4 encode
 the DAG audit and top-$K$/top-$k$ filters of Section~\ref{sec:graph}.
 (These feasibility labels are distinct from the contribution labels
 C1--C5 of Section~\ref{sec:intro}.)
-We deliberately do \emph{not} impose $\mathrm{TBMR}_f{=}0$
-(Eq.~\eqref{eq:tbvr}) as a feasibility constraint: temporal-transition
+We deliberately do \emph{not} impose $\mathrm{LTES}_f{=}0$
+(Eq.~\eqref{eq:ltes}) as a feasibility constraint: temporal-transition
 inference necessarily draws evidence from each learner's full train
 timeline, so a zero rate would be attainable only by discarding
-late-train evidence. $\mathrm{TBMR}_f$ is instead reported as a
+late-train evidence. $\mathrm{LTES}_f$ is instead reported as a
 within-train stress diagnostic in the sanity/stress tier below; the
 released runs accordingly show non-zero values on dense corpora
 (Table~\ref{tab:leakage-metrics}).
@@ -619,7 +604,7 @@ unit test of the split, not as a graded diagnostic.
 Throughput is read from the distribution of per-edge held-out shares
 $\pi_e=n_{\mathrm{hi}}(e)/(n_{\mathrm{tr}}(e)+n_{\mathrm{hi}}(e))$, with
 $p90(\pi_e)$ as the primary indicator, together with the late-train evidence
-share (LTES; previously $\mathrm{TBMR}$, Eq.~\eqref{eq:tbvr})---a within-train mixing
+share ($\mathrm{LTES}_f$, Eq.~\eqref{eq:ltes})---a within-train mixing
 statistic, not a train/test leak rate.
 The remaining scalars---$\mathrm{ECR}^{\mathrm{overlap}}_f$
 (Eq.~\eqref{eq:ecr-overlap}) and $|\rho_f|$ (Eq.~\eqref{eq:rho-edge-outcome})---are
@@ -681,7 +666,7 @@ $|\rho|$ \\
 Temporal &
 Violating the timestamp boundary $\tau_u$ per learner $u$ &
 Post-boundary attempts included when counting $c_t\!\to\!c_{t+1}$ support or when building time-sensitive features &
-$\mathrm{TBMR}$ / LTES \\
+$\mathrm{LTES}$ \\
 Cold-start neighbourhood &
 Tail-\KC{} edges dominated by non-train support &
 Rare-\KC{} similarity edge driven mainly by interactions that belong to val/test under the split &
@@ -702,7 +687,11 @@ In addition, we report scalar \emph{direct} diagnostics that do
 not reduce to predictive accuracy, grouped as a pass/fail check and as
 throughput indicators (Table~\ref{tab:leakage-metrics}). Let $\mathcal{U}^{\mathrm{tr}}_f$,
 $\mathcal{U}^{\mathrm{va}}_f$, and $\mathcal{U}^{\mathrm{te}}_f$ denote the
-learner-id sets in train, validation, and test under fold $f$. The learner overlap flag is
+learner-id sets in train, validation, and test under fold $f$. Both scalars
+below measure \emph{evaluation-cohort reachability} ($\mathrm{ECR}$): how far
+evidence belonging to the evaluation cohort reaches into the graph the model
+consumes. The superscript distinguishes the binary structural check from the
+graded per-edge rate. The learner overlap flag is
 \begin{equation}
 \mathrm{ECR}^{\mathrm{flag}}_f := \mathbb{1}\big[
 (\mathcal{U}^{\mathrm{tr}}_f \cap \mathcal{U}^{\mathrm{va}}_f) \cup
@@ -750,20 +739,21 @@ let $\tau_u$ be $u$'s temporal split cutoff for fold $f$. Write
 $\mathcal{I}_{u,f}^{>}=\{\, i : t_{u,i}>\tau_u \,\}$ for post-boundary
 interactions and $\mathcal{V}_{u,f}$ for the subset of those tokens that
 incorrectly appear in any multiset counted toward $\mathcal{E}_f$ or in
-graph-derived features at inference for fold $f$. The within-train
-Temporal Boundary Mixing Rate is
+graph-derived features at inference for fold $f$. The late-train evidence
+share is
 \begin{equation}
-\mathrm{TBMR}_f \;=\;
+\mathrm{LTES}_f \;=\;
 \frac{\sum_u |\mathcal{V}_{u,f}|}{\sum_u |\mathcal{I}_{u,f}^{>}|}\,.
-\label{eq:tbvr}
+\label{eq:ltes}
 \end{equation}
 We instantiate $\tau_u$ within $\mathcal{F}_{\text{train}}^f$ at the
 $70\%$ chronological split of each learner's train sequence.
-$\mathrm{TBMR}_f$ is therefore a \emph{within-train temporal stress
+$\mathrm{LTES}_f$ is therefore a \emph{within-train temporal stress
 statistic}: it measures how much edge evidence is supported by the late tail
 of each learner's \emph{training} sequence after an internal chronological
-cutoff. Tables report the same quantity as LTES (late-train evidence share) to
-avoid the implication of a train/test leak rate.
+cutoff. The name is deliberate: the quantity is an evidence share, not a leak
+rate.\footnote{Released code and CSV artefacts carry this column under its
+earlier name \texttt{tbvr}/\texttt{tbmr}; the definition is unchanged.}
 It must not be read as cross-fold leakage
 ($\mathrm{ECR}^{\mathrm{flag}}_f{=}0$ already certifies learner-disjoint
 splits). Elevated LTES on dense multi-skill corpora (e.g.\
@@ -776,7 +766,7 @@ is a hard gate that halts the pipeline. Throughput of held-out mass into the
 consumed edge set is read primarily from $p90(\pi_e)$
 (Table~\ref{tab:leakage-metrics}), computed from the same per-edge held-out
 token sets that enter $\mathrm{ECR}^{\mathrm{overlap}}_f$; LTES
-($\mathrm{TBMR}_f$) and $|\rho_f|$ are within-train / association checks,
+($\mathrm{LTES}_f$) and $|\rho_f|$ are within-train / association checks,
 none of which reduces to predictive accuracy.
 
 \begin{algorithm}[t]
@@ -786,13 +776,13 @@ none of which reduces to predictive accuracy.
 \Require learner sets $\mathcal{U}^{\mathrm{tr}}_f,\mathcal{U}^{\mathrm{va}}_f,\mathcal{U}^{\mathrm{te}}_f$;
   consumed edges $\mathcal{E}_f$; held-out interactions $\mathcal{H}_f$;
   edge weights $\mathbf{w}_f$; outcome summaries $\mathbf{y}_f$
-\Ensure $\mathrm{ECR}^{\mathrm{flag}}_f,\ \mathrm{ECR}^{\mathrm{overlap}}_f,\ |\rho_f|,\ \mathrm{TBMR}_f$
+\Ensure $\mathrm{ECR}^{\mathrm{flag}}_f,\ \mathrm{ECR}^{\mathrm{overlap}}_f,\ |\rho_f|,\ \mathrm{LTES}_f$
 \State $\mathrm{ECR}^{\mathrm{flag}}_f \gets \mathbb{1}\big[(\mathcal{U}^{\mathrm{tr}}_f\cap\mathcal{U}^{\mathrm{va}}_f)\cup(\mathcal{U}^{\mathrm{tr}}_f\cap\mathcal{U}^{\mathrm{te}}_f)\cup(\mathcal{U}^{\mathrm{va}}_f\cap\mathcal{U}^{\mathrm{te}}_f)\neq\emptyset\big]$
 \If{$\mathrm{ECR}^{\mathrm{flag}}_f = 1$} \State \textbf{halt}: structural leakage \EndIf
 \State $\mathrm{ECR}^{\mathrm{overlap}}_f \gets \dfrac{1}{|\mathcal{E}_f|}\sum_{e\in\mathcal{E}_f}\mathbb{1}\big[|S_{\text{hi}}(e)|>0\big]$ \Comment{held-out tokens supporting $e$}
 \State $\rho_f \gets \mathrm{Corr}(\mathbf{w}_f,\mathbf{y}_f)$ \Comment{report $|\rho_f|$ in tables}
-\State $\mathrm{TBMR}_f \gets \dfrac{\sum_u |\mathcal{V}_{u,f}|}{\sum_u |\mathcal{I}^{>}_{u,f}|}$ \Comment{within-train $70\%$ chronological cutoff}
-\State \Return $(\mathrm{ECR}^{\mathrm{flag}}_f,\ \mathrm{ECR}^{\mathrm{overlap}}_f,\ |\rho_f|,\ \mathrm{TBMR}_f)$
+\State $\mathrm{LTES}_f \gets \dfrac{\sum_u |\mathcal{V}_{u,f}|}{\sum_u |\mathcal{I}^{>}_{u,f}|}$ \Comment{within-train $70\%$ chronological cutoff}
+\State \Return $(\mathrm{ECR}^{\mathrm{flag}}_f,\ \mathrm{ECR}^{\mathrm{overlap}}_f,\ |\rho_f|,\ \mathrm{LTES}_f)$
 \end{algorithmic}
 \end{algorithm}
 
@@ -1261,8 +1251,7 @@ The edge--outcome correlation magnitude is weak on all three public corpora
 ($|\rho|{\approx}0.09$--$0.22$), so retained
 edge mass is only weakly aligned with test-fold outcome summaries; $\rho$ is
 undefined on degenerate synthetic graphs where edge-weight variance vanishes.
-LTES (late-train evidence share; previously $\mathrm{TBMR}$)
-is the within-train temporal stress statistic of
+$\mathrm{LTES}$ is the within-train temporal stress statistic of
 Section~\ref{sec:leakage} (the share of edge evidence drawn from the
 late, post-$\tau_u$ tail of each learner's train sequence); it ranges from
 ${\approx}0.18$--$0.20$ on Junyi and ASSISTments to ${\approx}0.76$ on
@@ -1294,14 +1283,14 @@ baseline behaviour in later sections.
 \subsection{Controlled test-fold edge injection}
 \label{sec:exp-injection}
 This experiment occupies the high-throughput row of
-Table~\ref{tab:two-factor}: we raise contamination
+Supplementary Table~S22: we raise contamination
 \emph{throughput} on purpose and observe which backbones move. We
 deliberately contaminate the XES3G5M fold-0 train-only prerequisite builder
 with $5\%$ and $20\%$ of test-fold interactions (Supplementary Table~S17).
 Candidate-edge count ($|\Epre|$: $1162{\to}1378{\to}1417$; counted
 \emph{before} DAG pruning, whereas Table~\ref{tab:dag-audit} reports the
 $701$ edges retained \emph{after} pruning on the clean fold) and
-$\mathrm{TBMR}_f$ ($0.754{\to}0.776{\to}0.779$) increase monotonically with
+$\mathrm{LTES}_f$ ($0.754{\to}0.776{\to}0.779$) increase monotonically with
 the injection rate, while $\mathrm{ECR}^{\mathrm{flag}}_f$ remains $0$
 because learner-id sets stay disjoint: flag-level checks alone cannot detect
 this contamination channel, which motivates the tiered audit.
@@ -1316,47 +1305,15 @@ move while fold-0 test AUC remains nearly unchanged for all three backbones
 ($|\Delta\text{AUC}|{\leq}0.010$ at $20\%$ injection). \textit{simpleKT} moves by ${+}0.0004$ ($0.8744{\to}0.8748$);
 GIKT by ${+}0.0002$ ($0.8776{\to}0.8778$); GKT \emph{dips} slightly by
 ${-}0.010$ ($0.8346{\to}0.8243$). Metric-level contamination is detectable in
-builder mass and $\mathrm{TBMR}_f$ before leakage would be inferred
+builder mass and $\mathrm{LTES}_f$ before leakage would be inferred
 from AUC alone.
 
-\begin{table}[t]
-\centering
-\caption{Descriptive $2{\times}2$ grid of observed $\Delta$AUC on XES3G5M.
-Rows are contamination \emph{throughput} into the consumed edge set;
-columns are backbone \emph{reliance} on the graph (manipulation check).
-No cell exceeds $|\Delta\text{AUC}|{\approx}0.010$. The realistic operating
-point (full-log pooling under our filter) sits in the low-throughput row.
-The table organises measurements; it is not evidence that harm
-concentrates in one cell.}
-\label{tab:two-factor}
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.34\linewidth}
-  >{\centering\arraybackslash}X >{\centering\arraybackslash}X @{}}
-\toprule
- & low reliance (\textit{simpleKT}) & high reliance (GKT, GIKT) \\
-\midrule
-low throughput\newline (train-only vs.\ full-log pooling) &
-  ${\approx}0$ &
-  ${\leq}0.003$ (Table~\ref{tab:graph-ablation}) \\
-high throughput\newline ($20\%$ test-fold injection) &
-  ${\approx}0$ ($0.8744{\to}0.8748$) &
-  ${\approx}0$ (GKT $-0.010$; GIKT $+0.0002$; Table~S18) \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-Table~\ref{tab:two-factor} organises evidence already in
-the paper: GKT shows ${\approx}0$ under both full-log pooling
-(Table~\ref{tab:graph-ablation}) and deliberate injection (Table~S18) while
-builder-side throughput indicators rise (Table~S17). The qualitative
-pattern is therefore \emph{decoupling}: provenance and builder-mass
-diagnostics move when AUC does not. AUC is a poor detector of this
-channel under the studied regimes.
-Section~\ref{sec:exp-ddr-downstream} reports the reliance axis
-separately: near-total graph destruction moves GKT by $0.07$--$0.09$ AUC on
-XES3G5M but ${\le}0.003$ on ASSISTments and for DGEKT
-(Table~\ref{tab:two-factor}).
+The qualitative pattern is \emph{decoupling}: provenance and builder-mass
+diagnostics move when AUC does not, so AUC is a poor detector of this channel
+under the studied regimes. Supplementary Table~S22 lays the two axes out as a
+descriptive grid, crossing contamination throughput against backbone reliance;
+no cell exceeds $|\Delta\text{AUC}|{\approx}0.010$, and the realistic operating
+point sits in the low-throughput row.
 
 \subsection{Baseline Diagnostic}
 \label{sec:exp-baseline}
@@ -1444,10 +1401,9 @@ rarely changes surviving transitions on public benchmarks. We read this null
 shift as a \emph{measurement of operating regime}, not as evidence that
 leakage is harmless: because most edges that survive full-log pooling already
 survive train-only construction, held-out mass has low \emph{throughput} into
-the consumed edge set. The ${\leq}0.003$ shift on the published public-benchmark
-ablation (Table~\ref{tab:graph-ablation}) is therefore a statement about that
+the consumed edge set. The shift above is therefore a statement about that
 operating point, not a claim that every filter is equally inert
-(Table~\ref{tab:two-factor}).
+(Supplementary Table~S22).
 A builder census on XES3G5M (Table~\ref{tab:m4-qk-census}) shows that the
 throttle is the per-source cap $k{=}5$, not $q{=}0.95$ alone: $K{=}5000$ is
 slack ($K{=}\infty$ is identical), and lowering $q$ to $0.50$ with $k{=}5$ kept
@@ -1574,7 +1530,7 @@ entirely at the manipulation-check anchor (\texttt{node\_drop} $p{=}0.90$,
 \DDR{}${=}0.995$) moves AUC by only $0.0021$ ($0.9630{\to}0.9610$). These cells
 \emph{fail} the manipulation check; we read them as \emph{low-reliance anchors}
 (reliance ${\approx}0$), not as evidence about \DDR{}. This is exactly the
-low-reliance column of Table~\ref{tab:two-factor}:
+low-reliance column of Supplementary Table~S22:
 where the backbone does not consume the graph, no structural metric can shift
 accuracy, and \DDR{}'s value is confined to structure and reproducibility.
 
@@ -1714,13 +1670,11 @@ backbone limits and are not used to argue that graph-augmented KT fails. On
 ASSISTments (secondary), the same ordering direction holds but magnitudes shrink
 (GKT trails by ${\approx}0.007$ AUC with near-ceiling leaders). On saturated
 Junyi, all models cluster within ${\approx}0.002$--$0.006$ AUC of
-\textit{simpleKT} and should not drive deployment conclusions. Crucially,
-train-only versus full-log ablation moves headline metrics by at most
-$|\Delta\text{AUC}|{\leq}0.003$ on the three public benchmarks
-(Table~\ref{tab:graph-ablation}) and on the opened-channel GKT fold~0 cells
-(Table~\ref{tab:m4-phase-b-auc}), so the protocol's primary \emph{provenance}
-contribution is reproducibility and risk disclosure, not a demonstrated
-systematic flip of backbone rankings caused by leakage control alone.
+\textit{simpleKT} and should not drive deployment conclusions. Because the
+ablation of Section~\ref{sec:exp-graph-ablation} leaves headline metrics
+essentially unmoved, the protocol's primary \emph{provenance} contribution is
+reproducibility and risk disclosure, not a demonstrated systematic flip of
+backbone rankings caused by leakage control alone.
 
 We do not claim that graph-augmented KT is uninformative; the protocol
 removes a specific channel through which held-out information can reach the
@@ -1733,18 +1687,14 @@ from the full interaction log prior to train/test splitting. Under such
 practice, graph-augmented models can observe test-fold transitions through
 the graph during training. Our protocol enforces fold-specific edge
 inference and provenance logging. Table~\ref{tab:graph-ablation}
-instantiates the controlled comparison: identical learner splits and
-evaluation code, but graph statistics pooled over the full preprocessed log.
-Headline metrics on the three public benchmarks shift by at most
-$|\Delta\text{AUC}|{\leq}0.003$; Synthetic~C5 shows a modest shift
-($|\Delta\text{AUC}|{=}0.002$). On XES3G5M GKT fold~0 the same cap holds after
-opening $q$ and after lifting $k$ to $20$ (Table~\ref{tab:m4-phase-b-auc}).
-H1 remains relevant as a \emph{risk hypothesis} about workflows that leak
-held-out mass into graph construction; it is not a causal claim that we have
-confirmed on these benchmarks. Table~\ref{tab:graph-ablation} caps how much
-headline leakage can explain the observed GKT deficit here
-($|\Delta\text{AUC}|{\leq}0.003$ on public corpora). Architectures that exploit
-cross-split pooling more aggressively might show larger shifts.
+instantiates the controlled comparison---identical learner splits and
+evaluation code, but graph statistics pooled over the full preprocessed
+log---and its near-null result
+(Section~\ref{sec:exp-graph-ablation}) caps how much of the observed GKT
+deficit headline leakage can explain. H1 therefore remains relevant as a
+\emph{risk hypothesis} about workflows that leak held-out mass into graph
+construction, not as a causal claim we have confirmed here. Architectures that
+exploit cross-split pooling more aggressively might show larger shifts.
 
 \paragraph{H2 -- Aggregate-metric masking.}
 The cold-start diagnostic (Section~\ref{sec:exp-coldstart}) shows that
@@ -1773,8 +1723,8 @@ paper's scope. The narrower observation is that \emph{under leakage-controlled
 evaluation on XES3G5M, backbone ordering within the primary trio can differ
 from near-ceiling aggregates on other corpora}, and benchmarking practice
 should treat graph provenance and training-budget disclosure as first-order
-reporting factors---while acknowledging that provenance control alone moved
-headline AUC by at most $0.003$ on the public benchmarks studied here.
+reporting factors---while acknowledging that provenance control alone barely
+moved headline AUC on the public benchmarks studied here.
 
 \paragraph{Why this strengthens the protocol.}
 If graph-augmented KT reliably outperformed sequence-only baselines
@@ -1816,48 +1766,27 @@ GT cross-validation generalises wherever expert DAGs exist; \DDR{} applies to
 any directed curriculum graph consumed by KT or pretraining pipelines.
 
 \paragraph{Implications for graph-enhanced KT.}
-The protocol shows that KC graph construction should be treated as a
-first-class experimental component rather than an unexamined
-preprocessing step. Fold-specific edge inference, provenance logging,
-and DAG validation make it possible to identify leakage risks and graph
-construction choices that would otherwise remain hidden. The \DDR{}
-results further show that generic graph augmentations can substantially
-disturb prerequisite structure, especially when they operate at the node
-level, whereas a prerequisite-preserving operator that protects the
-transitive-reduction backbone is measurably less disruptive at the same
-perturbation budget. The anchored downstream stress test in
-Section~\ref{sec:exp-ddr-downstream} sharpens this into a \emph{conditional}
-result. Where a manipulation check confirms the backbone reads the graph
-(GKT on XES3G5M: destroying the graph costs $0.07$--$0.09$ AUC across three seeds), \DDR{}
-predicts the accuracy loss (OLS slope $\DDRslopeXEScore$ AUC per unit \DDR{},
-cluster-bootstrap 95\% CI \DDRslopeXEScoreci, $n{=}\DDRnXEScore$ on $p{\le}0.3$) and \texttt{prereq\_preserve} incurs the
-smallest AUC loss at matched budget---structural damage translates into predictive
-damage. Where the manipulation check fails (DGEKT, and GKT on ASSISTments:
-total destruction moves AUC by ${\le}0.003$), the same graph is effectively
-unused and \DDR{} remains a structural/reproducibility audit only. Downstream
-sensitivity to \DDR{} is therefore backbone- and dataset-specific, matching the
-manipulation-check distinction; future augmentation papers should
-report both structural damage (\DDR{}) and a manipulation-check-gated
-downstream retraining test.
+KC graph construction deserves treatment as a first-class experimental
+component rather than an unexamined preprocessing step: fold-specific edge
+inference, provenance logging, and DAG validation surface leakage risks that
+would otherwise stay hidden. The downstream stress test of
+Section~\ref{sec:exp-ddr-downstream} makes the augmentation story
+\emph{conditional} rather than universal. Where the manipulation check confirms
+the backbone reads the graph, structural damage translates into predictive
+damage and \texttt{prereq\_preserve} is the safest operator at matched budget;
+where it fails, the graph is effectively unused and \DDR{} remains a
+structural and reproducibility audit. Future augmentation papers should
+therefore report both, rather than assuming the first case.
+
 \paragraph{Cold-start reporting.}
-The cold-start diagnostic shows why KT studies should not rely only on
-aggregate AUC. Rare \KCs{} may behave differently from frequent
-\KCs{}, and apparent gains or high scores on small strata may reflect
-class imbalance rather than genuine modelling improvement. Reporting
-per-stratum metrics gives reviewers a clearer view of whether a method
-is robust across the KC frequency distribution. In our results,
-graph-aware models show \emph{no consistent} real-data advantage by
-stratum: ASSISTments \emph{very\_cold} $\Delta_{\max}$ is negative and
-XES3G5M \emph{very\_cold} is a small positive within noise (Junyi
-\emph{very\_cold} suppressed). Synthetic hot-stratum gains reflect clean
-concept structure rather than cold-start relief.
-Supplementary Figure~S1 links this diagnostic to concrete graph topology on
-the public benchmarks; Supplementary Figure~S6 gives a fold~0 XES3G5M ego-graph
-and learner timeline; sparser $\Epre$ on ASSISTments and XES3G5M
-(Supplementary Figure~S1) still exhibit cold strata. Very-cold counts remain small ($n{=}49$--$161$ on the reported
-real-data strata in Table~\ref{tab:cold-start-summary}); stratum-level AUC
-therefore carries high variance and should be read alongside $n$ and
-fold-level dispersion.
+Rare \KCs{} can behave unlike frequent ones, and apparent gains on small strata
+may reflect class imbalance rather than modelling improvement, so per-stratum
+reporting shows whether a method is robust across the KC frequency
+distribution. In our results graph-aware models show \emph{no consistent}
+real-data advantage by stratum (Section~\ref{sec:exp-coldstart}); synthetic
+hot-stratum gains reflect clean concept structure, not cold-start relief.
+Very-cold counts stay small, so stratum-level AUC carries high variance and
+must be read alongside $n$ and fold-level dispersion.
 
 \paragraph{Leakage risk concentrates at cold-start KCs.}
 Leakage control and cold-start stratification are usually treated as separate
@@ -1876,10 +1805,10 @@ Table~\ref{tab:leakage-taxonomy} lists a dedicated \emph{cold-start
 neighbourhood} class audited by $\mathrm{ECR}^{\mathrm{overlap}}$ together with
 the strata: cold-start KCs are the highest-throughput entry points for
 graph-mediated leakage, so per-stratum provenance---not just aggregate
-provenance---is the conservative report. Equivalently, an aggregate full-log
-ablation that moves AUC by ${\leq}0.003$ (Table~\ref{tab:graph-ablation}) can
-still mask a larger, throughput-driven shift confined to the very-cold stratum;
-disaggregating the ablation by stratum is the natural next measurement.
+provenance---is the conservative report. Equivalently, a near-null
+\emph{aggregate} ablation can still mask a larger, throughput-driven shift
+confined to the very-cold stratum; disaggregating the ablation by stratum is
+the natural next measurement.
 
 \paragraph{From audit signal to deployment action.}
 Table~\ref{tab:audit-actions} condenses the protocol into a decision map: each
@@ -1927,30 +1856,7 @@ alarm. Treat $q$ sweeps that keep $k{=}5$ as non-informative for this channel \\
 \end{tabularx}
 \end{table}
 
-\paragraph{Deployment decision vignettes.}
-The audit is most useful when an output maps to a concrete deployment
-choice:
-\begin{itemize}
-  \item \textbf{Similarity-edge feasibility (ASSISTments).} Jaccard similarity
-  yields $|E_{\mathrm{sim}}|{=}0$ under the single-skill Q-matrix
-  (Section~\ref{sec:exp-coldstart}). A practitioner should not deploy a
-  graph model that \emph{requires} similarity edges under this rule without
-  changing the co-occurrence definition or supplying an external relation.
-  \item \textbf{Provenance versus headline gain (all public benchmarks).}
-  Train-only versus full-log ablation shifts AUC by at most $0.003$
-  on the published public tables (Table~\ref{tab:graph-ablation}) and by at
-  most $0.0015$ on XES3G5M GKT fold~0 after lifting $k$ to $20$
-  (Table~\ref{tab:m4-phase-b-auc}). The corresponding recommendation is to enforce
-  train-only graph exports for reproducibility and cross-paper comparability,
-  not to expect large accuracy corrections on these corpora.
-  \item \textbf{Metric tiering under controlled injection (XES3G5M).}
-  Deliberate test-fold injection increases graph-builder mass while
-  $\mathrm{ECR}^{\mathrm{flag}}_f{=}0$ (Tables~S17--S18). Practitioners
-  should treat fold-disjoint splits as necessary but insufficient and retain
-  provenance logs plus builder-level stress tests before trusting scalar
-  leakage summaries alone.
-\end{itemize}
-These vignettes complement---rather than replace---backbone comparisons:
+The decision map complements---rather than replaces---backbone comparisons:
 Section~\ref{sec:exp-baseline} reports diagnostic trio ordering on XES3G5M under
 fixed unmatched budgets, with Table~S21 reporting exploratory configuration
 sensitivity rather than a compute-matched epoch-only ablation.
@@ -1979,48 +1885,30 @@ transition counting and the per-learner leakage scan on the train fold, after wh
 \IfFileExists{audit_cost.tex}{\input{audit_cost.tex}}{}
 
 \paragraph{Behavioural versus expert prerequisite curation.}
-The ground-truth cross-validation on Junyi
-(Section~\ref{sec:exp-gtxv}) shows that train-only behavioural
-inference and expert prerequisite annotation are correlated at the
-node level but structurally distinct at the edge level. Two
-implications follow. First, behavioural inference cannot be treated
-as a low-cost approximation of expert curation, and papers that
-report graph-augmented KT results on behaviourally-inferred graphs
-should not claim those results transfer directly to settings with
-expert prerequisite graphs (or vice versa). Second, the two signals
-are complementary: in the most informative setup, a graph-augmented
-KT model would consume both an inferred behavioural graph and an
-expert prerequisite graph as separate relations, rather than treating
-either as a substitute for the other. We do not test this combined
-setting in the present paper, but the cross-validation provides the
-quantitative basis for proposing it.
-\paragraph{Implications for graph-KT benchmarking.}
-The bounded observation in Section~\ref{sec:disc-model-specific} has direct
-implications for how the graph-KT subfield reports gains. Benchmark tables
-that omit graph-construction provenance, cold-start strata, and training-budget
-disclosure are difficult to compare across papers even when aggregate AUC is
-similar. We do not advocate dismissing reported gains in the graph-KT
-literature; we advocate \emph{disaggregating} them. A reported AUC improvement
-of $\Delta$ on a benchmark should ideally be decomposed into three components:
-the part that survives leakage control, the part that depends on
-graph-construction choices (relation type, threshold, edge cap, encoder), and
-the part that depends on backbone strength. The protocol in this paper supplies
-the first component; the cold-start diagnostic supplies a partial view of the
-second; the third remains an open methodological question.
+The ground-truth cross-validation on Junyi (Section~\ref{sec:exp-gtxv}) finds
+train-only behavioural inference and expert annotation correlated at the node
+level but structurally distinct at the edge level. Behavioural inference is
+therefore not a low-cost approximation of expert curation, and results obtained
+on one should not be claimed to transfer to the other. The more productive
+reading is that the two are complementary relations for a single model to
+consume---a setting this paper does not test but does supply the quantitative
+basis for proposing.
 
-A practical recommendation follows. When introducing a new
-graph-augmented KT model, papers should report at minimum: (a) the
-fold-specific provenance of every retained graph edge; (b) the
-cold-start stratum on which the gain is most concentrated; (c) the
-sequence-only baseline matched in compute and hyperparameter budget;
-(d) when an expert prerequisite annotation is available, the
-ground-truth cross-validation of the consumed graph against that
-annotation, using the edge / direction / reachability / node-Jaccard
-metric family used in Section~\ref{sec:exp-gtxv}; and (e) whether
-accuracy is actually sensitive to structure-preserving versus
-structure-damaging graph perturbations. Without these reports, an
-aggregate-AUC improvement is difficult to attribute. The protocol
-presented here makes these reports tractable.
+\paragraph{Implications for graph-KT benchmarking.}
+Benchmark tables that omit graph-construction provenance, cold-start strata,
+and training-budget disclosure are hard to compare across papers even at
+similar aggregate AUC. We do not advocate dismissing reported gains in this
+literature; we advocate \emph{disaggregating} them into the part that survives
+leakage control, the part that depends on graph-construction choices, and the
+part that depends on backbone strength. This protocol supplies the first, the
+cold-start diagnostic a partial view of the second, and the third remains open.
+Concretely, a new graph-augmented KT model should report at minimum: (a)~the
+fold-specific provenance of every retained edge; (b)~the cold-start stratum
+where the gain concentrates; (c)~a sequence-only baseline matched in compute
+and hyperparameter budget; (d)~ground-truth cross-validation against an expert
+annotation where one exists; and (e)~whether accuracy is sensitive to
+structure-preserving versus structure-damaging perturbations. Without these, an
+aggregate-AUC improvement is difficult to attribute.
 
 \subsection{Threats to Validity and Metric Interpretation}
 \label{sec:threats-validity}
@@ -2037,7 +1925,7 @@ outputs (Section~\ref{sec:formal-problem}): \textbf{primary}---provenance logs,
 $\mathrm{ECR}^{\mathrm{flag}}_f{=}0$, and GT cross-validation when available;
 \textbf{empirical bounds}---full-log ablation $\Delta$ and cold-start strata;
 \textbf{sanity/stress}---$\mathrm{ECR}^{\mathrm{overlap}}_f$, $|\rho_f|$, and
-$\mathrm{TBMR}_f$. Near-unity overlap and $\mathrm{ECR}^{\mathrm{flag}}_f{=}0$
+$\mathrm{LTES}_f$. Near-unity overlap and $\mathrm{ECR}^{\mathrm{flag}}_f{=}0$
 are expected under honest learner-disjoint construction and do not replace
 provenance or GT audits.
 
@@ -2045,7 +1933,7 @@ Cycle pruning resolves conflicts by dropping the lowest-weight edge per detected
 cycle (Johnson enumeration, capped at 100 witnesses per round); pruned mass
 reflects weak or bidirectional transitions rather than arbitrary deletion.
 
-$\mathrm{TBMR}_f$ is a within-train temporal stress statistic at a $70\%$
+$\mathrm{LTES}_f$ is a within-train temporal stress statistic at a $70\%$
 chronological boundary inside each learner's train fold---not cross-split
 leakage ($\mathrm{ECR}^{\mathrm{flag}}_f{=}0$). Dense multi-skill
 co-assessment on XES3G5M and toy-graph structure on Synthetic~C2 explain the
@@ -2097,7 +1985,7 @@ $k{=}20$). Builder leak jumps when $k$ is lifted
 trained once that stop rule held.
 
 \paragraph{Scope of the $2{\times}2$ grid.}
-Two limits bound the reading of Table~\ref{tab:two-factor}.
+Two limits bound the reading of Supplementary Table~S22.
 First, the high-throughput row is reached only by \emph{controlled} injection;
 we have not exhibited a natural workflow (absent deliberate contamination) that
 raises throughput on these corpora. Closing this gap would require a realistic
@@ -2118,7 +2006,7 @@ Three extensions follow naturally from the audit boundary established here.
 accumulate new interactions over time; $G_f$ should be refreshable from
 post-deployment logs under explicit temporal cutoffs so that graph updates
 do not re-pool held-out or future learners. An online variant would extend
-the tiered leakage diagnostics ($\mathrm{ECR}$, TBMR) to sliding windows
+the tiered leakage diagnostics ($\mathrm{ECR}$, $\mathrm{LTES}$) to sliding windows
 and report when structural drift warrants retraining versus graph-only
 patches.
 \textbf{Feedback-aware graph construction.} Behavioural prerequisite

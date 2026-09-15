@@ -141,34 +141,42 @@ def write_leakage_metrics_tex(df: pd.DataFrame, path: Path) -> None:
         )
 
     share_note = (
-        r" Edge share $>50\%$: fraction of retained edges whose held-out transition "
-        r"share exceeds $0.5$; share p90: 90th percentile of per-edge held-out shares "
-        r"(Supplementary artefact \texttt{edge\_share\_summary.csv})."
+        r" Throughput: $p90(\pi_e)$ is the primary indicator (90th percentile of "
+        r"per-edge held-out share $\pi_e=n_{\mathrm{hi}}(e)/(n_{\mathrm{tr}}(e)+n_{\mathrm{hi}}(e))$); "
+        r"$>50\%$ is the fraction of retained edges with $\pi_e>0.5$ "
+        r"(Supplementary artefact \texttt{edge\_share\_summary.csv}). "
+        r"Synthetic C2/C5 have no per-edge share export (---)."
         if share_by_ds
-        else ""
+        else r" Synthetic C2/C5 have no per-edge share export (---)."
     )
 
     lines = [
         r"\begin{table}[t]",
         r"\centering",
-        r"\caption{Direct leakage diagnostics per dataset (mean~$\pm$~std over three folds). "
-        r"\textsc{ECR}\textsubscript{flag}: learner-overlap indicator (Eq.~\ref{eq:ecr-flag}). "
-        r"\textsc{ECR}\textsubscript{overlap}: held-out pattern overlap (Eq.~\ref{eq:ecr-overlap}). "
-        r"$|\rho|$: edge--outcome Pearson correlation magnitude (Eq.~\ref{eq:rho-edge-outcome}). "
-        r"\textsc{TBMR}: within-train temporal mixing "
-        r"(Eq.~\ref{eq:tbvr}), not a train/test violation."
+        r"\caption{Leakage audit split into a pass/fail structural check and "
+        r"throughput indicators (mean~$\pm$~std over three folds). "
+        r"\textsc{ECR}\textsubscript{flag} (Eq.~\ref{eq:ecr-flag}) is $0$ by construction "
+        r"under learner-disjoint splits: it is a unit test of the split, not a graded "
+        r"diagnostic. LTES (late-train evidence share, "
+        r"Eq.~\ref{eq:ltes}) is a \emph{within-train} mixing statistic, not a train/test "
+        r"leak rate. $|\rho|$ (Eq.~\ref{eq:rho-edge-outcome}) is a weak edge--outcome "
+        r"association. \textsc{ECR}\textsubscript{overlap} (Eq.~\ref{eq:ecr-overlap}) is "
+        r"saturated ($0.988$--$1.000$) on every public corpus and is demoted to the last "
+        r"column: it does not discriminate throughput."
         + share_note
         + r"}",
         r"\label{tab:leakage-metrics}",
         r"\footnotesize",
         r"\setlength{\tabcolsep}{2pt}",
-        r"\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.17\linewidth} *{6}{>{\centering\arraybackslash}X} @{}}",
+        r"\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}p{0.16\linewidth} *{6}{>{\centering\arraybackslash}X} @{}}",
         r"\toprule",
-        r"Dataset & \textsc{ECR}\textsubscript{flag} & \textsc{ECR}\textsubscript{overlap} & $|\rho|$ & \textsc{TBMR} & $>50\%$ & p90 \\",
+        r"& Pass/fail & \multicolumn{3}{c}{Throughput} & Assoc. & Saturated \\",
+        r"\cmidrule(lr){2-2}\cmidrule(lr){3-5}\cmidrule(lr){6-6}\cmidrule(lr){7-7}",
+        r"Dataset & \textsc{ECR}\textsubscript{flag} & $p90(\pi_e)$ & $>50\%$ & LTES & $|\rho|$ & \textsc{ECR}\textsubscript{overlap} \\",
         r"\midrule",
     ]
     for label, ecr_f, ecr_o, rho, tbvr, gt50, p90 in rows:
-        lines.append(f"{label} & {ecr_f} & {ecr_o} & {rho} & {tbvr} & {gt50} & {p90} \\\\")
+        lines.append(f"{label} & {ecr_f} & {p90} & {gt50} & {tbvr} & {rho} & {ecr_o} \\\\")
     lines.extend([r"\bottomrule", r"\end{tabularx}", r"\end{table}", ""])
     path.write_text("\n".join(lines), encoding="utf-8")
 

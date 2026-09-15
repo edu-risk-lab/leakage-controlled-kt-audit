@@ -73,7 +73,7 @@ def main():
             "E_pre_edges": len(pre),
             "ECR_overlap": leakage["ecr_overlap"],
             "ECR_flag": leakage["ecr_flag"],
-            "TBMR": leakage["tbvr"]
+            "LTES": leakage["tbvr"]
         })
         
     df_res = pd.DataFrame(results)
@@ -85,14 +85,14 @@ def main():
         "\\begin{tabular}{lrrrr}",
         "\\toprule",
         ("\\textbf{Injection rate} & $|\\Epre|$ & $\\mathrm{ECR}^{\\mathrm{overlap}}$"
-         " & $\\mathrm{ECR}^{\\mathrm{flag}}$ & $\\mathrm{TBMR}$ \\\\"),
+         " & $\\mathrm{ECR}^{\\mathrm{flag}}$ & $\\mathrm{LTES}$ \\\\"),
         "\\midrule",
     ]
     for r in results:
         rate = r["injection_rate"].replace("%", "\\%")
         tex_lines.append(
             f"{rate} & {r['E_pre_edges']} & {r['ECR_overlap']:.3f}"
-            f" & {r['ECR_flag']:.3f} & {r['TBMR']:.3f} \\\\"
+            f" & {r['ECR_flag']:.3f} & {r['LTES']:.3f} \\\\"
         )
     tex_lines += ["\\bottomrule", "\\end{tabular}", ""]
     with open("results/tables/leak_injection.tex", "w") as f:
