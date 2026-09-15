@@ -92,47 +92,31 @@ audit protocol with a predictive exposure measure}
 % Double-anonymized: do NOT list authors here. See title_page.tex.
 
 \begin{abstract}
-Intelligent tutoring systems and large-scale online practice platforms use
-graph-enhanced knowledge tracing to estimate learner mastery and to schedule
-practice. In current pipelines, concept graphs are often inferred from the
-same interaction logs later used to train and evaluate the tracer. Held-out
-learner transitions can therefore enter the model through the graph channel
-even when the optimiser sees only the training fold. A team can currently
-learn the accuracy consequence of this design choice only by training both a
-pooled and a train-only arm, and that expense is what deters the check.
+Intelligent tutoring systems use graph-enhanced knowledge tracing to estimate
+mastery and schedule practice. Concept graphs are often built from the same
+logs later used to train the tracer, so held-out transitions can enter through
+the graph even when the optimiser sees only the training fold. Checking that
+choice requires training both a pooled and a train-only arm.
 
 \textbf{Artificial-intelligence contribution.}
-We turn the question into one answerable before training. A \emph{leakage
-exposure bound} limits the movement in headline accuracy to the product of two
-measurable quantities: how much a backbone relies on graph structure, and how
-far pooling moves the graph the builder produces. Both are obtained without
-retraining, the second from exported edge lists alone. Reading the structural
-term as the weight mass that pooling redistributes, rather than as a count of
-leaked edges, tightens the bound and explains why opening the builder filter
-admits many leaked edges yet little weight. The bound is embedded in a
-leakage-controlled audit protocol comprising learner-based temporal splits,
-train-only prerequisite inference, directed-acyclic-graph validation with cycle
-pruning, knowledge-component cold-start stratification, and a structural
-diagnostic---the directed-acyclic-graph disruption rate---that ranks
-graph-augmentation operators independently of predictive accuracy.
+A \emph{leakage exposure bound} answers the question before training. It
+limits accuracy movement to the product of graph reliance and how far pooling
+moves the builder graph, both obtained without retraining. Weight mass, not
+leaked edge count, tightens the bound and shows why opening the filter adds
+many leaked edges yet little weight. It sits in a train-only audit with
+acyclic-graph validation and a disruption rate independent of predictive
+accuracy.
 
 \textbf{Engineering application.}
-We apply the protocol to the verification of graph-enhanced tracers in tutoring
-software. Experiments on public educational logs (XES3G5M, ASSISTments 2012,
-Junyi Academy) and two synthetic logs yield acyclic train-only graphs. Downstream
-retraining yields an OLS slope of $0.084$ AUC per unit disruption rate on
-graph-reliant GKT/XES3G5M, versus $0.003$ on graph-inert ASSISTments.
-Replacing a pooled full-log graph with a train-only graph moves headline area
-under the receiver operating characteristic curve by at most 0.003 across the
-tested cells, and deliberate 20\% test-fold injection into a graph-reliant
-backbone moves it by at most 0.010; on the primary corpus the individual shifts
-fall at or below an estimated training noise floor near 0.001, so these figures
-bound the channel rather than resolve it. Accuracy is thus a poor detector of
-graph-mediated contamination, which is the case for auditing provenance
-directly. The audit runs as a central-processing-unit-only pre-training gate
-(graph export plus leakage scalars; Table~\ref{tab:audit-cost}). The intended
-use is to inform graph-provenance decisions at deployment, rather than to
-raise headline scores.
+We verify the protocol on XES3G5M, ASSISTments 2012, Junyi Academy, and two
+synthetic logs. Retraining yields a slope of $0.084$ area under the curve per
+unit disruption rate when the backbone uses the graph, versus $0.003$ when it
+does not. A train-only graph moves that area by at most $0.003$ versus
+pooling; $20$ percent test injection moves it by at most $0.010$. On the
+primary corpus those shifts sit at or below a noise floor near $0.001$, so
+they bound the channel rather than resolve it. Accuracy is a poor detector of
+this contamination. The audit is a processor-only gate for provenance
+decisions at deployment, not higher scores.
 \end{abstract}
 
 \begin{graphicalabstract}
