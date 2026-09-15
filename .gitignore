@@ -27,6 +27,7 @@ results/pykt_work/
 results/cache/
 results/predictions/
 results/m4/cache/
+results/audit_cost/scratch/
 logs/
 paper/results/
 
