@@ -60,6 +60,27 @@ audit/20*/
 paper/submission_APIN/main_APIN.pdf
 
 # ---------------------------------------------------------------------------
+# EAAI submission directory: LaTeX sources are tracked, anything the build or
+# scripts/generate_*.py regenerate is not. Table fragments and figures are
+# copies synced from results/tables/ and results/figures/.
+# ---------------------------------------------------------------------------
+paper/submission_EAAI/*.pdf
+paper/submission_EAAI/*.bbl
+paper/submission_EAAI/*.spl
+paper/submission_EAAI/*.csv
+paper/submission_EAAI/elsarticle*.cls
+paper/submission_EAAI/elsarticle*.bst
+paper/submission_EAAI/_em_stage/
+paper/submission_EAAI/*.tex
+!paper/submission_EAAI/main_EAAI.tex
+!paper/submission_EAAI/supplementary_EAAI.tex
+!paper/submission_EAAI/title_page.tex
+!paper/submission_EAAI/graphical_abstract.tex
+
+# Upstream elsarticle distribution, re-downloadable from CTAN
+docs/elsarticle/
+
+# ---------------------------------------------------------------------------
 # OS / IDE
 # ---------------------------------------------------------------------------
 .DS_Store

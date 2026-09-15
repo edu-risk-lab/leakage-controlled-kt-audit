@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "p0-kc-graph-protocol"
+version = "0.1.0"
+description = "Leakage-controlled knowledge-component graph audit protocol for knowledge tracing (companion research software; anonymized review archive)"
+requires-python = ">=3.10"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Anonymous authors (identities withheld for double-anonymized review)" },
+]
+keywords = [
+  "knowledge-tracing",
+  "concept-graphs",
+  "data-leakage",
+  "reproducibility",
+  "educational-data-mining",
+]
+
+[tool.setuptools]
+packages = ["src"]
+
+[project.scripts]
+p0-preprocess = "src.preprocess:main"
+p0-split-check = "src.split_checker:main"
+p0-graph-build = "src.graph_builder:main"
+p0-dag-audit = "src.dag_audit:main"
+p0-dag-disrupt = "src.dag_disruption:main"
+p0-cold-start = "src.cold_start_report:main"
+p0-baseline = "src.baseline_runner:main"
+p0-export-full-log-graph = "src.export_full_log_graph:main"
+
+[project.optional-dependencies]
+pykt = [
+  "torch>=2.1",
+  "scipy>=1.10",
+]

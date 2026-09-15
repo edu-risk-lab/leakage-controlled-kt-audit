@@ -1,0 +1,54 @@
+EAAI single-column submission package (2026-09-08)
+=================================================
+
+Canonical anonymized manuscript: main_EAAI.tex
+Bibliography:                   refs_EAAI.bib
+Title page (NOT for reviewers): title_page.tex
+Highlights (separate upload):   highlights.txt
+Cover letter:                   CoverLetter_EAAI.md
+Checklist:                      SUBMISSION_CHECKLIST.md
+
+Compile the anonymized manuscript (this directory):
+
+  pdflatex -interaction=nonstopmode main_EAAI.tex
+  bibtex main_EAAI
+  pdflatex -interaction=nonstopmode main_EAAI.tex
+  pdflatex -interaction=nonstopmode main_EAAI.tex
+
+Compile the supplementary PDF:
+
+  pdflatex -interaction=nonstopmode supplementary_EAAI.tex
+  bibtex supplementary_EAAI
+  pdflatex -interaction=nonstopmode supplementary_EAAI.tex
+  pdflatex -interaction=nonstopmode supplementary_EAAI.tex
+
+Compile the title page and graphical abstract:
+
+  pdflatex -interaction=nonstopmode title_page.tex
+  pdflatex -interaction=nonstopmode graphical_abstract.tex
+
+Main manuscript MUST stay <= 50 pages (EAAI desk-reject rule).
+Appendix tables/figures live in supplementary_EAAI.pdf, not in main_EAAI.pdf.
+
+Editorial Manager uploads — follow Elsevier LaTeX instructions
+(https://www.elsevier.com/researcher/author/policies-and-guidelines/latex-instructions):
+
+  Manuscript            main_EAAI.pdf
+  LaTeX source files    EAAI_latex_source.zip  (FLAT; do NOT label as Supplementary)
+  Title page            title_page.pdf
+  Highlights            highlights.txt
+  Graphical abstract    graphical_abstract.pdf
+  Supplementary         supplementary_EAAI.pdf  (PDF only; .tex stays inside the zip)
+  Cover letter          CoverLetter_EAAI.md
+  Conflict of Interest  Word file from https://declarations.elsevier.com/home
+  Computer code         EAAI_code_anonymized.zip
+                        (py -3 scripts/package_anonymized_review_zip.py)
+
+Inspec codes (type into Editorial Manager, not the PDF):
+  C7810C, C1230L, C1230D, C6170K, C6150G, C6130S
+See EM_METADATA.md. Do not upload that file.
+
+Do NOT upload .tex files under Supplementary material.
+Do NOT upload a PDF that still lists author names in the manuscript body.
+Do NOT mention the APIN submission in the anonymized manuscript.
+See ELSEVIER_LATEX_UPLOAD.md for the full mapping.
