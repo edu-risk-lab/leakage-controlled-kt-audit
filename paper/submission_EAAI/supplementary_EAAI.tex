@@ -1,6 +1,6 @@
 %=============================================================================
-% Leakage-controlled concept-graph construction and cold-start diagnostics
-% for graph-enhanced knowledge tracing
+% Bounding graph-mediated leakage in knowledge tracing: a train-only audit
+% protocol with a predictive exposure measure
 %
 % ANONYMIZED MANUSCRIPT for Engineering Applications of Artificial
 % Intelligence (EAAI), Elsevier. Single-column elsarticle preprint.
@@ -35,6 +35,13 @@
 \usepackage{algpseudocode}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,fit,shapes.geometric,calc}
+
+% --- Cross-references into the main manuscript -----------------------------
+% Section and table numbers cited below are defined in main_EAAI.tex. Without
+% this, every such reference renders as "??". Requires main_EAAI.aux, so build
+% the main document first.
+\usepackage{xr}
+\externaldocument{main_EAAI}
 
 % --- File-path typesetting -------------------------------------------------
 \usepackage{url}
@@ -75,9 +82,9 @@
 %=============================================================================
 \begin{document}
 \begin{frontmatter}
-\title{Supplementary material: Leakage-controlled concept-graph
-construction and cold-start diagnostics for graph-enhanced
-knowledge tracing}
+\title{Supplementary material: Bounding graph-mediated leakage in
+knowledge tracing: a train-only audit protocol with a predictive
+exposure measure}
 \end{frontmatter}
 
 \noindent\textit{Anonymized supplementary material. Table and figure

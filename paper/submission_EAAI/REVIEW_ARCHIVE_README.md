@@ -1,8 +1,8 @@
 # Leakage-controlled concept-graph audit (review archive)
 
-Companion research software for the anonymized manuscript *Leakage-controlled
-concept-graph construction and cold-start diagnostics for graph-enhanced
-knowledge tracing*, submitted to *Engineering Applications of Artificial
+Companion research software for the anonymized manuscript *Bounding
+graph-mediated leakage in knowledge tracing: a train-only audit protocol with a
+predictive exposure measure*, submitted to *Engineering Applications of Artificial
 Intelligence*. Author identities, acknowledgements, and the public repository
 URL are withheld for double-anonymized review.
 

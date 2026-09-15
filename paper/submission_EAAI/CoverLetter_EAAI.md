@@ -1,7 +1,7 @@
 # Cover letter — Engineering Applications of Artificial Intelligence
 
 **Article type:** Original Research  
-**Manuscript title:** Leakage-controlled concept-graph construction and cold-start diagnostics for graph-enhanced knowledge tracing  
+**Manuscript title:** Bounding graph-mediated leakage in knowledge tracing: a train-only audit protocol with a predictive exposure measure  
 **Corresponding author:** Van-Hau Nguyen (nvhau66@gmail.com)
 
 Dear Editor,

@@ -418,9 +418,9 @@ Thay bằng lý do độc lập với budget: tỉ lệ KC-repeat thấp (21%) v
 | # | Việc | Gỡ được |
 |---|---|---|
 | 3.1 | ~~Tái cấu trúc đóng góp C1–C5 + mục `sec:exposure`~~ — **xong** | novelty |
-| 3.2 | Viết lại abstract: đưa công cụ dự báo lên trước, con số null xuống sau | ấn tượng biên tập |
-| 3.3 | Đổi tiêu đề (xem §6) | ấn tượng biên tập |
-| 3.4 | Viết lại 5 highlights, bỏ câu tự hạ thấp | minor |
+| 3.2 | ~~Viết lại abstract: đưa công cụ dự báo lên trước~~ — **xong** | ấn tượng biên tập |
+| 3.3 | ~~Đổi tiêu đề (phương án 1)~~ — **xong**, đồng bộ 5 chỗ | ấn tượng biên tập |
+| 3.4 | ~~Viết lại 5 highlights, bỏ câu tự hạ thấp~~ — **xong** | minor |
 | 3.5 | ~~Cắt trang~~ — **xong một phần**, 49 → 47 trang (xem ghi chú dưới) | |
 | 3.6 | Đưa 2 hình từ phụ lục lên main (DDR-vs-p; scatter cận-vs-quan sát) | cân đối hình/bảng |
 | 3.7 | ~~Thống nhất thuật ngữ: bỏ hẳn TBMR chỉ giữ LTES; giải nghĩa ECR~~ — **xong** | minor |
@@ -501,6 +501,28 @@ Ba phương án đặt công cụ lên trước (đều tránh viết tắt chư
 
 Khuyến nghị phương án 1: nêu cả công cụ (audit protocol) lẫn cái mới (exposure
 measure), và chữ "bounding" giữ được tính trung thực của kết quả.
+
+**Đã chốt phương án 1.** Đồng bộ ở `main_EAAI.tex`, `supplementary_EAAI.tex`,
+`title_page.tex`, `CoverLetter_EAAI.md`, `REVIEW_ARCHIVE_README.md`.
+
+### 6b Trạng thái bản thảo sau khi đưa sàn nhiễu vào
+
+- Abstract viết lại: cận phơi nhiễm lên đầu phần AI contribution, các con số null
+  chuyển xuống phần engineering application kèm câu "bound rather than resolve".
+- Highlights bỏ câu "not a new architecture" (tự hạ thấp), thay bằng 5 câu nói về
+  cận, `δ_w`, chi phí CPU, slope, và sàn nhiễu.
+- `sec:exposure` thêm đoạn hiệu chỉnh sàn: 96 cặp ASSIST + phép chuyển tỉ lệ ra
+  `σ ≈ 1e-3` cho XES3G5M, ghi rõ là **ước lượng, không phải phép đo**.
+- Hạ cấp hai chỗ overclaim: đoạn hai vintage (từ "loại được nhiễu" xuống "~3σ,
+  chưa dứt điểm") và bảng M4 Phase B (thêm "chưa phân giải được ở ngân sách này").
+- **Sửa lỗi có từ trước**: `supplementary_EAAI.tex` tham chiếu 21 nhãn nằm trong
+  `main_EAAI.tex` nhưng không nạp `xr`, nên bản in ra có 21 dấu "??". Đã thêm
+  `\usepackage{xr}` + `\externaldocument{main_EAAI}`; giờ 0 cảnh báo.
+- Build: main **49 trang**, supplementary 21 trang, không warning tham chiếu.
+
+**Cảnh báo số trang.** 49/50 chỉ còn một trang dự phòng. Nội dung sàn nhiễu là
+bắt buộc nên không cắt được ở đó; muốn lấy lại biên thì phải chuyển tiếp một
+float sang supplement (việc 3.5, cần bạn quyết chọn bảng/hình nào).
 
 ---
 

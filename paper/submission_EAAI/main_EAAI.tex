@@ -77,14 +77,17 @@
 \IfFileExists{ddr_slope_macros.tex}{%
   \input{ddr_slope_macros.tex}%
 }{}
+\IfFileExists{noise_floor_macros.tex}{%
+  \input{noise_floor_macros.tex}%
+}{}
 
 \journal{Engineering Applications of Artificial Intelligence}
 
 %=============================================================================
 \begin{document}
 \begin{frontmatter}
-\title{Leakage-controlled concept-graph construction and cold-start
-diagnostics for graph-enhanced knowledge tracing}
+\title{Bounding graph-mediated leakage in knowledge tracing: a train-only
+audit protocol with a predictive exposure measure}
 
 % Double-anonymized: do NOT list authors here. See title_page.tex.
 
@@ -94,17 +97,21 @@ graph-enhanced knowledge tracing to estimate learner mastery and to schedule
 practice. In current pipelines, concept graphs are often inferred from the
 same interaction logs later used to train and evaluate the tracer. Held-out
 learner transitions can therefore enter the model through the graph channel
-even when the optimiser sees only the training fold. Across every
-configuration tested here, including deliberate 20\% test-fold injection
-into a graph-reliant backbone, this channel moves predictive area under
-the receiver operating characteristic curve by at most 0.010. The metric
-is therefore a poor detector of graph-mediated contamination; an audit
-that scores graph provenance independently of accuracy is required.
+even when the optimiser sees only the training fold. A team can currently
+learn the accuracy consequence of this design choice only by training both a
+pooled and a train-only arm, and that expense is what deters the check.
 
 \textbf{Artificial-intelligence contribution.}
-We introduce a leakage-controlled audit protocol for knowledge-component
-graphs. The protocol comprises learner-based temporal splits, train-only
-prerequisite inference, directed-acyclic-graph validation with cycle
+We turn the question into one answerable before training. A \emph{leakage
+exposure bound} limits the movement in headline accuracy to the product of two
+measurable quantities: how much a backbone relies on graph structure, and how
+far pooling moves the graph the builder produces. Both are obtained without
+retraining, the second from exported edge lists alone. Reading the structural
+term as the weight mass that pooling redistributes, rather than as a count of
+leaked edges, tightens the bound and explains why opening the builder filter
+admits many leaked edges yet little weight. The bound is embedded in a
+leakage-controlled audit protocol comprising learner-based temporal splits,
+train-only prerequisite inference, directed-acyclic-graph validation with cycle
 pruning, knowledge-component cold-start stratification, and a structural
 diagnostic---the directed-acyclic-graph disruption rate---that ranks
 graph-augmentation operators independently of predictive accuracy.
@@ -115,11 +122,15 @@ software. Experiments on public educational logs (XES3G5M, ASSISTments 2012,
 Junyi Academy) and two synthetic logs yield acyclic train-only graphs. Downstream
 retraining yields an OLS slope of $0.084$ AUC per unit disruption rate on
 graph-reliant GKT/XES3G5M, versus $0.003$ on graph-inert ASSISTments.
-Replacing a pooled full-log graph with a train-only
-graph changes headline area under the curve by at most 0.003, including the
-opened per-source-cap cell on the primary corpus. The protocol is a
-CPU-only pre-training gate (graph export plus leakage scalars; Table~\ref{tab:audit-cost}).
-The intended
+Replacing a pooled full-log graph with a train-only graph moves headline area
+under the receiver operating characteristic curve by at most 0.003 across the
+tested cells, and deliberate 20\% test-fold injection into a graph-reliant
+backbone moves it by at most 0.010; on the primary corpus the individual shifts
+fall at or below an estimated training noise floor near 0.001, so these figures
+bound the channel rather than resolve it. Accuracy is thus a poor detector of
+graph-mediated contamination, which is the case for auditing provenance
+directly. The audit runs as a central-processing-unit-only pre-training gate
+(graph export plus leakage scalars; Table~\ref{tab:audit-cost}). The intended
 use is to inform graph-provenance decisions at deployment, rather than to
 raise headline scores.
 \end{abstract}
@@ -130,11 +141,11 @@ raise headline scores.
 \end{graphicalabstract}
 
 \begin{highlights}
-\item Across tested regimes, graph-channel leakage shifted accuracy by at most 0.010.
-\item Train-only audits measure graph provenance independently of predictive accuracy.
-\item Disruption rate slope is 0.084 AUC per unit DDR on GKT/XES3G5M.
-\item Full-log vs train-only AUC stays within 0.003 even at $k{=}20$.
-\item The work is an audit protocol, not a new knowledge-tracing architecture.
+\item An exposure bound sizes graph-leakage risk before any model is trained.
+\item Weight mass moved by pooling predicts the bound better than leaked edge count.
+\item The bound needs only a CPU census and one reliance probe, not a retrained arm.
+\item Disruption rate slope is 0.084 AUC per unit DDR on graph-reliant GKT/XES3G5M.
+\item Measured shifts fall near the training noise floor, bounding the channel.
 \end{highlights}
 
 \begin{keyword}
@@ -1070,6 +1081,32 @@ stops making a testable claim rather than becoming a tight one; Section~%
 already governs \DDR{}: it is a statement about graph-reliant backbones, and on
 graph-inert ones it is silent by construction.
 
+\paragraph{Calibrating the floor.}
+$\sigma$ must be measured, not assumed, and the \DDR{} sweep already supplies
+the replicates: on ASSISTments its three seed files share both the split seeds
+and the edge counts, so those runs consume an identical graph and split and
+differ only in training seed. Across \NoiseFloorGroups{} such groups,
+\NoiseFloorPairs{} seed-only run pairs give a median absolute AUC difference of
+\NoiseFloorMedian{}, a 90th percentile of \NoiseFloorNinety{}, and a maximum of
+\NoiseFloorMax{} (\path{scripts/noise_floor.py}). Pairwise differences are the
+right null here rather than the spread of a seed group, because the range of
+three draws is systematically wider than the difference of two and would make
+any comparison against it permissive.
+
+The primary corpus has no such replicate, since its seed files vary split and
+graph together, and carrying the ASSISTments figure across as an absolute AUC
+would be unsound because the two corpora sit at different AUC levels. What
+transfers is the dimensionless \emph{share} of dispersion that retraining
+contributes: on ASSISTments the seed standard deviation is
+\NoiseFloorSeedShare{} of the total across splits, graphs, and seeds. Scaling
+the spread of the unperturbed XES3G5M cells by that share, then converting to a
+worst-case two-run difference with the tail factor ASSISTments exhibits, places
+the primary-corpus floor between \NoiseFloorPrimaryLow{} and
+\NoiseFloorPrimaryHigh{}. We therefore adopt $\sigma\approx10^{-3}$ there as an
+estimate, not a measurement: it assumes the seed share is corpus-invariant and
+rests on three replicated splits on the donor corpus
+(Section~\ref{sec:threats-validity}).
+
 \paragraph{Cost and standing assumption.}
 Applying the bound to a new filter setting costs one CPU census and no
 training, because $s_{m,D}$ is measured once per backbone--corpus pair and is
@@ -1415,9 +1452,29 @@ Retraining GKT at the primary budget (10 epochs, batch 4) on fold~0
 (Table~\ref{tab:m4-phase-b-auc}) shows that the headline gap stays inside
 the same $0.003$ cap: $\Delta$AUC is ${+}0.0006$ at the published default,
 ${-}0.0015$ at the open-$q$ corner that still binds $k{=}5$, and ${-}0.0005$
-at $k{=}20$. Absolute AUC rises as the graph densifies, but train-only versus
-full-log remains a poor detector of the opened builder channel.
+at $k{=}20$. All three sit at or below the estimated noise floor
+$\sigma\approx10^{-3}$ of Section~\ref{sec:exposure}, so the honest reading is
+that single-run retraining does not resolve an effect of this size, rather than
+that the effect is tightly bounded at these particular values. Absolute AUC
+rises as the graph densifies, but train-only versus full-log remains a poor
+detector of the opened builder channel.
 The $k{=}\infty$ cell was not trained (stop rule).
+
+\paragraph{Two vintages of the same cell.}
+The published-default row of Table~\ref{tab:m4-phase-b-auc} and the XES3G5M GKT
+row of Supplementary Table~S8 describe the same builder configuration yet
+report $\Delta$AUC of ${+}0.0006$ and ${+}0.002$; we flag this rather than
+reconcile it by rounding. The two runs came from different code vintages and
+the discrepancy is confined to one arm: train-only AUCs agree to
+$5.3\times10^{-5}$ while full-log AUCs differ by $1.2\times10^{-3}$. Training
+nondeterminism sits uneasily with that asymmetry, since it would perturb both
+arms alike, but at roughly three standard deviations of a two-run difference it
+is not excluded either; the exported graphs are byte-identical, so the input
+artefacts are not the cause. We treat the two numbers as \emph{not mutually
+comparable}, no claim here rests on their difference, and since both lie at or
+below $\sigma$ neither resolves the pooling effect. Re-running the ablation arm
+under current code is reported as outstanding in
+Section~\ref{sec:threats-validity}.
 
 \input{m4_qk_census.tex}
 \input{m4_phase_b_auc.tex}
@@ -1984,6 +2041,15 @@ $k{=}20$). Builder leak jumps when $k$ is lifted
 (Table~\ref{tab:m4-qk-census}); $k{=}\infty$ and additional folds were not
 trained once that stop rule held.
 
+That cap is an upper bound, not a measurement: each cell is a single retrained
+run and the estimated floor $\sigma\approx10^{-3}$
+(Section~\ref{sec:exposure}) exceeds the individual fold-0 shifts, so
+differences \emph{among} the three cells carry no information and the sweep
+must not be read as a trend against filter setting. Because $\sigma$ is itself
+transferred from ASSISTments, one replicate cell retrained under a fixed
+XES3G5M split and graph would convert it into a measurement, and is the
+cheapest single addition to this protocol.
+
 \paragraph{Scope of the $2{\times}2$ grid.}
 Two limits bound the reading of Supplementary Table~S22.
 First, the high-throughput row is reached only by \emph{controlled} injection;
@@ -2051,7 +2117,9 @@ graph destruction moves AUC by ${\le}0.003$.
 
 Train-only versus full-log ablation moves headline AUC by at most $0.003$
 on the three public benchmarks, and by at most $0.0015$ on the opened-channel
-GKT fold-0 cells (Table~\ref{tab:m4-phase-b-auc}). Under the verified injection sweep, fold-0
+GKT fold-0 cells (Table~\ref{tab:m4-phase-b-auc})---the latter at or below the
+estimated noise floor, so bounded rather than resolved.
+Under the verified injection sweep, fold-0
 AUC remains nearly unchanged (Table~S18) even while builder mass rises
 (Table~S17): the largest observed shift is $|\Delta\text{AUC}|{\approx}0.010$.
 These results support a bounded negative reading: under the studied

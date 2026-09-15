@@ -1,5 +1,5 @@
-Across tested regimes, graph-channel leakage shifted accuracy by at most 0.010.
-Train-only audits measure graph provenance independently of predictive accuracy.
-Disruption rate slope is 0.084 AUC per unit DDR on GKT/XES3G5M.
-Full-log vs train-only AUC stays within 0.003 even at k=20.
-The work is an audit protocol, not a new knowledge-tracing architecture.
+An exposure bound sizes graph-leakage risk before any model is trained.
+Weight mass moved by pooling predicts the bound better than leaked edge count.
+The bound needs only a CPU census and one reliance probe, not a retrained arm.
+Disruption rate slope is 0.084 AUC per unit DDR on graph-reliant GKT/XES3G5M.
+Measured shifts fall near the training noise floor, bounding the channel.
