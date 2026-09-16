@@ -390,7 +390,7 @@ Ghi chú 1.5: viết dự báo ra file có commit **trước** khi có kết qu�
 | # | Việc | Chi phí | Gỡ được | Bắt buộc? |
 |---|---|---|---|---|
 | 2.0 | Chạy lại XES3G5M/GKT graph-ablation ở HEAD | 8–16 h | tái lập, §2.5 | **Có** |
-| 2.0b | Ô lặp `q0.95_k5_Kinf_tau0.1` — `σ` **trên corpus chính** XES3G5M | 4–8 h | **M-1**, §2.3b | **Có** |
+| 2.0b | Ô lặp `q0.95_k5_Kinf_tau0.1` — **cùng seed 42, trùng bit với mặc định**; chưa phải `σ`. Cần seed huấn luyện khác, split 42 | 4–8 h | **M-1**, §2.3b | **Có** (còn seed 17) |
 | 2.1 | Ô `k=∞`, fold 0 — phép thử phân định `δ` vs `δ_w` | 4–8 h | **M-2**, novelty | **Có** |
 | 2.2 | Slope cộng cạnh `s⁺`: thêm cạnh ngẫu nhiên ở 4 tỉ lệ, fold 0 | 16–32 h | §2.4, nền móng của cận | **Có** |
 | 2.3 | Default + `k=20`, fold 1–2 (seed 42) → CI 3 fold | 16–32 h | **M-1** | **Có** |

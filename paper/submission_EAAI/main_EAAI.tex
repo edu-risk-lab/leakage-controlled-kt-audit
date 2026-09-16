@@ -1429,7 +1429,11 @@ A builder census on XES3G5M (Table~\ref{tab:m4-qk-census}) shows that the
 throttle is the per-source cap $k{=}5$, not $q{=}0.95$ alone: $K{=}5000$ is
 slack ($K{=}\infty$ is identical), and lowering $q$ to $0.50$ with $k{=}5$ kept
 raises fold-0 leak $|E_{\mathrm{pre}}^{\mathrm{fl}}\setminus E_{\mathrm{pre}}^{\mathrm{to}}|$
-only from $103$ to $136$. Lifting $k$ at the same $q$ opens the channel
+only from $103$ to $136$. Retraining the slack-$K$ cell
+($q{=}0.95$, $k{=}5$, $K{=}\infty$) under current code reproduced the
+published-default AUCs to machine precision (train-only $0.833591$, full-log
+$0.834206$, $\Delta$AUC ${+}0.000615$), so that identity is now a trained
+result, not only a census one. Lifting $k$ at the same $q$ opens the channel
 ($634$ at $k{=}20$; $2276$ at $k{=}\infty$; three-fold ranges in
 Table~\ref{tab:m4-qk-census}).
 Retraining GKT at the primary budget (10 epochs, batch 4) on fold~0
@@ -1442,7 +1446,8 @@ that single-run retraining does not resolve an effect of this size, rather than
 that the effect is tightly bounded at these particular values. Absolute AUC
 rises as the graph densifies, but train-only versus full-log remains a poor
 detector of the opened builder channel.
-The $k{=}\infty$ cell was not trained (stop rule).
+The per-source $k{=}\infty$ lift---not the slack global $K$---was not trained
+(stop rule).
 
 \paragraph{Two vintages of the same cell.}
 The published-default row of Table~\ref{tab:m4-phase-b-auc} and the XES3G5M GKT
@@ -1454,7 +1459,9 @@ $5.3\times10^{-5}$ while full-log AUCs differ by $1.2\times10^{-3}$. Training
 nondeterminism sits uneasily with that asymmetry, since it would perturb both
 arms alike, but at roughly three standard deviations of a two-run difference it
 is not excluded either; the exported graphs are byte-identical, so the input
-artefacts are not the cause. We treat the two numbers as \emph{not mutually
+artefacts are not the cause. A same-seed retrain of the graph-identical
+slack-$K$ cell under current code is bit-identical to the M4 default, so
+same-seed training noise is also excluded. We treat the two numbers as \emph{not mutually
 comparable}, no claim here rests on their difference, and since both lie at or
 below $\sigma$ neither resolves the pooling effect. Re-running the ablation arm
 under current code is reported as outstanding in
@@ -2020,7 +2027,7 @@ The $|{\Delta}\mathrm{AUC}|{\le}0.003$ train-only versus full-log bound holds
 on the published public-benchmark ablation and on the three XES3G5M GKT fold-0
 cells in Table~\ref{tab:m4-phase-b-auc} (default; open $q$ with $k{=}5$;
 $k{=}20$). Builder leak jumps when $k$ is lifted
-(Table~\ref{tab:m4-qk-census}); $k{=}\infty$ and additional folds were not
+(Table~\ref{tab:m4-qk-census}); the per-source $k{=}\infty$ lift and additional folds were not
 trained once that stop rule held.
 
 That cap is an upper bound, not a measurement: each cell is a single retrained
@@ -2028,9 +2035,11 @@ run and the estimated floor $\sigma\approx10^{-3}$
 (Section~\ref{sec:exposure}) exceeds the individual fold-0 shifts, so
 differences \emph{among} the three cells carry no information and the sweep
 must not be read as a trend against filter setting. Because $\sigma$ is itself
-transferred from ASSISTments, one replicate cell retrained under a fixed
-XES3G5M split and graph would convert it into a measurement, and is the
-cheapest single addition to this protocol.
+transferred from ASSISTments, one replicate at a \emph{different training seed}
+on a fixed XES3G5M split and graph would convert it into a measurement. A
+same-seed retrain of the slack-$K$ cell reproduced the default AUCs to machine
+precision, which confirms determinism at seed~$42$ but does not estimate
+across-seed $\sigma$.
 
 \paragraph{Scope of the $2{\times}2$ grid.}
 Two limits bound the reading of Supplementary Table~S22.

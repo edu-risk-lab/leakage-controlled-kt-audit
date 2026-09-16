@@ -105,6 +105,22 @@ python scripts/run_m4_qk_sweep.py --phase b --cells default --fold-idx -1
 
 `--fold-idx -1` = không giới hạn fold (cả 3). Chỉ dùng cho landmark: default, mid, góc mở / `k`-lift nếu `|ΔAUC|` vượt 0.003.
 
+### 3.4 Bản lặp σ (bắt buộc; seed huấn luyện khác, split giữ nguyên)
+
+Ô `q0.95_k5_Kinf_tau0.1` (seed 42) đã trùng bit với mặc định `K=5000`. Đó xác nhận
+đồ thị giống nhau và huấn luyện **cùng seed** là xác định; **không** đo được `σ`.
+`σ` cần cùng đồ thị, cùng learner split, **khác experiment seed**. Kết quả ghi vào
+`results/q1/m4_q0.95_k5_K5000_tau0.1_seed17/` — không đè ô seed 42.
+
+```bash
+python scripts/run_m4_qk_sweep.py --phase b --cells default --fold-idx 0 \
+  --seed 17 --split-base-seed 42
+```
+
+Kỳ vọng: `|AUC_seed17 − AUC_seed42|` trên từng nhánh (train-only và full-log) là
+một quan sát của sàn nhiễu. Không đổi `--graph-root`; không `--clear-cache` trên
+ô seed 42.
+
 ---
 
 ## 4. An toàn

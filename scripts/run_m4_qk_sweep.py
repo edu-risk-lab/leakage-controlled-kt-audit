@@ -532,6 +532,12 @@ def run_phase_b(args: argparse.Namespace) -> int:
         if not overlay.exists():
             raise SystemExit(f"Missing overlay {overlay}")
         isolate = f"m4_{tag}"
+        seed = int(getattr(args, "seed", 42))
+        split_base = args.split_base_seed
+        if seed != 42 and split_base is None:
+            split_base = 42
+        if seed != 42:
+            isolate = f"m4_{tag}_seed{seed}"
         cmd = [
             python,
             "-m",
@@ -546,9 +552,13 @@ def run_phase_b(args: argparse.Namespace) -> int:
             str(graph_root),
             "--isolated-results",
             isolate,
+            "--seed",
+            str(seed),
             "--log-level",
             str(args.log_level),
         ]
+        if split_base is not None:
+            cmd.extend(["--split-base-seed", str(split_base)])
         fold_idx = 0 if args.fold_idx is None else args.fold_idx
         if fold_idx >= 0:
             cmd.extend(["--fold-idx", str(fold_idx)])
@@ -583,6 +593,20 @@ def build_parser() -> argparse.ArgumentParser:
         help="Phase B: 'default', 'recommended', or comma-separated cell tags.",
     )
     parser.add_argument("--model", default="gkt", help="Phase B backbone (default gkt).")
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=42,
+        help="Experiment seed forwarded to baseline_runner. For a noise-floor replicate "
+        "use a different value and keep --split-base-seed at 42.",
+    )
+    parser.add_argument(
+        "--split-base-seed",
+        type=int,
+        default=None,
+        help="Learner-split seed forwarded to baseline_runner. Defaults to 42 when "
+        "--seed is not 42, so a replicate does not silently change the split.",
+    )
     parser.add_argument("--python", default=None, help="Interpreter for Phase B subprocesses.")
     parser.add_argument("--log-level", default="INFO")
     return parser
