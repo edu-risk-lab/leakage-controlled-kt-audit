@@ -11,7 +11,7 @@ Source: [Guide for authors](https://www.sciencedirect.com/journal/engineering-ap
 
 ## Other editorial requirements
 
-- [x] Abstract ≤ 250 words (current draft ≈ 239; 247 if hyphenated compounds are split)
+- [x] Abstract ≤ 250 words (current draft = 248)
 - [x] Keywords: 1–6
 - [x] Double-anonymized manuscript (no author names, no acknowledgements, no GitHub identity)
 - [x] Separate title page with authors, corresponding address, acknowledgements, CRediT, funding, competing interests
@@ -21,10 +21,10 @@ Source: [Guide for authors](https://www.sciencedirect.com/journal/engineering-ap
 - [x] Manuscript ≤ 50 pages / 100 MB (`main_EAAI.pdf` is 47 pages, well under 100 MB)
 - [x] Graphical abstract (`graphical_abstract.pdf`, TikZ, no generative AI)
 - [x] Supplementary PDF (`supplementary_EAAI.pdf`, 23 pages)
-- [ ] Elsevier competing-interest Word form — corresponding author must generate it at https://declarations.elsevier.com/home (answers in `EM_METADATA.md`; cannot be faked in-repo)
+- [x] Elsevier competing-interest Word form — `declarationStatement (haunv).docx` (tool-generated; “no known competing interests” is checked). Upload in EM as **Conflict of Interest**. Do not put it in either zip.
 - [x] Inspec classification codes prepared (`EM_METADATA.md`): C7810C, C1230L, C1230D, C6170K, C6150G, C6130S — still must be typed into Editorial Manager
 - [x] Anonymized code zip for review (`EAAI_code_anonymized.zip`; rebuild with `scripts/package_anonymized_review_zip.py`)
-- [ ] Confirm corresponding author and authorship order with all co-authors before submit (order on the title page: Tuan Dao Minh first; Van-Hau Nguyen corresponding, fifth)
+- [x] Confirm corresponding author and authorship order with all co-authors before submit (order on the title page: Tuan Dao Minh first; Van-Hau Nguyen corresponding, fifth; confirmed 2026-09-20)
 
 ## Suggested Editorial Manager article type
 

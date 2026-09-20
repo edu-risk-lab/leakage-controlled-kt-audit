@@ -42,6 +42,7 @@ $names = @(
   "training_parity.tex",
   "bootstrap_auc_ci.tex",
   "gkt_epoch_ablation.tex",
+  "gkt_epoch_ablation_macros.tex",
   "leak_injection.tex",
   "downstream_auc_injection.tex",
   "anova_baseline.tex",

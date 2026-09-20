@@ -65,6 +65,8 @@ paper/submission_APIN/main_APIN.pdf
 # copies synced from results/tables/ and results/figures/.
 # ---------------------------------------------------------------------------
 paper/submission_EAAI/*.pdf
+paper/submission_EAAI/*.docx
+paper/submission_EAAI/*.doc
 paper/submission_EAAI/*.bbl
 paper/submission_EAAI/*.spl
 paper/submission_EAAI/*.csv

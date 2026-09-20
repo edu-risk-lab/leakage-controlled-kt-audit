@@ -26,7 +26,7 @@ must **not** be labelled Supplementary material.
 | Do **not** use `ecrc.sty` unless the journal is camera-ready (Procedia, etc.) | Pass — EAAI is not CRC |
 | CAS `cas-sc` / `cas-dc` only if the journal asks for that workflow | Pass — EAAI Guide does not require CAS; single-column `preprint` matches the desk-reject rule |
 | Reference style: follow the journal Guide for Authors | Numbered `elsarticle-num` is valid at submission (GfA: any consistent style). GfA prose describes author–year; switch to `elsarticle-harv` only if you want exact GfA style |
-| Compile a PDF locally and upload it as **Manuscript** | `main_EAAI.pdf` (45 pages, under the 50-page EAAI cap) |
+| Compile a PDF locally and upload it as **Manuscript** | `main_EAAI.pdf` (47 pages, under the 50-page EAAI cap) |
 | Bundle **all** source in **one archive**, item type **LaTeX source files** | Use `EAAI_latex_source.zip` (created beside this file) |
 | No subfolders in the archive | Pass — every path is a basename |
 | Do **not** upload `.tex` as Supplementary material | Upload `supplementary_EAAI.pdf` as Supplementary; keep `.tex` only inside the source zip |
@@ -41,8 +41,9 @@ must **not** be labelled Supplementary material.
 1. **Manuscript** — `main_EAAI.pdf` only (anonymized).
 2. **LaTeX source files** — `EAAI_latex_source.zip` (flat). Do **not**
    put this zip under Supplementary material.
-3. **Title page** — `title_page.pdf` (authors, CRediT, acknowledgements).
-   Do **not** put `title_page.tex` in the source zip.
+3. **Title page** — `title_page.pdf` (authors, CRediT, acknowledgements;
+   rebuilt 2026-09-20). `title_page_em.pdf` is the same file if EM already
+   lists that name. Do **not** put `title_page.tex` in the source zip.
 4. **Highlights** — `highlights.txt` (also already inside the manuscript
    frontmatter).
 5. **Graphical abstract** — `graphical_abstract.pdf`.

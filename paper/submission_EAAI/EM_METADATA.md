@@ -79,6 +79,11 @@ interests” sentence; that does **not** replace the upload.
 6. Download the `.doc` / `.docx`.
 7. In EM, item type **Conflict of Interest** / **Declaration of Interest**.
 
+Downloaded file (do not commit; do not put in either zip):
+`declarationStatement (haunv).docx`.
+The checked box is the standard “no known competing financial interests
+or personal relationships” statement, matching the title page.
+
 The tool e-mails a one-time password to the corresponding author. That step
 cannot be completed from this repository.
 
@@ -105,12 +110,12 @@ organisation. If the scan fails, the script refuses to write the archive.
 |---|---|
 | Manuscript | `main_EAAI.pdf` |
 | LaTeX source files | `EAAI_latex_source.zip` (run `_make_em_zip.ps1`) |
-| Title page | `title_page.pdf` |
+| Title page | `title_page.pdf` (rebuilt 2026-09-20; `title_page_em.pdf` is equivalent) |
 | Highlights | `highlights.txt` |
 | Graphical abstract | `graphical_abstract.pdf` |
 | Supplementary material | `supplementary_EAAI.pdf` |
 | Cover letter | paste `CoverLetter_EAAI.md` into Word if EM wants `.doc` |
-| Conflict of Interest | Word file from declarations.elsevier.com |
+| Conflict of Interest | `declarationStatement (haunv).docx` |
 | Computer code / extra supplementary | `EAAI_code_anonymized.zip` |
 
 Do not upload `title_page.tex`, `refs_APIN.bib`, this metadata file, or a
