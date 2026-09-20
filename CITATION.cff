@@ -4,15 +4,13 @@ message: >-
   (preferred) and, optionally, this software repository.
 type: software
 title: >-
-  Leakage-Controlled Concept Graph Construction and Cold-Start Diagnostic
-  Protocol for Knowledge Tracing (companion code)
+  Bounding graph-mediated leakage in knowledge tracing (companion code)
 abstract: >-
-  Companion code for a leakage-controlled audit protocol for
-  knowledge-component graph construction in graph-enhanced knowledge tracing.
-  The repository provides train-only fold-aware graph construction, DAG audit,
-  leakage diagnostics, cold-start stratification, DDR probes, controlled
-  leak injection, and paper artefact generation. It is not a new SOTA KT
-  backbone.
+  Companion code for a train-only audit protocol and leakage exposure bound
+  for graph-enhanced knowledge tracing. The repository provides fold-aware
+  graph construction, DAG audit, leakage diagnostics, cold-start
+  stratification, DDR probes, controlled leak injection, exposure-bound
+  tables, and paper artefact generation. It is not a new SOTA KT backbone.
 authors:
   - family-names: Dao Minh
     given-names: Tuan
@@ -48,7 +46,7 @@ repository-code: https://github.com/edu-risk-lab/leakage-controlled-kt-audit
 url: https://github.com/edu-risk-lab/leakage-controlled-kt-audit
 license: MIT
 version: 0.1.0
-date-released: "2026-07-19"
+date-released: "2026-09-20"
 keywords:
   - knowledge tracing
   - concept graphs
@@ -59,8 +57,8 @@ keywords:
 preferred-citation:
   type: article
   title: >-
-    Leakage-Controlled Concept Graph Construction and Cold-Start Diagnostic
-    Protocol for Knowledge Tracing
+    Bounding graph-mediated leakage in knowledge tracing: a train-only
+    audit protocol with a predictive exposure measure
   authors:
     - family-names: Dao Minh
       given-names: Tuan
@@ -81,10 +79,10 @@ preferred-citation:
       given-names: Hoang Son
       orcid: https://orcid.org/0000-0001-6356-0046
   year: 2026
-  journal: Applied Intelligence
+  journal: Engineering Applications of Artificial Intelligence
   publisher:
-    name: Springer Nature
+    name: Elsevier
   notes: >-
-    Manuscript under submission / in preparation for Applied Intelligence
-    (APIN). Update volume, pages, and DOI upon publication. Canonical PDF
-    source: paper/submission_APIN/main_APIN.tex
+    Manuscript under submission to Engineering Applications of Artificial
+    Intelligence (EAAI, Elsevier). Update volume, pages, and DOI upon
+    publication. Canonical PDF source: paper/submission_EAAI/main_EAAI.tex

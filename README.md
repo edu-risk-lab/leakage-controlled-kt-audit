@@ -4,14 +4,14 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
 [![CITATION.cff](https://img.shields.io/badge/citation-CITATION.cff-9cf)](CITATION.cff)
 
-Companion **research software** for the manuscript *Leakage-Controlled Concept
-Graph Construction and Cold-Start Diagnostic Protocol for Knowledge Tracing*
-(Applied Intelligence / APIN, Springer Nature). This repository supports
-reproducible audit experiments and paper artefact generation; it is **not** a
-new SOTA knowledge-tracing backbone.
+Companion **research software** for the manuscript *Bounding graph-mediated
+leakage in knowledge tracing: a train-only audit protocol with a predictive
+exposure measure* (*Engineering Applications of Artificial Intelligence*,
+Elsevier). This repository supports reproducible audit experiments and paper
+artefact generation; it is **not** a new SOTA knowledge-tracing backbone.
 
-**Canonical submission-ready manuscript package:** `paper/submission_APIN/` (`main_APIN.tex`,
-Springer Nature `sn-jnl`, `sn-mathphys-num`, `refs_APIN.bib`).
+**Canonical submission-ready manuscript package:** `paper/submission_EAAI/`
+(`main_EAAI.tex`, Elsevier `elsarticle` preprint, `refs_EAAI.bib`).
 
 **How to cite:** see [§10](#10-citation-licence-and-contact) and `CITATION.cff`.
 
@@ -29,15 +29,19 @@ Springer Nature `sn-jnl`, `sn-mathphys-num`, `refs_APIN.bib`).
 > manipulation-check (positive control) that separates graph-reliant from
 > graph-inert backbones; a **reachability-disruption** variant; a sequence
 > **autocorrelation** diagnostic; **bootstrap / paired-\(t\) ΔAUC intervals**,
-> paired **significance tests**, and **exploratory ANOVA**; and optional
+> paired **significance tests**, and **exploratory ANOVA**; a **leakage
+> exposure bound** from a CPU census plus one reliance probe; and optional
 > **ground-truth cross-validation** on Junyi (expert prerequisite DAG vs
 > train-only inferred edges).
 >
-> **Central claim (two-factor / conditional harm).** Graph-mediated leakage
-> shifts headline AUC only when contamination **throughput** and backbone
-> **reliance** on the graph are simultaneously high; because AUC stays silent in
-> the other regimes, the audit measures throughput directly instead of relying on
-> accuracy.
+> **Central claim.** A *leakage exposure bound* sizes how far pooling can move
+> headline accuracy from a CPU-only builder census and one graph-reliance probe,
+> without a second training arm. Measuring the structural term as redistributed
+> **weight mass** (not leaked edge count) tightens the bound. On the public
+> corpora tested here, train-only versus full-log and controlled injection shift
+> AUC by at most \(0.010\), sitting at or below a measured training noise floor
+> near \(0.002\) on the primary cell, so the figures **bound the graph channel
+> rather than resolve it**. Accuracy is a poor detector of this contamination.
 >
 > **What this repo is NOT.** A new KT baseline aimed at SOTA. No claim that the
 > audit raises accuracy, nor about real-world learning outcomes or joint
@@ -96,7 +100,7 @@ multi-fold baselines. Junyi preprocess + graph stages are memory-heavy; prefer
 **Sanity.** `split_checker` should report no learner leakage and temporal
 ordering OK. `dag_audit` may report `cycles_before` hitting the **representative
 cycle cap (100)** on dense graphs; the pruning loop still runs until the graph
-is acyclic (see `paper/submission_APIN/main_APIN.tex` / `src/dag_audit.py`).
+is acyclic (see `paper/submission_EAAI/main_EAAI.tex` / `src/dag_audit.py`).
 
 **Reports.** `results/reports/p0_diagnostic_report.md` aggregates available
 CSVs and markdown reports.
@@ -604,7 +608,7 @@ public-benchmark paired table `results/tables/significance_tests_public.tex`
 `scripts/generate_phase_c_tables.py`. With three folds the Wilcoxon two-sided
 \(p\) cannot fall below `0.25`, so significance claims rest on the paired
 \(t\)-test and on the ΔAUC intervals ([§4.10](#410-inferential-summaries-auc-cis-anova-epochparity);
-see `paper/submission_APIN/main_APIN.tex`).
+see `paper/submission_EAAI/main_EAAI.tex`).
 
 ### 4.9 Controlled leak injection (two-factor "high-throughput" cell)
 
@@ -755,15 +759,15 @@ See `tests/test_graph_builder_train_only.py` for examples.
 
 ## 7. Paper artefacts, reproduction map, and LaTeX build
 
-- **Manuscript (canonical / submission-ready):** `paper/submission_APIN/main_APIN.tex`
-  with bibliography `paper/submission_APIN/refs_APIN.bib`. Class: Springer Nature `sn-jnl.cls` with
-  option `sn-mathphys-num` only (**no** `referee`); the `.cls`/`.bst` files
-  live beside the manuscript in `paper/submission_APIN/`.
-- **Locked scope (2026-07-18):** Table **S22 / pooled nine-fold GKT30 removed**
-  (S21 exploratory only; CI includes zero); B03 wording uses *associated with*
-  (not causal *inflates*). See `paper/submission_APIN/BUILD_INSTRUCTIONS.txt`.
-- **Do not maintain parallel flat trees** (e.g. `Leakage_Controlled_*` was
-  merged into `submission_APIN/` and removed).
+- **Manuscript (canonical / submission-ready):** `paper/submission_EAAI/main_EAAI.tex`
+  with bibliography `paper/submission_EAAI/refs_EAAI.bib`. Class: Elsevier
+  `elsarticle` single-column `preprint` (double-anonymized). Upload notes:
+  `paper/submission_EAAI/ELSEVIER_LATEX_UPLOAD.md` and
+  `paper/submission_EAAI/SUBMISSION_CHECKLIST.md`.
+- **Supplementary PDF:** `paper/submission_EAAI/supplementary_EAAI.tex`
+  (build after the main PDF so `xr` can read `main_EAAI.aux`).
+- An earlier Springer APIN package remains under `paper/submission_APIN/` as
+  an archive of a withdrawn submission; do not treat it as canonical.
 
 ### 7.1 Paper table/figure → how to reproduce
 
@@ -789,6 +793,7 @@ below. Table numbers `Sxx` are the appendix labels used in the manuscript.
 | Autocorrelation (`tab:autocorrelation`) | `compute_autocorrelation.py` → `plot_autocorrelation.py` | `data/processed/<ds>.parquet` |
 | Cold-start strata (`tab:cold-start-*`, S12–S13) | `cold_start_report` → `generate_paper_artifacts.py` | `cold_start_metrics.csv` |
 | Ground-truth CV (`tab:gt-validation*`, S14) | `run_gt_cross_validation_junyi.py` | `results/gt_validation/junyi/` |
+| **Leakage exposure bound** (`tab:leakage-exposure`, S25) | `scripts/leakage_exposure.py` | `results/tables/leakage_exposure.csv` |
 | KC-graph figures | `plot_kt_graph_figures.py` | fold-0 exports |
 | DDR curves `fig_ddr_*` | `dag_disruption` / `make_all_figures.sh` | `dag_disruption_summary.csv` |
 
@@ -802,25 +807,29 @@ below. Table numbers `Sxx` are the appendix labels used in the manuscript.
 Compile the canonical package only:
 
 ```bash
-cd paper/submission_APIN
-pdflatex -interaction=nonstopmode main_APIN.tex && bibtex main_APIN && \
-  pdflatex main_APIN.tex && pdflatex main_APIN.tex
+cd paper/submission_EAAI
+pdflatex -interaction=nonstopmode main_EAAI.tex && bibtex main_EAAI && \
+  pdflatex main_EAAI.tex && pdflatex main_EAAI.tex
+pdflatex -interaction=nonstopmode supplementary_EAAI.tex
+pdflatex -interaction=nonstopmode supplementary_EAAI.tex
 ```
 
 ```powershell
-cd paper\submission_APIN
-pdflatex -interaction=nonstopmode main_APIN.tex
-bibtex main_APIN
-pdflatex -interaction=nonstopmode main_APIN.tex
-pdflatex -interaction=nonstopmode main_APIN.tex
+cd paper\submission_EAAI
+pdflatex -interaction=nonstopmode main_EAAI.tex
+bibtex main_EAAI
+pdflatex -interaction=nonstopmode main_EAAI.tex
+pdflatex -interaction=nonstopmode main_EAAI.tex
+pdflatex -interaction=nonstopmode supplementary_EAAI.tex
+pdflatex -interaction=nonstopmode supplementary_EAAI.tex
 ```
 
-`sn-jnl.cls` and the Springer `.bst` files ship in `paper/submission_APIN/`;
-if missing, fetch the
-[Springer Nature LaTeX template](https://www.springernature.com/gp/authors/campaigns/latex-author-support).
-After regenerating tables/figures under `results/`, copy the needed snippets
-into `paper/submission_APIN/` (or re-run your flat-package sync script) before
-rebuilding.
+`elsarticle.cls` and `elsarticle-num.bst` live beside the manuscript (generated
+from the CTAN `elsarticle` distribution under `docs/elsarticle/`). After
+regenerating tables/figures under `results/`, copy the needed snippets into
+`paper/submission_EAAI/` (or re-run the packaging script
+`paper/submission_EAAI/_make_em_zip.ps1`) before rebuilding. See
+`paper/submission_EAAI/BUILD_INSTRUCTIONS.txt`.
 
 ### 7.3 Full regeneration recipe
 
@@ -889,7 +898,8 @@ leakage-controlled-kt-audit/
 │   ├── xes3g5m.yaml
 │   └── synthetic_c{2,5}.yaml
 ├── paper/
-│   └── submission_APIN/        # CANONICAL submission-ready package (main_APIN.tex + assets)
+│   ├── submission_EAAI/        # CANONICAL EAAI package (main_EAAI.tex + assets)
+│   └── submission_APIN/        # archive of a withdrawn Springer submission
 ├── docs/
 │   ├── DDR_DOWNSTREAM_GKT.md   # GPU playbook: anchored DDR->downstream (GKT)
 │   └── Q1_GPU_EXPERIMENTS.md   # GPU experiment tracking / wall-clock notes
@@ -959,24 +969,25 @@ If you use this software or protocol, please cite the companion article:
 
 > Tuan Dao Minh, Khanh-Trinh Nguyen, Duong Nguyen Tien, Quoc Khanh Ngo,
 > Van-Hau Nguyen, Le Hoang Son.
-> *Leakage-Controlled Concept Graph Construction and Cold-Start Diagnostic
-> Protocol for Knowledge Tracing*.
-> Applied Intelligence (Springer Nature), 2026. Manuscript under submission.
+> *Bounding graph-mediated leakage in knowledge tracing: a train-only audit
+> protocol with a predictive exposure measure*.
+> Engineering Applications of Artificial Intelligence (Elsevier), 2026.
+> Manuscript under submission.
 
 Machine-readable metadata: [`CITATION.cff`](CITATION.cff).
-Bibliography source used in the paper: `paper/submission_APIN/refs_APIN.bib`
+Bibliography source used in the paper: `paper/submission_EAAI/refs_EAAI.bib`
 (volume / pages / DOI will be updated upon publication).
 
 ```bibtex
 @article{dao2026leakage,
-  title   = {Leakage-Controlled Concept Graph Construction and Cold-Start
-             Diagnostic Protocol for Knowledge Tracing},
+  title   = {Bounding graph-mediated leakage in knowledge tracing: a
+             train-only audit protocol with a predictive exposure measure},
   author  = {Dao Minh, Tuan and Nguyen, Khanh-Trinh and Nguyen Tien, Duong
              and Ngo, Quoc Khanh and Nguyen, Van-Hau and Le, Hoang Son},
-  journal = {Applied Intelligence},
+  journal = {Engineering Applications of Artificial Intelligence},
   year    = {2026},
   note    = {Manuscript under submission},
-  publisher = {Springer Nature}
+  publisher = {Elsevier}
 }
 ```
 
