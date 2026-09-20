@@ -141,6 +141,9 @@ Nếu cache primary bị đụng: **dừng**, không `--clear-cache` toàn cục
 # trên máy local
 rsync -avz USER@GPU:PATH/leakage-controlled-kt-audit/results/q1/m4_ ./results/q1/
 rsync -avz USER@GPU:PATH/leakage-controlled-kt-audit/results/m4/builder_census.csv ./results/m4/
+rsync -avz USER@GPU:PATH/leakage-controlled-kt-audit/results/tables/leakage_exposure.csv ./results/tables/
+rsync -avz USER@GPU:PATH/leakage-controlled-kt-audit/results/tables/leakage_exposure.tex ./results/tables/
+rsync -avz USER@GPU:PATH/leakage-controlled-kt-audit/results/tables/leakage_exposure_full.tex ./results/tables/
 ```
 
 Cột cần: `auc`, `graph_construction` (`train_only` / `full_log`), `fold`, `model=gkt`.  
@@ -148,6 +151,29 @@ Cột cần: `auc`, `graph_construction` (`train_only` / `full_log`), `fold`, `m
 
 ---
 
-## 6. Nếu OOM
+## 6. Việc còn lại trên server (sau seed-17 và k=∞)
+
+Phase B fold-0 đã đủ cho default, open q, k=20, k=∞, slack-K, và seed-17. **Không** chạy lại ablation HEAD (2.0) hay slack-K cùng seed.
+
+Dữ liệu còn thiếu trên máy viết bài là đồ thị cô lập `data/processed/xes3g5m/m4/` (bị gitignore). Cần chúng để tính lại `δ_w` thay cho số đóng băng trong `results/tables/m4_weight_delta_fold0.csv`.
+
+```bash
+git fetch origin
+git checkout feat/m4-qk-sweep
+git pull origin feat/m4-qk-sweep
+
+# Phase A nếu thư mục m4/ chưa có (CPU, ~10–20 phút)
+test -f data/processed/xes3g5m/m4/q0.5_kinf_Kinf_tau0.1/fold_0/e_pre_train_only.csv \
+  || python scripts/run_m4_qk_sweep.py --phase a --log-level INFO
+
+# Tính delta_w / delta_tv / delta_eff từ CSV cạnh (CPU, vài phút)
+python scripts/leakage_exposure.py --edge-root data/processed/xes3g5m/m4 --sync-tex
+```
+
+Xong: `results/tables/leakage_exposure.csv` phải có cột `delta_w` tính từ đồ thị, không chỉ file đóng băng. Kéo về bằng lệnh mục 5.
+
+GPU train thêm **không** bắt buộc để nộp. Nếu còn giờ máy: fold 1–2 của default và k=20 (`--fold-idx -1`) cho CI ba fold. Slope cộng cạnh s⁺ chưa có script riêng — đừng bịa lệnh.
+
+## 7. Nếu OOM
 
 GKT primary là batch **4**, 10 epoch — không đổi sang 32/30 (đó là C5, đã gác). OOM: `--fold-idx 0` từng ô; không tăng batch. Junyi GKT không chạy.

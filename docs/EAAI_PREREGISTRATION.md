@@ -149,3 +149,4 @@ two ends of the sweep carry the discriminating information.
 | Date | Cell | Fold | Observed ΔAUC | P1 held? | P2 held? | Commit |
 |---|---|---|---|---|---|---|
 | 2026-09-17 | `q0.95_k5_Kinf_tau0.1` | 0 | **+0.000615** (bit-identical to default `K=5000`) | yes (same graph as published default) | yes | *this commit* |
+| 2026-09-20 | `q0.5_kinf_Kinf_tau0.1` | 0 | **−0.000435** | yes (≤ 0.01190) | yes (≤ 0.00183) | *below measured σ = 1.8e-3; does not discriminate P1 from P2* |

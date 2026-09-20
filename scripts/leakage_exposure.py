@@ -36,7 +36,9 @@ ABLATION = ROOT / "results" / "tables" / "graph_ablation_summary.csv"
 Q1_ROOT = ROOT / "results" / "q1"
 OUT_CSV = ROOT / "results" / "tables" / "leakage_exposure.csv"
 OUT_TEX = ROOT / "results" / "tables" / "leakage_exposure.tex"
+OUT_TEX_FULL = ROOT / "results" / "tables" / "leakage_exposure_full.tex"
 OUT_REPLICATE = ROOT / "results" / "tables" / "exposure_replicate_check.csv"
+FROZEN_WEIGHT = ROOT / "results" / "tables" / "m4_weight_delta_fold0.csv"
 PAPER_DIR = ROOT / "paper" / "submission_EAAI"
 
 # Cells reported in the manuscript, in the order they appear in Table m4-qk-census.
@@ -48,6 +50,14 @@ CELL_LABELS = {
     "q0.5_k20_Kinf_tau0.1": "$k{=}20$ lift",
     "q0.5_kinf_Kinf_tau0.1": "$k{=}\\infty$ lift",
 }
+
+# Trained GKT fold-0 cells shown in the main-text exposure table.
+MAIN_CELLS = [
+    "q0.95_k5_K5000_tau0.1",
+    "q0.5_k5_Kinf_tau0.1",
+    "q0.5_k20_Kinf_tau0.1",
+    "q0.5_kinf_Kinf_tau0.1",
+]
 
 logger = logging.getLogger("leakage_exposure")
 
@@ -75,6 +85,8 @@ def load_observed_m4(q1_root: Path = Q1_ROOT) -> pd.DataFrame:
     for fold_csv in sorted(q1_root.glob("m4_*/baseline_fold_results.csv")):
         part = pd.read_csv(fold_csv)
         cell = fold_csv.parent.name.removeprefix("m4_")
+        if "_seed" in cell:
+            continue
         keys = ["dataset", "fold", "split_seed", "model"]
         for key, grp in part.groupby(keys, sort=False):
             arms = grp.set_index("graph_construction")["auc"]
@@ -234,7 +246,34 @@ def build_exposure(
     merged["bound_holds"] = holds.mask(merged["abs_observed"].isna())
     merged["slack_ratio"] = merged["bound"] / merged["abs_observed"]
     merged["label"] = merged["cell_tag"].map(CELL_LABELS).fillna(merged["cell_tag"])
-    return merged
+    return attach_weight_bounds(merged)
+
+
+def attach_frozen_weight_delta(frame: pd.DataFrame, path: Path = FROZEN_WEIGHT) -> pd.DataFrame:
+    """Attach fold-0 δ_w frozen at pre-registration when edge CSVs are absent."""
+    if not path.exists():
+        return frame
+    frozen = pd.read_csv(path)
+    out = frame.copy()
+    if "delta_w" not in out.columns:
+        out["delta_w"] = float("nan")
+    lookup = frozen.set_index(["cell_tag", "fold"])["delta_w"]
+    missing = out["delta_w"].isna()
+    keys = list(zip(out.loc[missing, "cell_tag"], out.loc[missing, "fold"]))
+    out.loc[missing, "delta_w"] = [lookup[k] if k in lookup.index else float("nan") for k in keys]
+    return attach_weight_bounds(out)
+
+
+def attach_weight_bounds(frame: pd.DataFrame) -> pd.DataFrame:
+    """Add the weighted (P2) bound once δ_w is present."""
+    if "delta_w" not in frame.columns:
+        return frame
+    out = frame.copy()
+    out["bound_w"] = out["slope"] * out["delta_w"]
+    out["slack_w"] = out["bound_w"] / out["abs_observed"]
+    holds = (out["abs_observed"] <= out["bound_w"]).astype("boolean")
+    out["bound_w_holds"] = holds.mask(out["abs_observed"].isna())
+    return out
 
 
 def primary_exposure(
@@ -340,38 +379,96 @@ def replicate_check(observed: pd.DataFrame, ablation_path: Path = ABLATION) -> p
     return pd.DataFrame(rows)
 
 
-def to_latex(frame: pd.DataFrame) -> str:
-    cols = ["label", "delta", "bound", "abs_observed", "slack_ratio"]
+def _fold0_rows(frame: pd.DataFrame, cells: list[str] | None = None) -> pd.DataFrame:
     fold0 = frame[frame["fold"] == 0].copy()
-    order = list(CELL_LABELS)
-    fold0["_rank"] = fold0["cell_tag"].apply(lambda t: order.index(t) if t in order else len(order))
-    fold0 = fold0.sort_values("_rank")[cols]
+    if cells is not None:
+        fold0 = fold0[fold0["cell_tag"].isin(cells)]
+        rank = {tag: i for i, tag in enumerate(cells)}
+        fold0["_rank"] = fold0["cell_tag"].map(rank)
+    else:
+        order = list(CELL_LABELS)
+        fold0["_rank"] = fold0["cell_tag"].apply(
+            lambda t: order.index(t) if t in order else len(order)
+        )
+    return fold0.sort_values("_rank")
+
+
+def _obs_cell(row: pd.Series) -> str:
+    if pd.isna(row["abs_observed"]):
+        return r"\emph{not trained}"
+    return f"{row['abs_observed']:.4f}"
+
+
+def to_latex(frame: pd.DataFrame) -> str:
+    """Main-text table: four trained cells, both raw (P1) and weighted (P2) bounds."""
+    if "delta_w" not in frame.columns or "bound_w" not in frame.columns:
+        raise SystemExit("weighted delta missing: pass --edge-root or the frozen fold-0 file")
+    fold0 = _fold0_rows(frame, MAIN_CELLS)
+    if len(fold0) != len(MAIN_CELLS):
+        raise SystemExit(f"main exposure table expected {len(MAIN_CELLS)} rows, got {len(fold0)}")
+    if fold0["abs_observed"].isna().any() or fold0["delta_w"].isna().any():
+        raise SystemExit("main exposure table requires trained AUCs and δ_w on all four cells")
 
     lines = [
         r"\begin{table}[t]",
         r"\centering",
         r"\caption{Leakage exposure bound on XES3G5M (GKT, fold~0). "
-        r"$\delta$ is the structural delta from pooling (leaked edges over retained "
-        r"train-only edges, Table~\ref{tab:m4-qk-census}); the bound is "
-        r"$s\cdot\delta$ with $s$ the DDR slope for this backbone--corpus pair. "
-        r"The bound is computed from a CPU census and one reliance probe, with no "
-        r"retraining. It holds on every trained cell. The $k{=}\infty$ row is a "
-        r"prediction recorded before that cell was trained.}",
+        r"Raw $\delta$ is leaked edges over retained train-only edges "
+        r"(Table~\ref{tab:m4-qk-census}); $\delta^{\mathrm{w}}$ is the weight "
+        r"mass pooling moves. Bounds are $s\cdot\delta$ and $s\cdot\delta^{\mathrm{w}}$ "
+        r"with $s$ the DDR slope, from a CPU census and one reliance probe. "
+        r"Both hold on all four trained cells. A bound is informative only where "
+        r"it exceeds the measured floor $\sigma$ "
+        r"(Section~\ref{sec:exposure}); all four $|\Delta\text{AUC}|$ sit at or "
+        r"below that floor, so the table does not resolve the two predictors at "
+        r"this budget. Remaining census cells are in Supplementary Table~S25.}",
         r"\label{tab:leakage-exposure}",
         r"\footnotesize",
-        r"\setlength{\tabcolsep}{4pt}",
-        r"\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}X c c c c @{}}",
+        r"\setlength{\tabcolsep}{3pt}",
+        r"\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}X "
+        r"*{5}{>{\centering\arraybackslash}c} @{}}",
         r"\toprule",
-        r"Cell & $\delta$ & Bound $s\cdot\delta$ & $|\Delta\text{AUC}|$ & Slack \\",
+        r"Cell & $\delta$ & $s\cdot\delta$ & $\delta^{\mathrm{w}}$ & "
+        r"$s\cdot\delta^{\mathrm{w}}$ & $|\Delta\text{AUC}|$ \\",
         r"\midrule",
     ]
     for _, r in fold0.iterrows():
-        if pd.isna(r["abs_observed"]):
-            obs, slack = r"\emph{not trained}", "---"
-        else:
-            obs = f"{r['abs_observed']:.4f}"
-            slack = f"{r['slack_ratio']:.1f}$\\times$" if pd.notna(r["slack_ratio"]) else "---"
-        lines.append(f"{r['label']} & {r['delta']:.3f} & {r['bound']:.4f} & {obs} & {slack} \\\\")
+        lines.append(
+            f"{r['label']} & {r['delta']:.3f} & {r['bound']:.4f} & "
+            f"{r['delta_w']:.3f} & {r['bound_w']:.4f} & {_obs_cell(r)} \\\\"
+        )
+    lines += [r"\bottomrule", r"\end{tabularx}", r"\end{table}", ""]
+    return "\n".join(lines)
+
+
+def to_latex_full(frame: pd.DataFrame) -> str:
+    """Supplementary table: every fold-0 census cell, both predictors."""
+    fold0 = _fold0_rows(frame)
+    lines = [
+        r"\begin{table}[t]",
+        r"\centering",
+        r"\caption{Full fold-0 leakage exposure census on XES3G5M / GKT "
+        r"(Supplementary Table~S25). Raw and weighted predictors as in "
+        r"Table~\ref{tab:leakage-exposure}. Untrained cells keep the "
+        r"pre-registered bound; they are predictions, not fits.}",
+        r"\label{tab:leakage-exposure-full}",
+        r"\footnotesize",
+        r"\setlength{\tabcolsep}{3pt}",
+        r"\begin{tabularx}{\linewidth}{@{} >{\RaggedRight\arraybackslash}X "
+        r"*{5}{>{\centering\arraybackslash}c} @{}}",
+        r"\toprule",
+        r"Cell & $\delta$ & $s\cdot\delta$ & $\delta^{\mathrm{w}}$ & "
+        r"$s\cdot\delta^{\mathrm{w}}$ & $|\Delta\text{AUC}|$ \\",
+        r"\midrule",
+    ]
+    for _, r in fold0.iterrows():
+        dw = f"{r['delta_w']:.3f}" if "delta_w" in r and pd.notna(r["delta_w"]) else "---"
+        bw = f"{r['bound_w']:.4f}" if "bound_w" in r and pd.notna(r["bound_w"]) else "---"
+        label = str(r["label"]).replace("_", r"\_")
+        lines.append(
+            f"{label} & {r['delta']:.3f} & {r['bound']:.4f} & "
+            f"{dw} & {bw} & {_obs_cell(r)} \\\\"
+        )
     lines += [r"\bottomrule", r"\end{tabularx}", r"\end{table}", ""]
     return "\n".join(lines)
 
@@ -393,10 +490,9 @@ def main() -> int:
     parser.add_argument(
         "--sigma",
         type=float,
-        default=1e-3,
-        help="training noise floor in AUC; bounds below it are untestable. Provisional "
-             "default is the observed full-log replicate gap; measure it properly with "
-             "the replicate cell in docs/EAAI_PREREGISTRATION.md section 3",
+        default=1.8e-3,
+        help="training noise floor in AUC; bounds below it are untestable. "
+             "Default is the measured XES3G5M full-log seed pair (17 vs 42).",
     )
     parser.add_argument("--sync-tex", action="store_true", help="copy the TeX table into the paper dir")
     parser.add_argument("--log-level", default="INFO")
@@ -414,6 +510,9 @@ def main() -> int:
         frame = attach_effective_delta(frame, args.edge_root)
         for variant in ("eff", "tv", "w"):
             frame[f"bound_{variant}"] = frame["slope"] * frame[f"delta_{variant}"]
+        frame = attach_weight_bounds(frame)
+    else:
+        frame = attach_frozen_weight_delta(frame)
 
     OUT_CSV.parent.mkdir(parents=True, exist_ok=True)
     frame.to_csv(OUT_CSV, index=False)
@@ -451,17 +550,24 @@ def main() -> int:
         logger.info("wrote %s", OUT_REPLICATE)
 
     tex = to_latex(frame)
+    tex_full = to_latex_full(frame)
     OUT_TEX.write_text(tex, encoding="utf-8")
+    OUT_TEX_FULL.write_text(tex_full, encoding="utf-8")
     logger.info("wrote %s", OUT_TEX)
+    logger.info("wrote %s", OUT_TEX_FULL)
     if args.sync_tex:
         (PAPER_DIR / "leakage_exposure.tex").write_text(tex, encoding="utf-8")
+        (PAPER_DIR / "leakage_exposure_full.tex").write_text(tex_full, encoding="utf-8")
         logger.info("synced to %s", PAPER_DIR / "leakage_exposure.tex")
+        logger.info("synced to %s", PAPER_DIR / "leakage_exposure_full.tex")
 
     fold0 = frame[frame["fold"] == 0]
     print("\nExposure bound, XES3G5M fold 0, model =", args.model)
     show = ["label", "delta", "bound", "bound_conservative", "abs_observed", "bound_holds", "slack_ratio"]
+    if "delta_w" in fold0.columns:
+        show[2:2] = ["delta_w", "bound_w"]
     if "delta_eff" in fold0.columns:
-        show[2:2] = ["delta_eff", "delta_tv", "delta_w"]
+        show[2:2] = ["delta_eff", "delta_tv"]
     print(fold0[show].to_string(index=False, float_format=lambda v: f"{v:.5f}"))
 
     if "delta_tv" in fold0.columns:

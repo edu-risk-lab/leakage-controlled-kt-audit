@@ -55,7 +55,7 @@ At the published $(q,k,K)=(0.95,5,5000)$, $k$ binds and $K{=}5000$ is slack
 ($K{=}\infty$ is identical). Opening $q$ with $k{=}5$ kept does not open the
 channel; lifting $k$ does. Jaccard $\tau$ changes $|E_{\mathrm{sim}}|$
 ($618/354/198$ at $\tau{=}0.05/0.10/0.20$ on fold~0) but not $E_{\mathrm{pre}}$ leak.
-Downstream $\Delta$AUC for the three GKT fold-0 cells is in
+Downstream $\Delta$AUC for the four GKT fold-0 cells is in
 Table~\ref{tab:m4-phase-b-auc}.}
 \label{tab:m4-qk-census}
 \footnotesize
@@ -80,6 +80,7 @@ def write_phase_b_table(census: pd.DataFrame, path: Path) -> None:
         ("q0.95_k5_K5000_tau0.1", "Published default"),
         ("q0.5_k5_Kinf_tau0.1", "Open $q$, $k{=}5$"),
         ("q0.5_k20_Kinf_tau0.1", "$k{=}20$ lift"),
+        ("q0.5_kinf_Kinf_tau0.1", "$k{=}\\infty$ lift"),
     ]
     rows = []
     deltas: list[float] = []
@@ -103,11 +104,11 @@ def write_phase_b_table(census: pd.DataFrame, path: Path) -> None:
         "\\centering\n"
         "\\caption{Train-only versus full-log GKT AUC on XES3G5M fold~0 (primary "
         "budget: 10 epochs, batch 4, seed 42). $\\Delta$AUC $=$ full-log $-$ train-only. "
-        "The open-$q$ cell keeps $k{=}5$; the $k{=}20$ cell is the opened-channel "
-        "landmark. Absolute AUC rises with denser graphs, but "
-        f"$|\\Delta\\text{{AUC}}|{{\\le}}{max_abs:.4f}$ on all three cells. Not a three-fold "
-        "result; the per-source $k{=}\\infty$ lift was not trained (stop rule). "
-        "A slack-$K$ cell at the published $k$ reproduced the default AUCs and is omitted.}\n"
+        "The open-$q$ cell keeps $k{=}5$; lifting $k$ opens the channel. "
+        "Absolute AUC rises with denser graphs, but "
+        f"$|\\Delta\\text{{AUC}}|{{\\le}}{max_abs:.4f}$ on all four cells. "
+        "Not a three-fold result. A slack-$K$ cell at the published $k$ "
+        "reproduced the default AUCs and is omitted.}\n"
         "\\label{tab:m4-phase-b-auc}\n"
         "\\footnotesize\n"
         "\\setlength{\\tabcolsep}{4pt}\n"

@@ -113,10 +113,10 @@ synthetic logs. Retraining yields a slope of $0.084$ area under the curve per
 unit disruption rate when the backbone uses the graph, versus $0.003$ when it
 does not. A train-only graph moves that area by at most $0.003$ versus
 pooling; $20$ percent test injection moves it by at most $0.010$. On the
-primary corpus those shifts sit at or below a noise floor near $0.001$, so
-they bound the channel rather than resolve it. Accuracy is a poor detector of
-this contamination. The audit is a processor-only gate for provenance
-decisions at deployment, not higher scores.
+primary corpus those shifts sit at or below a measured noise floor near
+$0.002$, so they bound the channel rather than resolve it. Accuracy is a poor
+detector of this contamination. The audit is a processor-only gate for
+provenance decisions at deployment, not higher scores.
 \end{abstract}
 
 \begin{graphicalabstract}
@@ -384,8 +384,9 @@ than deferred to the Discussion alone.
   that pooling moves, rather than by leaked edge count, both tightens the bound
   and explains the near-null result: opening the filter admits many leaked edges
   but little weight, so the channel is throttled by edge weight rather than by
-  edge count. Predictions for cells not yet trained are registered in advance
-  rather than fitted after the fact.
+  edge count. The four trained cells are scored in
+  Table~\ref{tab:leakage-exposure}; remaining census cells were registered in
+  advance (Supplementary Table~S25) rather than fitted after the fact.
   \emph{Residual risk:} the bound is informative only where it exceeds the
   training noise floor and where the reliance probe of C2 passes; on graph-inert
   backbones it collapses below resolution and makes no testable claim.
@@ -1048,6 +1049,9 @@ count. We therefore also read the delta as the weight mass that pooling moves,
 \end{equation}
 summing over the union of the two edge sets. Both are computed by
 \path{scripts/leakage_exposure.py} from exported edge CSVs in seconds.
+Table~\ref{tab:leakage-exposure} reports the two currencies against the four
+trained GKT fold-0 cells; a bound is informative only where
+$s_{m,D}\cdot\delta_\theta$ exceeds the measured floor $\sigma$ below.
 
 \paragraph{The bound.}
 For a backbone whose reliance probe passes,
@@ -1077,18 +1081,18 @@ right null here rather than the spread of a seed group, because the range of
 three draws is systematically wider than the difference of two and would make
 any comparison against it permissive.
 
-The primary corpus has no such replicate, since its seed files vary split and
-graph together, and carrying the ASSISTments figure across as an absolute AUC
-would be unsound because the two corpora sit at different AUC levels. What
-transfers is the dimensionless \emph{share} of dispersion that retraining
-contributes: on ASSISTments the seed standard deviation is
-\NoiseFloorSeedShare{} of the total across splits, graphs, and seeds. Scaling
-the spread of the unperturbed XES3G5M cells by that share, then converting to a
-worst-case two-run difference with the tail factor ASSISTments exhibits, places
-the primary-corpus floor between \NoiseFloorPrimaryLow{} and
-\NoiseFloorPrimaryHigh{}. We therefore adopt $\sigma\approx10^{-3}$ there as an
-estimate, not a measurement: it assumes the seed share is corpus-invariant and
-rests on three replicated splits on the donor corpus
+The primary corpus now has one such pair: the published-default cell retrained
+at experiment seed~$17$ on the same learner split and the same exported graphs
+as the seed-$42$ run. The two-run absolute differences are
+\NoiseFloorPrimaryMeasTO{} on the train-only arm and \NoiseFloorPrimaryMeas{}
+on the full-log arm. We take the larger of these as the measured floor,
+$\sigma{=}$\NoiseFloorPrimaryMeas{}. The earlier variance-ratio transfer---%
+scaling the spread of the unperturbed XES3G5M cells by the ASSISTments seed
+share \NoiseFloorSeedShare{}, then converting with that corpus's tail
+factor---had placed the same quantity between \NoiseFloorPrimaryLow{} and
+\NoiseFloorPrimaryHigh{}. The measurement lands at the upper end of that
+interval; we therefore retire the transferred figure as the operating-point
+floor and keep it only as the pre-measurement estimate
 (Section~\ref{sec:threats-validity}).
 
 \paragraph{Cost and standing assumption.}
@@ -1439,36 +1443,45 @@ Table~\ref{tab:m4-qk-census}).
 Retraining GKT at the primary budget (10 epochs, batch 4) on fold~0
 (Table~\ref{tab:m4-phase-b-auc}) shows that the headline gap stays inside
 the same $0.003$ cap: $\Delta$AUC is ${+}0.0006$ at the published default,
-${-}0.0015$ at the open-$q$ corner that still binds $k{=}5$, and ${-}0.0005$
-at $k{=}20$. All three sit at or below the estimated noise floor
-$\sigma\approx10^{-3}$ of Section~\ref{sec:exposure}, so the honest reading is
-that single-run retraining does not resolve an effect of this size, rather than
-that the effect is tightly bounded at these particular values. Absolute AUC
-rises as the graph densifies, but train-only versus full-log remains a poor
-detector of the opened builder channel.
-The per-source $k{=}\infty$ lift---not the slack global $K$---was not trained
-(stop rule).
+${-}0.0015$ at the open-$q$ corner that still binds $k{=}5$, ${-}0.0005$
+at $k{=}20$, and ${-}0.0004$ at $k{=}\infty$. All four sit at or below the
+measured noise floor $\sigma{=}$\NoiseFloorPrimaryMeas{} of
+Section~\ref{sec:exposure}, so the honest reading is that single-run
+retraining does not resolve an effect of this size, rather than that the
+effect is tightly bounded at these particular values. Absolute AUC rises as
+the graph densifies, but train-only versus full-log remains a poor detector
+of the opened builder channel.
+
+The same four cells score the pre-registered exposure predictors
+(Table~\ref{tab:leakage-exposure}). The raw count bound holds with slack
+between $2.4\times$ and $26\times$; the tighter weighted bound also holds.
+The $k{=}\infty$ cell was the planned discriminator: the raw predictor
+permits $|\Delta\text{AUC}|$ up to $0.011$, the weighted predictor only
+$0.0018$. The observed $|\Delta\text{AUC}|{=}0.0004$ satisfies both and sits
+below $\sigma{=}$\NoiseFloorPrimaryMeas{}, so it does not choose between
+them. We therefore keep reporting both currencies and treat the weighted
+reading as the tighter, still-unfalsified predictor rather than as a
+resolved winner. Remaining census predictions stay in Supplementary
+Table~S25.
 
 \paragraph{Two vintages of the same cell.}
-The published-default row of Table~\ref{tab:m4-phase-b-auc} and the XES3G5M GKT
-row of Supplementary Table~S8 describe the same builder configuration yet
-report $\Delta$AUC of ${+}0.0006$ and ${+}0.002$; we flag this rather than
-reconcile it by rounding. The two runs came from different code vintages and
-the discrepancy is confined to one arm: train-only AUCs agree to
-$5.3\times10^{-5}$ while full-log AUCs differ by $1.2\times10^{-3}$. Training
-nondeterminism sits uneasily with that asymmetry, since it would perturb both
-arms alike, but at roughly three standard deviations of a two-run difference it
-is not excluded either; the exported graphs are byte-identical, so the input
-artefacts are not the cause. A same-seed retrain of the graph-identical
-slack-$K$ cell under current code is bit-identical to the M4 default, so
-same-seed training noise is also excluded. We treat the two numbers as \emph{not mutually
-comparable}, no claim here rests on their difference, and since both lie at or
-below $\sigma$ neither resolves the pooling effect. Re-running the ablation arm
-under current code is reported as outstanding in
-Section~\ref{sec:threats-validity}.
+The operating-point measurement is the current-code row of
+Table~\ref{tab:m4-phase-b-auc}: $\Delta$AUC ${+}0.0006$ at seed~$42$, and
+${+}0.0017$ at a second training seed on the same split and graph.
+The XES3G5M GKT cell in Supplementary Table~S8 is an earlier code vintage of
+the same builder setting ($\Delta$AUC ${+}0.002$);
+Table~\ref{tab:graph-ablation} keeps that multi-model June summary, and we
+do not treat its GKT figure as a second measurement. The vintage full-log
+AUC differs from the current seed-$42$ run by $1.2\times10^{-3}$, which sits
+inside the measured floor $\sigma{=}$\NoiseFloorPrimaryMeas{} of
+Section~\ref{sec:exposure}. Train-only AUCs already agree to
+$5.3\times10^{-5}$; the exported graphs are byte-identical. We therefore take
+the HEAD/M4 numbers as the operating point and do not rerun the June
+ablation arm.
 
 \input{m4_qk_census.tex}
 \input{m4_phase_b_auc.tex}
+\input{leakage_exposure.tex}
 Deliberate injection raises builder throughput (Table~S17) without a
 matching fold-0 AUC shift under Table~S15 budgets (Table~S18;
 Section~\ref{sec:exp-injection}). Train-only construction is
@@ -2024,22 +2037,27 @@ downstream \DDR{} retraining covers DGEKT and GKT (the latter with a
 manipulation-check anchor), with GKT/XES3G5M reported across three seeds
 ($\{42,17,1234\}$, nine folds).
 The $|{\Delta}\mathrm{AUC}|{\le}0.003$ train-only versus full-log bound holds
-on the published public-benchmark ablation and on the three XES3G5M GKT fold-0
+on the published public-benchmark ablation and on the four XES3G5M GKT fold-0
 cells in Table~\ref{tab:m4-phase-b-auc} (default; open $q$ with $k{=}5$;
-$k{=}20$). Builder leak jumps when $k$ is lifted
-(Table~\ref{tab:m4-qk-census}); the per-source $k{=}\infty$ lift and additional folds were not
-trained once that stop rule held.
+$k{=}20$; $k{=}\infty$). Builder leak jumps when $k$ is lifted
+(Table~\ref{tab:m4-qk-census}); additional folds remain untrained.
 
-That cap is an upper bound, not a measurement: each cell is a single retrained
-run and the estimated floor $\sigma\approx10^{-3}$
-(Section~\ref{sec:exposure}) exceeds the individual fold-0 shifts, so
-differences \emph{among} the three cells carry no information and the sweep
-must not be read as a trend against filter setting. Because $\sigma$ is itself
-transferred from ASSISTments, one replicate at a \emph{different training seed}
-on a fixed XES3G5M split and graph would convert it into a measurement. A
-same-seed retrain of the slack-$K$ cell reproduced the default AUCs to machine
-precision, which confirms determinism at seed~$42$ but does not estimate
-across-seed $\sigma$.
+That cap is an upper bound, not a measurement of a resolved effect: each
+filter cell is a single retrained run, and the measured floor
+$\sigma{=}$\NoiseFloorPrimaryMeas{} (Section~\ref{sec:exposure}; seed~$17$
+versus seed~$42$ on the published-default graph and split) meets or exceeds
+the individual fold-0 shifts, so differences \emph{among} the four cells
+carry no information and the sweep must not be read as a trend against
+filter setting. The earlier variance-ratio transfer from ASSISTments had
+placed the same floor between \NoiseFloorPrimaryLow{} and
+\NoiseFloorPrimaryHigh{}; the measurement lands at the upper end of that
+interval. A same-seed retrain of the slack-$K$ cell reproduced the default
+AUCs to machine precision, which confirms determinism at seed~$42$ and is
+not itself a floor measurement.
+The $k{=}\infty$ cell holds both exposure predictors
+(Table~\ref{tab:leakage-exposure}) but does not discriminate them: the
+weighted bound sits at the measured floor, and the observed shift lies
+below it.
 
 \paragraph{Scope of the $2{\times}2$ grid.}
 Two limits bound the reading of Supplementary Table~S22.
@@ -2109,7 +2127,7 @@ graph destruction moves AUC by ${\le}0.003$.
 Train-only versus full-log ablation moves headline AUC by at most $0.003$
 on the three public benchmarks, and by at most $0.0015$ on the opened-channel
 GKT fold-0 cells (Table~\ref{tab:m4-phase-b-auc})---the latter at or below the
-estimated noise floor, so bounded rather than resolved.
+measured noise floor, so bounded rather than resolved.
 Under the verified injection sweep, fold-0
 AUC remains nearly unchanged (Table~S18) even while builder mass rises
 (Table~S17): the largest observed shift is $|\Delta\text{AUC}|{\approx}0.010$.

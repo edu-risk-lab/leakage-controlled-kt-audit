@@ -112,7 +112,9 @@ seed~$42$ (Section~\ref{sec:supp-gkt-epoch});
 S22: descriptive $2{\times}2$ contamination-by-reliance grid
 (Section~\ref{sec:supp-leak-injection});
 S23--S24: cell-level \DDR{}$\to$AUC sweeps for DGEKT and GKT
-(Section~\ref{sec:supp-ddr-downstream}).
+(Section~\ref{sec:supp-ddr-downstream});
+S25: full fold-0 leakage exposure census
+(Section~\ref{sec:supp-exposure}).
 
 \medskip\noindent\textbf{Sections and figures.}
 Section~S3: sequence-autocorrelation analysis
@@ -433,6 +435,16 @@ corresponding scatter.
 
 \input{ddr_downstream.tex}
 \input{ddr_downstream_gkt.tex}
+
+\section{Full leakage exposure census}
+\label{sec:supp-exposure}
+Table~S25 (Table~\ref{tab:leakage-exposure-full}) lists every fold-0 builder
+cell on XES3G5M / GKT. The four trained rows repeat the main-text
+Table~\ref{tab:leakage-exposure}; the rest keep the bounds registered
+before those cells were trained. A bound is informative only where it
+exceeds the measured noise floor in the main text.
+
+\input{leakage_exposure_full.tex}
 
 \begin{figure}[t]
 \centering

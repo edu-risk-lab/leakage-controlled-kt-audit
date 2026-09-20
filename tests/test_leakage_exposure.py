@@ -27,6 +27,8 @@ build_exposure = _mod.build_exposure
 effective_delta = _mod.effective_delta
 operator_delta = _mod.operator_delta
 load_census = _mod.load_census
+to_latex = _mod.to_latex
+MAIN_CELLS = _mod.MAIN_CELLS
 
 
 def _slopes() -> pd.DataFrame:
@@ -190,6 +192,59 @@ def test_operator_delta_charges_full_tv_for_nodes_absent_train_only(tmp_path: Pa
     stats = operator_delta(to_csv, fl_csv)
     # Node 1 unchanged (TV 0), node 7 is wholly new (TV 1), averaged over 2 nodes.
     assert stats["delta_tv"] == pytest.approx(0.5)
+
+
+def test_main_latex_table_scores_both_predictors_on_four_trained_cells() -> None:
+    census = pd.concat(
+        [
+            _census(),
+            pd.DataFrame(
+                {
+                    "dataset": ["xes3g5m", "xes3g5m"],
+                    "fold": [0, 0],
+                    "split_seed": [42, 42],
+                    "cell_tag": ["q0.5_k5_Kinf_tau0.1", "q0.5_k20_Kinf_tau0.1"],
+                    "q": [0.5, 0.5],
+                    "k": [5, 20],
+                    "K": [10**9, 10**9],
+                    "tau": [0.1, 0.1],
+                    "n_pre_to": [3213, 8712],
+                    "n_pre_fl": [3349, 9346],
+                    "n_pre_fl_minus_to": [136, 634],
+                    "primary_bind_to": ["k", "k"],
+                    "delta": [136 / 3213, 634 / 8712],
+                }
+            ),
+        ],
+        ignore_index=True,
+    )
+    observed = pd.DataFrame(
+        {
+            "dataset": ["xes3g5m"] * 4,
+            "fold": [0] * 4,
+            "split_seed": [42] * 4,
+            "model": ["gkt"] * 4,
+            "cell_tag": MAIN_CELLS,
+            "auc_train_only": [0.8336, 0.8411, 0.8515, 0.8524],
+            "auc_full_log": [0.8342, 0.8396, 0.8510, 0.8520],
+            "observed_delta_auc": [0.0006, -0.0015, -0.0005, -0.0004],
+        }
+    )
+    out = build_exposure(census, _slopes(), observed)
+    weight = {
+        "q0.95_k5_K5000_tau0.1": 0.03526,
+        "q0.5_k5_Kinf_tau0.1": 0.02155,
+        "q0.5_k20_Kinf_tau0.1": 0.019,
+        "q0.5_kinf_Kinf_tau0.1": 0.02176,
+    }
+    out["delta_w"] = out["cell_tag"].map(weight)
+    out = _mod.attach_weight_bounds(out)
+    tex = to_latex(out)
+    assert tex.count(r"\midrule") == 1
+    assert tex.count(r"\\") >= 4
+    assert r"0.0006" in tex or r"0.0004" in tex
+    assert r"\delta^{\mathrm{w}}" in tex
+    assert r"not trained" not in tex
 
 
 def test_real_census_default_cell_matches_manuscript() -> None:

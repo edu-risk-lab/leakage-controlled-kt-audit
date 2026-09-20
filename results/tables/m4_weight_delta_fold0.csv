@@ -1,0 +1,17 @@
+cell_tag,fold,delta_w,source
+q0.5_k5_K1000_tau0.1,0,0.02045,prereg-149a7595
+q0.8_k5_K1000_tau0.1,0,0.02045,prereg-149a7595
+q0.9_k5_K1000_tau0.1,0,0.02045,prereg-149a7595
+q0.95_k5_K1000_tau0.1,0,0.02045,prereg-149a7595
+q0.5_k5_K5000_tau0.1,0,0.02155,prereg-149a7595
+q0.5_k5_Kinf_tau0.1,0,0.02155,prereg-149a7595
+q0.8_k5_K5000_tau0.1,0,0.02200,prereg-149a7595
+q0.8_k5_Kinf_tau0.1,0,0.02200,prereg-149a7595
+q0.9_k5_K5000_tau0.1,0,0.02499,prereg-149a7595
+q0.9_k5_Kinf_tau0.1,0,0.02499,prereg-149a7595
+q0.95_k5_K5000_tau0.05,0,0.03526,prereg-149a7595
+q0.95_k5_K5000_tau0.1,0,0.03526,prereg-149a7595
+q0.95_k5_K5000_tau0.2,0,0.03526,prereg-149a7595
+q0.95_k5_Kinf_tau0.1,0,0.03526,prereg-149a7595
+q0.5_kinf_Kinf_tau0.1,0,0.02176,prereg-149a7595
+q0.5_k20_Kinf_tau0.1,0,0.019,revision-plan-2.3

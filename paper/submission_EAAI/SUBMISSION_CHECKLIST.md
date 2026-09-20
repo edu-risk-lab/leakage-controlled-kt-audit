@@ -18,7 +18,7 @@ Source: [Guide for authors](https://www.sciencedirect.com/journal/engineering-ap
 - [x] Highlights: 3–5 bullets, each ≤ 85 characters (`highlights.txt`)
 - [x] Generative-AI declaration on the manuscript (text tools only; no AI figures)
 - [x] Data statement + public datasets
-- [x] Manuscript ≤ 50 pages / 100 MB (`main_EAAI.pdf` is 46 pages, well under 100 MB)
+- [x] Manuscript ≤ 50 pages / 100 MB (`main_EAAI.pdf` is 47 pages, well under 100 MB)
 - [x] Graphical abstract (`graphical_abstract.pdf`, TikZ, no generative AI)
 - [x] Supplementary PDF (`supplementary_EAAI.pdf`, 23 pages)
 - [ ] Elsevier competing-interest Word form — corresponding author must generate it at https://declarations.elsevier.com/home (answers in `EM_METADATA.md`; cannot be faked in-repo)
@@ -33,7 +33,7 @@ Original Research (contributed paper). Regular issue, not a special issue, unles
 ## Remaining scientific risk (not a formatting issue)
 
 EAAI still wants “novel aspects of AI used for a real-world engineering application.”
-The rewrite sells the **leakage exposure bound** (reliance times structural delta, computable on a central processing unit before training) plus the train-only audit as the AI method, and **tutoring-system verification** as the application. Measured shifts sit at or below an estimated noise floor, so they **bound the channel rather than resolve it**.
+The rewrite sells the **leakage exposure bound** (reliance times structural delta, computable on a central processing unit before training) plus the train-only audit as the AI method, and **tutoring-system verification** as the application. Observed shifts sit at or below the measured noise floor, so they **bound the channel rather than resolve it**.
 
 It does **not** invent a new tracer that beats state-of-the-art accuracy. An editor who only accepts new backbones can still desk-reject. That risk is lower than at Applied Intelligence if they read the labelled abstract, but it is not zero.
 
